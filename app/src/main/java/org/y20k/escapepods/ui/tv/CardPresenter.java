@@ -24,12 +24,12 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.view.ViewGroup;
 
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.QueueHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.QueueHelper;
 import org.y20k.escapepods.ui.MediaItemViewHolder;
 
 public class CardPresenter extends Presenter {
-    private static final String TAG = LogHelper.makeLogTag(CardPresenter.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(CardPresenter.class);
 
     private static Activity mContext;
 
@@ -39,7 +39,7 @@ public class CardPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        LogHelper.d(TAG, "onCreateViewHolder");
+        LogHelper.INSTANCE.d(TAG, "onCreateViewHolder");
 
         ImageCardView cardView = new ImageCardView(mContext);
         cardView.setFocusable(true);
@@ -57,12 +57,12 @@ public class CardPresenter extends Presenter {
         cardViewHolder.setState(MediaItemViewHolder.STATE_NONE);
         if (item instanceof  MediaBrowserCompat.MediaItem) {
             MediaBrowserCompat.MediaItem mediaItem = (MediaBrowserCompat.MediaItem) item;
-            LogHelper.d(TAG, "onBindViewHolder MediaItem: ", mediaItem.toString());
+            LogHelper.INSTANCE.d(TAG, "onBindViewHolder MediaItem: ", mediaItem.toString());
             description = mediaItem.getDescription();
             cardViewHolder.setState(MediaItemViewHolder.getMediaItemState(mContext, mediaItem));
         } else if (item instanceof MediaSessionCompat.QueueItem) {
             MediaSessionCompat.QueueItem queueItem = (MediaSessionCompat.QueueItem) item;
-            LogHelper.d(TAG, "onBindViewHolder QueueItem: ", queueItem.toString());
+            LogHelper.INSTANCE.d(TAG, "onBindViewHolder QueueItem: ", queueItem.toString());
             description = queueItem.getDescription();
             if (QueueHelper.isQueueItemPlaying(mContext, queueItem)) {
                 cardViewHolder.setState(MediaItemViewHolder.getStateFromController(mContext));
@@ -77,7 +77,7 @@ public class CardPresenter extends Presenter {
 
     @Override
     public void onUnbindViewHolder(Presenter.ViewHolder viewHolder) {
-        LogHelper.d(TAG, "onUnbindViewHolder");
+        LogHelper.INSTANCE.d(TAG, "onUnbindViewHolder");
         final CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         cardViewHolder.setState(MediaItemViewHolder.STATE_NONE);
         cardViewHolder.setBadgeImage(null);
@@ -85,14 +85,14 @@ public class CardPresenter extends Presenter {
 
     @Override
     public void onViewAttachedToWindow(Presenter.ViewHolder viewHolder) {
-        LogHelper.d(TAG, "onViewAttachedToWindow");
+        LogHelper.INSTANCE.d(TAG, "onViewAttachedToWindow");
         final CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         cardViewHolder.attachView();
     }
 
     @Override
     public void onViewDetachedFromWindow(Presenter.ViewHolder viewHolder) {
-        LogHelper.d(TAG, "onViewDetachedFromWindow");
+        LogHelper.INSTANCE.d(TAG, "onViewDetachedFromWindow");
         final CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         cardViewHolder.detachView();
     }

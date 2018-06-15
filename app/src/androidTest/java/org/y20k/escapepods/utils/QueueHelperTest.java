@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.y20k.escapepods.TestSetupHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
-import org.y20k.escapepods.uamphelpers.QueueHelper;
-import org.y20k.escapepods.uampmodel.MusicProvider;
+import org.y20k.escapepods.uamp.model.MusicProvider;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
+import org.y20k.escapepods.uamp.util.QueueHelper;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -41,24 +41,24 @@ package org.y20k.escapepods;
  import com.google.android.gms.common.ConnectionResult;
  import com.google.android.gms.common.GoogleApiAvailability;
 
- import org.y20k.escapepods.playback.CastPlayback;
- import org.y20k.escapepods.playback.LocalPlayback;
- import org.y20k.escapepods.playback.Playback;
- import org.y20k.escapepods.playback.PlaybackManager;
- import org.y20k.escapepods.playback.QueueManager;
- import org.y20k.escapepods.uamphelpers.CarHelper;
- import org.y20k.escapepods.uamphelpers.LogHelper;
- import org.y20k.escapepods.uamphelpers.TvHelper;
- import org.y20k.escapepods.uamphelpers.WearHelper;
- import org.y20k.escapepods.uampmodel.MusicProvider;
+ import org.y20k.escapepods.helpers.LogHelper;
+ import org.y20k.escapepods.uamp.model.MusicProvider;
+ import org.y20k.escapepods.uamp.playback.CastPlayback;
+ import org.y20k.escapepods.uamp.playback.LocalPlayback;
+ import org.y20k.escapepods.uamp.playback.Playback;
+ import org.y20k.escapepods.uamp.playback.PlaybackManager;
+ import org.y20k.escapepods.uamp.playback.QueueManager;
+ import org.y20k.escapepods.uamp.util.CarHelper;
+ import org.y20k.escapepods.uamp.util.TvHelper;
+ import org.y20k.escapepods.uamp.util.WearHelper;
  import org.y20k.escapepods.ui.NowPlayingActivity;
 
  import java.lang.ref.WeakReference;
  import java.util.ArrayList;
  import java.util.List;
 
- import static org.y20k.escapepods.uamphelpers.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
- import static org.y20k.escapepods.uamphelpers.MediaIDHelper.MEDIA_ID_ROOT;
+ import static org.y20k.escapepods.uamp.util.MediaIDHelper.MEDIA_ID_EMPTY_ROOT;
+ import static org.y20k.escapepods.uamp.util.MediaIDHelper.MEDIA_ID_ROOT;
 
 /**
  * This class provides a MediaBrowser through a service. It exposes the media library to a browsing
@@ -119,7 +119,7 @@ package org.y20k.escapepods;
 public class MusicService extends MediaBrowserServiceCompat implements
         PlaybackManager.PlaybackServiceCallback {
 
-    private static final String TAG = LogHelper.makeLogTag(MusicService.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(MusicService.class);
 
     // Extra on MediaSession that contains the Cast device name currently connected to
     public static final String EXTRA_CONNECTED_CAST = "org.y20k.escapepods.CAST_NAME";
@@ -160,7 +160,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
     @Override
     public void onCreate() {
         super.onCreate();
-        LogHelper.d(TAG, "onCreate");
+        LogHelper.INSTANCE.d(TAG, "onCreate");
 
         mMusicProvider = new MusicProvider();
 
@@ -286,7 +286,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
      */
     @Override
     public void onDestroy() {
-        LogHelper.d(TAG, "onDestroy");
+        LogHelper.INSTANCE.d(TAG, "onDestroy");
         unregisterCarConnectionReceiver();
         // Service is being killed, so make sure we release our resources
         mPlaybackManager.handleStopRequest(null);
@@ -304,7 +304,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
     @Override
     public BrowserRoot onGetRoot(@NonNull String clientPackageName, int clientUid,
                                  Bundle rootHints) {
-        LogHelper.d(TAG, "OnGetRoot: clientPackageName=" + clientPackageName,
+        LogHelper.INSTANCE.d(TAG, "OnGetRoot: clientPackageName=" + clientPackageName,
                 "; clientUid=" + clientUid + " ; rootHints=", rootHints);
         // To ensure you are not allowing any arbitrary app to browse your app's contents, you
         // need to check the origin:
@@ -312,7 +312,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
             // If the request comes from an untrusted package, return an empty browser root.
             // If you return null, then the media browser will not be able to connect and
             // no further calls will be made to other media browsing methods.
-            LogHelper.i(TAG, "OnGetRoot: Browsing NOT ALLOWED for unknown caller. "
+            LogHelper.INSTANCE.i(TAG, "OnGetRoot: Browsing NOT ALLOWED for unknown caller. "
                     + "Returning empty browser root so all apps can use MediaController."
                     + clientPackageName);
             return new MediaBrowserServiceCompat.BrowserRoot(MEDIA_ID_EMPTY_ROOT, null);
@@ -338,7 +338,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
     @Override
     public void onLoadChildren(@NonNull final String parentMediaId,
                                @NonNull final Result<List<MediaItem>> result) {
-        LogHelper.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
+        LogHelper.INSTANCE.d(TAG, "OnLoadChildren: parentMediaId=", parentMediaId);
         if (MEDIA_ID_EMPTY_ROOT.equals(parentMediaId)) {
             result.sendResult(new ArrayList<MediaItem>());
         } else if (mMusicProvider.isInitialized()) {
@@ -402,7 +402,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
             public void onReceive(Context context, Intent intent) {
                 String connectionEvent = intent.getStringExtra(CarHelper.MEDIA_CONNECTION_STATUS);
                 mIsConnectedToCar = CarHelper.MEDIA_CONNECTED.equals(connectionEvent);
-                LogHelper.i(TAG, "Connection event to Android Auto: ", connectionEvent,
+                LogHelper.INSTANCE.i(TAG, "Connection event to Android Auto: ", connectionEvent,
                         " isConnectedToCar=", mIsConnectedToCar);
             }
         };
@@ -428,10 +428,10 @@ public class MusicService extends MediaBrowserServiceCompat implements
             MusicService service = mWeakReference.get();
             if (service != null && service.mPlaybackManager.getPlayback() != null) {
                 if (service.mPlaybackManager.getPlayback().isPlaying()) {
-                    LogHelper.d(TAG, "Ignoring delayed stop since the media player is in use.");
+                    LogHelper.INSTANCE.d(TAG, "Ignoring delayed stop since the media player is in use.");
                     return;
                 }
-                LogHelper.d(TAG, "Stopping service with delay handler.");
+                LogHelper.INSTANCE.d(TAG, "Stopping service with delay handler.");
                 service.stopSelf();
             }
         }
@@ -445,7 +445,7 @@ public class MusicService extends MediaBrowserServiceCompat implements
 
         @Override
         public void onSessionEnded(CastSession session, int error) {
-            LogHelper.d(TAG, "onSessionEnded");
+            LogHelper.INSTANCE.d(TAG, "onSessionEnded");
             mSessionExtras.remove(EXTRA_CONNECTED_CAST);
             mSession.setExtras(mSessionExtras);
             Playback playback = new LocalPlayback(MusicService.this, mMusicProvider);

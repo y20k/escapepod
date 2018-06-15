@@ -18,7 +18,7 @@ package org.y20k.escapepods.utils;
 
 import android.support.v4.media.MediaMetadataCompat;
 
-import org.y20k.escapepods.uampmodel.MusicProviderSource;
+import org.y20k.escapepods.uamp.model.MusicProviderSource;
 
 import java.util.ArrayList;
 import java.util.Iterator;

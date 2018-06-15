@@ -41,7 +41,7 @@ import android.widget.TextView;
 import org.y20k.escapepods.AlbumArtCache;
 import org.y20k.escapepods.MusicService;
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -56,7 +56,7 @@ import static android.view.View.VISIBLE;
  * depicting the album art. The activity also has controls to seek/pause/play the audio.
  */
 public class FullScreenPlayerActivity extends ActionBarCastActivity {
-    private static final String TAG = LogHelper.makeLogTag(FullScreenPlayerActivity.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(FullScreenPlayerActivity.class);
     private static final long PROGRESS_UPDATE_INTERNAL = 1000;
     private static final long PROGRESS_UPDATE_INITIAL_INTERVAL = 100;
 
@@ -95,7 +95,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
     private final MediaControllerCompat.Callback mCallback = new MediaControllerCompat.Callback() {
         @Override
         public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-            LogHelper.d(TAG, "onPlaybackstate changed", state);
+            LogHelper.INSTANCE.d(TAG, "onPlaybackstate changed", state);
             updatePlaybackState(state);
         }
 
@@ -112,11 +112,11 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
             new MediaBrowserCompat.ConnectionCallback() {
         @Override
         public void onConnected() {
-            LogHelper.d(TAG, "onConnected");
+            LogHelper.INSTANCE.d(TAG, "onConnected");
             try {
                 connectToSession(mMediaBrowser.getSessionToken());
             } catch (RemoteException e) {
-                LogHelper.e(TAG, e, "could not connect media controller");
+                LogHelper.INSTANCE.e(TAG, e, "could not connect media controller");
             }
         }
     };
@@ -180,7 +180,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
                             scheduleSeekbarUpdate();
                             break;
                         default:
-                            LogHelper.d(TAG, "onClick with state ", state.getState());
+                            LogHelper.INSTANCE.d(TAG, "onClick with state ", state.getState());
                     }
                 }
             }
@@ -326,7 +326,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         if (description == null) {
             return;
         }
-        LogHelper.d(TAG, "updateMediaDescription called ");
+        LogHelper.INSTANCE.d(TAG, "updateMediaDescription called ");
         mLine1.setText(description.getTitle());
         mLine2.setText(description.getSubtitle());
         fetchImageAsync(description);
@@ -336,7 +336,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
         if (metadata == null) {
             return;
         }
-        LogHelper.d(TAG, "updateDuration called ");
+        LogHelper.INSTANCE.d(TAG, "updateDuration called ");
         int duration = (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
         mSeekbar.setMax(duration);
         mEnd.setText(DateUtils.formatElapsedTime(duration/1000));
@@ -384,7 +384,7 @@ public class FullScreenPlayerActivity extends ActionBarCastActivity {
                 stopSeekbarUpdate();
                 break;
             default:
-                LogHelper.d(TAG, "Unhandled state ", state.getState());
+                LogHelper.INSTANCE.d(TAG, "Unhandled state ", state.getState());
         }
 
         mSkipNext.setVisibility((state.getActions() & PlaybackStateCompat.ACTION_SKIP_TO_NEXT) == 0

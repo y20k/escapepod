@@ -35,8 +35,8 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.view.View;
 
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.QueueHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.QueueHelper;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -70,7 +70,7 @@ import static android.support.v4.media.MediaBrowserCompat.MediaItem;
  */
 public class TvBrowseFragment extends BrowseSupportFragment {
 
-    private static final String TAG = LogHelper.makeLogTag(TvBrowseFragment.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(TvBrowseFragment.class);
 
     private ArrayObjectAdapter mRowsAdapter;
     private ArrayObjectAdapter mListRowAdapter;
@@ -155,7 +155,7 @@ public class TvBrowseFragment extends BrowseSupportFragment {
                             subscribeToMediaId(item.getMediaId(),
                                     new RowSubscriptionCallback(listRowAdapter));
                         } else {
-                            LogHelper.e(TAG, "Item should be playable or browsable.");
+                            LogHelper.INSTANCE.e(TAG, "Item should be playable or browsable.");
                         }
                     }
 
@@ -183,7 +183,7 @@ public class TvBrowseFragment extends BrowseSupportFragment {
 
                 @Override
                 public void onError(@NonNull String id) {
-                    LogHelper.e(TAG, "SubscriptionCallback subscription onError, id=" + id);
+                    LogHelper.INSTANCE.e(TAG, "SubscriptionCallback subscription onError, id=" + id);
                 }
             };
 
@@ -210,14 +210,14 @@ public class TvBrowseFragment extends BrowseSupportFragment {
 
         @Override
         public void onError(@NonNull String id) {
-            LogHelper.e(TAG, "RowSubscriptionCallback subscription onError, id=", id);
+            LogHelper.INSTANCE.e(TAG, "RowSubscriptionCallback subscription onError, id=", id);
         }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LogHelper.d(TAG, "onActivityCreated");
+        LogHelper.INSTANCE.d(TAG, "onActivityCreated");
 
         mSubscribedMediaIds = new HashSet<>();
 
@@ -241,7 +241,7 @@ public class TvBrowseFragment extends BrowseSupportFragment {
                 if (clickedItem instanceof MediaBrowserCompat.MediaItem) {
                     MediaItem item = (MediaItem) clickedItem;
                     if (item.isPlayable()) {
-                        LogHelper.w(TAG, "Ignoring click on PLAYABLE MediaItem in" +
+                        LogHelper.INSTANCE.w(TAG, "Ignoring click on PLAYABLE MediaItem in" +
                                 "TvBrowseFragment. mediaId=", item.getMediaId());
                         return;
                     }
@@ -269,7 +269,7 @@ public class TvBrowseFragment extends BrowseSupportFragment {
         setOnSearchClickedListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LogHelper.d(TAG, "In-app search");
+                LogHelper.INSTANCE.d(TAG, "In-app search");
                 // TODO: implement in-app search
                 Intent intent = new Intent(getActivity(), TvBrowseActivity.class);
                 startActivity(intent);
@@ -283,7 +283,7 @@ public class TvBrowseFragment extends BrowseSupportFragment {
         try {
             mMediaFragmentListener = (MediaFragmentListener) activity;
         } catch (ClassCastException ex) {
-            LogHelper.e(TAG, "TVBrowseFragment can only be attached to an activity that " +
+            LogHelper.INSTANCE.e(TAG, "TVBrowseFragment can only be attached to an activity that " +
                     "implements MediaFragmentListener", ex);
         }
     }
@@ -310,7 +310,7 @@ public class TvBrowseFragment extends BrowseSupportFragment {
     }
 
     public void initializeWithMediaId(String mediaId) {
-        LogHelper.d(TAG, "subscribeToData");
+        LogHelper.INSTANCE.d(TAG, "subscribeToData");
         // fetch browsing information to fill the listview:
         mMediaBrowser = mMediaFragmentListener.getMediaBrowser();
 

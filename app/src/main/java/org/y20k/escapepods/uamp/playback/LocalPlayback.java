@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.playback;
+package org.y20k.escapepods.uamp.playback;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -47,10 +47,10 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import org.y20k.escapepods.MusicService;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
-import org.y20k.escapepods.uampmodel.MusicProvider;
-import org.y20k.escapepods.uampmodel.MusicProviderSource;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.model.MusicProvider;
+import org.y20k.escapepods.uamp.model.MusicProviderSource;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
 
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
 import static com.google.android.exoplayer2.C.CONTENT_TYPE_MUSIC;
@@ -62,7 +62,7 @@ import static com.google.android.exoplayer2.C.USAGE_MEDIA;
  */
 public final class LocalPlayback implements Playback {
 
-    private static final String TAG = LogHelper.makeLogTag(LocalPlayback.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(LocalPlayback.class);
 
     // The volume we set the media player to when we lose audio focus, but are
     // allowed to reduce the volume instead of stopping playback.
@@ -101,7 +101,7 @@ public final class LocalPlayback implements Playback {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())) {
-                        LogHelper.d(TAG, "Headphones disconnected.");
+                        LogHelper.INSTANCE.d(TAG, "Headphones disconnected.");
                         if (isPlaying()) {
                             Intent i = new Intent(context, MusicService.class);
                             i.setAction(MusicService.ACTION_CMD);
@@ -266,7 +266,7 @@ public final class LocalPlayback implements Playback {
 
     @Override
     public void seekTo(long position) {
-        LogHelper.d(TAG, "seekTo called with ", position);
+        LogHelper.INSTANCE.d(TAG, "seekTo called with ", position);
         if (mExoPlayer != null) {
             registerAudioNoisyReceiver();
             mExoPlayer.seekTo(position);
@@ -289,7 +289,7 @@ public final class LocalPlayback implements Playback {
     }
 
     private void tryToGetAudioFocus() {
-        LogHelper.d(TAG, "tryToGetAudioFocus");
+        LogHelper.INSTANCE.d(TAG, "tryToGetAudioFocus");
         int result =
                 mAudioManager.requestAudioFocus(
                         mOnAudioFocusChangeListener,
@@ -303,7 +303,7 @@ public final class LocalPlayback implements Playback {
     }
 
     private void giveUpAudioFocus() {
-        LogHelper.d(TAG, "giveUpAudioFocus");
+        LogHelper.INSTANCE.d(TAG, "giveUpAudioFocus");
         if (mAudioManager.abandonAudioFocus(mOnAudioFocusChangeListener)
                 == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             mCurrentAudioFocusState = AUDIO_NO_FOCUS_NO_DUCK;
@@ -318,7 +318,7 @@ public final class LocalPlayback implements Playback {
      * settings.
      */
     private void configurePlayerState() {
-        LogHelper.d(TAG, "configurePlayerState. mCurrentAudioFocusState=", mCurrentAudioFocusState);
+        LogHelper.INSTANCE.d(TAG, "configurePlayerState. mCurrentAudioFocusState=", mCurrentAudioFocusState);
         if (mCurrentAudioFocusState == AUDIO_NO_FOCUS_NO_DUCK) {
             // We don't have audio focus and can't duck, so we have to pause
             pause();
@@ -344,7 +344,7 @@ public final class LocalPlayback implements Playback {
             new AudioManager.OnAudioFocusChangeListener() {
                 @Override
                 public void onAudioFocusChange(int focusChange) {
-                    LogHelper.d(TAG, "onAudioFocusChange. focusChange=", focusChange);
+                    LogHelper.INSTANCE.d(TAG, "onAudioFocusChange. focusChange=", focusChange);
                     switch (focusChange) {
                         case AudioManager.AUDIOFOCUS_GAIN:
                             mCurrentAudioFocusState = AUDIO_FOCUSED;
@@ -379,7 +379,7 @@ public final class LocalPlayback implements Playback {
      * @param releasePlayer Indicates whether the player should also be released
      */
     private void releaseResources(boolean releasePlayer) {
-        LogHelper.d(TAG, "releaseResources. releasePlayer=", releasePlayer);
+        LogHelper.INSTANCE.d(TAG, "releaseResources. releasePlayer=", releasePlayer);
 
         // Stops and releases player (if requested and available).
         if (releasePlayer && mExoPlayer != null) {
@@ -462,7 +462,7 @@ public final class LocalPlayback implements Playback {
                     what = "Unknown: " + error;
             }
 
-            LogHelper.e(TAG, "ExoPlayer error: what=" + what);
+            LogHelper.INSTANCE.e(TAG, "ExoPlayer error: what=" + what);
             if (mCallback != null) {
                 mCallback.onError("ExoPlayer error " + what);
             }

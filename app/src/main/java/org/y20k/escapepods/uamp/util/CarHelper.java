@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.uamphelpers;
+package org.y20k.escapepods.uamp.util;
 
 import android.os.Bundle;
 
+import org.y20k.escapepods.helpers.LogHelper;
+
 public class CarHelper {
-    private static final String TAG = LogHelper.makeLogTag(CarHelper.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(CarHelper.class);
 
     private static final String AUTO_APP_PACKAGE_NAME = "com.google.android.projection.gearhead";
 

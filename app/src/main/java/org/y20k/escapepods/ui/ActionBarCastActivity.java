@@ -43,7 +43,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.y20k.escapepods.R;
 import org.y20k.escapepods.helpers.DialogAdd;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 /**
  * Abstract activity with toolbar, navigation drawer and cast support. Needs to be extended by
@@ -57,7 +57,7 @@ import org.y20k.escapepods.uamphelpers.LogHelper;
  */
 public abstract class ActionBarCastActivity extends AppCompatActivity {
 
-    private static final String TAG = LogHelper.makeLogTag(ActionBarCastActivity.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(ActionBarCastActivity.class);
 
     private static final int DELAY_MILLIS = 1000;
 
@@ -79,7 +79,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (mMediaRouteMenuItem.isVisible()) {
-                            LogHelper.d(TAG, "Cast Icon is visible");
+                            LogHelper.INSTANCE.d(TAG, "Cast Icon is visible");
                             showFtu();
                         }
                     }
@@ -143,7 +143,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelper.d(TAG, "Activity onCreate");
+        LogHelper.INSTANCE.d(TAG, "Activity onCreate");
 
         int playServicesAvailable =
                 GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);

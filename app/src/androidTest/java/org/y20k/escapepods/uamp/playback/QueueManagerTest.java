@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.playback;
+package org.y20k.escapepods.uamp.playback;
 
 import android.support.annotation.NonNull;
 import android.support.test.runner.AndroidJUnit4;
@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.y20k.escapepods.TestSetupHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
-import org.y20k.escapepods.uamphelpers.QueueHelper;
-import org.y20k.escapepods.uampmodel.MusicProvider;
+import org.y20k.escapepods.uamp.model.MusicProvider;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
+import org.y20k.escapepods.uamp.util.QueueHelper;
 import org.y20k.escapepods.utils.SimpleMusicProviderSource;
 
 import java.util.Iterator;

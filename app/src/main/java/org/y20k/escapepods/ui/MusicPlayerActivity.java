@@ -26,7 +26,7 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.text.TextUtils;
 
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 /**
  * Main activity for the music player.
@@ -37,7 +37,7 @@ import org.y20k.escapepods.uamphelpers.LogHelper;
 public class MusicPlayerActivity extends BaseActivity
         implements MediaBrowserFragment.MediaFragmentListener {
 
-    private static final String TAG = LogHelper.makeLogTag(MusicPlayerActivity.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(MusicPlayerActivity.class);
     private static final String SAVED_MEDIA_ID="org.y20k.escapepods.MEDIA_ID";
     private static final String FRAGMENT_TAG = "uamp_list_container";
 
@@ -57,7 +57,7 @@ public class MusicPlayerActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelper.d(TAG, "Activity onCreate");
+        LogHelper.INSTANCE.d(TAG, "Activity onCreate");
 
         setContentView(R.layout.activity_player);
 
@@ -81,21 +81,21 @@ public class MusicPlayerActivity extends BaseActivity
 
     @Override
     public void onMediaItemSelected(MediaBrowserCompat.MediaItem item) {
-        LogHelper.d(TAG, "onMediaItemSelected, mediaId=" + item.getMediaId());
+        LogHelper.INSTANCE.d(TAG, "onMediaItemSelected, mediaId=" + item.getMediaId());
         if (item.isPlayable()) {
             MediaControllerCompat.getMediaController(MusicPlayerActivity.this).getTransportControls()
                     .playFromMediaId(item.getMediaId(), null);
         } else if (item.isBrowsable()) {
             navigateToBrowser(item.getMediaId());
         } else {
-            LogHelper.w(TAG, "Ignoring MediaItem that is neither browsable nor playable: ",
+            LogHelper.INSTANCE.w(TAG, "Ignoring MediaItem that is neither browsable nor playable: ",
                     "mediaId=", item.getMediaId());
         }
     }
 
     @Override
     public void setToolbarTitle(CharSequence title) {
-        LogHelper.d(TAG, "Setting toolbar title to ", title);
+        LogHelper.INSTANCE.d(TAG, "Setting toolbar title to ", title);
         if (title == null) {
             title = getString(R.string.app_name);
         }
@@ -104,7 +104,7 @@ public class MusicPlayerActivity extends BaseActivity
 
     @Override
     protected void onNewIntent(Intent intent) {
-        LogHelper.d(TAG, "onNewIntent, intent=" + intent);
+        LogHelper.INSTANCE.d(TAG, "onNewIntent, intent=" + intent);
         initializeFromParams(null, intent);
         startFullScreenActivityIfNeeded(intent);
     }
@@ -129,7 +129,7 @@ public class MusicPlayerActivity extends BaseActivity
         if (intent.getAction() != null
             && intent.getAction().equals(MediaStore.INTENT_ACTION_MEDIA_PLAY_FROM_SEARCH)) {
             mVoiceSearchParams = intent.getExtras();
-            LogHelper.d(TAG, "Starting from voice search query=",
+            LogHelper.INSTANCE.d(TAG, "Starting from voice search query=",
                 mVoiceSearchParams.getString(SearchManager.QUERY));
         } else {
             if (savedInstanceState != null) {
@@ -141,7 +141,7 @@ public class MusicPlayerActivity extends BaseActivity
     }
 
     private void navigateToBrowser(String mediaId) {
-        LogHelper.d(TAG, "navigateToBrowser, mediaId=" + mediaId);
+        LogHelper.INSTANCE.d(TAG, "navigateToBrowser, mediaId=" + mediaId);
         MediaBrowserFragment fragment = getBrowseFragment();
 
         if (fragment == null || !TextUtils.equals(fragment.getMediaId(), mediaId)) {

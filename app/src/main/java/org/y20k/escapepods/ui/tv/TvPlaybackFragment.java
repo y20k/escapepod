@@ -48,8 +48,8 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
 import org.y20k.escapepods.AlbumArtCache;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.QueueHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.QueueHelper;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ import java.util.List;
  * Show details of the currently playing song, along with playback controls and the playing queue.
  */
 public class TvPlaybackFragment extends PlaybackSupportFragment {
-    private static final String TAG = LogHelper.makeLogTag(TvPlaybackFragment.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(TvPlaybackFragment.class);
 
     private static final int BACKGROUND_TYPE = PlaybackSupportFragment.BG_DARK;
     private static final int DEFAULT_UPDATE_PERIOD = 1000;
@@ -86,7 +86,7 @@ public class TvPlaybackFragment extends PlaybackSupportFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelper.i(TAG, "onCreate");
+        LogHelper.INSTANCE.i(TAG, "onCreate");
 
         mBackgroundManager = BackgroundManager.getInstance(getActivity());
         mBackgroundManager.attach(getActivity().getWindow());
@@ -171,7 +171,7 @@ public class TvPlaybackFragment extends PlaybackSupportFragment {
             // if the playlist queue hasn't changed, we don't need to update it
             return;
         }
-        LogHelper.d(TAG, "Updating playlist queue ('now playing')");
+        LogHelper.INSTANCE.d(TAG, "Updating playlist queue ('now playing')");
         mPlaylistQueue = playlistQueue;
         if (playlistQueue == null || playlistQueue.isEmpty()) {
             // Remove the playlist row if no items are in the playlist
@@ -319,7 +319,7 @@ public class TvPlaybackFragment extends PlaybackSupportFragment {
                                   RowPresenter.ViewHolder rowViewHolder, Row row) {
 
             if (clickedItem instanceof MediaSessionCompat.QueueItem) {
-                LogHelper.d(TAG, "item: ", clickedItem.toString());
+                LogHelper.INSTANCE.d(TAG, "item: ", clickedItem.toString());
 
                 MediaControllerCompat controller = MediaControllerCompat.getMediaController(getActivity());
                 MediaSessionCompat.QueueItem item = (MediaSessionCompat.QueueItem) clickedItem;

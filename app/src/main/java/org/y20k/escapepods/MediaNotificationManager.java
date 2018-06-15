@@ -39,8 +39,8 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.ResourceHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.ResourceHelper;
 import org.y20k.escapepods.ui.MusicPlayerActivity;
 
 /**
@@ -49,7 +49,7 @@ import org.y20k.escapepods.ui.MusicPlayerActivity;
  * won't be killed during playback.
  */
 public class MediaNotificationManager extends BroadcastReceiver {
-    private static final String TAG = LogHelper.makeLogTag(MediaNotificationManager.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(MediaNotificationManager.class);
 
     private static final String CHANNEL_ID = "org.y20k.escapepods.MUSIC_CHANNEL_ID";
 
@@ -163,7 +163,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
-        LogHelper.d(TAG, "Received intent with action " + action);
+        LogHelper.INSTANCE.d(TAG, "Received intent with action " + action);
         switch (action) {
             case ACTION_PAUSE:
                 mTransportControls.pause();
@@ -184,7 +184,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 mService.startService(i);
                 break;
             default:
-                LogHelper.w(TAG, "Unknown intent ignored. Action=", action);
+                LogHelper.INSTANCE.w(TAG, "Unknown intent ignored. Action=", action);
         }
     }
 
@@ -226,7 +226,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
         @Override
         public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
             mPlaybackState = state;
-            LogHelper.d(TAG, "Received new playback state", state);
+            LogHelper.INSTANCE.d(TAG, "Received new playback state", state);
             if (state.getState() == PlaybackStateCompat.STATE_STOPPED ||
                     state.getState() == PlaybackStateCompat.STATE_NONE) {
                 stopNotification();
@@ -241,7 +241,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             mMetadata = metadata;
-            LogHelper.d(TAG, "Received new metadata ", metadata);
+            LogHelper.INSTANCE.d(TAG, "Received new metadata ", metadata);
             Notification notification = createNotification();
             if (notification != null) {
                 mNotificationManager.notify(NOTIFICATION_ID, notification);
@@ -251,17 +251,17 @@ public class MediaNotificationManager extends BroadcastReceiver {
         @Override
         public void onSessionDestroyed() {
             super.onSessionDestroyed();
-            LogHelper.d(TAG, "Session was destroyed, resetting to the new session token");
+            LogHelper.INSTANCE.d(TAG, "Session was destroyed, resetting to the new session token");
             try {
                 updateSessionToken();
             } catch (RemoteException e) {
-                LogHelper.e(TAG, e, "could not connect media controller");
+                LogHelper.INSTANCE.e(TAG, e, "could not connect media controller");
             }
         }
     };
 
     private Notification createNotification() {
-        LogHelper.d(TAG, "updateNotificationMetadata. mMetadata=" + mMetadata);
+        LogHelper.INSTANCE.d(TAG, "updateNotificationMetadata. mMetadata=" + mMetadata);
         if (mMetadata == null || mPlaybackState == null) {
             return null;
         }
@@ -330,7 +330,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
     }
 
     private int addActions(final NotificationCompat.Builder notificationBuilder) {
-        LogHelper.d(TAG, "updatePlayPauseAction");
+        LogHelper.INSTANCE.d(TAG, "updatePlayPauseAction");
 
         int playPauseButtonPosition = 0;
         // If skip to previous action is enabled
@@ -370,9 +370,9 @@ public class MediaNotificationManager extends BroadcastReceiver {
     }
 
     private void setNotificationPlaybackState(NotificationCompat.Builder builder) {
-        LogHelper.d(TAG, "updateNotificationPlaybackState. mPlaybackState=" + mPlaybackState);
+        LogHelper.INSTANCE.d(TAG, "updateNotificationPlaybackState. mPlaybackState=" + mPlaybackState);
         if (mPlaybackState == null || !mStarted) {
-            LogHelper.d(TAG, "updateNotificationPlaybackState. cancelling notification!");
+            LogHelper.INSTANCE.d(TAG, "updateNotificationPlaybackState. cancelling notification!");
             mService.stopForeground(true);
             return;
         }
@@ -389,7 +389,7 @@ public class MediaNotificationManager extends BroadcastReceiver {
                 if (mMetadata != null && mMetadata.getDescription().getIconUri() != null &&
                         mMetadata.getDescription().getIconUri().toString().equals(artUrl)) {
                     // If the media is still the same, update the notification:
-                    LogHelper.d(TAG, "fetchBitmapFromURLAsync: set bitmap to ", artUrl);
+                    LogHelper.INSTANCE.d(TAG, "fetchBitmapFromURLAsync: set bitmap to ", artUrl);
                     builder.setLargeIcon(bitmap);
                     addActions(builder);
                     mNotificationManager.notify(NOTIFICATION_ID, builder.build());

@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.uamphelpers;
+package org.y20k.escapepods.uamp.util;
 
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.res.Configuration;
 
+import org.y20k.escapepods.helpers.LogHelper;
+
 public class TvHelper {
-    private static final String TAG = LogHelper.makeLogTag(TvHelper.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(TvHelper.class);
 
     /**
      * Returns true when running Android TV
@@ -31,10 +33,10 @@ public class TvHelper {
     public static boolean isTvUiMode(Context c) {
         UiModeManager uiModeManager = (UiModeManager) c.getSystemService(Context.UI_MODE_SERVICE);
         if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
-            LogHelper.d(TAG, "Running in TV mode");
+            LogHelper.INSTANCE.d(TAG, "Running in TV mode");
             return true;
         } else {
-            LogHelper.d(TAG, "Running on a non-TV mode");
+            LogHelper.INSTANCE.d(TAG, "Running on a non-TV mode");
             return false;
         }
     }

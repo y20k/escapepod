@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.y20k.escapepods.uampmodel;
+package org.y20k.escapepods.uamp.model;
 
 import android.support.v4.media.MediaMetadataCompat;
 import android.text.TextUtils;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.y20k.escapepods.uampmodel;
+package org.y20k.escapepods.uamp.model;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -25,8 +25,8 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,9 +37,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static org.y20k.escapepods.uamphelpers.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
-import static org.y20k.escapepods.uamphelpers.MediaIDHelper.MEDIA_ID_ROOT;
-import static org.y20k.escapepods.uamphelpers.MediaIDHelper.createMediaID;
+import static org.y20k.escapepods.uamp.util.MediaIDHelper.MEDIA_ID_MUSICS_BY_GENRE;
+import static org.y20k.escapepods.uamp.util.MediaIDHelper.MEDIA_ID_ROOT;
+import static org.y20k.escapepods.uamp.util.MediaIDHelper.createMediaID;
 
 /**
  * Simple data provider for music tracks. The actual metadata source is delegated to a
@@ -47,7 +47,7 @@ import static org.y20k.escapepods.uamphelpers.MediaIDHelper.createMediaID;
  */
 public class MusicProvider {
 
-    private static final String TAG = LogHelper.makeLogTag(MusicProvider.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(MusicProvider.class);
 
     private MusicProviderSource mSource;
 
@@ -221,7 +221,7 @@ public class MusicProvider {
      * for future reference, keying tracks by musicId and grouping by genre.
      */
     public void retrieveMediaAsync(final Callback callback) {
-        LogHelper.d(TAG, "retrieveMediaAsync called");
+        LogHelper.INSTANCE.d(TAG, "retrieveMediaAsync called");
         if (mCurrentState == State.INITIALIZED) {
             if (callback != null) {
                 // Nothing to do, execute callback immediately
@@ -308,7 +308,7 @@ public class MusicProvider {
             }
 
         } else {
-            LogHelper.w(TAG, "Skipping unmatched mediaId: ", mediaId);
+            LogHelper.INSTANCE.w(TAG, "Skipping unmatched mediaId: ", mediaId);
         }
         return mediaItems;
     }

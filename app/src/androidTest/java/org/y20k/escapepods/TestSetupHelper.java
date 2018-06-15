@@ -16,8 +16,8 @@
 
 package org.y20k.escapepods;
 
-import org.y20k.escapepods.uampmodel.MusicProvider;
-import org.y20k.escapepods.uampmodel.MusicProviderSource;
+import org.y20k.escapepods.uamp.model.MusicProvider;
+import org.y20k.escapepods.uamp.model.MusicProviderSource;
 
 import java.util.concurrent.CountDownLatch;
 

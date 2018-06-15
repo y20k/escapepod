@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.playback;
+package org.y20k.escapepods.uamp.playback;
 
 import android.content.Context;
 import android.net.Uri;
@@ -31,10 +31,10 @@ import com.google.android.gms.common.images.WebImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
-import org.y20k.escapepods.uampmodel.MusicProvider;
-import org.y20k.escapepods.uampmodel.MusicProviderSource;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.model.MusicProvider;
+import org.y20k.escapepods.uamp.model.MusicProviderSource;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
 
 import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
 
@@ -43,7 +43,7 @@ import static android.support.v4.media.session.MediaSessionCompat.QueueItem;
  */
 public class CastPlayback implements Playback {
 
-    private static final String TAG = LogHelper.makeLogTag(CastPlayback.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(CastPlayback.class);
 
     private static final String MIME_TYPE_AUDIO_MPEG = "audio/mpeg";
     private static final String ITEM_ID = "itemId";
@@ -111,7 +111,7 @@ public class CastPlayback implements Playback {
                 mCallback.onPlaybackStatusChanged(mPlaybackState);
             }
         } catch (JSONException e) {
-            LogHelper.e(TAG, "Exception loading media ", e, null);
+            LogHelper.INSTANCE.e(TAG, "Exception loading media ", e, null);
             if (mCallback != null) {
                 mCallback.onError(e.getMessage());
             }
@@ -128,7 +128,7 @@ public class CastPlayback implements Playback {
                 loadMedia(mCurrentMediaId, false);
             }
         } catch (JSONException e) {
-            LogHelper.e(TAG, e, "Exception pausing cast playback");
+            LogHelper.INSTANCE.e(TAG, e, "Exception pausing cast playback");
             if (mCallback != null) {
                 mCallback.onError(e.getMessage());
             }
@@ -150,7 +150,7 @@ public class CastPlayback implements Playback {
                 loadMedia(mCurrentMediaId, false);
             }
         } catch (JSONException e) {
-            LogHelper.e(TAG, e, "Exception pausing cast playback");
+            LogHelper.INSTANCE.e(TAG, e, "Exception pausing cast playback");
             if (mCallback != null) {
                 mCallback.onError(e.getMessage());
             }
@@ -268,7 +268,7 @@ public class CastPlayback implements Playback {
                 }
             }
         } catch (JSONException e) {
-            LogHelper.e(TAG, e, "Exception processing update metadata");
+            LogHelper.INSTANCE.e(TAG, e, "Exception processing update metadata");
         }
 
     }
@@ -277,7 +277,7 @@ public class CastPlayback implements Playback {
         int status = mRemoteMediaClient.getPlayerState();
         int idleReason = mRemoteMediaClient.getIdleReason();
 
-        LogHelper.d(TAG, "onRemoteMediaPlayerStatusUpdated ", status);
+        LogHelper.INSTANCE.d(TAG, "onRemoteMediaPlayerStatusUpdated ", status);
 
         // Convert the remote playback states to media playback states.
         switch (status) {
@@ -309,7 +309,7 @@ public class CastPlayback implements Playback {
                 }
                 break;
             default: // case unknown
-                LogHelper.d(TAG, "State default : ", status);
+                LogHelper.INSTANCE.d(TAG, "State default : ", status);
                 break;
         }
     }
@@ -318,13 +318,13 @@ public class CastPlayback implements Playback {
 
         @Override
         public void onMetadataUpdated() {
-            LogHelper.d(TAG, "RemoteMediaClient.onMetadataUpdated");
+            LogHelper.INSTANCE.d(TAG, "RemoteMediaClient.onMetadataUpdated");
             setMetadataFromRemote();
         }
 
         @Override
         public void onStatusUpdated() {
-            LogHelper.d(TAG, "RemoteMediaClient.onStatusUpdated");
+            LogHelper.INSTANCE.d(TAG, "RemoteMediaClient.onStatusUpdated");
             updatePlaybackState();
         }
 

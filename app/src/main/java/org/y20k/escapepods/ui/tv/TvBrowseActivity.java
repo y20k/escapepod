@@ -26,7 +26,7 @@ import android.support.v4.media.session.MediaControllerCompat;
 
 import org.y20k.escapepods.MusicService;
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 /**
  * Main activity for the Android TV user interface.
@@ -34,7 +34,7 @@ import org.y20k.escapepods.uamphelpers.LogHelper;
 public class TvBrowseActivity extends FragmentActivity
         implements TvBrowseFragment.MediaFragmentListener {
 
-    private static final String TAG = LogHelper.makeLogTag(TvBrowseActivity.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(TvBrowseActivity.class);
     public static final String SAVED_MEDIA_ID="org.y20k.escapepods.MEDIA_ID";
     public static final String BROWSE_TITLE = "org.y20k.escapepods.BROWSE_TITLE";
 
@@ -46,7 +46,7 @@ public class TvBrowseActivity extends FragmentActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelper.d(TAG, "Activity onCreate");
+        LogHelper.INSTANCE.d(TAG, "Activity onCreate");
 
         setContentView(R.layout.tv_activity_player);
 
@@ -67,14 +67,14 @@ public class TvBrowseActivity extends FragmentActivity
     @Override
     protected void onStart() {
         super.onStart();
-        LogHelper.d(TAG, "Activity onStart");
+        LogHelper.INSTANCE.d(TAG, "Activity onStart");
         mMediaBrowser.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LogHelper.d(TAG, "Activity onStop");
+        LogHelper.INSTANCE.d(TAG, "Activity onStop");
         if (mMediaBrowser != null) {
             mMediaBrowser.disconnect();
         }
@@ -87,7 +87,7 @@ public class TvBrowseActivity extends FragmentActivity
     }
 
     protected void navigateToBrowser(String mediaId) {
-        LogHelper.d(TAG, "navigateToBrowser, mediaId=" + mediaId);
+        LogHelper.INSTANCE.d(TAG, "navigateToBrowser, mediaId=" + mediaId);
         TvBrowseFragment fragment =
                 (TvBrowseFragment) getSupportFragmentManager().findFragmentById(R.id.main_browse_fragment);
         fragment.initializeWithMediaId(mediaId);
@@ -107,7 +107,7 @@ public class TvBrowseActivity extends FragmentActivity
             new MediaBrowserCompat.ConnectionCallback() {
                 @Override
                 public void onConnected() {
-                    LogHelper.d(TAG, "onConnected: session token ",
+                    LogHelper.INSTANCE.d(TAG, "onConnected: session token ",
                             mMediaBrowser.getSessionToken());
                     try {
                         MediaControllerCompat mediaController = new MediaControllerCompat(
@@ -115,18 +115,18 @@ public class TvBrowseActivity extends FragmentActivity
                         MediaControllerCompat.setMediaController(TvBrowseActivity.this, mediaController);
                         navigateToBrowser(mMediaId);
                     } catch (RemoteException e) {
-                        LogHelper.e(TAG, e, "could not connect media controller");
+                        LogHelper.INSTANCE.e(TAG, e, "could not connect media controller");
                     }
                 }
 
                 @Override
                 public void onConnectionFailed() {
-                    LogHelper.d(TAG, "onConnectionFailed");
+                    LogHelper.INSTANCE.d(TAG, "onConnectionFailed");
                 }
 
                 @Override
                 public void onConnectionSuspended() {
-                    LogHelper.d(TAG, "onConnectionSuspended");
+                    LogHelper.INSTANCE.d(TAG, "onConnectionSuspended");
                     MediaControllerCompat.setMediaController(TvBrowseActivity.this, null);
 
                 }

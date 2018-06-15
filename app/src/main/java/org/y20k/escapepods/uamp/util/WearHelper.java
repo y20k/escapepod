@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.uamphelpers;
+package org.y20k.escapepods.uamp.util;
 
 import android.os.Bundle;
 import android.support.wearable.media.MediaControlConstants;

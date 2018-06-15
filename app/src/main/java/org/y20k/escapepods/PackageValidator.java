@@ -23,7 +23,7 @@ import android.os.Process;
 import android.util.Base64;
 
 import org.xmlpull.v1.XmlPullParserException;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.Map;
  * paste into allowed_media_browser_callers.xml. Spaces and newlines are ignored.
  */
 public class PackageValidator {
-    private static final String TAG = LogHelper.makeLogTag(PackageValidator.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(PackageValidator.class);
 
     /**
      * Map allowed callers' certificate keys to the expected caller information.
@@ -76,7 +76,7 @@ public class PackageValidator {
                         infos = new ArrayList<>();
                         validCertificates.put(certificate, infos);
                     }
-                    LogHelper.v(TAG, "Adding allowed caller: ", info.name,
+                    LogHelper.INSTANCE.v(TAG, "Adding allowed caller: ", info.name,
                         " package=", info.packageName, " release=", info.release,
                         " certificate=", certificate);
                     infos.add(info);
@@ -84,7 +84,7 @@ public class PackageValidator {
                 eventType = parser.next();
             }
         } catch (XmlPullParserException | IOException e) {
-            LogHelper.e(TAG, e, "Could not read allowed callers from XML.");
+            LogHelper.INSTANCE.e(TAG, e, "Could not read allowed callers from XML.");
         }
         return validCertificates;
     }
@@ -108,7 +108,7 @@ public class PackageValidator {
             return false;
         }
         if (packageInfo.signatures.length != 1) {
-            LogHelper.w(TAG, "Caller does not have exactly one signature certificate!");
+            LogHelper.INSTANCE.w(TAG, "Caller does not have exactly one signature certificate!");
             return false;
         }
         String signature = Base64.encodeToString(
@@ -117,10 +117,10 @@ public class PackageValidator {
         // Test for known signatures:
         ArrayList<CallerInfo> validCallers = mValidCertificates.get(signature);
         if (validCallers == null) {
-            LogHelper.v(TAG, "Signature for caller ", callingPackage, " is not valid: \n"
+            LogHelper.INSTANCE.v(TAG, "Signature for caller ", callingPackage, " is not valid: \n"
                 , signature);
             if (mValidCertificates.isEmpty()) {
-                LogHelper.w(TAG, "The list of valid certificates is empty. Either your file ",
+                LogHelper.INSTANCE.w(TAG, "The list of valid certificates is empty. Either your file ",
                         "res/xml/allowed_media_browser_callers.xml is empty or there was an error ",
                         "while reading it. Check previous log messages.");
             }
@@ -131,14 +131,14 @@ public class PackageValidator {
         StringBuffer expectedPackages = new StringBuffer();
         for (CallerInfo info: validCallers) {
             if (callingPackage.equals(info.packageName)) {
-                LogHelper.v(TAG, "Valid caller: ", info.name, "  package=", info.packageName,
+                LogHelper.INSTANCE.v(TAG, "Valid caller: ", info.name, "  package=", info.packageName,
                     " release=", info.release);
                 return true;
             }
             expectedPackages.append(info.packageName).append(' ');
         }
 
-        LogHelper.i(TAG, "Caller has a valid certificate, but its package doesn't match any ",
+        LogHelper.INSTANCE.i(TAG, "Caller has a valid certificate, but its package doesn't match any ",
             "expected package for the given certificate. Caller's package is ", callingPackage,
             ". Expected packages as defined in res/xml/allowed_media_browser_callers.xml are (",
             expectedPackages, "). This caller's certificate is: \n", signature);
@@ -173,7 +173,7 @@ public class PackageValidator {
             final PackageManager pm = context.getPackageManager();
             return pm.getPackageInfo(pkgName, PackageManager.GET_SIGNATURES);
         } catch (PackageManager.NameNotFoundException e) {
-            LogHelper.w(TAG, e, "Package manager can't find package: ", pkgName);
+            LogHelper.INSTANCE.w(TAG, e, "Package manager can't find package: ", pkgName);
         }
         return null;
     }

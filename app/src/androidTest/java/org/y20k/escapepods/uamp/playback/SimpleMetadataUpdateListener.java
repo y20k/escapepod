@@ -13,14 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.y20k.escapepods.uampmodel;
+package org.y20k.escapepods.uamp.playback;
 
 import android.support.v4.media.MediaMetadataCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 
-import java.util.Iterator;
+import java.util.List;
 
-public interface MusicProviderSource {
-    String CUSTOM_METADATA_TRACK_SOURCE = "__SOURCE__";
-    Iterator<MediaMetadataCompat> iterator();
+public class SimpleMetadataUpdateListener implements QueueManager.MetadataUpdateListener{
+    @Override
+    public void onMetadataChanged(MediaMetadataCompat metadata) {
+    }
+
+    @Override
+    public void onMetadataRetrieveError() {
+    }
+
+    @Override
+    public void onCurrentQueueIndexUpdated(int queueIndex) {
+    }
+
+    @Override
+    public void onQueueUpdated(String title, List<MediaSessionCompat.QueueItem> newQueue) {
+    }
 }

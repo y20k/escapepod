@@ -28,7 +28,7 @@ allprojects {
         buildToolsVersion = '27.0.3'
 
         applicationId = 'org.y20k.escapepods'
-        minSdkVersion = 21
+        minSdkVersion = 25
         targetSdkVersion = 27
         versionCode = 1
         versionName = '0.1.0'

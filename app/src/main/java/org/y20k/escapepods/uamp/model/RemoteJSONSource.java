@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.y20k.escapepods.uampmodel;
+package org.y20k.escapepods.uamp.model;
 
 import android.support.v4.media.MediaMetadataCompat;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +37,7 @@ import java.util.Iterator;
  */
 public class RemoteJSONSource implements MusicProviderSource {
 
-    private static final String TAG = LogHelper.makeLogTag(RemoteJSONSource.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(RemoteJSONSource.class);
 
     protected static final String CATALOG_URL =
         "http://storage.googleapis.com/automotive-media/music.json";
@@ -71,7 +71,7 @@ public class RemoteJSONSource implements MusicProviderSource {
             }
             return tracks.iterator();
         } catch (JSONException e) {
-            LogHelper.e(TAG, e, "Could not retrieve music list");
+            LogHelper.INSTANCE.e(TAG, e, "Could not retrieve music list");
             throw new RuntimeException("Could not retrieve music list", e);
         }
     }
@@ -87,7 +87,7 @@ public class RemoteJSONSource implements MusicProviderSource {
         int totalTrackCount = json.getInt(JSON_TOTAL_TRACK_COUNT);
         int duration = json.getInt(JSON_DURATION) * 1000; // ms
 
-        LogHelper.d(TAG, "Found music track: ", json);
+        LogHelper.INSTANCE.d(TAG, "Found music track: ", json);
 
         // Media is stored relative to JSON file
         if (!source.startsWith("http")) {
@@ -140,7 +140,7 @@ public class RemoteJSONSource implements MusicProviderSource {
         } catch (JSONException e) {
             throw e;
         } catch (Exception e) {
-            LogHelper.e(TAG, "Failed to parse the json for media list", e);
+            LogHelper.INSTANCE.e(TAG, "Failed to parse the json for media list", e);
             return null;
         } finally {
             if (reader != null) {

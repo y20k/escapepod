@@ -38,9 +38,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
-import org.y20k.escapepods.uamphelpers.NetworkHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
+import org.y20k.escapepods.uamp.util.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +55,7 @@ import java.util.List;
  */
 public class MediaBrowserFragment extends Fragment {
 
-    private static final String TAG = LogHelper.makeLogTag(MediaBrowserFragment.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(MediaBrowserFragment.class);
 
     private static final String ARG_MEDIA_ID = "media_id";
 
@@ -93,7 +93,7 @@ public class MediaBrowserFragment extends Fragment {
             if (metadata == null) {
                 return;
             }
-            LogHelper.d(TAG, "Received metadata change to media ",
+            LogHelper.INSTANCE.d(TAG, "Received metadata change to media ",
                     metadata.getDescription().getMediaId());
             mBrowserAdapter.notifyDataSetChanged();
         }
@@ -101,7 +101,7 @@ public class MediaBrowserFragment extends Fragment {
         @Override
         public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
-            LogHelper.d(TAG, "Received state change: ", state);
+            LogHelper.INSTANCE.d(TAG, "Received state change: ", state);
             checkForUserVisibleErrors(false);
             mBrowserAdapter.notifyDataSetChanged();
         }
@@ -113,7 +113,7 @@ public class MediaBrowserFragment extends Fragment {
             public void onChildrenLoaded(@NonNull String parentId,
                                          @NonNull List<MediaBrowserCompat.MediaItem> children) {
                 try {
-                    LogHelper.d(TAG, "fragment onChildrenLoaded, parentId=" + parentId +
+                    LogHelper.INSTANCE.d(TAG, "fragment onChildrenLoaded, parentId=" + parentId +
                         "  count=" + children.size());
                     checkForUserVisibleErrors(children.isEmpty());
                     mBrowserAdapter.clear();
@@ -122,13 +122,13 @@ public class MediaBrowserFragment extends Fragment {
                     }
                     mBrowserAdapter.notifyDataSetChanged();
                 } catch (Throwable t) {
-                    LogHelper.e(TAG, "Error on childrenloaded", t);
+                    LogHelper.INSTANCE.e(TAG, "Error on childrenloaded", t);
                 }
             }
 
             @Override
             public void onError(@NonNull String id) {
-                LogHelper.e(TAG, "browse fragment subscription onError, id=" + id);
+                LogHelper.INSTANCE.e(TAG, "browse fragment subscription onError, id=" + id);
                 Toast.makeText(getActivity(), R.string.error_loading_media, Toast.LENGTH_LONG).show();
                 checkForUserVisibleErrors(true);
             }
@@ -145,7 +145,7 @@ public class MediaBrowserFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        LogHelper.d(TAG, "fragment.onCreateView");
+        LogHelper.INSTANCE.d(TAG, "fragment.onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mErrorView = rootView.findViewById(R.id.playback_error);
@@ -174,7 +174,7 @@ public class MediaBrowserFragment extends Fragment {
         // fetch browsing information to fill the listview:
         MediaBrowserCompat mediaBrowser = mMediaFragmentListener.getMediaBrowser();
 
-        LogHelper.d(TAG, "fragment.onStart, mediaId=", mMediaId,
+        LogHelper.INSTANCE.d(TAG, "fragment.onStart, mediaId=", mMediaId,
                 "  onConnected=" + mediaBrowser.isConnected());
 
         if (mediaBrowser.isConnected()) {
@@ -276,7 +276,7 @@ public class MediaBrowserFragment extends Fragment {
             }
         }
         mErrorView.setVisibility(showError ? View.VISIBLE : View.GONE);
-        LogHelper.d(TAG, "checkForUserVisibleErrors. forceError=", forceError,
+        LogHelper.INSTANCE.d(TAG, "checkForUserVisibleErrors. forceError=", forceError,
             " showError=", showError,
             " isOnline=", NetworkHelper.isOnline(getActivity()));
     }

@@ -27,14 +27,14 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import org.y20k.escapepods.MusicService;
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
+import org.y20k.escapepods.helpers.LogHelper;
 
 /**
  * Activity used to display details of the currently playing song, along with playback controls
  * and the playing queue.
  */
 public class TvPlaybackActivity extends FragmentActivity {
-    private static final String TAG = LogHelper.makeLogTag(TvPlaybackActivity.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(TvPlaybackActivity.class);
 
     private MediaBrowserCompat mMediaBrowser;
     private TvPlaybackFragment mPlaybackFragment;
@@ -42,7 +42,7 @@ public class TvPlaybackActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelper.d(TAG, "Activity onCreate");
+        LogHelper.INSTANCE.d(TAG, "Activity onCreate");
 
         mMediaBrowser = new MediaBrowserCompat(this,
                 new ComponentName(this, MusicService.class),
@@ -57,14 +57,14 @@ public class TvPlaybackActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        LogHelper.d(TAG, "Activity onStart");
+        LogHelper.INSTANCE.d(TAG, "Activity onStart");
         mMediaBrowser.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LogHelper.d(TAG, "Activity onStop");
+        LogHelper.INSTANCE.d(TAG, "Activity onStop");
         MediaControllerCompat controllerCompat = MediaControllerCompat.getMediaController(TvPlaybackActivity.this);
         if (controllerCompat != null) {
             controllerCompat.unregisterCallback(mMediaControllerCallback);
@@ -77,7 +77,7 @@ public class TvPlaybackActivity extends FragmentActivity {
             new MediaBrowserCompat.ConnectionCallback() {
                 @Override
                 public void onConnected() {
-                    LogHelper.d(TAG, "onConnected");
+                    LogHelper.INSTANCE.d(TAG, "onConnected");
                     try {
                         MediaControllerCompat mediaController = new MediaControllerCompat(
                                 TvPlaybackActivity.this, mMediaBrowser.getSessionToken());
@@ -90,18 +90,18 @@ public class TvPlaybackActivity extends FragmentActivity {
                             mPlaybackFragment.updatePlaybackState(mediaController.getPlaybackState());
                         }
                     } catch (RemoteException e) {
-                        LogHelper.e(TAG, e, "could not connect media controller");
+                        LogHelper.INSTANCE.e(TAG, e, "could not connect media controller");
                     }
                 }
 
                 @Override
                 public void onConnectionFailed() {
-                    LogHelper.d(TAG, "onConnectionFailed");
+                    LogHelper.INSTANCE.d(TAG, "onConnectionFailed");
                 }
 
                 @Override
                 public void onConnectionSuspended() {
-                    LogHelper.d(TAG, "onConnectionSuspended");
+                    LogHelper.INSTANCE.d(TAG, "onConnectionSuspended");
                     MediaControllerCompat controllerCompat = MediaControllerCompat.getMediaController(TvPlaybackActivity.this);
                     controllerCompat.unregisterCallback(mMediaControllerCallback);
                     MediaControllerCompat.setMediaController(TvPlaybackActivity.this, null);
@@ -116,7 +116,7 @@ public class TvPlaybackActivity extends FragmentActivity {
             new MediaControllerCompat.Callback() {
         @Override
         public void onPlaybackStateChanged(@NonNull PlaybackStateCompat state) {
-            LogHelper.d(TAG, "onPlaybackStateChanged, state=", state);
+            LogHelper.INSTANCE.d(TAG, "onPlaybackStateChanged, state=", state);
             if (mPlaybackFragment == null || state.getState() == PlaybackStateCompat.STATE_BUFFERING) {
                 return;
             }
@@ -125,7 +125,7 @@ public class TvPlaybackActivity extends FragmentActivity {
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
-            LogHelper.d(TAG, "onMetadataChanged, title=", metadata.getDescription().getTitle());
+            LogHelper.INSTANCE.d(TAG, "onMetadataChanged, title=", metadata.getDescription().getTitle());
             if (mPlaybackFragment == null) {
                 return;
             }

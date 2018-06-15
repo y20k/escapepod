@@ -32,8 +32,8 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.session.MediaControllerCompat;
 import android.text.TextUtils;
 
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ import java.util.List;
  * VerticalGridFragment shows a grid of music songs
  */
 public class TvVerticalGridFragment extends VerticalGridSupportFragment {
-    private static final String TAG = LogHelper.makeLogTag(TvVerticalGridFragment.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(TvVerticalGridFragment.class);
 
     private static final int NUM_COLUMNS = 5;
 
@@ -52,7 +52,7 @@ public class TvVerticalGridFragment extends VerticalGridSupportFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LogHelper.d(TAG, "onCreate");
+        LogHelper.INSTANCE.d(TAG, "onCreate");
 
         setupFragment();
     }
@@ -74,7 +74,7 @@ public class TvVerticalGridFragment extends VerticalGridSupportFragment {
     }
 
     protected void setMediaId(String mediaId) {
-        LogHelper.d(TAG, "setMediaId: ", mediaId);
+        LogHelper.INSTANCE.d(TAG, "setMediaId: ", mediaId);
         if (TextUtils.equals(mMediaId, mediaId)) {
             return;
         }
@@ -145,7 +145,7 @@ public class TvVerticalGridFragment extends VerticalGridSupportFragment {
             for (int i = 0; i < children.size(); i++) {
                 MediaBrowserCompat.MediaItem item = children.get(i);
                 if (!item.isPlayable()) {
-                    LogHelper.e(TAG, "Cannot show non-playable items. Ignoring ", item.getMediaId());
+                    LogHelper.INSTANCE.e(TAG, "Cannot show non-playable items. Ignoring ", item.getMediaId());
                 } else {
                     mAdapter.add(item);
                 }
@@ -155,7 +155,7 @@ public class TvVerticalGridFragment extends VerticalGridSupportFragment {
 
         @Override
         public void onError(@NonNull String id) {
-            LogHelper.e(TAG, "browse fragment subscription onError, id=", id);
+            LogHelper.INSTANCE.e(TAG, "browse fragment subscription onError, id=", id);
         }
     };
 }

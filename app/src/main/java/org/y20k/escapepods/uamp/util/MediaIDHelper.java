@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.y20k.escapepods.uamphelpers;
+package org.y20k.escapepods.uamp.util;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.y20k.escapepods.uamphelpers;
+package org.y20k.escapepods.uamp.util;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -24,7 +24,8 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 
 import org.y20k.escapepods.VoiceSearchParams;
-import org.y20k.escapepods.uampmodel.MusicProvider;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.model.MusicProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 public class QueueHelper {
 
-    private static final String TAG = LogHelper.makeLogTag(QueueHelper.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(QueueHelper.class);
 
     private static final int RANDOM_QUEUE_SIZE = 10;
 
@@ -45,13 +46,13 @@ public class QueueHelper {
         String[] hierarchy = MediaIDHelper.getHierarchy(mediaId);
 
         if (hierarchy.length != 2) {
-            LogHelper.e(TAG, "Could not build a playing queue for this mediaId: ", mediaId);
+            LogHelper.INSTANCE.e(TAG, "Could not build a playing queue for this mediaId: ", mediaId);
             return null;
         }
 
         String categoryType = hierarchy[0];
         String categoryValue = hierarchy[1];
-        LogHelper.d(TAG, "Creating playing queue for ", categoryType, ",  ", categoryValue);
+        LogHelper.INSTANCE.d(TAG, "Creating playing queue for ", categoryType, ",  ", categoryValue);
 
         Iterable<MediaMetadataCompat> tracks = null;
         // This sample only supports genre and by_search category types.
@@ -62,7 +63,7 @@ public class QueueHelper {
         }
 
         if (tracks == null) {
-            LogHelper.e(TAG, "Unrecognized category type: ", categoryType, " for media ", mediaId);
+            LogHelper.INSTANCE.e(TAG, "Unrecognized category type: ", categoryType, " for media ", mediaId);
             return null;
         }
 
@@ -72,12 +73,12 @@ public class QueueHelper {
     public static List<MediaSessionCompat.QueueItem> getPlayingQueueFromSearch(String query,
             Bundle queryParams, MusicProvider musicProvider) {
 
-        LogHelper.d(TAG, "Creating playing queue for musics from search: ", query,
+        LogHelper.INSTANCE.d(TAG, "Creating playing queue for musics from search: ", query,
             " params=", queryParams);
 
         VoiceSearchParams params = new VoiceSearchParams(query, queryParams);
 
-        LogHelper.d(TAG, "VoiceSearchParams: ", params);
+        LogHelper.INSTANCE.d(TAG, "VoiceSearchParams: ", params);
 
         if (params.isAny) {
             // If isAny is true, we will play anything. This is app-dependent, and can be,
@@ -179,7 +180,7 @@ public class QueueHelper {
             }
             result.add(metadata);
         }
-        LogHelper.d(TAG, "getRandomQueue: result.size=", result.size());
+        LogHelper.INSTANCE.d(TAG, "getRandomQueue: result.size=", result.size());
 
         return convertToQueue(result, MediaIDHelper.MEDIA_ID_MUSICS_BY_SEARCH, "random");
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.y20k.escapepods.playback;
+package org.y20k.escapepods.uamp.playback;
 
 import org.y20k.escapepods.MusicService;
 

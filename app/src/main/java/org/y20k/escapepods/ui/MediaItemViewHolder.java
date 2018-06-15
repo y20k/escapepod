@@ -33,7 +33,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
 
 public class MediaItemViewHolder {
 

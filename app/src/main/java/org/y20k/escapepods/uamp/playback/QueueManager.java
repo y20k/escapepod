@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.y20k.escapepods.playback;
+package org.y20k.escapepods.uamp.playback;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -25,10 +25,10 @@ import android.support.v4.media.session.MediaSessionCompat;
 
 import org.y20k.escapepods.AlbumArtCache;
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.uamphelpers.LogHelper;
-import org.y20k.escapepods.uamphelpers.MediaIDHelper;
-import org.y20k.escapepods.uamphelpers.QueueHelper;
-import org.y20k.escapepods.uampmodel.MusicProvider;
+import org.y20k.escapepods.helpers.LogHelper;
+import org.y20k.escapepods.uamp.model.MusicProvider;
+import org.y20k.escapepods.uamp.util.MediaIDHelper;
+import org.y20k.escapepods.uamp.util.QueueHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +41,7 @@ import java.util.List;
  * given MusicProvider to provide the actual media metadata.
  */
 public class QueueManager {
-    private static final String TAG = LogHelper.makeLogTag(QueueManager.class);
+    private static final String TAG = LogHelper.INSTANCE.makeLogTag(QueueManager.class);
 
     private MusicProvider mMusicProvider;
     private MetadataUpdateListener mListener;
@@ -105,7 +105,7 @@ public class QueueManager {
             index %= mPlayingQueue.size();
         }
         if (!QueueHelper.isIndexPlayable(index, mPlayingQueue)) {
-            LogHelper.e(TAG, "Cannot increment queue index by ", amount,
+            LogHelper.INSTANCE.e(TAG, "Cannot increment queue index by ", amount,
                     ". Current=", mCurrentIndex, " queue length=", mPlayingQueue.size());
             return false;
         }
@@ -128,7 +128,7 @@ public class QueueManager {
     }
 
     public void setQueueFromMusic(String mediaId) {
-        LogHelper.d(TAG, "setQueueFromMusic", mediaId);
+        LogHelper.INSTANCE.d(TAG, "setQueueFromMusic", mediaId);
 
         // The mediaId used here is not the unique musicId. This one comes from the
         // MediaBrowser, and is actually a "hierarchy-aware mediaID": a concatenation of
