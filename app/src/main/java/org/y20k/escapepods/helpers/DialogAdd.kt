@@ -7,38 +7,20 @@ import android.view.View
 import android.widget.EditText
 import org.y20k.escapepods.R
 
-//Parent:
-//MainActivityFragment
-//+ create object of type child
-//+ attach listener to object using child's setter
-//
-//Child:
-//DialogAddStationFragment
-//- define interface (1)
-//+ define instance variable of type interface
-//+ set instance variable to null in constructor
-//+ create setter for instance variable
-//- fire listener using "if (listener != null) {listener.dosomething}"
-
 
 /**
  * DialogAdd class
  */
-class DialogAdd {
+class DialogAdd (private var addDialogListener : AddDialogListener) {
 
     /* Interface used to communicate back to activity */
     interface AddDialogListener {
         fun onFinish(textInput : String) {
-            // optional body
         }
     }
 
     /* Define log tag */
-    private val TAG = DialogAdd::class.java.simpleName
-
-
-    /* Main class variables */
-    var addDialogListener : AddDialogListener? = null;
+    private val TAG = LogHelper.makeLogTag(DialogAdd::class.java.simpleName)
 
     /* Construct and show dialog */
     fun show(activity: Activity) {
@@ -57,10 +39,8 @@ class DialogAdd {
         // add "add" button
         builder.setPositiveButton(R.string.dialog_add_podcast_button) { _, id ->
             if (inputField.text != null) {
-                if (this.addDialogListener != null) {
-                    // hand text over to initiating activity
-                    this.addDialogListener!!.onFinish(inputField.text.toString());
-                }
+                // hand text over to initiating activity
+                this.addDialogListener.onFinish(inputField.text.toString());
             }
         }
 

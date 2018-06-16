@@ -16,9 +16,11 @@
 package org.y20k.escapepods.ui;
 
 import android.app.ActivityOptions;
+import android.app.DownloadManager;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -43,8 +45,11 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.y20k.escapepods.R;
 import org.y20k.escapepods.helpers.DialogAdd;
-import org.y20k.escapepods.helpers.DialogAdd.AddDialogListener;
+import org.y20k.escapepods.helpers.DownloadHelper;
+import org.y20k.escapepods.helpers.Keys;
 import org.y20k.escapepods.helpers.LogHelper;
+
+import java.util.Objects;
 
 /**
  * Abstract activity with toolbar, navigation drawer and cast support. Needs to be extended by
@@ -106,12 +111,14 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         activityClass = PlaceholderActivity.class;
                         break;
                     case R.id.navigation_add_new:
-                        DialogAdd dialogAdd = new DialogAdd();
-                        dialogAdd.setAddDialogListener(new AddDialogListener() {
-                            @Override
-                            public void onFinish(String textInput) {
-                                LogHelper.INSTANCE.v(TAG, "Text Input in Add Dialog: " + textInput);
-                                // todo download podcast rss to cache
+                        DialogAdd dialogAdd = new DialogAdd(textInput -> {
+                            long downloadID = -1L;
+                            Uri podcastUri = Uri.parse(textInput);
+                            if (podcastUri.getScheme() != null && podcastUri.getScheme().startsWith("http")) {
+                                DownloadHelper downloadHelper = new DownloadHelper((DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE)));
+                                downloadID = downloadHelper.download(ActionBarCastActivity.this, podcastUri, Keys.INSTANCE.getRSS());
+                            } else {
+                                LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUri.toString());
                             }
                         });
                         dialogAdd.show(ActionBarCastActivity.this);
