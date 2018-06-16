@@ -43,6 +43,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import org.y20k.escapepods.R;
 import org.y20k.escapepods.helpers.DialogAdd;
+import org.y20k.escapepods.helpers.DialogAdd.AddDialogListener;
 import org.y20k.escapepods.helpers.LogHelper;
 
 /**
@@ -105,7 +106,15 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         activityClass = PlaceholderActivity.class;
                         break;
                     case R.id.navigation_add_new:
-                        DialogAdd.show(ActionBarCastActivity.this);
+                        DialogAdd dialogAdd = new DialogAdd();
+                        dialogAdd.setAddDialogListener(new AddDialogListener() {
+                            @Override
+                            public void onFinish(String textInput) {
+                                LogHelper.INSTANCE.v(TAG, "Text Input in Add Dialog: " + textInput);
+                                // todo download podcast rss to cache
+                            }
+                        });
+                        dialogAdd.show(ActionBarCastActivity.this);
                 }
                 if (activityClass != null) {
                     startActivity(new Intent(ActionBarCastActivity.this, activityClass), extras);

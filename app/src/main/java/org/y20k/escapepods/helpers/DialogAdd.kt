@@ -7,18 +7,40 @@ import android.view.View
 import android.widget.EditText
 import org.y20k.escapepods.R
 
+//Parent:
+//MainActivityFragment
+//+ create object of type child
+//+ attach listener to object using child's setter
+//
+//Child:
+//DialogAddStationFragment
+//- define interface (1)
+//+ define instance variable of type interface
+//+ set instance variable to null in constructor
+//+ create setter for instance variable
+//- fire listener using "if (listener != null) {listener.dosomething}"
+
 
 /**
  * DialogAdd class
  */
-object DialogAdd {
+class DialogAdd {
+
+    /* Interface used to communicate back to activity */
+    interface AddDialogListener {
+        fun onFinish(textInput : String) {
+            // optional body
+        }
+    }
 
     /* Define log tag */
-    private val LOG_TAG = DialogAdd::class.java.simpleName
+    private val TAG = DialogAdd::class.java.simpleName
 
+
+    /* Main class variables */
+    var addDialogListener : AddDialogListener? = null;
 
     /* Construct and show dialog */
-    @JvmStatic
     fun show(activity: Activity) {
         // prepare dialog builder
         val inflater = LayoutInflater.from(activity)
@@ -35,10 +57,10 @@ object DialogAdd {
         // add "add" button
         builder.setPositiveButton(R.string.dialog_add_podcast_button) { _, id ->
             if (inputField.text != null) {
-                val input = inputField.text.toString()
-                // download new podcast
-                //                    StationFetcher stationFetcher = new StationFetcher(activity, folder, Uri.parse(input.trim()), null);
-                //                    stationFetcher.execute();
+                if (this.addDialogListener != null) {
+                    // hand text over to initiating activity
+                    this.addDialogListener!!.onFinish(inputField.text.toString());
+                }
             }
         }
 
@@ -51,5 +73,7 @@ object DialogAdd {
         // display add dialog
         builder.show()
     }
+
+
 
 }
