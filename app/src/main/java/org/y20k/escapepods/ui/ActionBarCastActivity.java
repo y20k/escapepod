@@ -123,6 +123,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                             if (podcastUris[0].getScheme() != null && podcastUris[0].getScheme().startsWith("http")) {
                                 DownloadHelper downloadHelper = new DownloadHelper((DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE)));
                                 mDownloadIDs = downloadHelper.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
+
+//                                long sizeSoFar = downloadHelper.getFileSizeSoFar(mDownloadIDs[0]-1);
+//                                FileHelper fileHelper = new FileHelper();
+//                                LogHelper.INSTANCE.e(TAG, "Size so far: " + fileHelper.getReadableByteCount(sizeSoFar, true));
                             } else {
                                 LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUris[0].toString());
                             }
@@ -380,8 +384,14 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     DownloadManager downloadManager = (DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE));
                     Uri uri = downloadManager.getUriForDownloadedFile(id);
                     // read content of file
-                    String content = new FileHelper().readTextFile(ActionBarCastActivity.this, uri); // todo async this
-                    LogHelper.INSTANCE.i(TAG, content); // todo remove
+                    FileHelper fileHelper = new FileHelper();
+                    String content = fileHelper.readTextFile(ActionBarCastActivity.this, uri); // todo async this
+
+//                    LogHelper.INSTANCE.i(TAG, content); // todo remove
+//                    DownloadHelper downloadHelper = new DownloadHelper(downloadManager); // todo remove
+//                    String s = fileHelper.getReadableByteCount(downloadHelper.getFileSizeSoFar(downloadID), true); // todo remove
+//                    LogHelper.INSTANCE.e(TAG, "File size of download: " + s); // todo remove
+
                 }
             }
         }

@@ -16,6 +16,7 @@ package org.y20k.escapepods.helpers
 
 import android.app.DownloadManager
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 
 
@@ -23,6 +24,10 @@ import android.net.Uri
  * DownloadHelper class
  */
 class DownloadHelper (private val downloadManager : DownloadManager) {
+
+    /* Define log tag */
+    private val TAG : String = LogHelper.makeLogTag(DownloadHelper::class.java.name)
+
 
     /* Enqueues an Array of files in DownloadManager */
     fun download(context: Context, uris: Array<Uri>, type : Int) : LongArray {
@@ -44,6 +49,39 @@ class DownloadHelper (private val downloadManager : DownloadManager) {
                 .setTitle(uris[i].lastPathSegment)
                 .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment))
         return downloadIds
+    }
+
+
+    /* Get size of downloaded file so far */
+    fun getFileSizeSoFar (downloadId: Long) : Long {
+        var bytesSoFar : Long = -1L
+        val cursor : Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            bytesSoFar = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+        }
+        return bytesSoFar
+    }
+
+
+    /* Just a test */ // todo remove
+    fun queryStatus (downloadId: Long) {
+        val cursor : Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            LogHelper.i(TAG, "COLUMN_ID: "+
+                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_ID)))
+            LogHelper.i(TAG, "COLUMN_BYTES_DOWNLOADED_SO_FAR: "+
+                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)))
+            LogHelper.i(TAG, "COLUMN_LAST_MODIFIED_TIMESTAMP: "+
+                    cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_LAST_MODIFIED_TIMESTAMP)))
+            LogHelper.i(TAG, "COLUMN_LOCAL_URI: "+
+                    cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)))
+            LogHelper.i(TAG, "COLUMN_STATUS: "+
+                    cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)))
+            LogHelper.i(TAG, "COLUMN_REASON: "+
+                    cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON)))
+        }
     }
 
 }

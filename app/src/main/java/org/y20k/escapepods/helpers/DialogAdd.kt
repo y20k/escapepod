@@ -22,6 +22,7 @@ class DialogAdd (private var addDialogListener : AddDialogListener) {
     /* Define log tag */
     private val TAG = LogHelper.makeLogTag(DialogAdd::class.java.simpleName)
 
+
     /* Construct and show dialog */
     fun show(activity: Activity) {
         // prepare dialog builder
