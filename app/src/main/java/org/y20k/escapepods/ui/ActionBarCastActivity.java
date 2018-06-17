@@ -18,7 +18,10 @@ package org.y20k.escapepods.ui;
 import android.app.ActivityOptions;
 import android.app.DownloadManager;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,6 +49,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import org.y20k.escapepods.R;
 import org.y20k.escapepods.helpers.DialogAdd;
 import org.y20k.escapepods.helpers.DownloadHelper;
+import org.y20k.escapepods.helpers.FileHelper;
 import org.y20k.escapepods.helpers.Keys;
 import org.y20k.escapepods.helpers.LogHelper;
 
@@ -76,6 +80,8 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
     private boolean mToolbarInitialized;
 
     private int mItemToOpenWhenDrawerCloses = -1;
+
+    private long[] mDownloadIDs = { -1L };
 
     private CastStateListener mCastStateListener = new CastStateListener() {
         @Override
@@ -112,11 +118,11 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_add_new:
                         DialogAdd dialogAdd = new DialogAdd(textInput -> {
-                            long[] downloadIDs = { -1L };
+                            // long[] downloadIDs = { -1L };
                             Uri[] podcastUris = { Uri.parse(textInput) };
                             if (podcastUris[0].getScheme() != null && podcastUris[0].getScheme().startsWith("http")) {
                                 DownloadHelper downloadHelper = new DownloadHelper((DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE)));
-                                downloadIDs = downloadHelper.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
+                                mDownloadIDs = downloadHelper.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
                             } else {
                                 LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUris[0].toString());
                             }
@@ -167,6 +173,16 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         if (playServicesAvailable == ConnectionResult.SUCCESS) {
             mCastContext = CastContext.getSharedInstance(this);
         }
+
+        // listen for completed downloads
+        registerReceiver(mOnCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mOnCompleteReceiver);
     }
 
     @Override
@@ -351,4 +367,25 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             overlay.show();
         }
     }
+
+
+    /* BroadcastReceiver for completed downloads */
+    private BroadcastReceiver mOnCompleteReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L);
+            for (long downloadID : mDownloadIDs) {
+                if (downloadID == id) {
+                    // get Uri if ID represented one of the enqueued downloads
+                    DownloadManager downloadManager = (DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE));
+                    Uri uri = downloadManager.getUriForDownloadedFile(id);
+                    // read content of file
+                    String content = new FileHelper().readTextFile(ActionBarCastActivity.this, uri); // todo async this
+                    LogHelper.INSTANCE.i(TAG, content); // todo remove
+                }
+            }
+        }
+    };
+
+
 }

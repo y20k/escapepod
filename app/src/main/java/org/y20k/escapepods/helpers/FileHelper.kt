@@ -14,6 +14,8 @@
 
 package org.y20k.escapepods.helpers
 
+import android.content.Context
+import android.net.Uri
 import java.io.*
 
 
@@ -22,9 +24,10 @@ import java.io.*
  */
 class FileHelper {
 
-    /* Reads InputStream from file and returns it as String*/
-    fun readTextFile(file : File) : String {
-        val stream : InputStream = FileInputStream(file)
+    /* Reads InputStream from file uri and returns it as String*/
+    fun readTextFile(context : Context, uri: Uri) : String {
+        // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
+        val stream : InputStream = context.getContentResolver().openInputStream(uri)
         val reader : BufferedReader = BufferedReader(InputStreamReader(stream))
         val builder : StringBuilder = StringBuilder()
 
