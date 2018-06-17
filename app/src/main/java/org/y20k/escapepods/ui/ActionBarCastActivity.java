@@ -112,13 +112,13 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_add_new:
                         DialogAdd dialogAdd = new DialogAdd(textInput -> {
-                            long downloadID = -1L;
-                            Uri podcastUri = Uri.parse(textInput);
-                            if (podcastUri.getScheme() != null && podcastUri.getScheme().startsWith("http")) {
+                            long[] downloadIDs = { -1L };
+                            Uri[] podcastUris = { Uri.parse(textInput) };
+                            if (podcastUris[0].getScheme() != null && podcastUris[0].getScheme().startsWith("http")) {
                                 DownloadHelper downloadHelper = new DownloadHelper((DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE)));
-                                downloadID = downloadHelper.download(ActionBarCastActivity.this, podcastUri, Keys.INSTANCE.getRSS());
+                                downloadIDs = downloadHelper.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
                             } else {
-                                LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUri.toString());
+                                LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUris[0].toString());
                             }
                         });
                         dialogAdd.show(ActionBarCastActivity.this);
