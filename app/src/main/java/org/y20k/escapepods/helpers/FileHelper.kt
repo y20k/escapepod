@@ -16,6 +16,7 @@ package org.y20k.escapepods.helpers
 
 import android.content.Context
 import android.net.Uri
+import org.y20k.escapepods.DownloadService
 import java.io.*
 import java.text.NumberFormat
 
@@ -26,7 +27,7 @@ import java.text.NumberFormat
 class FileHelper {
 
     /* Define log tag */
-    private val TAG : String = LogHelper.makeLogTag(DownloadHelper::class.java.name)
+    private val TAG : String = LogHelper.makeLogTag(DownloadService::class.java.name)
 
 
     /* Reads InputStream from file uri and returns it as String*/

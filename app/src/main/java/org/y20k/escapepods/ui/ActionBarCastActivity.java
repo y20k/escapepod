@@ -19,13 +19,16 @@ import android.app.ActivityOptions;
 import android.app.DownloadManager;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -46,13 +49,14 @@ import com.google.android.gms.cast.framework.IntroductoryOverlay;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import org.y20k.escapepods.DownloadService;
 import org.y20k.escapepods.R;
 import org.y20k.escapepods.helpers.DialogAdd;
-import org.y20k.escapepods.helpers.DownloadHelper;
 import org.y20k.escapepods.helpers.FileHelper;
 import org.y20k.escapepods.helpers.Keys;
 import org.y20k.escapepods.helpers.LogHelper;
 
+import java.util.Iterator;
 import java.util.Objects;
 
 /**
@@ -82,6 +86,9 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
     private int mItemToOpenWhenDrawerCloses = -1;
 
     private long[] mDownloadIDs = { -1L };
+    private DownloadService mDownloadService = null;
+    private boolean mDownloadServiceBound = false;
+    private boolean mDownloadsInProgress = false;
 
     private CastStateListener mCastStateListener = new CastStateListener() {
         @Override
@@ -121,12 +128,12 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                             // long[] downloadIDs = { -1L };
                             Uri[] podcastUris = { Uri.parse(textInput) };
                             if (podcastUris[0].getScheme() != null && podcastUris[0].getScheme().startsWith("http")) {
-                                DownloadHelper downloadHelper = new DownloadHelper((DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE)));
-                                mDownloadIDs = downloadHelper.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
+                                mDownloadIDs = startDownload(podcastUris, Keys.INSTANCE.getRSS());
+                                checkDownloadProgress();
 
-//                                long sizeSoFar = downloadHelper.getFileSizeSoFar(mDownloadIDs[0]-1);
+//                                long sizeSoFar = downloadService.getFileSizeSoFar(mDownloadIDs[0]-1);
 //                                FileHelper fileHelper = new FileHelper();
-//                                LogHelper.INSTANCE.e(TAG, "Size so far: " + fileHelper.getReadableByteCount(sizeSoFar, true));
+//                                LogHelper.INSTANCE.i(TAG, "Size so far: " + fileHelper.getReadableByteCount(sizeSoFar, true));
                             } else {
                                 LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUris[0].toString());
                             }
@@ -196,6 +203,10 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             throw new IllegalStateException("You must run super.initializeToolbar at " +
                 "the end of your onCreate method");
         }
+
+        // bind to DownloadService
+        Intent intent = new Intent(this, DownloadService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -237,6 +248,15 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         }
         getFragmentManager().removeOnBackStackChangedListener(mBackStackChangedListener);
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // unbind from Download Service
+        unbindService(mConnection);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -373,6 +393,51 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
     }
 
 
+    /* Start download in DownloadService */
+    private long[] startDownload(Uri[] uris, int type) {
+
+        // start download
+        long[] downloadIDs = { -1L };
+        if (mDownloadServiceBound) {
+            downloadIDs = mDownloadService.download(this, uris, type);
+        }
+
+        // return download IDs
+        return downloadIDs;
+    }
+
+
+    private void checkDownloadProgress() {
+        if (mDownloadServiceBound && !mDownloadService.getActiveDownloads().isEmpty()) {
+            Handler handler = new Handler();
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (!mDownloadService.getActiveDownloads().isEmpty()) {
+                        Iterator<Long> iter = mDownloadService.getActiveDownloads().iterator();
+                        while (iter.hasNext()) {
+                            Long activeDownload = iter.next();
+                            long size = mDownloadService.getFileSizeSoFar(ActionBarCastActivity.this, activeDownload);
+                            LogHelper.INSTANCE.i(TAG, "DownloadID = " + activeDownload + " | Size so far: " +  new FileHelper().getReadableByteCount(size, true) + " " + mDownloadService.getActiveDownloads().isEmpty() ); // todo remove
+                            if (mDownloadService.isCompleted(ActionBarCastActivity.this, activeDownload)) {
+                                iter.remove();
+                            }
+                        }
+                        handler.postDelayed(this, Keys.INSTANCE.getONE_SECOND_IN_MILLISECONDS());
+                    } else {
+                        handler.removeCallbacksAndMessages(null);
+                    }
+                }
+            };
+            // start it with:
+            handler.post(runnable);
+        }
+
+
+    }
+
+
+
     /* BroadcastReceiver for completed downloads */
     private BroadcastReceiver mOnCompleteReceiver = new BroadcastReceiver() {
         @Override
@@ -383,17 +448,42 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                     // get Uri if ID represented one of the enqueued downloads
                     DownloadManager downloadManager = (DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE));
                     Uri uri = downloadManager.getUriForDownloadedFile(id);
-                    // read content of file
-                    FileHelper fileHelper = new FileHelper();
-                    String content = fileHelper.readTextFile(ActionBarCastActivity.this, uri); // todo async this
 
-//                    LogHelper.INSTANCE.i(TAG, content); // todo remove
-//                    DownloadHelper downloadHelper = new DownloadHelper(downloadManager); // todo remove
-//                    String s = fileHelper.getReadableByteCount(downloadHelper.getFileSizeSoFar(downloadID), true); // todo remove
-//                    LogHelper.INSTANCE.e(TAG, "File size of download: " + s); // todo remove
-
+                    // some tests // todo remove
+//                    FileHelper fileHelper = new FileHelper();
+////                    String content = fileHelper.readTextFile(ActionBarCastActivity.this, uri); // todo async this
+////                    LogHelper.INSTANCE.i(TAG, content); // todo remove
+//                    DownloadService downloadHelper = new DownloadService(); // todo remove
+//                    String s = fileHelper.getReadableByteCount(downloadHelper.getFileSizeSoFar(ActionBarCastActivity.this, downloadID), true); // todo remove
+//                    LogHelper.INSTANCE.i(TAG, "File size of download(" + id + "): " + s); // todo remove
                 }
             }
+        }
+    };
+
+
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // get service from binder
+            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
+            mDownloadService = binder.getService();
+            mDownloadServiceBound = true;
+
+            // just a test // todo remove
+//            Uri[] podcastUris = { Uri.parse("https://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/radarrelay/undertheradar136.mp3"), Uri.parse("https://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/radarrelay/undertheradar132.mp3") };
+////            mDownloadService.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
+//            mDownloadIDs = mDownloadService.download(ActionBarCastActivity.this, podcastUris, Keys.INSTANCE.getRSS());
+//            checkDownloadProgress();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mDownloadServiceBound = false;
         }
     };
 

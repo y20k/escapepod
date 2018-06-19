@@ -20,14 +20,24 @@ package org.y20k.escapepods.helpers
  */
 object Keys {
 
-    // File Types
-    val RSS = 1
-    val AUDIO = 2
-    val IMAGE = 3
+    // preferences
+    val PREF_DOWNLOAD_OVER_MOBILE : String = "DOWNLOAD_OVER_MOBILE"
 
-    // Folder Names
-    val AUDIO_FOLDER = "audio"
-    val IMAGE_FOLDER = "images"
-    val TEMP_FOLDER = "temp"
+    // file types
+    val RSS : Int = 1
+    val AUDIO : Int  = 2
+    val IMAGE : Int  = 3
 
+    // folder names
+    val AUDIO_FOLDER : String = "audio"
+    val IMAGE_FOLDER : String  = "images"
+    val TEMP_FOLDER : String  = "temp"
+
+    // intent actions and extras
+    val ACTION_DOWNLOAD_PROGRESS_UPDATE : String  = "DOWNLOAD_PROGRESS_UPDATE"
+    val EXTRA_DOWNLOAD_ID : String  = "DOWNLOAD_ID"
+    val EXTRA_DOWNLOAD_PROGRESS : String  = "DOWNLOAD_PROGRESS"
+
+    // values
+    val ONE_SECOND_IN_MILLISECONDS : Long = 1000L
 }
