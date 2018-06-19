@@ -15,7 +15,9 @@
 package org.y20k.escapepods.helpers
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
+import android.provider.OpenableColumns
 import org.y20k.escapepods.DownloadService
 import java.io.*
 import java.text.NumberFormat
@@ -33,6 +35,7 @@ class FileHelper {
     /* Reads InputStream from file uri and returns it as String*/
     fun readTextFile(context : Context, uri: Uri) : String {
         // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
+        // https://developer.android.com/training/secure-file-sharing/retrieve-info
         val stream : InputStream = context.getContentResolver().openInputStream(uri)
         val reader : BufferedReader = BufferedReader(InputStreamReader(stream))
         val builder : StringBuilder = StringBuilder()
@@ -44,6 +47,24 @@ class FileHelper {
         stream.close()
 
         return builder.toString()
+    }
+
+
+    /* Get file size for given Uri */
+    fun getFileSize(context: Context, uri: Uri) : Long {
+        val cursor : Cursor = context.contentResolver.query(uri, null, null, null, null)
+        val sizeIndex : Int = cursor.getColumnIndex(OpenableColumns.SIZE)
+        cursor.moveToFirst()
+        return cursor.getLong(sizeIndex)
+    }
+
+
+    /* Get file name for given Uri */
+    fun getFileName(context: Context, uri: Uri) : String {
+        val cursor : Cursor = context.contentResolver.query(uri, null, null, null, null)
+        val nameIndex : Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        cursor.moveToFirst()
+        return cursor.getString(nameIndex)
     }
 
 
