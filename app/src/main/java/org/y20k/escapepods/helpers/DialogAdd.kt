@@ -8,7 +8,7 @@ import android.widget.EditText
 import org.y20k.escapepods.R
 
 
-/**
+/*
  * DialogAdd class
  */
 class DialogAdd (private var addDialogListener : AddDialogListener) {

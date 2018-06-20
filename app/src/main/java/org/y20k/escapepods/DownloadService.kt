@@ -29,7 +29,7 @@ import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
 
-/**
+/*
  * DownloadService class
  */
 class DownloadService : Service() {

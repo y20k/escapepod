@@ -4,6 +4,9 @@ import android.util.Log
 
 import org.y20k.escapepods.BuildConfig
 
+/*
+ * Keys object
+ */
 object LogHelper {
 
     private val LOG_PREFIX = "escapepods_"
@@ -17,12 +20,12 @@ object LogHelper {
 
     }
 
-    /**
-     * Don't use this when obfuscating class names!
-     */
-    fun makeLogTag(cls: Class<*>): String {
-        return makeLogTag(cls.simpleName)
-    }
+//    /**
+//     * Don't use this when obfuscating class names!
+//     */
+//    fun makeLogTag(cls: Class<*>): String {
+//        return makeLogTag(cls.simpleName)
+//    }
 
 
     fun v(tag: String, vararg messages: Any) {
