@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- backup files from external storage -->
+    <include domain="external" path="." />
+    <!-- do not backup audio files from external storage -->
+    <exclude domain="external" path="./audio"/>
+    <exclude domain="external" path="./temp"/>
+</full-backup-content>

@@ -32,15 +32,15 @@ import org.y20k.escapepods.helpers.LogHelper
 /*
  * DownloadService class
  */
-class DownloadService : Service() {
+class DownloadService: Service() {
 
     /* Define log tag */
-    private val TAG : String = LogHelper.makeLogTag(DownloadService::class.java)
+    private val TAG: String = LogHelper.makeLogTag(DownloadService::class.java)
 
 
     /* Main class variables */
-    val activeDownloads : ArrayList<Long> = ArrayList<Long>()
-    private val downloadServiceBinder : LocalBinder = LocalBinder()
+    val activeDownloads: ArrayList<Long> = ArrayList<Long>()
+    private val downloadServiceBinder: LocalBinder = LocalBinder()
 
 
     /* Implements onCreate */
@@ -69,10 +69,10 @@ class DownloadService : Service() {
     }
 
     /* Enqueues an Array of files in DownloadManager */
-    fun download(context: Context, uris: Array<Uri>, type : Int) : LongArray {
+    fun download(context: Context, uris: Array<Uri>, type: Int): LongArray {
 
         // determine destination folder
-        val folder : String
+        val folder: String
         when (type) {
             Keys.RSS -> folder = Keys.TEMP_FOLDER
             Keys.AUDIO -> folder = Keys.AUDIO_FOLDER
@@ -88,7 +88,7 @@ class DownloadService : Service() {
         }
 
         // enqueues downloads
-        val downloadManager : DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadIDs = LongArray(uris.size)
         for (i in uris.indices)  {
             downloadIDs[i] = downloadManager.enqueue(DownloadManager.Request(uris[i])
@@ -103,10 +103,10 @@ class DownloadService : Service() {
 
 
     /* Get size of downloaded file so far */
-    fun getFileSizeSoFar(context: Context, downloadID: Long) : Long {
-        val downloadManager : DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        var bytesSoFar : Long = -1L
-        val cursor : Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+    fun getFileSizeSoFar(context: Context, downloadID: Long): Long {
+        val downloadManager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        var bytesSoFar: Long = -1L
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             bytesSoFar = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
@@ -116,10 +116,10 @@ class DownloadService : Service() {
 
 
     /* Check if download is completed */
-    fun isCompleted(context: Context, downloadID: Long) : Boolean {
-        val downloadManager : DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        var downloadStatus : Long = -1L
-        val cursor : Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+    fun isCompleted(context: Context, downloadID: Long): Boolean {
+        val downloadManager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        var downloadStatus: Long = -1L
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             downloadStatus = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
@@ -129,8 +129,8 @@ class DownloadService : Service() {
 
 
     /* Savely remove given download ID from active downloads */
-    private fun removeFromActiveDownloads(downloadID: Long) : Boolean {
-        val iterator : MutableIterator<Long> = activeDownloads.iterator()
+    private fun removeFromActiveDownloads(downloadID: Long): Boolean {
+        val iterator: MutableIterator<Long> = activeDownloads.iterator()
         while (iterator.hasNext()) {
             val activeDownload = iterator.next()
             if (activeDownload.equals(downloadID)) {
@@ -144,8 +144,8 @@ class DownloadService : Service() {
 
     /* Just a test */ // todo remove
     fun queryStatus (context: Context, downloadID: Long) {
-        val downloadManager : DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val cursor : Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        val downloadManager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             LogHelper.i(TAG, "COLUMN_ID: " +
@@ -165,7 +165,7 @@ class DownloadService : Service() {
 
 
     /* BroadcastReceiver for completed downloads */
-    private val onCompleteReceiver = object : BroadcastReceiver() {
+    private val onCompleteReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
             removeFromActiveDownloads(id)
@@ -173,11 +173,11 @@ class DownloadService : Service() {
     }
 
 
-    /**
+    /*
      * Inner class: Local Binder that returns this service
      */
-    inner class LocalBinder : Binder() {
-        fun getService() : DownloadService {
+    inner class LocalBinder: Binder() {
+        fun getService(): DownloadService {
             // return this instance of DownloadService so clients can call public methods
             return this@DownloadService
         }

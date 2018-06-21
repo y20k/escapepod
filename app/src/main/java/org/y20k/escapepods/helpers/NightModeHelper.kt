@@ -26,7 +26,7 @@ import android.view.View
 object NightModeHelper {
 
     /* Define log tag */
-    private val TAG : String = LogHelper.makeLogTag(NightModeHelper::class.java)
+    private val TAG: String = LogHelper.makeLogTag(NightModeHelper::class.java)
 
 
     /* Switches to opposite theme */

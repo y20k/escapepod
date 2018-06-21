@@ -27,15 +27,15 @@ import java.util.*
 /*
  * XmlReader class
  */
-class XmlReader : AsyncTask<InputStream, Void, Podcast>() {
+class XmlReader: AsyncTask<InputStream, Void, Podcast>() {
 
     /* Define log tag */
-    private val TAG : String = LogHelper.makeLogTag(XmlReader::class.java.name)
+    private val TAG: String = LogHelper.makeLogTag(XmlReader::class.java.name)
 
     /* Implements doInBackground */
     override fun doInBackground(vararg params: InputStream): Podcast {
-        val xmlStream : InputStream = params[0]
-        val parser : XmlPullParser = Xml.newPullParser()
+        val xmlStream: InputStream = params[0]
+        val parser: XmlPullParser = Xml.newPullParser()
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
         parser.setInput(xmlStream, null)
 

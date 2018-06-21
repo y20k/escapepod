@@ -1,6 +1,6 @@
 /*
- * DialogAdd.kt
- * Implements the DialogAdd class
+ * AddPodcastDialog.kt
+ * Implements the AddPodcastDialog class
  * A DialogAdd asks the user for the feed URL of a podcast
  *
  * This file is part of
@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepods.helpers
+package org.y20k.escapepods.dialogs
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -20,21 +20,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import org.y20k.escapepods.R
+import org.y20k.escapepods.helpers.LogHelper
 
 
 /*
- * DialogAdd class
+ * AddPodcastDialog class
  */
-class DialogAdd (private var addDialogListener : AddDialogListener) {
+class AddPodcastDialog (private var addPodcastDialogListener: AddPodcastDialogListener) {
 
     /* Interface used to communicate back to activity */
-    interface AddDialogListener {
-        fun onFinish(textInput : String) {
+    interface AddPodcastDialogListener {
+        fun onAddPodcastDialogFinish(textInput: String) {
         }
     }
 
     /* Define log tag */
-    private val TAG = LogHelper.makeLogTag(DialogAdd::class.java.simpleName)
+    private val TAG = LogHelper.makeLogTag(AddPodcastDialog::class.java.simpleName)
 
 
     /* Construct and show dialog */
@@ -55,7 +56,7 @@ class DialogAdd (private var addDialogListener : AddDialogListener) {
         builder.setPositiveButton(R.string.dialog_add_podcast_button) { _, id ->
             if (inputField.text != null) {
                 // hand text over to initiating activity
-                this.addDialogListener.onFinish(inputField.text.toString());
+                this.addPodcastDialogListener.onAddPodcastDialogFinish(inputField.text.toString());
             }
         }
 
@@ -68,7 +69,5 @@ class DialogAdd (private var addDialogListener : AddDialogListener) {
         // display add dialog
         builder.show()
     }
-
-
 
 }

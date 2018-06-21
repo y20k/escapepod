@@ -23,16 +23,15 @@ import org.y20k.escapepods.BuildConfig
  */
 object LogHelper {
 
-    private val TESTING = true
-    private val LOG_PREFIX = "escapepods_"
-    private val LOG_PREFIX_LENGTH = LOG_PREFIX.length
-    private val MAX_LOG_TAG_LENGTH = 23
+    private val TESTING: Boolean = true
+    private val LOG_PREFIX: String = "escapepods_"
+    private val LOG_PREFIX_LENGTH: Int = LOG_PREFIX.length
+    private val MAX_LOG_TAG_LENGTH: Int = 23
 
     fun makeLogTag(str: String): String {
         return if (str.length > MAX_LOG_TAG_LENGTH - LOG_PREFIX_LENGTH) {
             LOG_PREFIX + str.substring(0, MAX_LOG_TAG_LENGTH - LOG_PREFIX_LENGTH - 1)
         } else LOG_PREFIX + str
-
     }
 
     fun makeLogTag(cls: Class<*>): String {
@@ -41,14 +40,14 @@ object LogHelper {
     }
 
     fun v(tag: String, vararg messages: Any) {
-        // Only log VERBOSE if build type is DEBUG
+        // Only log VERBOSE if build type is DEBUG or if TESTING is true
         if (BuildConfig.DEBUG || TESTING) {
             log(tag, Log.VERBOSE, null, *messages)
         }
     }
 
     fun d(tag: String, vararg messages: Any) {
-        // Only log DEBUG if build type is DEBUG
+        // Only log DEBUG if build type is DEBUG or if TESTING is true
         if (BuildConfig.DEBUG || TESTING) {
             log(tag, Log.DEBUG, null, *messages)
         }
