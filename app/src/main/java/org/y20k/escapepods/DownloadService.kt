@@ -35,7 +35,7 @@ import org.y20k.escapepods.helpers.LogHelper
 class DownloadService : Service() {
 
     /* Define log tag */
-    private val TAG : String = LogHelper.makeLogTag(DownloadService::class.java.name)
+    private val TAG : String = LogHelper.makeLogTag(DownloadService::class.java)
 
 
     /* Main class variables */

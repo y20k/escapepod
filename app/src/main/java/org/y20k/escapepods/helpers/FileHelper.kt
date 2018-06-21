@@ -18,7 +18,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
-import org.y20k.escapepods.DownloadService
 import java.io.*
 import java.text.NumberFormat
 
@@ -29,14 +28,14 @@ import java.text.NumberFormat
 class FileHelper {
 
     /* Define log tag */
-    private val TAG : String = LogHelper.makeLogTag(DownloadService::class.java.name)
+    private val TAG : String = LogHelper.makeLogTag(FileHelper::class.java)
 
 
     /* Reads InputStream from file uri and returns it as String*/
     fun readTextFile(context : Context, uri: Uri) : String {
         // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
         // https://developer.android.com/training/secure-file-sharing/retrieve-info
-        val stream : InputStream = context.getContentResolver().openInputStream(uri)
+        val stream : InputStream = context.contentResolver.openInputStream(uri)
         val reader : BufferedReader = BufferedReader(InputStreamReader(stream))
         val builder : StringBuilder = StringBuilder()
 
@@ -47,6 +46,12 @@ class FileHelper {
         stream.close()
 
         return builder.toString()
+    }
+
+
+    /* Return an InputStream for given Uri */
+    fun getTextFileStream(context : Context, uri: Uri) : InputStream {
+        return context.contentResolver.openInputStream(uri)
     }
 
 

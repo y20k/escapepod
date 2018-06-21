@@ -1,14 +1,29 @@
+/*
+ * LogHelper.kt
+ * Implements the LogHelper object
+ * A LogHelper wraps the logging calls to be able to strip them out of release versions
+ *
+ * This file is part of
+ * ESCAPEPODS - Free and Open Podcast App
+ *
+ * Copyright (c) 2018 - Y20K.org
+ * Licensed under the MIT-License
+ * http://opensource.org/licenses/MIT
+ */
+
+
 package org.y20k.escapepods.helpers
 
 import android.util.Log
-
 import org.y20k.escapepods.BuildConfig
 
+
 /*
- * Keys object
+ * LogHelper object
  */
 object LogHelper {
 
+    private val TESTING = true
     private val LOG_PREFIX = "escapepods_"
     private val LOG_PREFIX_LENGTH = LOG_PREFIX.length
     private val MAX_LOG_TAG_LENGTH = 23
@@ -20,24 +35,21 @@ object LogHelper {
 
     }
 
-//    /**
-//     * Don't use this when obfuscating class names!
-//     */
-//    fun makeLogTag(cls: Class<*>): String {
-//        return makeLogTag(cls.simpleName)
-//    }
-
+    fun makeLogTag(cls: Class<*>): String {
+        // don't use this when obfuscating class names
+        return makeLogTag(cls.simpleName)
+    }
 
     fun v(tag: String, vararg messages: Any) {
         // Only log VERBOSE if build type is DEBUG
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || TESTING) {
             log(tag, Log.VERBOSE, null, *messages)
         }
     }
 
     fun d(tag: String, vararg messages: Any) {
         // Only log DEBUG if build type is DEBUG
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || TESTING) {
             log(tag, Log.DEBUG, null, *messages)
         }
     }

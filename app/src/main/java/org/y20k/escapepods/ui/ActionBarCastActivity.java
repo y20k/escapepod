@@ -16,19 +16,11 @@
 package org.y20k.escapepods.ui;
 
 import android.app.ActivityOptions;
-import android.app.DownloadManager;
 import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -49,14 +41,8 @@ import com.google.android.gms.cast.framework.IntroductoryOverlay;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-import org.y20k.escapepods.DownloadService;
 import org.y20k.escapepods.R;
-import org.y20k.escapepods.helpers.DialogAdd;
-import org.y20k.escapepods.helpers.FileHelper;
-import org.y20k.escapepods.helpers.Keys;
 import org.y20k.escapepods.helpers.LogHelper;
-
-import java.util.Objects;
 
 /**
  * Abstract activity with toolbar, navigation drawer and cast support. Needs to be extended by
@@ -84,11 +70,6 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
 
     private int mItemToOpenWhenDrawerCloses = -1;
 
-    private long[] mDownloadIDs = { -1L };
-    private DownloadService mDownloadService = null;
-    private boolean mDownloadServiceBound = false;
-    private Handler mDownloadProgressHandler = new Handler();
-
     private CastStateListener mCastStateListener = new CastStateListener() {
         @Override
         public void onCastStateChanged(int newState) {
@@ -112,7 +93,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             if (mDrawerToggle != null) mDrawerToggle.onDrawerClosed(drawerView);
             if (mItemToOpenWhenDrawerCloses >= 0) {
                 Bundle extras = ActivityOptions.makeCustomAnimation(
-                    ActionBarCastActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle();
+                        ActionBarCastActivity.this, R.anim.fade_in, R.anim.fade_out).toBundle();
 
                 Class activityClass = null;
                 switch (mItemToOpenWhenDrawerCloses) {
@@ -121,27 +102,6 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_playlists:
                         activityClass = PlaceholderActivity.class;
-                        break;
-                    case R.id.navigation_add_new:
-                        DialogAdd dialogAdd = new DialogAdd(textInput -> {
-
-                            // just a test // todo remove
-                            Uri[] uris = { Uri.parse("https://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/radarrelay/undertheradar136.mp3"), Uri.parse("https://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/radarrelay/undertheradar132.mp3") };
-                            mDownloadIDs = mDownloadService.download(ActionBarCastActivity.this, uris, Keys.INSTANCE.getRSS());
-                            mDownloadProgressRunnable.run();
-
-//                            // long[] downloadIDs = { -1L };
-//                            Uri[] podcastUris = { Uri.parse(textInput) };
-//                            if (podcastUris[0].getScheme() != null && podcastUris[0].getScheme().startsWith("http")) {
-//                                mDownloadIDs = startDownload(podcastUris, Keys.INSTANCE.getRSS());
-////                                long sizeSoFar = downloadService.getFileSizeSoFar(mDownloadIDs[0]-1);
-////                                FileHelper fileHelper = new FileHelper();
-////                                LogHelper.INSTANCE.i(TAG, "Size so far: " + fileHelper.getReadableByteCount(sizeSoFar, true));
-//                            } else {
-//                                LogHelper.INSTANCE.e(TAG, "Unable to download: " + podcastUris[0].toString());
-//                            }
-                        });
-                        dialogAdd.show(ActionBarCastActivity.this);
                         break;
                 }
                 if (activityClass != null) {
@@ -170,12 +130,12 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
     };
 
     private final FragmentManager.OnBackStackChangedListener mBackStackChangedListener =
-        new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                updateDrawerToggle();
-            }
-        };
+            new FragmentManager.OnBackStackChangedListener() {
+                @Override
+                public void onBackStackChanged() {
+                    updateDrawerToggle();
+                }
+            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -190,19 +150,12 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         }
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mDownloadCompleteReceiver);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         if (!mToolbarInitialized) {
             throw new IllegalStateException("You must run super.initializeToolbar at " +
-                "the end of your onCreate method");
+                    "the end of your onCreate method");
         }
     }
 
@@ -226,13 +179,6 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         // action bar toggle: only top level screens show the hamburger-like icon, inner
         // screens - either Activities or fragments - show the "Up" icon instead.
         getFragmentManager().addOnBackStackChangedListener(mBackStackChangedListener);
-
-        // listen for completed downloads
-        registerReceiver(mDownloadCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-        // bind to DownloadService
-        Intent intent = new Intent(this, DownloadService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -251,23 +197,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             mCastContext.removeCastStateListener(mCastStateListener);
         }
         getFragmentManager().removeOnBackStackChangedListener(mBackStackChangedListener);
-
-        // stop handler
-        mDownloadProgressHandler.removeCallbacks(mDownloadProgressRunnable);
-
-        // unregister download complete receiver
-        unregisterReceiver(mDownloadCompleteReceiver);
-
-        // unbind from Download Service
-        unbindService(mConnection);
     }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -327,7 +257,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar == null) {
             throw new IllegalStateException("Layout is required to include a Toolbar with id " +
-                "'toolbar'");
+                    "'toolbar'");
         }
         mToolbar.inflateMenu(R.menu.main);
 
@@ -341,7 +271,7 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
 
             // Create an ActionBarDrawerToggle that will handle opening/closing of the drawer:
             mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                mToolbar, R.string.open_content_drawer, R.string.close_content_drawer);
+                    mToolbar, R.string.open_content_drawer, R.string.close_content_drawer);
             mDrawerLayout.setDrawerListener(mDrawerListener);
             populateDrawerItems(navigationView);
             setSupportActionBar(mToolbar);
@@ -402,83 +332,4 @@ public abstract class ActionBarCastActivity extends AppCompatActivity {
             overlay.show();
         }
     }
-
-
-    /* Start download in DownloadService */
-    private long[] startDownload(Uri[] uris, int type) {
-
-        // start download
-        long[] downloadIDs = { -1L };
-        if (mDownloadServiceBound) {
-            downloadIDs = mDownloadService.download(this, uris, type);
-        }
-
-        // return download IDs
-        return downloadIDs;
-    }
-
-
-    /* Runnable that updates the download progress every second */
-    private Runnable mDownloadProgressRunnable = new Runnable() {
-        @Override
-        public void run() {
-            for (Long activeDownload : mDownloadService.getActiveDownloads()) {
-                long size = mDownloadService.getFileSizeSoFar(ActionBarCastActivity.this, activeDownload);
-                // TODO update UI
-                LogHelper.INSTANCE.i(TAG, "DownloadID = " + activeDownload + " | Size so far: " + new FileHelper().getReadableByteCount(size, true) + " " + mDownloadService.getActiveDownloads().isEmpty()); // todo remove
-            };
-            mDownloadProgressHandler.postDelayed(this, Keys.INSTANCE.getONE_SECOND_IN_MILLISECONDS());
-        }
-    };
-
-
-    /* BroadcastReceiver for completed downloads */
-    private BroadcastReceiver mDownloadCompleteReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L);
-            for (long downloadID : mDownloadIDs) {
-                if (downloadID == id) {
-                    // get Uri if ID represented one of the enqueued downloads
-                    DownloadManager downloadManager = (DownloadManager) Objects.requireNonNull(getSystemService(DOWNLOAD_SERVICE));
-                    Uri uri = downloadManager.getUriForDownloadedFile(id);
-
-                    // some tests // todo remove
-                    FileHelper fileHelper = new FileHelper();
-                    LogHelper.INSTANCE.i(TAG, "Download complete: " + fileHelper.getFileName(ActionBarCastActivity.this, uri) +
-                    " | " + fileHelper.getReadableByteCount(fileHelper.getFileSize(ActionBarCastActivity.this, uri), true)); // todo remove
-                }
-            }
-
-            // cancel periodic UI update if possible
-            if (mDownloadService.getActiveDownloads().isEmpty()) {
-                mDownloadProgressHandler.removeCallbacks(mDownloadProgressRunnable);
-            }
-        }
-    };
-
-
-    /**
-     * Defines callbacks for service binding, passed to bindService()
-     */
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // get service from binder
-            DownloadService.LocalBinder binder = (DownloadService.LocalBinder) service;
-            mDownloadService = binder.getService();
-            mDownloadServiceBound = true;
-            // check if downloads are in progress and update UI while service is connected
-            if (!mDownloadService.getActiveDownloads().isEmpty()) {
-                mDownloadProgressRunnable.run();
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mDownloadServiceBound = false;
-        }
-    };
-
 }

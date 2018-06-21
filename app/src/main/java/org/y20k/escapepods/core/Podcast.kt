@@ -14,9 +14,16 @@
 
 package org.y20k.escapepods.core
 
+import android.net.Uri
+import android.support.v4.media.MediaBrowserCompat
+import java.util.*
+
 
 /*
  * Podcast class
  */
-class Podcast {
+class Podcast(var title : String,
+              var website : Uri,
+              var episodes: TreeMap<String, MediaBrowserCompat.MediaItem>) {
+
 }

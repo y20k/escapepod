@@ -14,12 +14,14 @@
 
 package org.y20k.escapepods
 
+import android.net.Uri
 import android.os.AsyncTask
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.helpers.LogHelper
 import java.io.InputStream
+import java.util.*
 
 
 /*
@@ -37,9 +39,9 @@ class XmlReader : AsyncTask<InputStream, Void, Podcast>() {
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
         parser.setInput(xmlStream, null)
 
-        // todo implment
+        // todo implement
 
-        return Podcast()
+        return Podcast("Title", Uri.parse("http://www.y20k.org"), TreeMap())
     }
 
 

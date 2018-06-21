@@ -22,6 +22,7 @@ object Keys {
 
     // preferences
     val PREF_DOWNLOAD_OVER_MOBILE : String = "DOWNLOAD_OVER_MOBILE"
+    val PREF_NIGHT_MODE_STATE : String = "NIGHT_MODE_STATE"
 
     // file types
     val RSS : Int = 1
