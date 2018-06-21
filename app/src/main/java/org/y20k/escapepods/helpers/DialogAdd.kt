@@ -1,3 +1,17 @@
+/*
+ * DialogAdd.kt
+ * Implements the DialogAdd class
+ * A DialogAdd asks the user for the feed URL of a podcast
+ *
+ * This file is part of
+ * ESCAPEPODS - Free and Open Podcast App
+ *
+ * Copyright (c) 2018 - Y20K.org
+ * Licensed under the MIT-License
+ * http://opensource.org/licenses/MIT
+ */
+
+
 package org.y20k.escapepods.helpers
 
 import android.app.Activity

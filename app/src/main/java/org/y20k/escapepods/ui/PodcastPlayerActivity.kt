@@ -1,3 +1,17 @@
+/*
+ * PodcastPlayerActivity.kt
+ * Implements the PodcastPlayerActivity class
+ * PodcastPlayerActivity is Escapepod's main activity that hosts a list of podcast and a player sheet
+ *
+ * This file is part of
+ * ESCAPEPODS - Free and Open Podcast App
+ *
+ * Copyright (c) 2018 - Y20K.org
+ * Licensed under the MIT-License
+ * http://opensource.org/licenses/MIT
+ */
+
+
 package org.y20k.escapepods.ui
 
 import android.app.Activity
@@ -18,8 +32,11 @@ import org.y20k.escapepods.helpers.LogHelper
 import java.util.*
 
 
-//class PodcastPlayerActivity : BaseActivity() {
+/*
+ * PodcastPlayerActivity class
+ */
 class PodcastPlayerActivity : Activity() {
+//class PodcastPlayerActivity : BaseActivity() {
 
     /* Define log tag */
     private val TAG : String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)

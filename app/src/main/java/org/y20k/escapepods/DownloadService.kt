@@ -1,7 +1,7 @@
 /*
  * DownloadService.kt
  * Implements the DownloadService class
- * A DownloadHelper is a service that provides methods for downloading files
+ * A DownloadService is a service that provides methods for downloading files
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
