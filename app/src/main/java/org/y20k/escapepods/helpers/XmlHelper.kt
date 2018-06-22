@@ -14,9 +14,47 @@
 
 package org.y20k.escapepods.helpers
 
+import org.xmlpull.v1.XmlPullParser
+
 
 /*
  * XmlHelper class
  */
 object XmlHelper {
+
+    /* Define log tag */
+    private val TAG: String = LogHelper.makeLogTag(XmlHelper::class.java.name)
+
+
+    /* PODCAST: read title */
+    fun readPodcastTitle(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, "title")
+        val title = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, "title")
+        LogHelper.e(TAG, "Podcast title: $title") // todo remove
+        return title
+    }
+
+
+    /* EPISODE: read title */
+    fun readEpisodeTitle(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, "title")
+        val title = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, "title")
+        LogHelper.e(TAG, "Episode title: $title") // todo remove
+        return title
+    }
+
+
+    /* Helper method that reads a text */
+    private fun readText(parser: XmlPullParser): String {
+        var result = ""
+        if (parser.next() == XmlPullParser.TEXT) {
+            result = parser.text
+            parser.nextTag()
+        }
+        return result
+    }
+
+
 }

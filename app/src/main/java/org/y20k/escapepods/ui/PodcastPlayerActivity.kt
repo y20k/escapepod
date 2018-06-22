@@ -25,10 +25,12 @@ import android.view.View
 import android.widget.Button
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
+import org.y20k.escapepods.XmlReader
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
+import java.io.InputStream
 
 
 /*
@@ -102,6 +104,11 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     override fun onAddPodcastDialogFinish(textInput: String) {
         super.onAddPodcastDialogFinish(textInput)
         LogHelper.e(TAG, "Text input from dialog: $textInput") // todo remove
+
+        // just a test
+        var uri = Uri.parse(textInput)
+        val uris = Array(1, {uri})
+        downloadIDs = startDownload(uris, Keys.RSS)
     }
 
 
@@ -140,8 +147,11 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
 
                     // some tests // todo remove
                     val fileHelper = FileHelper()
-                    LogHelper.v(TAG, "Download complete: " + fileHelper.getFileName(this@PodcastPlayerActivity, uri) +
+                    LogHelper.e(TAG, "Download complete: " + fileHelper.getFileName(this@PodcastPlayerActivity, uri) +
                             " | " + fileHelper.getReadableByteCount(fileHelper.getFileSize(this@PodcastPlayerActivity, uri), true)) // todo remove
+                    val inputStream: InputStream = FileHelper().getTextFileStream(this@PodcastPlayerActivity, uri)
+                    val xmlReader: XmlReader = XmlReader()
+                    xmlReader.execute(inputStream)
                 }
             }
 
