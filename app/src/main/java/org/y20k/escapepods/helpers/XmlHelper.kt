@@ -15,6 +15,8 @@
 package org.y20k.escapepods.helpers
 
 import org.xmlpull.v1.XmlPullParser
+import org.xmlpull.v1.XmlPullParserException
+import java.io.IOException
 
 
 /*
@@ -27,6 +29,7 @@ object XmlHelper {
 
 
     /* PODCAST: read title */
+    @Throws(XmlPullParserException::class, IOException::class)
     fun readPodcastTitle(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, "title")
         val title = readText(parser)
@@ -37,6 +40,7 @@ object XmlHelper {
 
 
     /* EPISODE: read title */
+    @Throws(XmlPullParserException::class, IOException::class)
     fun readEpisodeTitle(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, "title")
         val title = readText(parser)
@@ -47,6 +51,7 @@ object XmlHelper {
 
 
     /* Helper method that reads a text */
+    @Throws(XmlPullParserException::class, IOException::class)
     private fun readText(parser: XmlPullParser): String {
         var result = ""
         if (parser.next() == XmlPullParser.TEXT) {
@@ -55,6 +60,5 @@ object XmlHelper {
         }
         return result
     }
-
 
 }
