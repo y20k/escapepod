@@ -41,4 +41,19 @@ object Keys {
 
     // values
     val ONE_SECOND_IN_MILLISECONDS: Long = 1000L
+
+    // rss tags
+    val RSS_RSS = "rss"
+    val RSS_PODCAST = "channel"
+    val RSS_PODCAST_NAME = "title"
+    val RSS_PODCAST_DESCRIPTION = "description"
+    val RSS_PODCAST_IMAGE = "image"
+    val RSS_PODCAST_IMAGE_URL = "url"
+    val RSS_EPISODE = "item"
+    val RSS_EPISODE_TITLE = "title"
+    val RSS_EPISODE_DESCRIPTION = "description"
+    val RSS_EPISODE_AUDIO_LINK = "enclosure"
+    val RSS_EPISODE_AUDIO_LINK_TYPE = "type"
+    val RSS_EPISODE_AUDIO_LINK_URL = "url"
+
 }

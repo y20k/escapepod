@@ -19,7 +19,9 @@ import android.support.v4.media.MediaBrowserCompat
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
+import org.y20k.escapepods.helpers.XmlHelper
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -32,15 +34,13 @@ class XmlReader: AsyncTask<InputStream, Void, List<*>>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(XmlReader::class.java.name)
-    // We don't use namespaces
-    private val ns: String? = null
 
 
     /* Mail class variables */
+    private val nameSpace: String? = null
     private var podcastName: String = ""
+    private var podcastDescription: String = ""
     private var episodes: TreeMap<String, MediaBrowserCompat.MediaItem> = TreeMap<String, MediaBrowserCompat.MediaItem>()
-    private var currentStartTag: String = ""
-    private var parsingEpisode: Boolean = false
 
 
     /* Implements doInBackground */
@@ -68,146 +68,92 @@ class XmlReader: AsyncTask<InputStream, Void, List<*>>() {
     }
 
 
+    /* Reads whole feed */
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readFeed(parser: XmlPullParser): List<*> {
-        val entries: ArrayList<Entry> = ArrayList()
+        val entries: ArrayList<Episode> = ArrayList()
 
-        parser.require(XmlPullParser.START_TAG, ns, "rss")
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_RSS)
         while (parser.next() != XmlPullParser.END_TAG) {
+            // abort loop early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            val name = parser.name
-
-            // Starts by looking for the channel tag
-            if (name == "channel") {
-                readChannel(parser)
-            } else {
-                skip(parser)
+            // read only relevant tags
+            when (parser.name) {
+                // found a podcast
+                Keys.RSS_PODCAST -> readPodcast(parser)
+                // skip to next tag
+                else -> XmlHelper.skip(parser)
             }
         }
         return entries
     }
 
-    @Throws(XmlPullParserException::class, IOException::class)
-    private fun readChannel(parser: XmlPullParser): List<*> {
-        val entries: ArrayList<Entry> = ArrayList()
 
-        parser.require(XmlPullParser.START_TAG, ns, "channel")
+    /* Reads podcast element - within feed */
+    @Throws(XmlPullParserException::class, IOException::class)
+    private fun readPodcast(parser: XmlPullParser): List<*> {
+        val entries: ArrayList<Episode> = ArrayList()
+
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST)
         while (parser.next() != XmlPullParser.END_TAG) {
+            // abort loop early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            val name = parser.name
-            // Starts by looking for the entry tag
-            if (name == "title") {
-                LogHelper.e(TAG, "TITLE: ${readTitle(parser)}")
-            } else if (name == "description") {
-                LogHelper.e(TAG, "DESCRIPTION: ${readDescription(parser)}")
-            } else if (name == "item") {
-                entries.add(readEntry(parser))
-            } else {
-                skip(parser)
+            // read only relevant tags
+            when (parser.name) {
+                // found a podcast name
+                Keys.RSS_PODCAST_NAME -> LogHelper.e(TAG, "TITLE: ${XmlHelper.readPodcastTitle(parser, nameSpace)}")
+                // found a podcast description
+                Keys.RSS_PODCAST_DESCRIPTION -> LogHelper.e(TAG, "DESCRIPTION: ${XmlHelper.readPodcastDescription(parser, nameSpace)}")
+                // found an episode
+                Keys.RSS_EPISODE -> entries.add(readEpisode(parser))
+                // skip to next tag
+                else -> XmlHelper.skip(parser)
             }
         }
 
         LogHelper.e(TAG, "SIZE: ${entries.size}")
         for (entry in entries) {
-            LogHelper.e(TAG, "${entry.title} \n ${entry.summary} \n ${entry.link} ")
+            LogHelper.e(TAG, "${entry.title} \n ${entry.description} \n ${entry.link} ")
         }
 
         return entries
     }
 
 
-
-    // Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them off
-    // to their respective "read" methods for processing. Otherwise, skips the tag.
+    /* Reads episode element - within podcast element (within feed) */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readEntry(parser: XmlPullParser): Entry {
-        parser.require(XmlPullParser.START_TAG, ns, "item")
-        var title: String? = null
-        var summary: String? = null
-        var link: String? = null
+    private fun readEpisode(parser: XmlPullParser): Episode {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE)
+        var title: String = ""
+        var description: String = ""
+        var link: String = ""
         while (parser.next() != XmlPullParser.END_TAG) {
+            // abort loop early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            val name = parser.name
-            if (name == "title") {
-                title = readTitle(parser)
-            } else if (name == "description") {
-                summary = readDescription(parser)
-            } else if (name == "enclosure") {
-                link = readEnclosureLink(parser)
-            } else {
-                skip(parser)
+            // read only relevant tags
+            when (parser.name) {
+                // found episode title
+                Keys.RSS_EPISODE_TITLE -> title = XmlHelper.readEpisodeTitle(parser, nameSpace)
+                // found episode description
+                Keys.RSS_EPISODE_DESCRIPTION -> description = XmlHelper.readEpisodeDescription(parser, nameSpace)
+                // found episode audio link
+                Keys.RSS_EPISODE_AUDIO_LINK -> link = XmlHelper.readEpisodeAudioLink(parser, nameSpace)
+                // skip to next tag
+                else -> XmlHelper.skip(parser)
             }
         }
-        return Entry(title, summary, link)
-    }
-
-    // Processes title tags in the feed.
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun readTitle(parser: XmlPullParser): String {
-        parser.require(XmlPullParser.START_TAG, ns, "title")
-        val title = readText(parser)
-        parser.require(XmlPullParser.END_TAG, ns, "title")
-        return title
-    }
-
-    // Processes link tags in the feed.
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun readEnclosureLink(parser: XmlPullParser): String {
-        var link = ""
-        parser.require(XmlPullParser.START_TAG, ns, "enclosure")
-        val tag = parser.name
-        val type = parser.getAttributeValue(null, "type")
-        if (tag == "enclosure") {
-            if (type.contains("audio")) {
-                link = parser.getAttributeValue(null, "url")
-                parser.nextTag()
-            }
-        }
-        parser.require(XmlPullParser.END_TAG, ns, "enclosure")
-        return link
-    }
-
-    // Processes summary tags in the feed.
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun readDescription(parser: XmlPullParser): String {
-        parser.require(XmlPullParser.START_TAG, ns, "description")
-        val summary = readText(parser)
-        parser.require(XmlPullParser.END_TAG, ns, "description")
-        return summary
-    }
-
-    // For the tags title and summary, extracts their text values.
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun readText(parser: XmlPullParser): String {
-        var result = ""
-        if (parser.next() == XmlPullParser.TEXT) {
-            result = parser.text
-            parser.nextTag()
-        }
-        return result
+        return Episode(title, description, link)
     }
 
 
-    class Entry (val title: String?, val summary: String?, val link: String?)
+    // inner class // todo replace with MediaItemCompat
+    class Episode (val title: String?, val description: String?, val link: String?)
 
-    @Throws(XmlPullParserException::class, IOException::class)
-    private fun skip(parser: XmlPullParser) {
-        if (parser.eventType != XmlPullParser.START_TAG) {
-            throw IllegalStateException()
-        }
-        var depth = 1
-        while (depth != 0) {
-            when (parser.next()) {
-                XmlPullParser.END_TAG -> depth--
-                XmlPullParser.START_TAG -> depth++
-            }
-        }
-    }
 
 }

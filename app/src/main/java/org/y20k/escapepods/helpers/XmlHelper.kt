@@ -28,30 +28,83 @@ object XmlHelper {
     private val TAG: String = LogHelper.makeLogTag(XmlHelper::class.java.name)
 
 
-    /* PODCAST: read title */
+
+    /* GENERAL: Skips tags that are not needed */
     @Throws(XmlPullParserException::class, IOException::class)
+    fun skip(parser: XmlPullParser) {
+        if (parser.eventType != XmlPullParser.START_TAG) {
+            throw IllegalStateException()
+        }
+        var depth = 1
+        while (depth != 0) {
+            when (parser.next()) {
+                XmlPullParser.END_TAG -> depth--
+                XmlPullParser.START_TAG -> depth++
+            }
+        }
+    }
+
+
+    /* PODCAST: read title */
+    @Throws(IOException::class, XmlPullParserException::class)
     fun readPodcastTitle(parser: XmlPullParser, nameSpace: String?): String {
-        parser.require(XmlPullParser.START_TAG, nameSpace, "title")
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_NAME)
         val title = readText(parser)
-        parser.require(XmlPullParser.END_TAG, nameSpace, "title")
-        LogHelper.e(TAG, "Podcast title: $title") // todo remove
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_NAME)
         return title
+    }
+
+    /* PODCAST: read description */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readPodcastDescription(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_DESCRIPTION)
+        val summary = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_DESCRIPTION)
+        return summary
     }
 
 
     /* EPISODE: read title */
-    @Throws(XmlPullParserException::class, IOException::class)
+    @Throws(IOException::class, XmlPullParserException::class)
     fun readEpisodeTitle(parser: XmlPullParser, nameSpace: String?): String {
-        parser.require(XmlPullParser.START_TAG, nameSpace, "title")
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_TITLE)
         val title = readText(parser)
-        parser.require(XmlPullParser.END_TAG, nameSpace, "title")
-        LogHelper.e(TAG, "Episode title: $title") // todo remove
+        parser.require(XmlPullParser.END_TAG, nameSpace,  Keys.RSS_EPISODE_TITLE)
         return title
     }
 
 
-    /* Helper method that reads a text */
-    @Throws(XmlPullParserException::class, IOException::class)
+    /* EPISODE: read description */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readEpisodeDescription(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION)
+        val summary = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION)
+        return summary
+    }
+
+
+
+    /* EPISODE: read audio link */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readEpisodeAudioLink(parser: XmlPullParser, nameSpace: String?): String {
+        var link = ""
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_AUDIO_LINK)
+        val tag = parser.name
+        val type = parser.getAttributeValue(null, Keys.RSS_EPISODE_AUDIO_LINK_TYPE)
+        if (tag == Keys.RSS_EPISODE_AUDIO_LINK) {
+            if (type.contains("audio")) {
+                link = parser.getAttributeValue(null, Keys.RSS_EPISODE_AUDIO_LINK_URL)
+                parser.nextTag()
+            }
+        }
+        parser.require(XmlPullParser.END_TAG, nameSpace,Keys.RSS_EPISODE_AUDIO_LINK)
+        return link
+    }
+    
+    
+    /* Reads text */
+    @Throws(IOException::class, XmlPullParserException::class)
     private fun readText(parser: XmlPullParser): String {
         var result = ""
         if (parser.next() == XmlPullParser.TEXT) {
