@@ -45,13 +45,13 @@ object XmlHelper {
     }
 
 
-    /* PODCAST: read title */
+    /* PODCAST: read name */
     @Throws(IOException::class, XmlPullParserException::class)
-    fun readPodcastTitle(parser: XmlPullParser, nameSpace: String?): String {
+    fun readPodcastName(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_NAME)
-        val title = readText(parser)
+        val name = readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_NAME)
-        return title
+        return name
     }
 
     /* PODCAST: read description */
@@ -83,6 +83,47 @@ object XmlHelper {
         return summary
     }
 
+
+    /* EPISODE: read publication date */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readEpisodePublicationDate(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
+        val summary = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
+        return summary
+    }
+
+    /* PODCAST: read image */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readPodcastImage(parser: XmlPullParser, nameSpace: String?): String {
+        var link = ""
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE)
+        while (parser.next() != XmlPullParser.END_TAG) {
+            // abort loop early if no start tag
+            if (parser.eventType != XmlPullParser.START_TAG) {
+                continue
+            }
+            // read only relevant tags
+            when (parser.name) {
+                // found episode title
+                Keys.RSS_PODCAST_IMAGE_URL -> link = XmlHelper.readPodcastImageUrl(parser, nameSpace)
+                // skip to next tag
+                else -> XmlHelper.skip(parser)
+            }
+        }
+        parser.require(XmlPullParser.END_TAG, nameSpace,Keys.RSS_PODCAST_IMAGE)
+        return link
+    }
+
+
+    /* PODCAST: read image URL - within image*/
+    @Throws(IOException::class, XmlPullParserException::class)
+    private fun readPodcastImageUrl(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE_URL)
+        val link = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE_URL)
+        return link
+    }
 
 
     /* EPISODE: read audio link */

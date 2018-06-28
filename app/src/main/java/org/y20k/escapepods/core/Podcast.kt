@@ -14,16 +14,44 @@
 
 package org.y20k.escapepods.core
 
-import android.net.Uri
-import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import org.y20k.escapepods.helpers.Keys
 import java.util.*
 
 
 /*
  * Podcast class
  */
-class Podcast(var title : String,
-              var website : Uri,
-              var episodes: TreeMap<String, MediaBrowserCompat.MediaItem>) {
+class Podcast(var name: String,
+              var description: String,
+              var image: String,
+              var episodes: TreeMap<Date, MediaMetadataCompat>) {
+
+
+    /* overrides toString method */
+    override fun toString(): String {
+        val descriptionLength: Int = 50
+        val stringBuilder: StringBuilder = StringBuilder()
+        val shortDescriptionLength: Int = if (description.length <= descriptionLength) description.length -1 else descriptionLength
+        val shortDescription: String = description.substring(0, shortDescriptionLength)
+        stringBuilder
+                .append("$name\n")
+                .append("$shortDescription ...\n")
+        for (episode in episodes) {
+            val episodeTitle: String = episode.value.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+            val episodeDescription: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION)
+            val episodeShortDescriptionLength: Int = if (episodeDescription.length <= descriptionLength) episodeDescription.length -1 else 25
+            val episodeShortDescription: String = episodeDescription.substring(0, episodeShortDescriptionLength)
+            val publicationDate: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)
+            val audioUrl: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL)
+            val imageUrl: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL)
+            stringBuilder.append("$episodeTitle\n")
+            stringBuilder.append("$episodeShortDescription ...\n")
+            stringBuilder.append("$publicationDate\n")
+            stringBuilder.append("$audioUrl \n")
+            stringBuilder.append("$imageUrl \n")
+        }
+        return stringBuilder.toString()
+    }
 
 }
