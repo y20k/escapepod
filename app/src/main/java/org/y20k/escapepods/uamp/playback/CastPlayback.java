@@ -230,9 +230,9 @@ public class CastPlayback implements Playback {
                 new Uri.Builder().encodedPath(
                         track.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI))
                         .build());
-        // First image is used by the receiver for showing the audio album art.
+        // First remoteImageFileLocation is used by the receiver for showing the audio album art.
         mediaMetadata.addImage(image);
-        // Second image is used by Cast Companion Library on the full screen activity that is shown
+        // Second remoteImageFileLocation is used by Cast Companion Library on the full screen activity that is shown
         // when the cast dialog is clicked.
         mediaMetadata.addImage(image);
 

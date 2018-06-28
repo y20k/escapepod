@@ -32,7 +32,14 @@ import java.util.*
 /*
  * XmlReader class
  */
-class XmlReader: AsyncTask<InputStream, Void, Podcast>() {
+class XmlReader(var xmlReaderListener: XmlReaderListener): AsyncTask<InputStream, Void, Podcast>() {
+
+    /* Interface used to communicate back to activity */
+    interface XmlReaderListener {
+        fun onParseResult(podcast: Podcast) {
+        }
+    }
+
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(XmlReader::class.java.name)
@@ -40,7 +47,7 @@ class XmlReader: AsyncTask<InputStream, Void, Podcast>() {
 
     /* Main class variables */
     private val nameSpace: String? = null
-    private var podcast: Podcast = Podcast("", "", "", TreeMap<Date, MediaMetadataCompat>())
+    private var podcast: Podcast = Podcast()
 
 
     /* Implements doInBackground */
@@ -68,11 +75,11 @@ class XmlReader: AsyncTask<InputStream, Void, Podcast>() {
     override fun onPostExecute(podcast: Podcast) {
         // log success // todo remove
         if (podcast.name.isNotEmpty()) {
-            LogHelper.e(TAG, "\n${podcast.toString()}")
+            xmlReaderListener.onParseResult(podcast)
+            LogHelper.e(TAG, "\n${podcast.toString()}") // todo remove
         } else {
             LogHelper.e(TAG, "The given address is not a podcast")
         }
-        // todo implement a callback to calling class
     }
 
 
@@ -112,13 +119,13 @@ class XmlReader: AsyncTask<InputStream, Void, Podcast>() {
                 Keys.RSS_PODCAST_NAME -> podcast.name = XmlHelper.readPodcastName(parser, nameSpace)
                 // found a podcast description
                 Keys.RSS_PODCAST_DESCRIPTION -> podcast.description = XmlHelper.readPodcastDescription(parser,nameSpace)
-                // found a podcast image
-                Keys.RSS_PODCAST_IMAGE -> podcast.image = XmlHelper.readPodcastImage(parser, nameSpace)
+                // found a podcast remoteImageFileLocation
+                Keys.RSS_PODCAST_IMAGE -> podcast.remoteImageFileLocation = XmlHelper.readPodcastImage(parser, nameSpace)
                 // found an episode
                 Keys.RSS_EPISODE -> {
                     val episode: MediaMetadataCompat = readEpisode(parser)
                     val key: Date = convertToDate(episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE))
-                    podcast.episodes[key] = episode
+                    podcast.episodes.add(episode)
                 }
                 // skip to next tag
                 else -> XmlHelper.skip(parser)
@@ -165,7 +172,7 @@ class XmlReader: AsyncTask<InputStream, Void, Podcast>() {
                 .putString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION, description)
                 .putString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE, publicationDate)
                 .putString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL, audioUrl)
-                .putString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL, podcast.image)
+                .putString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL, podcast.remoteImageFileLocation)
                 .build()
     }
 

@@ -26,6 +26,8 @@ import android.widget.Button
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
 import org.y20k.escapepods.XmlReader
+import org.y20k.escapepods.core.Podcast
+import org.y20k.escapepods.core.PodcastCollection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
@@ -36,7 +38,9 @@ import java.io.InputStream
 /*
  * PodcastPlayerActivity class
  */
-class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener {
+class PodcastPlayerActivity: AppCompatActivity(),
+                             AddPodcastDialog.AddPodcastDialogListener,
+                             XmlReader.XmlReaderListener {
 //class PodcastPlayerActivity: BaseActivity(), AddPodcastDialog.AddPodcastDialogListener {
 
     /* Define log tag */
@@ -48,6 +52,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     private var downloadServiceBound = false
     private val downloadProgressHandler = Handler()
     private var downloadIDs = longArrayOf(-1L)
+    private var podcastCollection: PodcastCollection = PodcastCollection()
 
 
     /* Implements onCreate */
@@ -103,10 +108,30 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     /* Implements onAddPodcastDialogFinish from AddPodcastDialog */
     override fun onAddPodcastDialogFinish(textInput: String) {
         super.onAddPodcastDialogFinish(textInput)
-        LogHelper.e(TAG, "Text input from dialog: $textInput") // todo remove
+        if (podcastCollection.isInCollection(textInput)) {
+            LogHelper.e(TAG, "Feed is already in collection: $textInput") // todo remove
+        } else {
+            downloadPodcastFeed(textInput)
+        }
+    }
 
-        // just a test
-        var uri = Uri.parse(textInput)
+
+    /* Implements onParseResult from XmlReader */
+    override fun onParseResult(podcast: Podcast) {
+        super.onParseResult(podcast)
+        if (podcastCollection.isInCollection(podcast.remotePodcastFeedLocation)) {
+            // update existing podcast
+            LogHelper.e(TAG, "Updating: $podcast.remotePodcastFeedLocation") // todo remove
+        } else {
+            // add new podcast to podcast collection
+            podcastCollection.podcasts.add(podcast)
+        }
+    }
+
+
+    /* Download podcast feed */
+    private fun downloadPodcastFeed(feedUrl : String) {
+        var uri = Uri.parse(feedUrl)
         val uris = Array(1, {uri})
         downloadIDs = startDownload(uris, Keys.RSS)
     }
@@ -150,7 +175,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
                     LogHelper.e(TAG, "Download complete: " + fileHelper.getFileName(this@PodcastPlayerActivity, uri) +
                             " | " + fileHelper.getReadableByteCount(fileHelper.getFileSize(this@PodcastPlayerActivity, uri), true)) // todo remove
                     val inputStream: InputStream = FileHelper().getTextFileStream(this@PodcastPlayerActivity, uri)
-                    val xmlReader: XmlReader = XmlReader()
+                    val xmlReader: XmlReader = XmlReader(this@PodcastPlayerActivity)
                     xmlReader.execute(inputStream)
                 }
             }

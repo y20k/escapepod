@@ -93,7 +93,7 @@ object XmlHelper {
         return summary
     }
 
-    /* PODCAST: read image */
+    /* PODCAST: read remoteImageFileLocation */
     @Throws(IOException::class, XmlPullParserException::class)
     fun readPodcastImage(parser: XmlPullParser, nameSpace: String?): String {
         var link = ""
@@ -116,7 +116,7 @@ object XmlHelper {
     }
 
 
-    /* PODCAST: read image URL - within image*/
+    /* PODCAST: read remoteImageFileLocation URL - within remoteImageFileLocation*/
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastImageUrl(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE_URL)

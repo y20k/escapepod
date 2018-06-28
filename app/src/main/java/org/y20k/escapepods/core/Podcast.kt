@@ -22,10 +22,12 @@ import java.util.*
 /*
  * Podcast class
  */
-class Podcast(var name: String,
-              var description: String,
-              var image: String,
-              var episodes: TreeMap<Date, MediaMetadataCompat>) {
+class Podcast(var name: String = "",
+              var description: String = "",
+              var episodes: MutableList<MediaMetadataCompat> = mutableListOf<MediaMetadataCompat>(),
+              var lastUpdate: Date = Calendar.getInstance().getTime(),
+              var remoteImageFileLocation: String = "",
+              var remotePodcastFeedLocation: String = "") {
 
 
     /* overrides toString method */
@@ -38,13 +40,13 @@ class Podcast(var name: String,
                 .append("$name\n")
                 .append("$shortDescription ...\n")
         for (episode in episodes) {
-            val episodeTitle: String = episode.value.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-            val episodeDescription: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION)
+            val episodeTitle: String = episode.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
+            val episodeDescription: String = episode.getString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION)
             val episodeShortDescriptionLength: Int = if (episodeDescription.length <= descriptionLength) episodeDescription.length -1 else 25
             val episodeShortDescription: String = episodeDescription.substring(0, episodeShortDescriptionLength)
-            val publicationDate: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)
-            val audioUrl: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL)
-            val imageUrl: String = episode.value.getString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL)
+            val publicationDate: String = episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)
+            val audioUrl: String = episode.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL)
+            val imageUrl: String = episode.getString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL)
             stringBuilder.append("$episodeTitle\n")
             stringBuilder.append("$episodeShortDescription ...\n")
             stringBuilder.append("$publicationDate\n")
