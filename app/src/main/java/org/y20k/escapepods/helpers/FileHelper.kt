@@ -18,6 +18,9 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import org.y20k.escapepods.core.PodcastCollection
 import java.io.*
 import java.text.NumberFormat
 
@@ -71,6 +74,30 @@ class FileHelper {
         cursor.moveToFirst()
         return cursor.getString(nameIndex)
     }
+
+
+    /* Save podcast collections as JSON text file */
+    fun savePodcastCollection(podcastCollection: PodcastCollection) {
+
+        // convert to JSON
+        var podcastCollectionJson: String = ""
+        val gson: Gson = getCustomGson()
+        podcastCollectionJson = gson.toJson(podcastCollection)
+
+        // save JSON as text file
+        // todo implement
+        LogHelper.e(TAG, podcastCollectionJson) // todo remove
+    }
+
+
+    /*  Creates a Gson object */
+    private fun getCustomGson(): Gson {
+        val gsonBuilder = GsonBuilder()
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a")
+        gsonBuilder.excludeFieldsWithoutExposeAnnotation()
+        return gsonBuilder.create()
+    }
+
 
 
     /* Create nomedia file in given folder to prevent media scanning */

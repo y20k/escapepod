@@ -38,7 +38,9 @@ allprojects {
 
         supportLibraryVersion = '27.1.1'
         constraintLayoutVersion = '1.1.0-beta5'
+
         exoPlayerVersion = '2.8.1'
+        gsonVersion = '2.8.5'
 
         junitVersion = "4.12"
         mockitoVersion = '2.15.0'

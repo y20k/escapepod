@@ -16,6 +16,7 @@ package org.y20k.escapepods.ui
 
 import android.app.DownloadManager
 import android.content.*
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -23,12 +24,14 @@ import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
 import org.y20k.escapepods.XmlReader
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.core.PodcastCollection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
+import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
@@ -109,8 +112,11 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onAddPodcastDialogFinish(textInput: String) {
         super.onAddPodcastDialogFinish(textInput)
         if (podcastCollection.isInCollection(textInput)) {
-            LogHelper.e(TAG, "Feed is already in collection: $textInput") // todo remove
+            ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_duplicate),
+                    getString(R.string.dialog_error_message_podcast_duplicate),
+                    textInput)
         } else {
+            Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show();
             downloadPodcastFeed(textInput)
         }
     }
@@ -125,6 +131,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
         } else {
             // add new podcast to podcast collection
             podcastCollection.podcasts.add(podcast)
+            // save changes
+            FileHelper().savePodcastCollection(podcastCollection)
         }
     }
 
@@ -167,15 +175,23 @@ class PodcastPlayerActivity: AppCompatActivity(),
             val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
             for (downloadID in downloadIDs) {
                 if (downloadID == id) {
+                    val downloadManager: DownloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     // get Uri if ID represented one of the enqueued downloads
-                    val uri = (getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).getUriForDownloadedFile(id)
+                    val uri = downloadManager.getUriForDownloadedFile(id)
+
+                    var remotePodcastFeedLocation: String = ""
+                    val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+                    if (cursor.count > 0) {
+                        cursor.moveToFirst()
+                        remotePodcastFeedLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
+                    }
 
                     // some tests // todo remove
                     val fileHelper = FileHelper()
                     LogHelper.e(TAG, "Download complete: " + fileHelper.getFileName(this@PodcastPlayerActivity, uri) +
                             " | " + fileHelper.getReadableByteCount(fileHelper.getFileSize(this@PodcastPlayerActivity, uri), true)) // todo remove
                     val inputStream: InputStream = FileHelper().getTextFileStream(this@PodcastPlayerActivity, uri)
-                    val xmlReader: XmlReader = XmlReader(this@PodcastPlayerActivity)
+                    val xmlReader: XmlReader = XmlReader(this@PodcastPlayerActivity, remotePodcastFeedLocation)
                     xmlReader.execute(inputStream)
                 }
             }

@@ -15,6 +15,7 @@
 package org.y20k.escapepods.core
 
 import android.support.v4.media.MediaMetadataCompat
+import com.google.gson.annotations.Expose
 import org.y20k.escapepods.helpers.Keys
 import java.util.*
 
@@ -22,12 +23,13 @@ import java.util.*
 /*
  * Podcast class
  */
-class Podcast(var name: String = "",
-              var description: String = "",
-              var episodes: MutableList<MediaMetadataCompat> = mutableListOf<MediaMetadataCompat>(),
-              var lastUpdate: Date = Calendar.getInstance().getTime(),
-              var remoteImageFileLocation: String = "",
-              var remotePodcastFeedLocation: String = "") {
+class Podcast(@Expose var name: String = "",
+              @Expose var description: String = "",
+              @Expose var image: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
+              @Expose var episodes: MutableList<MediaMetadataCompat> = mutableListOf<MediaMetadataCompat>(),
+              @Expose var lastUpdate: Date = Calendar.getInstance().time,
+              @Expose var remoteImageFileLocation: String = "",
+              @Expose var remotePodcastFeedLocation: String = "") {
 
 
     /* overrides toString method */

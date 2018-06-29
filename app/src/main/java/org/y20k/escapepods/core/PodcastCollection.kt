@@ -15,11 +15,13 @@
 
 package org.y20k.escapepods.core
 
+import com.google.gson.annotations.Expose
+
 
 /*
  * PodcastCollection class
  */
-class PodcastCollection(var podcasts: MutableList<Podcast> = mutableListOf<Podcast>()) {
+class PodcastCollection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>()) {
 
     fun isInCollection(remotePodcastFeedLocation: String): Boolean {
         for (podcast in podcasts) {

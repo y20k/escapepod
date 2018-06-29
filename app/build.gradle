@@ -42,16 +42,17 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-cast-framework:' + castFrameworkVersion
     implementation 'com.google.android.support:wearable:' + wearableVersion
+
     implementation 'com.android.support:appcompat-v7:' + supportLibraryVersion
     implementation 'com.android.support:cardview-v7:' + supportLibraryVersion
     implementation 'com.android.support:mediarouter-v7:' + supportLibraryVersion
     implementation 'com.android.support:leanback-v17:' + supportLibraryVersion
     implementation 'com.android.support:design:' + supportLibraryVersion
     implementation 'com.android.support:percent:' + supportLibraryVersion
-
     implementation 'com.android.support.constraint:constraint-layout:' + constraintLayoutVersion
 
     implementation 'com.google.android.exoplayer:exoplayer:' + exoPlayerVersion
+    implementation 'com.google.code.gson:gson:' + gsonVersion
 
     testImplementation 'junit:junit:' + junitVersion
     testImplementation 'org.mockito:mockito-core:' + mockitoVersion

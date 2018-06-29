@@ -32,7 +32,7 @@ import java.util.*
 /*
  * XmlReader class
  */
-class XmlReader(var xmlReaderListener: XmlReaderListener): AsyncTask<InputStream, Void, Podcast>() {
+class XmlReader(var xmlReaderListener: XmlReaderListener, val remotePodcastFeedLocation: String): AsyncTask<InputStream, Void, Podcast>() {
 
     /* Interface used to communicate back to activity */
     interface XmlReaderListener {
@@ -48,6 +48,12 @@ class XmlReader(var xmlReaderListener: XmlReaderListener): AsyncTask<InputStream
     /* Main class variables */
     private val nameSpace: String? = null
     private var podcast: Podcast = Podcast()
+
+
+    /* Implements onPreExecute */
+    override fun onPreExecute() {
+        podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
+    }
 
 
     /* Implements doInBackground */
@@ -169,6 +175,7 @@ class XmlReader(var xmlReaderListener: XmlReaderListener): AsyncTask<InputStream
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, publicationDate+title)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.image)
                 .putString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION, description)
                 .putString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE, publicationDate)
                 .putString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL, audioUrl)
