@@ -20,6 +20,9 @@ package org.y20k.escapepods.helpers
  */
 object Keys {
 
+    // version numbers
+    val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
+
     // preferences
     val PREF_DOWNLOAD_OVER_MOBILE: String = "DOWNLOAD_OVER_MOBILE"
     val PREF_NIGHT_MODE_STATE: String = "NIGHT_MODE_STATE"
@@ -28,6 +31,9 @@ object Keys {
     val RSS: Int = 1
     val AUDIO: Int  = 2
     val IMAGE: Int  = 3
+
+    // mime types
+    val MIME_TYPE_XML = "text/xml"
 
     // folder names
     val AUDIO_FOLDER: String = "audio"
@@ -41,6 +47,7 @@ object Keys {
 
     // values
     val ONE_SECOND_IN_MILLISECONDS: Long = 1000L
+    val FIVE_MINUTES_IN_MILLISECONDS: Long = 300000L
 
     // rss tags
     val RSS_RSS = "rss"

@@ -28,7 +28,6 @@ object XmlHelper {
     private val TAG: String = LogHelper.makeLogTag(XmlHelper::class.java.name)
 
 
-
     /* GENERAL: Skips tags that are not needed */
     @Throws(XmlPullParserException::class, IOException::class)
     fun skip(parser: XmlPullParser) {

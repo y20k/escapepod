@@ -22,11 +22,18 @@
             android:text="show dialog" />
 
         <Button
-            android:id="@+id/domwload_button"
+            android:id="@+id/update_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="50dp"
-            android:text="start a download" />
+            android:text="update podcast collection" />
+
+        <TextView
+            android:id="@+id/podcast_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="50dp"
+            android:text="0 podcasts in your collection" />
 
     </LinearLayout>
 

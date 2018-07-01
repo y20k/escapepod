@@ -37,7 +37,7 @@ class Podcast(@Expose var name: String = "",
         val descriptionLength: Int = 50
         val stringBuilder: StringBuilder = StringBuilder()
         val shortDescriptionLength: Int = if (description.length <= descriptionLength) description.length -1 else descriptionLength
-        val shortDescription: String = description.substring(0, shortDescriptionLength)
+        val shortDescription: String = description.trim().substring(0, shortDescriptionLength)
         stringBuilder
                 .append("$name\n")
                 .append("$shortDescription ...\n")
@@ -45,7 +45,7 @@ class Podcast(@Expose var name: String = "",
             val episodeTitle: String = episode.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
             val episodeDescription: String = episode.getString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION)
             val episodeShortDescriptionLength: Int = if (episodeDescription.length <= descriptionLength) episodeDescription.length -1 else 25
-            val episodeShortDescription: String = episodeDescription.substring(0, episodeShortDescriptionLength)
+            val episodeShortDescription: String = episodeDescription.trim().substring(0, episodeShortDescriptionLength)
             val publicationDate: String = episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)
             val audioUrl: String = episode.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL)
             val imageUrl: String = episode.getString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL)

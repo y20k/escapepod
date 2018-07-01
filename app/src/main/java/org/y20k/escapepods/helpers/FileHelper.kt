@@ -76,6 +76,12 @@ class FileHelper {
     }
 
 
+    /* Get MIME type for given file */
+    fun getFileType(context: Context, uri: Uri): String {
+        return context.contentResolver.getType(uri)
+    }
+
+
     /* Save podcast collections as JSON text file */
     fun savePodcastCollection(podcastCollection: PodcastCollection) {
 

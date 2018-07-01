@@ -25,6 +25,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import android.preference.PreferenceManager
+import android.widget.Toast
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
@@ -32,14 +33,22 @@ import org.y20k.escapepods.helpers.LogHelper
 /*
  * DownloadService class
  */
-class DownloadService: Service() {
+class DownloadService(): Service() {
+
+    /* Interface used to communicate back to activity */
+    interface DownloadServiceListener {
+        fun onDownloadFinished(downloadID: Long) {
+        }
+    }
+
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(DownloadService::class.java)
 
 
     /* Main class variables */
-    val activeDownloads: ArrayList<Long> = ArrayList<Long>()
+    lateinit var downloadServiceListener: DownloadServiceListener
+    var activeDownloads: ArrayList<Long> = ArrayList<Long>()
     private val downloadServiceBinder: LocalBinder = LocalBinder()
 
 
@@ -67,6 +76,11 @@ class DownloadService: Service() {
     override fun onUnbind(intent: Intent?): Boolean {
         return super.onUnbind(intent)
     }
+
+    fun initializeListener(listener: DownloadServiceListener) {
+        downloadServiceListener = listener
+    }
+
 
     /* Enqueues an Array of files in DownloadManager */
     fun download(context: Context, uris: Array<Uri>, type: Int): LongArray {
@@ -100,6 +114,13 @@ class DownloadService: Service() {
         }
         return downloadIDs
     }
+
+
+    /* Updates podcast collection */
+    fun updatePodcastCollection() {
+        Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show();
+    }
+
 
 
     /* Get size of downloaded file so far */
@@ -167,8 +188,12 @@ class DownloadService: Service() {
     /* BroadcastReceiver for completed downloads */
     private val onCompleteReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
-            removeFromActiveDownloads(id)
+            // get ID of download
+            val downloadID: Long = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
+            // remove ID from active downloads
+            removeFromActiveDownloads(downloadID)
+            // hand over id to activity
+            downloadServiceListener.onDownloadFinished(downloadID)
         }
     }
 

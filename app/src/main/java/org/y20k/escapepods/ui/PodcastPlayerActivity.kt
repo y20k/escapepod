@@ -15,7 +15,10 @@
 package org.y20k.escapepods.ui
 
 import android.app.DownloadManager
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -24,6 +27,7 @@ import android.os.IBinder
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
@@ -35,6 +39,7 @@ import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
+import org.y20k.escapepods.helpers.PodcastCollectionHelper
 import java.io.InputStream
 
 
@@ -43,6 +48,7 @@ import java.io.InputStream
  */
 class PodcastPlayerActivity: AppCompatActivity(),
                              AddPodcastDialog.AddPodcastDialogListener,
+                             DownloadService.DownloadServiceListener,
                              XmlReader.XmlReaderListener {
 //class PodcastPlayerActivity: BaseActivity(), AddPodcastDialog.AddPodcastDialogListener {
 
@@ -73,12 +79,11 @@ class PodcastPlayerActivity: AppCompatActivity(),
         })
 
         // get button and listen for clicks
-        val downloadButton: Button = findViewById(R.id.domwload_button)
-        downloadButton.setOnClickListener(View.OnClickListener {
-            // start some downloads - just a test // todo remove
-            val uris = arrayOf(Uri.parse("https://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/radarrelay/undertheradar136.mp3"), Uri.parse("https://www.podtrac.com/pts/redirect.mp3/traffic.libsyn.com/radarrelay/undertheradar132.mp3"))
-            downloadIDs = downloadService.download(this@PodcastPlayerActivity, uris, Keys.AUDIO)
-            downloadProgressRunnable.run()
+        val updateButton: Button = findViewById(R.id.update_button)
+        updateButton.setOnClickListener(View.OnClickListener {
+            // update podcast collection - just a test // todo remove
+            if (downloadServiceBound && PodcastCollectionHelper().hasEnoughTimePassedSinceLastUpdate(podcastCollection))
+                downloadService.updatePodcastCollection()
         })
 
     }
@@ -88,20 +93,18 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onResume() {
         super.onResume()
 
-        // listen for completed downloads
-        registerReceiver(downloadCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-
         // bind to DownloadService
         bindService(Intent(this, DownloadService::class.java), downloadServiceConnection, Context.BIND_AUTO_CREATE)
+
+        // update podcast counter - just a test // todo remove
+        var podcastCounter: TextView = findViewById(R.id.podcast_counter)
+        podcastCounter.text = "${podcastCollection.podcasts.size} podcasts in your collection"
     }
 
 
     /* Implements onPause */
     override fun onPause() {
         super.onPause()
-
-        // unregister download complete receiver
-        unregisterReceiver(downloadCompleteReceiver)
 
         // unbind DownloadService
         unbindService(downloadServiceConnection)
@@ -116,7 +119,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
                     getString(R.string.dialog_error_message_podcast_duplicate),
                     textInput)
         } else {
-            Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
             downloadPodcastFeed(textInput)
         }
     }
@@ -133,6 +136,41 @@ class PodcastPlayerActivity: AppCompatActivity(),
             podcastCollection.podcasts.add(podcast)
             // save changes
             FileHelper().savePodcastCollection(podcastCollection)
+            // update podcast counter - just a test // todo remove
+            var podcastCounter: TextView = findViewById(R.id.podcast_counter)
+            podcastCounter.text = "${podcastCollection.podcasts.size} podcasts in your collection"
+        }
+    }
+
+    /* Implements onDownloadFinished from DownloadService */
+    override fun onDownloadFinished(downloadID: Long) {
+        // get a download manager
+        val downloadManager: DownloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        // get local Uri in content://downloads/all_downloads/ for download ID
+        val uri = downloadManager.getUriForDownloadedFile(downloadID)
+
+        // check if download is RSS
+        if (FileHelper().getFileType(this, uri).contains(Keys.MIME_TYPE_XML, true)) {
+            // get remote URL for download ID
+            var remotePodcastFeedLocation: String = ""
+            val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+            if (cursor.count > 0) {
+                cursor.moveToFirst()
+                remotePodcastFeedLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
+            }
+            // start reading podcast feed
+            val inputStream: InputStream = FileHelper().getTextFileStream(this@PodcastPlayerActivity, uri)
+            val xmlReader: XmlReader = XmlReader(this@PodcastPlayerActivity, remotePodcastFeedLocation)
+            xmlReader.execute(inputStream)
+        }
+
+        // Log completed download // todo remove
+        LogHelper.e(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, uri) +
+                " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@PodcastPlayerActivity, uri), true)) // todo remove
+
+        // cancel periodic UI update if possible
+        if (downloadService.activeDownloads.isEmpty()) {
+            downloadProgressHandler.removeCallbacks(downloadProgressRunnable)
         }
     }
 
@@ -169,41 +207,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* BroadcastReceiver for completed downloads */
-    private val downloadCompleteReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
-            for (downloadID in downloadIDs) {
-                if (downloadID == id) {
-                    val downloadManager: DownloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    // get Uri if ID represented one of the enqueued downloads
-                    val uri = downloadManager.getUriForDownloadedFile(id)
-
-                    var remotePodcastFeedLocation: String = ""
-                    val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
-                    if (cursor.count > 0) {
-                        cursor.moveToFirst()
-                        remotePodcastFeedLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
-                    }
-
-                    // some tests // todo remove
-                    val fileHelper = FileHelper()
-                    LogHelper.e(TAG, "Download complete: " + fileHelper.getFileName(this@PodcastPlayerActivity, uri) +
-                            " | " + fileHelper.getReadableByteCount(fileHelper.getFileSize(this@PodcastPlayerActivity, uri), true)) // todo remove
-                    val inputStream: InputStream = FileHelper().getTextFileStream(this@PodcastPlayerActivity, uri)
-                    val xmlReader: XmlReader = XmlReader(this@PodcastPlayerActivity, remotePodcastFeedLocation)
-                    xmlReader.execute(inputStream)
-                }
-            }
-
-            // cancel periodic UI update if possible
-            if (downloadService.activeDownloads.isEmpty()) {
-                downloadProgressHandler.removeCallbacks(downloadProgressRunnable)
-            }
-        }
-    }
-
-
     /*
      * Defines callbacks for service binding, passed to bindService()
      */
@@ -213,6 +216,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // get service from binder
             val binder = service as DownloadService.LocalBinder
             downloadService = binder.getService()
+            downloadService.initializeListener(this@PodcastPlayerActivity)
             downloadServiceBound = true
             // check if downloads are in progress and update UI while service is connected
             if (!downloadService.activeDownloads.isEmpty()) {

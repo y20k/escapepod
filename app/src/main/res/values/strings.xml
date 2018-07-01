@@ -62,5 +62,6 @@
 
     <!-- toasts -->
     <string name="toast_message_adding_podcast">Adding podcast.</string>
+    <string name="toast_message_updating_collection">Updating Podcast Collection.</string>
 
 </resources>
