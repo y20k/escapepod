@@ -53,6 +53,8 @@
     <string name="dialog_add_podcast_input_hint">Paste podcast link</string>
     <string name="dialog_add_podcast_message">Add new podcast</string>
     <string name="dialog_add_podcast_howto">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</string>
+    <string name="dialog_error_title_podcast_invalid_feed">Invalid Podcast Feed</string>
+    <string name="dialog_error_message_podcast_invalid_feed">This address is not an RSS feed.</string>
     <string name="dialog_error_title_podcast_duplicate">Duplicate Podcast</string>
     <string name="dialog_error_message_podcast_duplicate">This podcast is already part of your collection.</string>
     <string name="dialog_error_title_default">Error</string>

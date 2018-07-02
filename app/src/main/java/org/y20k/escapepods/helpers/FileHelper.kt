@@ -1,7 +1,7 @@
 /*
  * FileHelper.kt
  * Implements the FileHelper class
- * A FileHelper provides helper methods for reading and writing files from and to  device storage
+ * A FileHelper provides helper methods for reading and writing files from and to device storage
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App

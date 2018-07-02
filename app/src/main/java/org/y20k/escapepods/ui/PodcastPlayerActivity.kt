@@ -36,10 +36,7 @@ import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.core.PodcastCollection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
-import org.y20k.escapepods.helpers.FileHelper
-import org.y20k.escapepods.helpers.Keys
-import org.y20k.escapepods.helpers.LogHelper
-import org.y20k.escapepods.helpers.PodcastCollectionHelper
+import org.y20k.escapepods.helpers.*
 import java.io.InputStream
 
 
@@ -64,7 +61,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private var podcastCollection: PodcastCollection = PodcastCollection()
 
 
-    /* Implements onCreate */
+    /* Overrides onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -89,10 +86,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Implements onResume */
+    /* Overrides onResume */
     override fun onResume() {
         super.onResume()
-
         // bind to DownloadService
         bindService(Intent(this, DownloadService::class.java), downloadServiceConnection, Context.BIND_AUTO_CREATE)
 
@@ -102,7 +98,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Implements onPause */
+    /* Overrides onPause */
     override fun onPause() {
         super.onPause()
 
@@ -111,7 +107,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Implements onAddPodcastDialogFinish from AddPodcastDialog */
+    /* Overrides onAddPodcastDialogFinish from AddPodcastDialog */
     override fun onAddPodcastDialogFinish(textInput: String) {
         super.onAddPodcastDialogFinish(textInput)
         if (podcastCollection.isInCollection(textInput)) {
@@ -119,13 +115,12 @@ class PodcastPlayerActivity: AppCompatActivity(),
                     getString(R.string.dialog_error_message_podcast_duplicate),
                     textInput)
         } else {
-            Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
             downloadPodcastFeed(textInput)
         }
     }
 
 
-    /* Implements onParseResult from XmlReader */
+    /* Overrides onParseResult from XmlReader */
     override fun onParseResult(podcast: Podcast) {
         super.onParseResult(podcast)
         if (podcastCollection.isInCollection(podcast.remotePodcastFeedLocation)) {
@@ -142,7 +137,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
     }
 
-    /* Implements onDownloadFinished from DownloadService */
+    
+    /* Overrides onDownloadFinished from DownloadService */
     override fun onDownloadFinished(downloadID: Long) {
         // get a download manager
         val downloadManager: DownloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -177,9 +173,15 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Download podcast feed */
     private fun downloadPodcastFeed(feedUrl : String) {
-        var uri = Uri.parse(feedUrl)
-        val uris = Array(1, {uri})
-        downloadIDs = startDownload(uris, Keys.RSS)
+        if (DownloadHelper().isXml(feedUrl)) {
+            Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+            val uris = Array(1) {Uri.parse(feedUrl)}
+            downloadIDs = startDownload(uris, Keys.RSS)
+        } else {
+            ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),
+                    getString(R.string.dialog_error_message_podcast_invalid_feed),
+                    feedUrl)
+        }
     }
 
 
@@ -221,6 +223,12 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // check if downloads are in progress and update UI while service is connected
             if (!downloadService.activeDownloads.isEmpty()) {
                 downloadProgressRunnable.run()
+            }
+            // handles the intent that started the activity
+            if (Intent.ACTION_VIEW == intent.action) {
+                downloadPodcastFeed(intent.data.toString())
+                LogHelper.e(TAG, "Intent want to download: ${intent.data.toString()}") // todo remove
+                intent.action == ""
             }
         }
 
