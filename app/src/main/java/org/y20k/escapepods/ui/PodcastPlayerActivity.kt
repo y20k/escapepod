@@ -137,7 +137,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
     }
 
-    
+
     /* Overrides onDownloadFinished from DownloadService */
     override fun onDownloadFinished(downloadID: Long) {
         // get a download manager
