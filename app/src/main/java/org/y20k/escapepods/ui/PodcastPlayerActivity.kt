@@ -15,6 +15,8 @@
 package org.y20k.escapepods.ui
 
 import android.app.DownloadManager
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -32,8 +34,9 @@ import android.widget.Toast
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
 import org.y20k.escapepods.XmlReader
+import org.y20k.escapepods.adapter.CollectionViewModel
+import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Podcast
-import org.y20k.escapepods.core.PodcastCollection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.*
@@ -55,15 +58,21 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Main class variables */
     private lateinit var downloadService: DownloadService
+    private lateinit var collectionViewModel : CollectionViewModel
+    private var collection: Collection = Collection()
     private var downloadServiceBound = false
     private val downloadProgressHandler = Handler()
     private var downloadIDs = longArrayOf(-1L)
-    private var podcastCollection: PodcastCollection = PodcastCollection()
 
 
     /* Overrides onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // observe changes in LiveData
+        collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java);
+        collectionViewModel.collectionLiveData.observe(this, createCollectionObserver());
+        collectionViewModel.loadCollection()
 
         // set layout
         setContentView(R.layout.activity_podcast_player)
@@ -79,10 +88,24 @@ class PodcastPlayerActivity: AppCompatActivity(),
         val updateButton: Button = findViewById(R.id.update_button)
         updateButton.setOnClickListener(View.OnClickListener {
             // update podcast collection - just a test // todo remove
-            if (downloadServiceBound && PodcastCollectionHelper().hasEnoughTimePassedSinceLastUpdate(podcastCollection))
+            collectionViewModel.collectionLiveData.value
+            if (downloadServiceBound && CollectionHelper().hasEnoughTimePassedSinceLastUpdate(collection))
                 downloadService.updatePodcastCollection()
         })
 
+    }
+
+
+    /* Observer for Collection stored as Live Data */
+    private fun createCollectionObserver(): Observer<Collection> {
+        return Observer<Collection> { newCollection ->
+            if (newCollection != null) {
+                collection = newCollection
+                // update podcast counter - just a test // todo remove
+                var podcastCounter: TextView = findViewById(R.id.podcast_counter)
+                podcastCounter.text = "${collection.podcasts.size} podcasts in your collection"
+            }
+        }
     }
 
 
@@ -91,10 +114,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
         super.onResume()
         // bind to DownloadService
         bindService(Intent(this, DownloadService::class.java), downloadServiceConnection, Context.BIND_AUTO_CREATE)
-
-        // update podcast counter - just a test // todo remove
-        var podcastCounter: TextView = findViewById(R.id.podcast_counter)
-        podcastCounter.text = "${podcastCollection.podcasts.size} podcasts in your collection"
     }
 
 
@@ -110,7 +129,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onAddPodcastDialogFinish from AddPodcastDialog */
     override fun onAddPodcastDialogFinish(textInput: String) {
         super.onAddPodcastDialogFinish(textInput)
-        if (podcastCollection.isInCollection(textInput)) {
+        if (collection.isInCollection(textInput)) {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_duplicate),
                     getString(R.string.dialog_error_message_podcast_duplicate),
                     textInput)
@@ -123,17 +142,16 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onParseResult from XmlReader */
     override fun onParseResult(podcast: Podcast) {
         super.onParseResult(podcast)
-        if (podcastCollection.isInCollection(podcast.remotePodcastFeedLocation)) {
+        if (collection.isInCollection(podcast.remotePodcastFeedLocation)) {
             // update existing podcast
             LogHelper.e(TAG, "Updating: $podcast.remotePodcastFeedLocation") // todo remove
         } else {
             // add new podcast to podcast collection
-            podcastCollection.podcasts.add(podcast)
+            collection.podcasts.add(podcast)
+            // update live data
+            collectionViewModel.collectionLiveData.setValue(collection)
             // save changes
-            FileHelper().savePodcastCollection(podcastCollection)
-            // update podcast counter - just a test // todo remove
-            var podcastCounter: TextView = findViewById(R.id.podcast_counter)
-            podcastCounter.text = "${podcastCollection.podcasts.size} podcasts in your collection"
+            FileHelper().saveCollection(this, collection)
         }
     }
 
@@ -218,7 +236,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // get service from binder
             val binder = service as DownloadService.LocalBinder
             downloadService = binder.getService()
-            downloadService.initializeListener(this@PodcastPlayerActivity)
+            downloadService.registerListener(this@PodcastPlayerActivity)
             downloadServiceBound = true
             // check if downloads are in progress and update UI while service is connected
             if (!downloadService.activeDownloads.isEmpty()) {

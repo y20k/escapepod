@@ -50,13 +50,13 @@ class XmlReader(var xmlReaderListener: XmlReaderListener, val remotePodcastFeedL
     private var podcast: Podcast = Podcast()
 
 
-    /* Implements onPreExecute */
+    /* Overrides onPreExecute */
     override fun onPreExecute() {
         podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
     }
 
 
-    /* Implements doInBackground */
+    /* Overrides doInBackground */
     override fun doInBackground(vararg params: InputStream): Podcast {
         // get InputStream from params
         val stream: InputStream = params[0]

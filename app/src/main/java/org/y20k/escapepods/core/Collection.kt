@@ -1,7 +1,7 @@
 /*
- * PodcastCollection.kt
- * Implements the PodcastCollection class
- * A PodcastCollection object holds a list of Podcasts
+ * Collection.kt
+ * Implements the Collection class
+ * A Collection object holds a list of Podcasts
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
@@ -12,7 +12,6 @@
  */
 
 
-
 package org.y20k.escapepods.core
 
 import com.google.gson.annotations.Expose
@@ -21,11 +20,11 @@ import java.util.*
 
 
 /*
- * PodcastCollection class
+ * Collection class
  */
-class PodcastCollection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
-                        @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
-                        @Expose var lastUpdate: Date = Date(0)) {
+class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
+                 @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
+                 @Expose var lastUpdate: Date = Date(0)) {
 
 
     /* Checks if feed is already in collection */

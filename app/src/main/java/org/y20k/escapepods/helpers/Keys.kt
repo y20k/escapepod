@@ -33,12 +33,19 @@ object Keys {
     val IMAGE: Int  = 3
 
     // mime types
+    val MIME_TYPE_JPG = "image/jpeg"
+    val MIME_TYPE_PNG = "image/png"
+    val MIME_TYPE_MP3 = "audio/mpeg3"
     val MIME_TYPE_XML = "text/xml"
 
     // folder names
+    val COLLECTION_FOLDER: String = "collection"
     val AUDIO_FOLDER: String = "audio"
     val IMAGE_FOLDER: String  = "images"
     val TEMP_FOLDER: String  = "temp"
+
+    // file names
+    val COLLECTION_FILE: String = "collection.json"
 
     // intent actions and extras
     val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "DOWNLOAD_PROGRESS_UPDATE"

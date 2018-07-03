@@ -52,7 +52,7 @@ class DownloadService(): Service() {
     private val downloadServiceBinder: LocalBinder = LocalBinder()
 
 
-    /* Implements onCreate */
+    /* Overrides onCreate */
     override fun onCreate() {
         super.onCreate()
         // listen for completed downloads
@@ -60,24 +60,26 @@ class DownloadService(): Service() {
     }
 
 
-    /* Implements onDestroy */
+    /* Overrides onDestroy */
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(onCompleteReceiver)
     }
 
 
-    /* Implements onBind */
+    /* Overrides onBind */
     override fun onBind(intent: Intent): IBinder? {
         return downloadServiceBinder
     }
 
-    /* Implements onUnbind */
+    /* Overrides onUnbind */
     override fun onUnbind(intent: Intent?): Boolean {
         return super.onUnbind(intent)
     }
 
-    fun initializeListener(listener: DownloadServiceListener) {
+
+    /* Initializes the listener -> must ALWAYS be called */
+    fun registerListener(listener: DownloadServiceListener) {
         downloadServiceListener = listener
     }
 

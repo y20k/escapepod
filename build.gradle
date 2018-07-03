@@ -37,6 +37,7 @@ allprojects {
         castFrameworkVersion = '15.0.1'
 
         supportLibraryVersion = '27.1.1'
+        archLifecycleVersion = '1.1.0'
         constraintLayoutVersion = '1.1.0-beta5'
 
         exoPlayerVersion = '2.8.1'

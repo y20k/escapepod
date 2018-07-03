@@ -20,7 +20,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import org.y20k.escapepods.core.PodcastCollection
+import org.y20k.escapepods.core.Collection
 import java.io.*
 import java.text.NumberFormat
 
@@ -32,24 +32,6 @@ class FileHelper {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(FileHelper::class.java)
-
-
-    /* Reads InputStream from file uri and returns it as String*/
-    fun readTextFile(context: Context, uri: Uri): String {
-        // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
-        // https://developer.android.com/training/secure-file-sharing/retrieve-info
-        val stream: InputStream = context.contentResolver.openInputStream(uri)
-        val reader: BufferedReader = BufferedReader(InputStreamReader(stream))
-        val builder: StringBuilder = StringBuilder()
-
-        // read until last line reached
-        reader.forEachLine {
-            builder.append(it)
-            builder.append("\n") }
-        stream.close()
-
-        return builder.toString()
-    }
 
 
     /* Return an InputStream for given Uri */
@@ -83,17 +65,35 @@ class FileHelper {
 
 
     /* Save podcast collections as JSON text file */
-    fun savePodcastCollection(podcastCollection: PodcastCollection) {
+    fun saveCollection(context: Context, collection: Collection) {
 
         // convert to JSON
-        var podcastCollectionJson: String = ""
+        var json: String = ""
         val gson: Gson = getCustomGson()
-        podcastCollectionJson = gson.toJson(podcastCollection)
+        json = gson.toJson(collection)
 
         // save JSON as text file
-        // todo implement
-        LogHelper.e(TAG, podcastCollectionJson) // todo remove
+        writeTextFile(context, json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
     }
+
+
+    /* Reads collection from storage using GSON */
+    fun readCollection(context: Context): Collection {
+
+        // get JSON from text file
+        val json: String = readTextFile(context, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
+
+        LogHelper.e(TAG, json) // todo remove
+
+        if (json.isEmpty()) {
+            // return an empty collection
+            return Collection()
+        } else {
+            // convert JSON and return as COLLECTION
+            return getCustomGson().fromJson(json, Collection::class.java)
+        }
+    }
+
 
 
     /*  Creates a Gson object */
@@ -141,6 +141,35 @@ class FileHelper {
         numberFormat.maximumFractionDigits = 1
 
         return numberFormat.format(result) + " " + prefix + "B"
+    }
+
+
+    /* Reads InputStream from file uri and returns it as String*/
+    private fun readTextFile(context: Context, folder: String, fileName: String): String {
+        // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
+        // https://developer.android.com/training/secure-file-sharing/retrieve-info
+//        val stream: InputStream = context.contentResolver.openInputStream(uri)
+        val file: File = File(context.getExternalFilesDir(folder), fileName)
+        if (!file.exists()) {
+            return ""
+        }
+
+        val stream: InputStream = file.inputStream()
+        val reader: BufferedReader = BufferedReader(InputStreamReader(stream))
+        val builder: StringBuilder = StringBuilder()
+
+        // read until last line reached
+        reader.forEachLine {
+            builder.append(it)
+            builder.append("\n") }
+        stream.close()
+        return builder.toString()
+    }
+
+
+    /* Writes given text to file on storage */
+    private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
+        File(context.getExternalFilesDir(folder), fileName).writeText(text)
     }
 
 
