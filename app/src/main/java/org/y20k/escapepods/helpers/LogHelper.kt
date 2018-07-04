@@ -74,23 +74,39 @@ object LogHelper {
     }
 
     fun log(tag: String, level: Int, t: Throwable?, vararg messages: Any) {
-        if (Log.isLoggable(tag, level)) {
-            val message: String
-            if (t == null && messages != null && messages.size == 1) {
-                // handle this common case without the extra cost of creating a stringbuffer:
-                message = messages[0].toString()
-            } else {
-                val sb = StringBuilder()
-                if (messages != null)
-                    for (m in messages) {
-                        sb.append(m)
-                    }
-                if (t != null) {
-                    sb.append("\n").append(Log.getStackTraceString(t))
-                }
-                message = sb.toString()
+        val message: String
+        if (t == null && messages.size == 1) {
+            // handle this common case without the extra cost of creating a stringbuffer:
+            message = messages[0].toString()
+        } else {
+            val sb = StringBuilder()
+            for (m in messages) {
+                sb.append(m)
             }
-            Log.println(level, tag, message)
+            if (t != null) {
+                sb.append("\n").append(Log.getStackTraceString(t))
+            }
+            message = sb.toString()
         }
+        Log.println(level, tag, message)
+
+//        if (Log.isLoggable(tag, level)) {
+//            val message: String
+//            if (t == null && messages != null && messages.size == 1) {
+//                // handle this common case without the extra cost of creating a stringbuffer:
+//                message = messages[0].toString()
+//            } else {
+//                val sb = StringBuilder()
+//                if (messages != null)
+//                    for (m in messages) {
+//                        sb.append(m)
+//                    }
+//                if (t != null) {
+//                    sb.append("\n").append(Log.getStackTraceString(t))
+//                }
+//                message = sb.toString()
+//            }
+//            Log.println(level, tag, message)
+//        }
     }
 }

@@ -2,7 +2,7 @@
 // all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.2.50'
+    ext.kotlin_version = '1.2.51'
     ext.maven_gradle_plugin_version = "1.5"
     repositories {
         google()
@@ -37,7 +37,7 @@ allprojects {
         castFrameworkVersion = '15.0.1'
 
         supportLibraryVersion = '27.1.1'
-        archLifecycleVersion = '1.1.0'
+        archLifecycleVersion = '1.1.1'
         constraintLayoutVersion = '1.1.0-beta5'
 
         exoPlayerVersion = '2.8.1'

@@ -3,8 +3,11 @@ package org.y20k.escapepods.adapter
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
+import android.os.AsyncTask
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.FileHelper
+import org.y20k.escapepods.helpers.Keys
+import org.y20k.escapepods.helpers.LogHelper
 
 
 /*
@@ -18,10 +21,29 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
 
     fun loadCollection() {
-        collectionLiveData.setValue(FileHelper().readCollection(context)) // todo replace
-        // collectionLiveData.value(FileHelper().readCollection(context))
+        CollectionReader().execute()
+//        collectionLiveData.setValue(FileHelper().readCollection(context)) // todo replace
     }
 
-//    fun getCollectionLiveData
+    /*
+     * Inner class: Reads collection from storage - AsyncTask
+     */
+    inner class CollectionReader(): AsyncTask<Void, Void, Collection>() {
+        private val TAG: String = LogHelper.makeLogTag(CollectionReader::class.java)
+
+        override fun doInBackground(vararg params: Void?): Collection {
+            LogHelper.v(TAG, "Loading ${Keys.COLLECTION_FILE} from storage.")
+            return FileHelper().readCollection(context)
+        }
+
+        override fun onPostExecute(result: Collection) {
+            collectionLiveData.setValue(result)
+        }
+    }
+    /*
+     * End of inner class
+     */
+
+
 
 }

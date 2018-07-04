@@ -1,5 +1,5 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android"
 
 android {
     compileSdkVersion project.ext.compileSdkVersion
@@ -23,14 +23,14 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 }
 
 repositories {
     flatDir {
-        dirs 'libs'
+        dirs "libs"
     }
     mavenCentral()
 }
@@ -38,28 +38,28 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-    compileOnly 'com.google.android.wearable:wearable:' + wearableVersion
+    compileOnly "com.google.android.wearable:wearable:$wearableVersion"
 
-    implementation 'com.google.android.gms:play-services-cast-framework:' + castFrameworkVersion
-    implementation 'com.google.android.support:wearable:' + wearableVersion
+    implementation "com.google.android.gms:play-services-cast-framework:$castFrameworkVersion"
+    implementation "com.google.android.support:wearable:$wearableVersion"
 
-    implementation 'com.android.support:appcompat-v7:' + supportLibraryVersion
-    implementation 'com.android.support:cardview-v7:' + supportLibraryVersion
-    implementation 'com.android.support:mediarouter-v7:' + supportLibraryVersion
-    implementation 'com.android.support:leanback-v17:' + supportLibraryVersion
-    implementation 'com.android.support:design:' + supportLibraryVersion
-    implementation 'com.android.support:percent:' + supportLibraryVersion
-    implementation 'com.android.support.constraint:constraint-layout:' + constraintLayoutVersion
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:cardview-v7:$supportLibraryVersion"
+    implementation "com.android.support:mediarouter-v7:$supportLibraryVersion"
+    implementation "com.android.support:leanback-v17:$supportLibraryVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.android.support:percent:$supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
 
-    implementation 'android.arch.lifecycle:extensions:' + archLifecycleVersion
+    implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
 
-    implementation 'com.google.android.exoplayer:exoplayer:' + exoPlayerVersion
-    implementation 'com.google.code.gson:gson:' + gsonVersion
+    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
+    implementation "com.google.code.gson:gson:$gsonVersion"
 
-    testImplementation 'junit:junit:' + junitVersion
-    testImplementation 'org.mockito:mockito-core:' + mockitoVersion
-    androidTestImplementation 'junit:junit:' + junitVersion
-    androidTestImplementation 'com.android.support:support-annotations:' + supportLibraryVersion
-    androidTestImplementation 'com.android.support.test:runner:' + supportTestVersion
-    androidTestImplementation 'com.android.support.test:rules:' + supportTestVersion
+    testImplementation "junit:junit:$junitVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "com.android.support:support-annotations:$supportLibraryVersion"
+    androidTestImplementation "com.android.support.test:runner:$supportTestVersion"
+    androidTestImplementation "com.android.support.test:rules:$supportTestVersion"
 }

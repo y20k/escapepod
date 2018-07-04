@@ -17,6 +17,7 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.AsyncTask
 import android.provider.OpenableColumns
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -73,7 +74,7 @@ class FileHelper {
         json = gson.toJson(collection)
 
         // save JSON as text file
-        writeTextFile(context, json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
+        TextFileWriter(json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE).execute(context)
     }
 
 
@@ -93,7 +94,6 @@ class FileHelper {
             return getCustomGson().fromJson(json, Collection::class.java)
         }
     }
-
 
 
     /*  Creates a Gson object */
@@ -144,7 +144,7 @@ class FileHelper {
     }
 
 
-    /* Reads InputStream from file uri and returns it as String*/
+    /* Reads InputStream from file uri and returns it as String - use within an AsyncTask */
     private fun readTextFile(context: Context, folder: String, fileName: String): String {
         // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
         // https://developer.android.com/training/secure-file-sharing/retrieve-info
@@ -167,7 +167,7 @@ class FileHelper {
     }
 
 
-    /* Writes given text to file on storage */
+    /* Writes given text to file on storage - use within an AsyncTask */
     private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
         File(context.getExternalFilesDir(folder), fileName).writeText(text)
     }
@@ -178,4 +178,22 @@ class FileHelper {
         return File(folder, ".nomedia")
     }
 
+
+    /*
+     * Inner class: Writes given text to file on storage - AsyncTask
+     */
+    inner class TextFileWriter(val text: String, val folder: String, val fileName: String): AsyncTask<Context, Void, Boolean>() {
+        private val TAG: String = LogHelper.makeLogTag(TextFileWriter::class.java)
+        override fun doInBackground(vararg params: Context?): Boolean {
+            params[0]?.let {
+                LogHelper.v(TAG, "Saving $fileName to storage.")
+                writeTextFile(it, text, folder, fileName)
+                return true
+            }
+            return false
+        }
+    }
+    /*
+     * End of inner class
+     */
 }

@@ -99,8 +99,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Observer for Collection stored as Live Data */
     private fun createCollectionObserver(): Observer<Collection> {
         return Observer<Collection> { newCollection ->
-            if (newCollection != null) {
-                collection = newCollection
+            newCollection?.let {
+                collection = it
                 // update podcast counter - just a test // todo remove
                 var podcastCounter: TextView = findViewById(R.id.podcast_counter)
                 podcastCounter.text = "${collection.podcasts.size} podcasts in your collection"
