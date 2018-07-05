@@ -37,6 +37,7 @@ object Keys {
     val MIME_TYPE_PNG = "image/png"
     val MIME_TYPE_MP3 = "audio/mpeg3"
     val MIME_TYPE_XML = "text/xml"
+    val MIME_TYPE_UNSUPPORTED = "unsupported"
 
     // folder names
     val COLLECTION_FOLDER: String = "collection"

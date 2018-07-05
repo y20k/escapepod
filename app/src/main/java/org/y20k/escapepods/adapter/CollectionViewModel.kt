@@ -3,11 +3,13 @@ package org.y20k.escapepods.adapter
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
-import android.os.AsyncTask
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.FileHelper
-import org.y20k.escapepods.helpers.Keys
-import org.y20k.escapepods.helpers.LogHelper
+
 
 
 /*
@@ -17,33 +19,19 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Main class variables */
     val collectionLiveData: MutableLiveData<Collection> = MutableLiveData<Collection>()
-    private val context = application
+    val applicationContext = application
 
 
-    fun loadCollection() {
-        CollectionReader().execute()
-//        collectionLiveData.setValue(FileHelper().readCollection(context)) // todo replace
-    }
-
-    /*
-     * Inner class: Reads collection from storage - AsyncTask
-     */
-    inner class CollectionReader(): AsyncTask<Void, Void, Collection>() {
-        private val TAG: String = LogHelper.makeLogTag(CollectionReader::class.java)
-
-        override fun doInBackground(vararg params: Void?): Collection {
-            LogHelper.v(TAG, "Loading ${Keys.COLLECTION_FILE} from storage.")
-            return FileHelper().readCollection(context)
-        }
-
-        override fun onPostExecute(result: Collection) {
+    /* Reads collection from storage using GSON - async via coroutine */
+    fun loadCollectionAsync() {
+        var json: String = ""
+        launch(UI) {
+            val result = async(CommonPool) {
+                // get JSON from text file
+                FileHelper().readCollection(applicationContext)
+            }.await()
             collectionLiveData.setValue(result)
         }
     }
-    /*
-     * End of inner class
-     */
-
-
 
 }

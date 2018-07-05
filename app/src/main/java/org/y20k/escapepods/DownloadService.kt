@@ -26,6 +26,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.preference.PreferenceManager
 import android.widget.Toast
+import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
@@ -107,11 +108,13 @@ class DownloadService(): Service() {
         val downloadManager: DownloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val downloadIDs = LongArray(uris.size)
         for (i in uris.indices)  {
-            downloadIDs[i] = downloadManager.enqueue(DownloadManager.Request(uris[i])
+            val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                     .setAllowedNetworkTypes(allowedNetworkTypes)
                     .setAllowedOverRoaming(false)
                     .setTitle(uris[i].lastPathSegment)
-                    .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment))
+                    .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
+                    .setMimeType(DownloadHelper().determineMimeType(uris[i].toString()))
+            downloadIDs[i] = downloadManager.enqueue(request)
             activeDownloads.add(downloadIDs[i])
         }
         return downloadIDs

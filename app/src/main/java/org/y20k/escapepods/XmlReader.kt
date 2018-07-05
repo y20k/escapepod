@@ -14,12 +14,14 @@
 
 package org.y20k.escapepods
 
-import android.os.AsyncTask
+import android.content.Context
+import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.y20k.escapepods.core.Podcast
+import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 import org.y20k.escapepods.helpers.XmlHelper
@@ -27,19 +29,13 @@ import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.coroutines.experimental.suspendCoroutine
 
 
 /*
  * XmlReader class
  */
-class XmlReader(var xmlReaderListener: XmlReaderListener, val remotePodcastFeedLocation: String): AsyncTask<InputStream, Void, Podcast>() {
-
-    /* Interface used to communicate back to activity */
-    interface XmlReaderListener {
-        fun onParseResult(podcast: Podcast) {
-        }
-    }
-
+class XmlReader() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(XmlReader::class.java.name)
@@ -50,48 +46,37 @@ class XmlReader(var xmlReaderListener: XmlReaderListener, val remotePodcastFeedL
     private var podcast: Podcast = Podcast()
 
 
-    /* Overrides onPreExecute */
-    override fun onPreExecute() {
-        podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
-    }
+    /* Read feed from given input stream - async using coroutine */
+    suspend fun read(context: Context, localFileUri: Uri, remotePodcastFeedLocation: String): Podcast {
+        return suspendCoroutine {cont ->
+            // store remote feed location
+            podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
 
+            // try parsing
+            val stream: InputStream = FileHelper().getTextFileStream(context, localFileUri)
+            try {
+                // create XmlPullParser for InputStream
+                val parser: XmlPullParser = Xml.newPullParser()
+                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                parser.setInput(stream, null)
+                parser.nextTag();
+                // start reading rss feed
+                podcast = parseFeed(parser)
+            } catch (exception : Exception) {
+                exception.printStackTrace()
+            } finally {
+                stream.close()
+            }
 
-    /* Overrides doInBackground */
-    override fun doInBackground(vararg params: InputStream): Podcast {
-        // get InputStream from params
-        val stream: InputStream = params[0]
-        try {
-            // create XmlPullParser for InputStream
-            val parser: XmlPullParser = Xml.newPullParser()
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(stream, null)
-            parser.nextTag();
-            // start reading rss feed
-            return readFeed(parser)
-        } catch (exception : Exception) {
-            exception.printStackTrace()
-            return podcast
-        } finally {
-            stream.close()
+            // return parsing result
+            cont.resume(podcast)
         }
     }
 
 
-    /* Implements onPostExecute */
-    override fun onPostExecute(podcast: Podcast) {
-        // log success // todo remove
-        if (podcast.name.isNotEmpty()) {
-            xmlReaderListener.onParseResult(podcast)
-            LogHelper.e(TAG, "\n${podcast.toString()}") // todo remove
-        } else {
-            LogHelper.e(TAG, "The given address is not a podcast")
-        }
-    }
-
-
-    /* Reads whole feed */
+    /* Parses whole feed */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readFeed(parser: XmlPullParser): Podcast {
+    private fun parseFeed(parser: XmlPullParser): Podcast {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_RSS)
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag
@@ -159,15 +144,15 @@ class XmlReader(var xmlReaderListener: XmlReaderListener, val remotePodcastFeedL
             }
             // read only relevant tags
             when (parser.name) {
-                // found episode title
+            // found episode title
                 Keys.RSS_EPISODE_TITLE -> title = XmlHelper.readEpisodeTitle(parser, nameSpace)
-                // found episode description
+            // found episode description
                 Keys.RSS_EPISODE_DESCRIPTION -> description = XmlHelper.readEpisodeDescription(parser, nameSpace)
-                // found episode publication date
+            // found episode publication date
                 Keys.RSS_EPISODE_PUBLICATION_DATE -> publicationDate = XmlHelper.readEpisodePublicationDate(parser, nameSpace)
-                // found episode audio link
+            // found episode audio link
                 Keys.RSS_EPISODE_AUDIO_LINK -> audioUrl = XmlHelper.readEpisodeAudioLink(parser, nameSpace)
-                // skip to next tag
+            // skip to next tag
                 else -> XmlHelper.skip(parser)
             }
         }

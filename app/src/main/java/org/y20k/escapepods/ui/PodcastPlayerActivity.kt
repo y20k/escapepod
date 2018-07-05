@@ -31,16 +31,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Runnable
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
 import org.y20k.escapepods.XmlReader
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
-import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.*
-import java.io.InputStream
 
 
 /*
@@ -48,8 +51,7 @@ import java.io.InputStream
  */
 class PodcastPlayerActivity: AppCompatActivity(),
                              AddPodcastDialog.AddPodcastDialogListener,
-                             DownloadService.DownloadServiceListener,
-                             XmlReader.XmlReaderListener {
+                             DownloadService.DownloadServiceListener {
 //class PodcastPlayerActivity: BaseActivity(), AddPodcastDialog.AddPodcastDialogListener {
 
     /* Define log tag */
@@ -72,7 +74,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         // observe changes in LiveData
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java);
         collectionViewModel.collectionLiveData.observe(this, createCollectionObserver());
-        collectionViewModel.loadCollection()
+        collectionViewModel.loadCollectionAsync()
 
         // set layout
         setContentView(R.layout.activity_podcast_player)
@@ -102,8 +104,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
             newCollection?.let {
                 collection = it
                 // update podcast counter - just a test // todo remove
-                var podcastCounter: TextView = findViewById(R.id.podcast_counter)
-                podcastCounter.text = "${collection.podcasts.size} podcasts in your collection"
+                val podcastCounter: TextView = findViewById(R.id.podcast_counter)
+                podcastCounter.text = "${it.podcasts.size} podcasts in your collection"
             }
         }
     }
@@ -139,48 +141,35 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Overrides onParseResult from XmlReader */
-    override fun onParseResult(podcast: Podcast) {
-        super.onParseResult(podcast)
-        if (collection.isInCollection(podcast.remotePodcastFeedLocation)) {
-            // update existing podcast
-            LogHelper.e(TAG, "Updating: $podcast.remotePodcastFeedLocation") // todo remove
-        } else {
-            // add new podcast to podcast collection
-            collection.podcasts.add(podcast)
-            // update live data
-            collectionViewModel.collectionLiveData.setValue(collection)
-            // save changes
-            FileHelper().saveCollection(this, collection)
-        }
-    }
-
 
     /* Overrides onDownloadFinished from DownloadService */
     override fun onDownloadFinished(downloadID: Long) {
         // get a download manager
         val downloadManager: DownloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        // get local Uri in content://downloads/all_downloads/ for download ID
-        val uri = downloadManager.getUriForDownloadedFile(downloadID)
 
-        // check if download is RSS
-        if (FileHelper().getFileType(this, uri).contains(Keys.MIME_TYPE_XML, true)) {
-            // get remote URL for download ID
-            var remotePodcastFeedLocation: String = ""
-            val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                remotePodcastFeedLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
-            }
-            // start reading podcast feed
-            val inputStream: InputStream = FileHelper().getTextFileStream(this@PodcastPlayerActivity, uri)
-            val xmlReader: XmlReader = XmlReader(this@PodcastPlayerActivity, remotePodcastFeedLocation)
-            xmlReader.execute(inputStream)
+        // get local Uri in content://downloads/all_downloads/ for download ID
+        val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
+
+        // get remote URL for download ID
+        var remoteFileLocation: String = ""
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            remoteFileLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
+        }
+
+        // determine what to
+        when (FileHelper().getFileType(this, localFileUri)) {
+            Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_MP3 -> { }
+            Keys.MIME_TYPE_JPG -> { }
+            Keys.MIME_TYPE_PNG -> { }
+            else -> {}
         }
 
         // Log completed download // todo remove
-        LogHelper.e(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, uri) +
-                " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@PodcastPlayerActivity, uri), true)) // todo remove
+        LogHelper.v(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, localFileUri) +
+                " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@PodcastPlayerActivity, localFileUri), true)) // todo remove
 
         // cancel periodic UI update if possible
         if (downloadService.activeDownloads.isEmpty()) {
@@ -189,9 +178,28 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+    /* Reads podcast feed - async via coroutine*/
+    private fun readPodcastFeedAsync(localFileUri: Uri, remotePodcastFeedLocation: String) {
+        launch(UI) {
+            val result = async(CommonPool) {
+                XmlReader().read(this@PodcastPlayerActivity, localFileUri, remotePodcastFeedLocation)
+            }.await()
+            if (collection.isInCollection(result.remotePodcastFeedLocation)) {
+                // update existing podcast
+                LogHelper.e(TAG, "Updating: $result.remotePodcastFeedLocation") // todo remove
+            } else {
+                // add new podcast to collection, update live data & save changes
+                collection.podcasts.add(result)
+                collectionViewModel.collectionLiveData.setValue(collection)
+                FileHelper().saveCollectionAsync(this@PodcastPlayerActivity, collection)
+            }
+        }
+    }
+
+
     /* Download podcast feed */
     private fun downloadPodcastFeed(feedUrl : String) {
-        if (DownloadHelper().isXml(feedUrl)) {
+        if (DownloadHelper().determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
             val uris = Array(1) {Uri.parse(feedUrl)}
             downloadIDs = startDownload(uris, Keys.RSS)

@@ -40,6 +40,7 @@ allprojects {
         archLifecycleVersion = '1.1.1'
         constraintLayoutVersion = '1.1.0-beta5'
 
+        kotlinxCoroutinesVersion = '0.23.3'
         exoPlayerVersion = '2.8.1'
         gsonVersion = '2.8.5'
 

@@ -17,13 +17,17 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.os.AsyncTask
 import android.provider.OpenableColumns
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.y20k.escapepods.core.Collection
 import java.io.*
 import java.text.NumberFormat
+import kotlin.coroutines.experimental.suspendCoroutine
 
 
 /*
@@ -66,7 +70,7 @@ class FileHelper {
 
 
     /* Save podcast collections as JSON text file */
-    fun saveCollection(context: Context, collection: Collection) {
+    fun saveCollectionAsync(context: Context, collection: Collection) {
 
         // convert to JSON
         var json: String = ""
@@ -74,24 +78,26 @@ class FileHelper {
         json = gson.toJson(collection)
 
         // save JSON as text file
-        TextFileWriter(json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE).execute(context)
+        launch(UI) {
+            async(CommonPool) {
+                writeTextFile(context, json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
+            }.await()
+        }
     }
 
 
-    /* Reads collection from storage using GSON */
-    fun readCollection(context: Context): Collection {
-
-        // get JSON from text file
-        val json: String = readTextFile(context, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
-
-        LogHelper.e(TAG, json) // todo remove
-
-        if (json.isEmpty()) {
-            // return an empty collection
-            return Collection()
-        } else {
-            // convert JSON and return as COLLECTION
-            return getCustomGson().fromJson(json, Collection::class.java)
+    /* Reads collection from storage using GSON - async via coroutine */
+    suspend fun readCollection(context: Context): Collection {
+        return suspendCoroutine {cont ->
+            // get JSON from text file
+            val json: String = readTextFile(context, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
+            if (json.isEmpty()) {
+                // return an empty collection
+                cont.resume(Collection())
+            } else {
+                // convert JSON and return as COLLECTION
+                cont.resume(getCustomGson().fromJson(json, Collection::class.java))
+            }
         }
     }
 
@@ -144,21 +150,20 @@ class FileHelper {
     }
 
 
-    /* Reads InputStream from file uri and returns it as String - use within an AsyncTask */
+    /* Reads InputStream from file uri and returns it as String */
     private fun readTextFile(context: Context, folder: String, fileName: String): String {
         // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
         // https://developer.android.com/training/secure-file-sharing/retrieve-info
-//        val stream: InputStream = context.contentResolver.openInputStream(uri)
+
+        // check if file exists
         val file: File = File(context.getExternalFilesDir(folder), fileName)
         if (!file.exists()) {
             return ""
         }
-
+        // read until last line reached
         val stream: InputStream = file.inputStream()
         val reader: BufferedReader = BufferedReader(InputStreamReader(stream))
         val builder: StringBuilder = StringBuilder()
-
-        // read until last line reached
         reader.forEachLine {
             builder.append(it)
             builder.append("\n") }
@@ -167,9 +172,11 @@ class FileHelper {
     }
 
 
-    /* Writes given text to file on storage - use within an AsyncTask */
-    private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
-        File(context.getExternalFilesDir(folder), fileName).writeText(text)
+    /* Writes given text to file on storage - async via coroutine */
+    suspend private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
+        return suspendCoroutine {
+            File(context.getExternalFilesDir(folder), fileName).writeText(text)
+        }
     }
 
 
@@ -177,23 +184,4 @@ class FileHelper {
     private fun getNoMediaFile(folder: File): File {
         return File(folder, ".nomedia")
     }
-
-
-    /*
-     * Inner class: Writes given text to file on storage - AsyncTask
-     */
-    inner class TextFileWriter(val text: String, val folder: String, val fileName: String): AsyncTask<Context, Void, Boolean>() {
-        private val TAG: String = LogHelper.makeLogTag(TextFileWriter::class.java)
-        override fun doInBackground(vararg params: Context?): Boolean {
-            params[0]?.let {
-                LogHelper.v(TAG, "Saving $fileName to storage.")
-                writeTextFile(it, text, folder, fileName)
-                return true
-            }
-            return false
-        }
-    }
-    /*
-     * End of inner class
-     */
 }

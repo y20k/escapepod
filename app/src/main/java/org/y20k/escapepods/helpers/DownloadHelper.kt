@@ -23,14 +23,22 @@ import java.net.URL
 class DownloadHelper {
 
     /* Checks if given feed string is XML */
-    fun isXml(feedUrl: String): Boolean {
-        // FIRST check if NOT XML
-        if (!feedUrl.startsWith("http", true)) return false
-        if (!feedUrlIsParsable(feedUrl)) return false
+    fun determineMimeType(feedUrl: String): String {
+        // FIRST check if NOT an URL
+        if (!feedUrl.startsWith("http", true)) return Keys.MIME_TYPE_UNSUPPORTED
+        if (!feedUrlIsParsable(feedUrl)) return Keys.MIME_TYPE_UNSUPPORTED
 
-        // THEN check if XML
-        if (feedUrl.endsWith("xml", true)) return true
-        return (mimeTypeIsXML(feedUrl))
+        // THEN check for type
+        if (feedUrl.endsWith("xml", true)) return Keys.MIME_TYPE_XML
+        if (feedUrl.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
+        if (feedUrl.endsWith("png", true)) return Keys.MIME_TYPE_PNG
+        if (feedUrl.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
+        if (feedUrl.endsWith("jpeg", true)) return Keys.MIME_TYPE_JPG
+
+        // todo implement a real mime type check
+        // https://developer.android.com/reference/java/net/URLConnection#guessContentTypeFromName(java.lang.String)
+
+        return Keys.MIME_TYPE_UNSUPPORTED
     }
 
 
@@ -42,13 +50,5 @@ class DownloadHelper {
             return false
         }
         return true
-    }
-
-
-    /* Checks if mime type is "text/xml" */
-    private fun mimeTypeIsXML(feedUrl: String): Boolean {
-        // todo implement using https://developer.android.com/reference/java/net/URLConnection#guessContentTypeFromName(java.lang.String)
-        // todo async
-        return false
     }
 }
