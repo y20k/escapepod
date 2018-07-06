@@ -40,10 +40,10 @@ object Keys {
     val MIME_TYPE_UNSUPPORTED = "unsupported"
 
     // folder names
-    val COLLECTION_FOLDER: String = "collection"
-    val AUDIO_FOLDER: String = "audio"
-    val IMAGE_FOLDER: String  = "images"
-    val TEMP_FOLDER: String  = "temp"
+    val FOLDER_COLLECTION: String = "collection"
+    val FOLDER_AUDIO: String = "audio"
+    val FOLDER_IMAGES: String  = "images"
+    val FOLDER_TEMP: String  = "temp"
     val NO_SUB_DIRECTORY: String = ""
 
     // file names

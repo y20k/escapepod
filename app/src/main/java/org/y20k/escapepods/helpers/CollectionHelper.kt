@@ -25,6 +25,9 @@ import java.util.*
  */
 class CollectionHelper {
 
+    /* Define log tag */
+    private val TAG: String = LogHelper.makeLogTag(CollectionHelper::class.java)
+
 
     /* Checks if feed is already in collection */
     fun isNewPodcast(remotePodcastFeedLocation: String, collection: Collection): Boolean {

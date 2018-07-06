@@ -65,6 +65,18 @@ class FileHelper {
     }
 
 
+    /* Clears given folder - keeps given number of files */
+    fun clearFolder(folder: File, keep: Int) {
+        val files = folder.listFiles()
+        val fileCount: Int = files.size
+        files.sortBy { it.lastModified() }
+        for (fileNumber in files.indices) {
+            if (fileNumber < fileCount - keep)
+                files[fileNumber].delete()
+        }
+    }
+
+
     /* Suspend function: Saves podcast collection as JSON text file */
     suspend fun saveCollection(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
@@ -75,7 +87,7 @@ class FileHelper {
             json = gson.toJson(collection)
 
             // save JSON as text file
-            cont.resume(writeTextFile(context, json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE))
+            cont.resume(writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE))
         }
     }
 
@@ -85,7 +97,7 @@ class FileHelper {
     suspend fun readCollection(context: Context): Collection {
         return suspendCoroutine {cont ->
             // get JSON from text file
-            val json: String = readTextFile(context, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
+            val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
             if (json.isEmpty()) {
                 // return an empty collection
                 cont.resume(Collection())

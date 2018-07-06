@@ -39,9 +39,11 @@ class Podcast(@Expose var name: String = "",
         val shortDescriptionLength: Int = if (description.length <= descriptionLength) description.length -1 else descriptionLength
         val shortDescription: String = description.trim().substring(0, shortDescriptionLength)
         stringBuilder
-                .append("$name\n")
-                .append("$remotePodcastFeedLocation\n")
-                .append("$remoteImageFileLocation\n")
+                .append("Name: $name\n")
+                .append("CoverUri: $cover\n")
+                .append("CoverURL: $remoteImageFileLocation\n")
+                .append("FeedURL: $remotePodcastFeedLocation\n")
+                .append("Update: ${lastUpdate.toString()}\n")
                 .append("$shortDescription ...\n")
         for (episode in episodes) {
             val episodeTitle: String = episode.getString(MediaMetadataCompat.METADATA_KEY_TITLE)

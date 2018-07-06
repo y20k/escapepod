@@ -72,6 +72,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // clear temp folder
+        FileHelper().clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
+
         // observe changes in LiveData
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java);
         collectionViewModel.collectionLiveData.observe(this, createCollectionObserver());
@@ -98,20 +101,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     }
 
-
-    /* Observer for Collection stored as Live Data */
-    private fun createCollectionObserver(): Observer<Collection> {
-        return Observer<Collection> { newCollection ->
-            newCollection?.let {
-                collection = it
-                // update podcast counter - just a test // todo remove
-                val podcastCounter: TextView = findViewById(R.id.podcast_counter)
-                podcastCounter.text = "${it.podcasts.size} podcasts in your collection"
-                // save collection
-                saveCollectionAsync()
-            }
-        }
-    }
 
 
     /* Overrides onResume */
@@ -170,7 +159,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
 
         // Log completed download // todo remove
-        LogHelper.e(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, localFileUri) +
+        LogHelper.v(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, localFileUri) +
                 " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@PodcastPlayerActivity, localFileUri), true)) // todo remove
 
         // cancel periodic UI update if possible
@@ -211,7 +200,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
         // download podcast cover
         val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
         if (refreshCover) {
-            LogHelper.e(TAG, "Setting cover remote location: ${podcast.remoteImageFileLocation}") // todo remove
             val uris = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
             startDownload(uris, Keys.FILE_TYPE_IMAGE, subDirectory)
         }
@@ -219,33 +207,38 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Sets podcast cover */ // todo move to CollectionHelper
+    /* Sets podcast cover */
     private fun setPodcastImage(localFileUri: Uri, remoteFileLocation: String) {
         for (podcast in collection.podcasts) {
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
                 podcast.cover = localFileUri.toString()
-                LogHelper.e(TAG, "Setting cover: ${localFileUri.toString()}") // todo remove
+                LogHelper.v(TAG, podcast.toString()) // todo remove
             }
         }
+        collectionViewModel.collectionLiveData.setValue(collection)
     }
 
+
+    /* Adds podcast to podcast collection*/
+    private fun addPodcast(podcast: Podcast) {
+        collection.podcasts.add(podcast)
+        collection.podcasts.sortBy { it.name }
+        collectionViewModel.collectionLiveData.setValue(collection)
+    }
 
 
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) {
         launch(UI) {
             // launch XmlReader for result and await
-            val result = async(CommonPool) {
+            val result: Podcast = async(CommonPool) {
                 XmlReader().read(this@PodcastPlayerActivity, localFileUri, remoteFileLocation)
             }.await()
             // afterwards: update existing podcast or add podcast as new podcast
-            LogHelper.v(TAG, result.toString()) // todo remove
             if (CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)) {
-                LogHelper.v(TAG, "Updating: $result.remotePodcastFeedLocation") // todo remove
                 refreshPodcast(result, false)
             } else {
-                collection.podcasts.add(result)
-                collectionViewModel.collectionLiveData.setValue(collection)
+                addPodcast(result)
                 refreshPodcast(result, true)
             }
        }
@@ -260,6 +253,21 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 FileHelper().saveCollection(this@PodcastPlayerActivity, collection)
             }.await()
             // afterwards: do nothing
+        }
+    }
+
+
+    /* Observer for Collection stored as Live Data */
+    private fun createCollectionObserver(): Observer<Collection> {
+        return Observer<Collection> { newCollection ->
+            newCollection?.let {
+                collection = it
+                // update podcast counter - just a test // todo remove
+                val podcastCounter: TextView = findViewById(R.id.podcast_counter)
+                podcastCounter.text = "${it.podcasts.size} podcasts in your collection"
+                // save collection
+                saveCollectionAsync()
+            }
         }
     }
 

@@ -56,6 +56,7 @@ class DownloadService(): Service() {
     /* Overrides onCreate */
     override fun onCreate() {
         super.onCreate()
+
         // listen for completed downloads
         registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
@@ -91,9 +92,9 @@ class DownloadService(): Service() {
         // determine destination folder
         var folder: String
         when (type) {
-            Keys.FILE_TYPE_RSS -> folder = Keys.TEMP_FOLDER
-            Keys.FILE_TYPE_AUDIO -> folder = Keys.AUDIO_FOLDER + "/" + subDirectory
-            Keys.FILE_TYPE_IMAGE -> folder = Keys.IMAGE_FOLDER + "/" + subDirectory
+            Keys.FILE_TYPE_RSS -> folder = Keys.FOLDER_TEMP
+            Keys.FILE_TYPE_AUDIO -> folder = Keys.FOLDER_AUDIO + "/" + subDirectory
+            Keys.FILE_TYPE_IMAGE -> folder = Keys.FOLDER_IMAGES + "/" + subDirectory
             else -> folder = "/"
         }
 
