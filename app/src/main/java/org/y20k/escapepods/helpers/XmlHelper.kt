@@ -96,7 +96,7 @@ object XmlHelper {
     @Throws(IOException::class, XmlPullParserException::class)
     fun readPodcastImage(parser: XmlPullParser, nameSpace: String?): String {
         var link = ""
-        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE)
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER)
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
@@ -104,23 +104,23 @@ object XmlHelper {
             }
             // read only relevant tags
             when (parser.name) {
-                // found episode title
-                Keys.RSS_PODCAST_IMAGE_URL -> link = XmlHelper.readPodcastImageUrl(parser, nameSpace)
+                // found episode cover
+                Keys.RSS_PODCAST_COVER_URL -> link = XmlHelper.readPodcastCoverUrl(parser, nameSpace)
                 // skip to next tag
                 else -> XmlHelper.skip(parser)
             }
         }
-        parser.require(XmlPullParser.END_TAG, nameSpace,Keys.RSS_PODCAST_IMAGE)
+        parser.require(XmlPullParser.END_TAG, nameSpace,Keys.RSS_PODCAST_COVER)
         return link
     }
 
 
     /* PODCAST: read remoteImageFileLocation URL - within remoteImageFileLocation*/
     @Throws(IOException::class, XmlPullParserException::class)
-    private fun readPodcastImageUrl(parser: XmlPullParser, nameSpace: String?): String {
-        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE_URL)
+    private fun readPodcastCoverUrl(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER_URL)
         val link = readText(parser)
-        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_IMAGE_URL)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_COVER_URL)
         return link
     }
 

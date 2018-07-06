@@ -28,13 +28,13 @@ object Keys {
     val PREF_NIGHT_MODE_STATE: String = "NIGHT_MODE_STATE"
 
     // file types
-    val RSS: Int = 1
-    val AUDIO: Int  = 2
-    val IMAGE: Int  = 3
+    val FILE_TYPE_RSS: Int = 1
+    val FILE_TYPE_AUDIO: Int  = 2
+    val FILE_TYPE_IMAGE: Int  = 3
 
     // mime types
-    val MIME_TYPE_JPG = "image/jpeg"
-    val MIME_TYPE_PNG = "image/png"
+    val MIME_TYPE_JPG = "cover/jpeg"
+    val MIME_TYPE_PNG = "cover/png"
     val MIME_TYPE_MP3 = "audio/mpeg3"
     val MIME_TYPE_XML = "text/xml"
     val MIME_TYPE_UNSUPPORTED = "unsupported"
@@ -44,6 +44,7 @@ object Keys {
     val AUDIO_FOLDER: String = "audio"
     val IMAGE_FOLDER: String  = "images"
     val TEMP_FOLDER: String  = "temp"
+    val NO_SUB_DIRECTORY: String = ""
 
     // file names
     val COLLECTION_FILE: String = "collection.json"
@@ -62,8 +63,8 @@ object Keys {
     val RSS_PODCAST = "channel"
     val RSS_PODCAST_NAME = "title"
     val RSS_PODCAST_DESCRIPTION = "description"
-    val RSS_PODCAST_IMAGE = "remoteImageFileLocation"
-    val RSS_PODCAST_IMAGE_URL = "url"
+    val RSS_PODCAST_COVER = "image"
+    val RSS_PODCAST_COVER_URL = "url"
     val RSS_EPISODE = "item"
     val RSS_EPISODE_TITLE = "title"
     val RSS_EPISODE_DESCRIPTION = "description"

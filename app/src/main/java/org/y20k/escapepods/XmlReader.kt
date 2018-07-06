@@ -21,13 +21,9 @@ import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.y20k.escapepods.core.Podcast
-import org.y20k.escapepods.helpers.FileHelper
-import org.y20k.escapepods.helpers.Keys
-import org.y20k.escapepods.helpers.LogHelper
-import org.y20k.escapepods.helpers.XmlHelper
+import org.y20k.escapepods.helpers.*
 import java.io.IOException
 import java.io.InputStream
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.experimental.suspendCoroutine
 
@@ -67,6 +63,9 @@ class XmlReader() {
             } finally {
                 stream.close()
             }
+
+            // sort episodes
+            podcast.episodes.sortBy { CollectionHelper().convertToDate(it.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)) }
 
             // return parsing result
             cont.resume(podcast)
@@ -111,11 +110,11 @@ class XmlReader() {
                 // found a podcast description
                 Keys.RSS_PODCAST_DESCRIPTION -> podcast.description = XmlHelper.readPodcastDescription(parser,nameSpace)
                 // found a podcast remoteImageFileLocation
-                Keys.RSS_PODCAST_IMAGE -> podcast.remoteImageFileLocation = XmlHelper.readPodcastImage(parser, nameSpace)
+                Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = XmlHelper.readPodcastImage(parser, nameSpace)
                 // found an episode
                 Keys.RSS_EPISODE -> {
                     val episode: MediaMetadataCompat = readEpisode(parser)
-                    val key: Date = convertToDate(episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE))
+                    val key: Date = CollectionHelper().convertToDate(episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE))
                     podcast.episodes.add(episode)
                 }
                 // skip to next tag
@@ -160,20 +159,12 @@ class XmlReader() {
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, publicationDate+title)
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.image)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.cover)
                 .putString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION, description)
                 .putString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE, publicationDate)
                 .putString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL, audioUrl)
                 .putString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL, podcast.remoteImageFileLocation)
                 .build()
-    }
-
-
-    /* Converts RFC 2822 string representation of a date to DATE */ // todo move somewhere else
-    private fun convertToDate(dateString: String): Date {
-        val pattern = "EEE, dd MMM yyyy HH:mm:ss Z"
-        val format = SimpleDateFormat(pattern, Locale.ENGLISH)
-        return format.parse((dateString))
     }
 
 }

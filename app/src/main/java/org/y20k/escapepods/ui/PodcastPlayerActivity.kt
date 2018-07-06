@@ -41,6 +41,7 @@ import org.y20k.escapepods.R
 import org.y20k.escapepods.XmlReader
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.*
@@ -106,6 +107,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 // update podcast counter - just a test // todo remove
                 val podcastCounter: TextView = findViewById(R.id.podcast_counter)
                 podcastCounter.text = "${it.podcasts.size} podcasts in your collection"
+                // save collection
+                saveCollectionAsync()
             }
         }
     }
@@ -131,7 +134,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onAddPodcastDialogFinish from AddPodcastDialog */
     override fun onAddPodcastDialogFinish(textInput: String) {
         super.onAddPodcastDialogFinish(textInput)
-        if (collection.isInCollection(textInput)) {
+        if (CollectionHelper().isNewPodcast(textInput, collection)) {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_duplicate),
                     getString(R.string.dialog_error_message_podcast_duplicate),
                     textInput)
@@ -139,7 +142,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
             downloadPodcastFeed(textInput)
         }
     }
-
 
 
     /* Overrides onDownloadFinished from DownloadService */
@@ -162,13 +164,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
         when (FileHelper().getFileType(this, localFileUri)) {
             Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
             Keys.MIME_TYPE_MP3 -> { }
-            Keys.MIME_TYPE_JPG -> { }
-            Keys.MIME_TYPE_PNG -> { }
+            Keys.MIME_TYPE_JPG -> setPodcastImage(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_PNG -> setPodcastImage(localFileUri, remoteFileLocation)
             else -> {}
         }
 
         // Log completed download // todo remove
-        LogHelper.v(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, localFileUri) +
+        LogHelper.e(TAG, "Download complete: " + FileHelper().getFileName(this@PodcastPlayerActivity, localFileUri) +
                 " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@PodcastPlayerActivity, localFileUri), true)) // todo remove
 
         // cancel periodic UI update if possible
@@ -178,31 +180,12 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Reads podcast feed - async via coroutine*/
-    private fun readPodcastFeedAsync(localFileUri: Uri, remotePodcastFeedLocation: String) {
-        launch(UI) {
-            val result = async(CommonPool) {
-                XmlReader().read(this@PodcastPlayerActivity, localFileUri, remotePodcastFeedLocation)
-            }.await()
-            if (collection.isInCollection(result.remotePodcastFeedLocation)) {
-                // update existing podcast
-                LogHelper.e(TAG, "Updating: $result.remotePodcastFeedLocation") // todo remove
-            } else {
-                // add new podcast to collection, update live data & save changes
-                collection.podcasts.add(result)
-                collectionViewModel.collectionLiveData.setValue(collection)
-                FileHelper().saveCollectionAsync(this@PodcastPlayerActivity, collection)
-            }
-        }
-    }
-
-
     /* Download podcast feed */
     private fun downloadPodcastFeed(feedUrl : String) {
         if (DownloadHelper().determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
             val uris = Array(1) {Uri.parse(feedUrl)}
-            downloadIDs = startDownload(uris, Keys.RSS)
+            downloadIDs = startDownload(uris, Keys.FILE_TYPE_RSS, Keys.NO_SUB_DIRECTORY)
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),
                     getString(R.string.dialog_error_message_podcast_invalid_feed),
@@ -212,13 +195,72 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Start download in DownloadService */
-    private fun startDownload(uris: Array<Uri>, type: Int): LongArray {
-        var downloadIDs = longArrayOf(-1L)
+    private fun startDownload(uris: Array<Uri>, type: Int, subDirectory: String): LongArray {
         if (downloadServiceBound) {
             // start download
-            downloadIDs = downloadService.download(this, uris, type)
+            val newIDs: LongArray = downloadService.download(this, uris, type, subDirectory)
+            if (downloadIDs[0] == -1L) downloadIDs = newIDs
+            else downloadIDs = newIDs.plus(downloadIDs)
         }
         return downloadIDs
+    }
+
+
+    /* Refreshes episodes and podcast cover */
+    private fun refreshPodcast(podcast: Podcast, refreshCover: Boolean) {
+        // download podcast cover
+        val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
+        if (refreshCover) {
+            LogHelper.e(TAG, "Setting cover remote location: ${podcast.remoteImageFileLocation}") // todo remove
+            val uris = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
+            startDownload(uris, Keys.FILE_TYPE_IMAGE, subDirectory)
+        }
+        // todo download the first two episodes
+    }
+
+
+    /* Sets podcast cover */ // todo move to CollectionHelper
+    private fun setPodcastImage(localFileUri: Uri, remoteFileLocation: String) {
+        for (podcast in collection.podcasts) {
+            if (podcast.remoteImageFileLocation == remoteFileLocation) {
+                podcast.cover = localFileUri.toString()
+                LogHelper.e(TAG, "Setting cover: ${localFileUri.toString()}") // todo remove
+            }
+        }
+    }
+
+
+
+    /* Async via coroutine: Reads podcast feed */
+    private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) {
+        launch(UI) {
+            // launch XmlReader for result and await
+            val result = async(CommonPool) {
+                XmlReader().read(this@PodcastPlayerActivity, localFileUri, remoteFileLocation)
+            }.await()
+            // afterwards: update existing podcast or add podcast as new podcast
+            LogHelper.v(TAG, result.toString()) // todo remove
+            if (CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)) {
+                LogHelper.v(TAG, "Updating: $result.remotePodcastFeedLocation") // todo remove
+                refreshPodcast(result, false)
+            } else {
+                collection.podcasts.add(result)
+                collectionViewModel.collectionLiveData.setValue(collection)
+                refreshPodcast(result, true)
+            }
+       }
+    }
+
+
+    /* Async via coroutine: Saves podcast collection */
+    private fun saveCollectionAsync() {
+        launch(UI) {
+            // launch FileHelper for result and await
+            val result = async(CommonPool) {
+                FileHelper().saveCollection(this@PodcastPlayerActivity, collection)
+            }.await()
+            // afterwards: do nothing
+        }
     }
 
 
@@ -253,7 +295,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // handles the intent that started the activity
             if (Intent.ACTION_VIEW == intent.action) {
                 downloadPodcastFeed(intent.data.toString())
-                LogHelper.e(TAG, "Intent want to download: ${intent.data.toString()}") // todo remove
                 intent.action == ""
             }
         }

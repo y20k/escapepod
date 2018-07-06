@@ -25,7 +25,7 @@ import java.util.*
  */
 class Podcast(@Expose var name: String = "",
               @Expose var description: String = "",
-              @Expose var image: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
+              @Expose var cover: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
               @Expose var episodes: MutableList<MediaMetadataCompat> = mutableListOf<MediaMetadataCompat>(),
               @Expose var lastUpdate: Date = Calendar.getInstance().time,
               @Expose var remoteImageFileLocation: String = "",
@@ -40,6 +40,8 @@ class Podcast(@Expose var name: String = "",
         val shortDescription: String = description.trim().substring(0, shortDescriptionLength)
         stringBuilder
                 .append("$name\n")
+                .append("$remotePodcastFeedLocation\n")
+                .append("$remoteImageFileLocation\n")
                 .append("$shortDescription ...\n")
         for (episode in episodes) {
             val episodeTitle: String = episode.getString(MediaMetadataCompat.METADATA_KEY_TITLE)

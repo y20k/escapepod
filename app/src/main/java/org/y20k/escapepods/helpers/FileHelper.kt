@@ -20,10 +20,6 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 import org.y20k.escapepods.core.Collection
 import java.io.*
 import java.text.NumberFormat
@@ -69,24 +65,23 @@ class FileHelper {
     }
 
 
-    /* Save podcast collections as JSON text file */
-    fun saveCollectionAsync(context: Context, collection: Collection) {
+    /* Suspend function: Saves podcast collection as JSON text file */
+    suspend fun saveCollection(context: Context, collection: Collection) {
+        return suspendCoroutine { cont ->
 
-        // convert to JSON
-        var json: String = ""
-        val gson: Gson = getCustomGson()
-        json = gson.toJson(collection)
+            // convert to JSON
+            var json: String = ""
+            val gson: Gson = getCustomGson()
+            json = gson.toJson(collection)
 
-        // save JSON as text file
-        launch(UI) {
-            async(CommonPool) {
-                writeTextFile(context, json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE)
-            }.await()
+            // save JSON as text file
+            cont.resume(writeTextFile(context, json, Keys.COLLECTION_FOLDER, Keys.COLLECTION_FILE))
         }
     }
 
 
-    /* Reads collection from storage using GSON - async via coroutine */
+
+    /* Suspend function: Reads podcast collection from storage using GSON */
     suspend fun readCollection(context: Context): Collection {
         return suspendCoroutine {cont ->
             // get JSON from text file
@@ -172,11 +167,9 @@ class FileHelper {
     }
 
 
-    /* Writes given text to file on storage - async via coroutine */
-    suspend private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
-        return suspendCoroutine {
-            File(context.getExternalFilesDir(folder), fileName).writeText(text)
-        }
+    /* Writes given text to file on storage */
+    private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
+        File(context.getExternalFilesDir(folder), fileName).writeText(text)
     }
 
 

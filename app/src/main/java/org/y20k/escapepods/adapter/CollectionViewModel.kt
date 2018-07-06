@@ -22,14 +22,15 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     val applicationContext = application
 
 
-    /* Reads collection from storage using GSON - async via coroutine */
+    /* Async via coroutine: Reads collection from storage using GSON */
     fun loadCollectionAsync() {
-        var json: String = ""
+        // launch XmlReader for result and await
         launch(UI) {
             val result = async(CommonPool) {
                 // get JSON from text file
                 FileHelper().readCollection(applicationContext)
             }.await()
+            // afterwards: update live data
             collectionLiveData.setValue(result)
         }
     }

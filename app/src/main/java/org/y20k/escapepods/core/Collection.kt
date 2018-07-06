@@ -26,15 +26,6 @@ class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podc
                  @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
                  @Expose var lastUpdate: Date = Date(0)) {
 
-
-    /* Checks if feed is already in collection */
-    fun isInCollection(remotePodcastFeedLocation: String): Boolean {
-        for (podcast in podcasts) {
-            if (podcast.remotePodcastFeedLocation == remotePodcastFeedLocation) return true
-        }
-        return false
-    }
-
 }
 
 

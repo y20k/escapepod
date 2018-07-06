@@ -86,14 +86,14 @@ class DownloadService(): Service() {
 
 
     /* Enqueues an Array of files in DownloadManager */
-    fun download(context: Context, uris: Array<Uri>, type: Int): LongArray {
+    fun download(context: Context, uris: Array<Uri>, type: Int, subDirectory: String): LongArray {
 
         // determine destination folder
-        val folder: String
+        var folder: String
         when (type) {
-            Keys.RSS -> folder = Keys.TEMP_FOLDER
-            Keys.AUDIO -> folder = Keys.AUDIO_FOLDER
-            Keys.IMAGE -> folder = Keys.IMAGE_FOLDER
+            Keys.FILE_TYPE_RSS -> folder = Keys.TEMP_FOLDER
+            Keys.FILE_TYPE_AUDIO -> folder = Keys.AUDIO_FOLDER + "/" + subDirectory
+            Keys.FILE_TYPE_IMAGE -> folder = Keys.IMAGE_FOLDER + "/" + subDirectory
             else -> folder = "/"
         }
 
@@ -101,7 +101,7 @@ class DownloadService(): Service() {
         val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, false);
         var allowedNetworkTypes:Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         when (type) {
-            Keys.AUDIO -> if (!downloadOverMobile) allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
+            Keys.FILE_TYPE_AUDIO -> if (!downloadOverMobile) allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
         }
 
         // enqueues downloads
