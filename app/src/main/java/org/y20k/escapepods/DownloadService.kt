@@ -83,6 +83,7 @@ class DownloadService(): Service() {
         return downloadServiceBinder
     }
 
+
     /* Overrides onUnbind */
     override fun onUnbind(intent: Intent?): Boolean {
         return super.onUnbind(intent)
@@ -144,7 +145,7 @@ class DownloadService(): Service() {
         }
 
         // determine allowed network type
-        val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, false);
+        val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
         var allowedNetworkTypes:Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         when (type) {
             Keys.FILE_TYPE_AUDIO -> if (!downloadOverMobile) allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
@@ -184,10 +185,18 @@ class DownloadService(): Service() {
         // startDownload podcast cover
         val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
         if (refreshCover) {
-            val uris = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
-            startDownload(uris, Keys.FILE_TYPE_IMAGE, subDirectory)
+            val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
+            startDownload(coverUris, Keys.FILE_TYPE_IMAGE, subDirectory)
         }
-        // todo startDownload the first two episodes
+
+        // determine number of episodes to download
+        var numberOfEpisodesToDownload = PreferenceManager.getDefaultSharedPreferences(this).getInt(Keys.PREF_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD, Keys.DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD);
+        if (podcast.episodes.size > numberOfEpisodesToDownload) {
+            numberOfEpisodesToDownload = podcast.episodes.size
+        }
+        // download episodes
+        val episodeUris: Array<Uri> = Array(numberOfEpisodesToDownload, { it -> Uri.parse(podcast.episodes[it].getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL))})
+        startDownload(episodeUris, Keys.FILE_TYPE_AUDIO, subDirectory)
     }
 
 
@@ -212,10 +221,33 @@ class DownloadService(): Service() {
                 LogHelper.v(TAG, podcast.toString()) // todo remove
             }
         }
+
+
+        // todo set METADATA_KEY_ALBUM_ART_URI for all episodes
+
+
         saveCollectionAsync()
         // savely hand over new collection to activity
         downloadServiceListener.let{
             it.onDownloadFinished(collection)
+        }
+    }
+
+
+
+    /* Sets Media Uri in Episode */
+    private fun setEpisodeMediaUri(localFileUri: Uri, remoteFileLocation: String) {
+        for (podcast in collection.podcasts) {
+            for (episode in podcast.episodes) {
+                if (episode.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL) == remoteFileLocation) {
+
+
+                    // todo set METADATA_KEY_MEDIA_URI
+
+
+                    LogHelper.v(TAG, podcast.toString()) // todo remove
+                }
+            }
         }
     }
 
@@ -311,7 +343,7 @@ class DownloadService(): Service() {
             // determine what to
             when (FileHelper().getFileType(this@DownloadService, localFileUri)) {
                 Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
-                Keys.MIME_TYPE_MP3 -> { }
+                Keys.MIME_TYPE_MP3 -> setEpisodeMediaUri(localFileUri, remoteFileLocation)
                 Keys.MIME_TYPE_JPG -> setPodcastImage(localFileUri, remoteFileLocation)
                 Keys.MIME_TYPE_PNG -> setPodcastImage(localFileUri, remoteFileLocation)
                 else -> {}

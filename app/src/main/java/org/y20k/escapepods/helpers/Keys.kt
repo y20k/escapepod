@@ -24,8 +24,13 @@ object Keys {
     val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
 
     // preferences
+    val PREF_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD: String = "NUMBER_OF_EPISODES_TO_DOWNLOAD"
     val PREF_DOWNLOAD_OVER_MOBILE: String = "DOWNLOAD_OVER_MOBILE"
     val PREF_NIGHT_MODE_STATE: String = "NIGHT_MODE_STATE"
+
+    // default values
+    val DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD: Int = 2
+    val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
 
     // file types
     val FILE_TYPE_RSS: Int = 1
