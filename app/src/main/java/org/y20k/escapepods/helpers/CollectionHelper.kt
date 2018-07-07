@@ -32,9 +32,9 @@ class CollectionHelper {
     /* Checks if feed is already in collection */
     fun isNewPodcast(remotePodcastFeedLocation: String, collection: Collection): Boolean {
         for (podcast in collection.podcasts) {
-            if (podcast.remotePodcastFeedLocation == remotePodcastFeedLocation) return true
+            if (podcast.remotePodcastFeedLocation == remotePodcastFeedLocation) return false
         }
-        return false
+        return true
     }
 
 
@@ -65,7 +65,8 @@ class CollectionHelper {
 
     /* Returns folder name for podcast */
     fun getPodcastSubDirectory(podcast: Podcast): String {
-        return podcast.remotePodcastFeedLocation.hashCode().toString()
+        return podcast.name.replace("[:/]", "_")
+//        return podcast.remotePodcastFeedLocation.hashCode().toString()
     }
 
 

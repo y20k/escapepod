@@ -30,7 +30,7 @@ class AddPodcastDialog (private var addPodcastDialogListener: AddPodcastDialogLi
 
     /* Interface used to communicate back to activity */
     interface AddPodcastDialogListener {
-        fun onAddPodcastDialogFinish(textInput: String) {
+        fun onAddPodcastDialog(textInput: String) {
         }
     }
 
@@ -56,7 +56,7 @@ class AddPodcastDialog (private var addPodcastDialogListener: AddPodcastDialogLi
         builder.setPositiveButton(R.string.dialog_add_podcast_button) { _, id ->
             // hand text over to initiating activity
             inputField.text?.let {
-                addPodcastDialogListener.onAddPodcastDialogFinish(it.toString());
+                addPodcastDialogListener.onAddPodcastDialog(it.toString());
             }
         }
 
