@@ -14,9 +14,7 @@
 
 package org.y20k.escapepods.core
 
-import android.support.v4.media.MediaMetadataCompat
 import com.google.gson.annotations.Expose
-import org.y20k.escapepods.helpers.Keys
 import java.util.*
 
 
@@ -26,7 +24,7 @@ import java.util.*
 class Podcast(@Expose var name: String = "",
               @Expose var description: String = "",
               @Expose var cover: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
-              @Expose var episodes: MutableList<MediaMetadataCompat> = mutableListOf<MediaMetadataCompat>(),
+              @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
               @Expose var lastUpdate: Date = Calendar.getInstance().time,
               @Expose var remoteImageFileLocation: String = "",
               @Expose var remotePodcastFeedLocation: String = "") {
@@ -46,18 +44,7 @@ class Podcast(@Expose var name: String = "",
                 .append("Update: ${lastUpdate.toString()}\n")
                 .append("$shortDescription ...\n")
         for (episode in episodes) {
-            val episodeTitle: String = episode.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
-            val episodeDescription: String = episode.getString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION)
-            val episodeShortDescriptionLength: Int = if (episodeDescription.length <= descriptionLength) episodeDescription.length -1 else 25
-            val episodeShortDescription: String = episodeDescription.trim().substring(0, episodeShortDescriptionLength)
-            val publicationDate: String = episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)
-            val audioUrl: String = episode.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL)
-            val imageUrl: String = episode.getString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL)
-            stringBuilder.append("$episodeTitle\n")
-            stringBuilder.append("$episodeShortDescription ...\n")
-            stringBuilder.append("$publicationDate\n")
-            stringBuilder.append("$audioUrl \n")
-            stringBuilder.append("$imageUrl \n")
+            episode.toString()
         }
         return stringBuilder.toString()
     }

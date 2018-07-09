@@ -16,12 +16,15 @@ package org.y20k.escapepods
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.media.MediaMetadataCompat
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
-import org.y20k.escapepods.helpers.*
+import org.y20k.escapepods.helpers.FileHelper
+import org.y20k.escapepods.helpers.Keys
+import org.y20k.escapepods.helpers.LogHelper
+import org.y20k.escapepods.helpers.XmlHelper
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -65,7 +68,7 @@ class XmlReader() {
             }
 
             // sort episodes
-            podcast.episodes.sortBy { CollectionHelper().convertToDate(it.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE)) }
+            podcast.episodes.sortBy { it.publicationDate }
 
             // return parsing result
             cont.resume(podcast)
@@ -113,8 +116,8 @@ class XmlReader() {
                 Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = XmlHelper.readPodcastImage(parser, nameSpace)
                 // found an episode
                 Keys.RSS_EPISODE -> {
-                    val episode: MediaMetadataCompat = readEpisode(parser)
-                    val key: Date = CollectionHelper().convertToDate(episode.getString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE))
+                    val episode: Episode = readEpisode(parser)
+                    val key: Date = episode.publicationDate
                     podcast.episodes.add(episode)
                 }
                 // skip to next tag
@@ -127,14 +130,11 @@ class XmlReader() {
 
     /* Reads episode element - within podcast element (within feed) */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readEpisode(parser: XmlPullParser): MediaMetadataCompat {
+    private fun readEpisode(parser: XmlPullParser): Episode {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE)
 
         // variables needed for MediaMetadata builder
-        var title: String = ""
-        var description: String = ""
-        var publicationDate: String = ""
-        var audioUrl: String = ""
+        var episode: Episode = Episode()
 
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag
@@ -143,28 +143,19 @@ class XmlReader() {
             }
             // read only relevant tags
             when (parser.name) {
-            // found episode title
-                Keys.RSS_EPISODE_TITLE -> title = XmlHelper.readEpisodeTitle(parser, nameSpace)
-            // found episode description
-                Keys.RSS_EPISODE_DESCRIPTION -> description = XmlHelper.readEpisodeDescription(parser, nameSpace)
-            // found episode publication date
-                Keys.RSS_EPISODE_PUBLICATION_DATE -> publicationDate = XmlHelper.readEpisodePublicationDate(parser, nameSpace)
-            // found episode audio link
-                Keys.RSS_EPISODE_AUDIO_LINK -> audioUrl = XmlHelper.readEpisodeAudioLink(parser, nameSpace)
-            // skip to next tag
+                // found episode title
+                Keys.RSS_EPISODE_TITLE -> episode.title = XmlHelper.readEpisodeTitle(parser, nameSpace)
+                // found episode description
+                Keys.RSS_EPISODE_DESCRIPTION -> episode.description = XmlHelper.readEpisodeDescription(parser, nameSpace)
+                // found episode publication date
+                Keys.RSS_EPISODE_PUBLICATION_DATE -> episode.publicationDate = XmlHelper.readEpisodePublicationDate(parser, nameSpace)
+                // found episode audio link
+                Keys.RSS_EPISODE_AUDIO_LINK -> episode.remoteAudioFileLocation = XmlHelper.readEpisodeAudioLink(parser, nameSpace)
+                // skip to next tag
                 else -> XmlHelper.skip(parser)
             }
         }
-        return MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, publicationDate+title)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.cover)
-                .putString(Keys.METADATA_CUSTOM_KEY_DESCRIPTION, description)
-                .putString(Keys.METADATA_CUSTOM_KEY_PUBLICATION_DATE, publicationDate)
-                .putString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL, audioUrl)
-                .putString(Keys.METADATA_CUSTOM_KEY_IMAGE_LINK_URL, podcast.remoteImageFileLocation)
-                .build()
+        return episode
     }
 
 }

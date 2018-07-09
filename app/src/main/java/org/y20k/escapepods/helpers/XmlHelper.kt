@@ -17,6 +17,7 @@ package org.y20k.escapepods.helpers
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
+import java.util.*
 
 
 /*
@@ -85,11 +86,11 @@ object XmlHelper {
 
     /* EPISODE: read publication date */
     @Throws(IOException::class, XmlPullParserException::class)
-    fun readEpisodePublicationDate(parser: XmlPullParser, nameSpace: String?): String {
+    fun readEpisodePublicationDate(parser: XmlPullParser, nameSpace: String?): Date {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        val summary = readText(parser)
+        val publicationDate = readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        return summary
+        return DateHelper().convertRFC2822(publicationDate)
     }
 
     /* PODCAST: read remoteImageFileLocation */

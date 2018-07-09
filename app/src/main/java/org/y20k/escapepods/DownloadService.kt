@@ -98,12 +98,16 @@ class DownloadService(): Service() {
 
     /* Download a podcast */
     fun downloadPodcast (uris: Array<Uri>) {
-        startDownload(uris, Keys.FILE_TYPE_RSS, Keys.NO_SUB_DIRECTORY)
+        enqueueDownload(uris, Keys.FILE_TYPE_RSS, Keys.NO_SUB_DIRECTORY)
     }
 
 
     /* Updates podcast collection */
-    fun updatePodcastCollection() {
+    fun updateCollection() {
+        val uris: Array<Uri> = Array(collection.podcasts.size) {it ->
+            Uri.parse(collection.podcasts[it].remotePodcastFeedLocation)
+        }
+        enqueueDownload(uris, Keys.FILE_TYPE_RSS, Keys.NO_SUB_DIRECTORY)
         Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show();
     }
 
@@ -133,7 +137,7 @@ class DownloadService(): Service() {
 
 
     /* Enqueues an Array of files in DownloadManager */
-    private fun startDownload(uris: Array<Uri>, type: Int, subDirectory: String) {
+    private fun enqueueDownload(uris: Array<Uri>, type: Int, subDirectory: String) {
 
         // determine destination folder
         val folder: String
@@ -163,6 +167,77 @@ class DownloadService(): Service() {
             newIDs[i] = downloadManager.enqueue(request)
             activeDownloads.add(newIDs[i])
         }
+        LogHelper.v(TAG, "${uris.size} new files queued for download.")
+    }
+
+
+    /*  episode and podcast cover */
+    private fun enqueuePodcastmediaFiles(podcast: Podcast, refreshCover: Boolean, isNew: Boolean) {
+        if (isNew || CollectionHelper().podcastHasNewEpisodes(collection, podcast)) {
+            // start to download podcast cover
+            val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
+            if (refreshCover) {
+                FileHelper().clearFolder(this.getExternalFilesDir(Keys.FOLDER_AUDIO), 0)
+                val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
+                enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, subDirectory)
+            }
+            // start to download latest episode audio file
+            CollectionHelper().clearAudioFolder(this, podcast)
+            val episodeUris: Array<Uri> = Array(1) {Uri.parse(podcast.episodes[0].remoteAudioFileLocation)}
+            enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, subDirectory)
+        } else {
+            LogHelper.v(TAG, "No new media files to download.")
+        }
+
+    }
+
+
+    /* Adds podcast to podcast collection*/
+    private fun addPodcast(podcast: Podcast, isNew: Boolean) {
+        // add new or replace existing podcast
+        if (isNew) collection.podcasts.add(podcast)
+        else collection.podcasts.set(CollectionHelper().getPodcastIdFromCollection(collection, podcast), podcast)
+
+        // sort and save collection
+        collection.podcasts.sortBy { it.name }
+        saveCollectionAsync()
+
+        // savely hand over new collection to activity
+        downloadServiceListener.let{
+            it.onDownloadFinished(collection)
+        }
+    }
+
+
+    /* Sets podcast cover */
+    private fun setPodcastImage(localFileUri: Uri, remoteFileLocation: String) {
+        for (podcast in collection.podcasts) {
+            if (podcast.remoteImageFileLocation == remoteFileLocation) {
+                podcast.cover = localFileUri.toString()
+                LogHelper.v(TAG, podcast.toString()) // todo remove
+            }
+            for (episode in podcast.episodes) {
+                episode.cover = localFileUri.toString()
+            }
+        }
+        saveCollectionAsync()
+        // savely hand over new collection to activity
+        downloadServiceListener.let{
+            it.onDownloadFinished(collection)
+        }
+    }
+
+
+    /* Sets Media Uri in Episode */
+    private fun setEpisodeMediaUri(localFileUri: Uri, remoteFileLocation: String) {
+        for (podcast in collection.podcasts) {
+            for (episode in podcast.episodes) {
+                if (episode.remoteAudioFileLocation == remoteFileLocation) {
+                    episode.audio = localFileUri.toString()
+                    LogHelper.v(TAG, podcast.toString()) // todo remove
+                }
+            }
+        }
     }
 
 
@@ -180,100 +255,25 @@ class DownloadService(): Service() {
     }
 
 
-    /* Refreshes episodes and podcast cover */
-    private fun refreshPodcast(podcast: Podcast, refreshCover: Boolean) {
-        // startDownload podcast cover
-        val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
-        if (refreshCover) {
-            val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
-            startDownload(coverUris, Keys.FILE_TYPE_IMAGE, subDirectory)
-        }
-
-        // determine number of episodes to download
-        var numberOfEpisodesToDownload = PreferenceManager.getDefaultSharedPreferences(this).getInt(Keys.PREF_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD, Keys.DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD);
-        if (podcast.episodes.size > numberOfEpisodesToDownload) {
-            numberOfEpisodesToDownload = podcast.episodes.size
-        }
-        // download episodes
-        val episodeUris: Array<Uri> = Array(numberOfEpisodesToDownload, { it -> Uri.parse(podcast.episodes[it].getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL))})
-        startDownload(episodeUris, Keys.FILE_TYPE_AUDIO, subDirectory)
-    }
-
-
-
-    /* Adds podcast to podcast collection*/
-    private fun addPodcast(podcast: Podcast) {
-        collection.podcasts.add(podcast)
-        collection.podcasts.sortBy { it.name }
-        saveCollectionAsync()
-        // savely hand over new collection to activity
-        downloadServiceListener.let{
-            it.onDownloadFinished(collection)
-        }
-    }
-
-
-    /* Sets podcast cover */
-    private fun setPodcastImage(localFileUri: Uri, remoteFileLocation: String) {
-        for (podcast in collection.podcasts) {
-            if (podcast.remoteImageFileLocation == remoteFileLocation) {
-                podcast.cover = localFileUri.toString()
-                LogHelper.v(TAG, podcast.toString()) // todo remove
-            }
-        }
-
-
-        // todo set METADATA_KEY_ALBUM_ART_URI for all episodes
-
-
-        saveCollectionAsync()
-        // savely hand over new collection to activity
-        downloadServiceListener.let{
-            it.onDownloadFinished(collection)
-        }
-    }
-
-
-
-    /* Sets Media Uri in Episode */
-    private fun setEpisodeMediaUri(localFileUri: Uri, remoteFileLocation: String) {
-        for (podcast in collection.podcasts) {
-            for (episode in podcast.episodes) {
-                if (episode.getString(Keys.METADATA_CUSTOM_KEY_AUDIO_LINK_URL) == remoteFileLocation) {
-
-
-                    // todo set METADATA_KEY_MEDIA_URI
-
-
-                    LogHelper.v(TAG, podcast.toString()) // todo remove
-                }
-            }
-        }
-    }
-
-
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) {
+        LogHelper.v(TAG, "Reading podcast RSS file async")
         launch(UI) {
             // launch XmlReader for result and await
             val result: Podcast = async(CommonPool) {
                 XmlReader().read(this@DownloadService, localFileUri, remoteFileLocation)
             }.await()
             // afterwards: add podcast as new podcast or update existing podcast
-            if (CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)) {
-                // NEW: add and refresh
-                addPodcast(result)
-                refreshPodcast(result, true)
-            } else {
-                // NOT NEW: just refresh
-                refreshPodcast(result, false)
-            }
+            val isNew: Boolean = CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)
+            addPodcast(result, isNew)
+            enqueuePodcastmediaFiles(result, true, isNew)
         }
     }
 
 
     /* Async via coroutine: Reads collection from storage using GSON */
     private fun loadCollectionAsync() {
+        LogHelper.v(TAG, "Loading podcast collection from storage async")
         // launch XmlReader for result and await
         launch(UI) {
             val result = async(CommonPool) {
@@ -292,6 +292,7 @@ class DownloadService(): Service() {
 
     /* Async via coroutine: Saves podcast collection */
     private fun saveCollectionAsync() {
+        LogHelper.v(TAG, "Saving podcast collection to storage async")
         launch(UI) {
             // launch FileHelper for result and await
             val result = async(CommonPool) {
@@ -303,7 +304,7 @@ class DownloadService(): Service() {
 
 
     /* Just a test */ // todo remove
-    fun queryStatus (context: Context, downloadID: Long) {
+    fun queryStatus (downloadID: Long) {
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
             cursor.moveToFirst()

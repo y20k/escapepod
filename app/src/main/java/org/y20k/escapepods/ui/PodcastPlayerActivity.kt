@@ -77,7 +77,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         updateButton.setOnClickListener(View.OnClickListener {
             // update podcast collection
             if (downloadServiceBound && CollectionHelper().hasEnoughTimePassedSinceLastUpdate(collection))
-                downloadService.updatePodcastCollection()
+                downloadService.updateCollection()
         })
     }
 
@@ -114,6 +114,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Overrides onDownloadFinished from DownloadService */
     override fun onDownloadFinished(newCollection: Collection) {
+        LogHelper.v(TAG, "Received a new collection via onDownloadFinished. Updating UI.")
         collection= newCollection
         updateUserInterface()
     }
@@ -171,6 +172,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             }
             // handles the intent that started the activity
             if (Intent.ACTION_VIEW == intent.action) {
+                LogHelper.v(TAG, "Received an Intent request to add a new podcast subscription.")
                 downloadPodcastFeed(intent.data.toString())
                 intent.action == ""
             }
