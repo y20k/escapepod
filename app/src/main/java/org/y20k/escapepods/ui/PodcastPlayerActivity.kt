@@ -164,7 +164,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // get service from binder
             val binder = service as DownloadService.LocalBinder
             downloadService = binder.getService()
-            downloadService.registerListener(this@PodcastPlayerActivity)
+            downloadService.initialize(this@PodcastPlayerActivity)
             downloadServiceBound = true
             // check if downloads are in progress and update UI while service is connected
             if (!downloadService.activeDownloads.isEmpty()) {

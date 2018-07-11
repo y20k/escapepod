@@ -24,7 +24,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
-import android.preference.PreferenceManager
 import android.widget.Toast
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -62,12 +61,6 @@ class DownloadService(): Service() {
     /* Overrides onCreate */
     override fun onCreate() {
         super.onCreate()
-        // load collection
-        loadCollectionAsync()
-        // get download manager
-        downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
-        // listen for completed downloads
-        registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
 
@@ -90,9 +83,20 @@ class DownloadService(): Service() {
     }
 
 
-    /* Initializes the listener -> must ALWAYS be called */
-    fun registerListener(listener: DownloadServiceListener) {
+    /* Initializes the service -> must ALWAYS be called */
+    fun initialize(listener: DownloadServiceListener) {
+        // set listener
         downloadServiceListener = listener
+        // load collection
+        loadCollectionAsync()
+        // get download manager
+        downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+        // load active downloads
+        activeDownloads = DownloadHelper().loadActiveDownloads(this)
+        if (activeDownloads.isNotEmpty())
+            handleFinishedDownloads()
+        // listen for completed downloads
+        registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
 
@@ -124,37 +128,11 @@ class DownloadService(): Service() {
     }
 
 
-    /* Check if startDownload is completed */
-    fun isCompleted(downloadID: Long): Boolean {
-        var downloadStatus: Long = -1L
-        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
-        if (cursor.count > 0) {
-            cursor.moveToFirst()
-            downloadStatus = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-        }
-        return (downloadStatus >= DownloadManager.STATUS_SUCCESSFUL)
-    }
-
-
     /* Enqueues an Array of files in DownloadManager */
     private fun enqueueDownload(uris: Array<Uri>, type: Int, subDirectory: String) {
-
-        // determine destination folder
-        val folder: String
-        when (type) {
-            Keys.FILE_TYPE_RSS -> folder = Keys.FOLDER_TEMP
-            Keys.FILE_TYPE_AUDIO -> folder = Keys.FOLDER_AUDIO + "/" + subDirectory
-            Keys.FILE_TYPE_IMAGE -> folder = Keys.FOLDER_IMAGES + "/" + subDirectory
-            else -> folder = "/"
-        }
-
-        // determine allowed network type
-        val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
-        var allowedNetworkTypes:Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-        when (type) {
-            Keys.FILE_TYPE_AUDIO -> if (!downloadOverMobile) allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
-        }
-
+        // determine destination folder and allowed network types
+        val folder: String = DownloadHelper().determineDestinationFolder(type, subDirectory)
+        val allowedNetworkTypes:Int = DownloadHelper().determineAllowedNetworkTypes(this, type)
         // enqueues downloads
         val newIDs = LongArray(uris.size)
         for (i in uris.indices)  {
@@ -167,6 +145,7 @@ class DownloadService(): Service() {
             newIDs[i] = downloadManager.enqueue(request)
             activeDownloads.add(newIDs[i])
         }
+        DownloadHelper().saveActiveDownloads(this, activeDownloads)
         LogHelper.v(TAG, "${uris.size} new files queued for download.")
     }
 
@@ -189,6 +168,42 @@ class DownloadService(): Service() {
             LogHelper.v(TAG, "No new media files to download.")
         }
 
+    }
+
+
+    /* Processes finished downloads */
+    private fun handleFinishedDownloads() {
+        LogHelper.e(TAG, "Handling ${activeDownloads.size} previously finished downloads")
+        for (downloadID: Long in activeDownloads) {
+            if (DownloadHelper().isDownloadFinished(downloadManager, downloadID))
+                processDownload(downloadID)
+        }
+    }
+
+
+    /* Processes a given download ID */
+    private fun processDownload(downloadID: Long) {
+        // get local Uri in content://downloads/all_downloads/ for startDownload ID
+        val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
+
+        // get remote URL for startDownload ID
+        val remoteFileLocation: String = DownloadHelper().getRemoteFileLocation(downloadManager, downloadID)
+
+        // determine what to
+        when (FileHelper().getFileType(this@DownloadService, localFileUri)) {
+            Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_MP3 -> setEpisodeMediaUri(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_JPG -> setPodcastImage(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_PNG -> setPodcastImage(localFileUri, remoteFileLocation)
+            else -> {}
+        }
+
+        // Log completed startDownload // todo remove
+        LogHelper.v(TAG, "Download complete: " + FileHelper().getFileName(this@DownloadService, localFileUri) +
+                " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@DownloadService, localFileUri), true)) // todo remove
+
+        // remove ID from active downloads
+        removeFromActiveDownloads(downloadID)
     }
 
 
@@ -248,6 +263,7 @@ class DownloadService(): Service() {
             val activeDownload = iterator.next()
             if (activeDownload.equals(downloadID)) {
                 iterator.remove()
+                DownloadHelper().saveActiveDownloads(this, activeDownloads)
                 return true
             }
         }
@@ -304,7 +320,7 @@ class DownloadService(): Service() {
 
 
     /* Just a test */ // todo remove
-    fun queryStatus (downloadID: Long) {
+    private fun queryStatus (downloadID: Long) {
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
             cursor.moveToFirst()
@@ -327,35 +343,8 @@ class DownloadService(): Service() {
     /* BroadcastReceiver for completed downloads */
     private val onCompleteReceiver = object: BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            // get ID of startDownload
-            val downloadID: Long = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L)
-
-            // get local Uri in content://downloads/all_downloads/ for startDownload ID
-            val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
-
-            // get remote URL for startDownload ID
-            var remoteFileLocation: String = ""
-            val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                remoteFileLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
-            }
-
-            // determine what to
-            when (FileHelper().getFileType(this@DownloadService, localFileUri)) {
-                Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
-                Keys.MIME_TYPE_MP3 -> setEpisodeMediaUri(localFileUri, remoteFileLocation)
-                Keys.MIME_TYPE_JPG -> setPodcastImage(localFileUri, remoteFileLocation)
-                Keys.MIME_TYPE_PNG -> setPodcastImage(localFileUri, remoteFileLocation)
-                else -> {}
-            }
-
-            // Log completed startDownload // todo remove
-            LogHelper.v(TAG, "Download complete: " + FileHelper().getFileName(this@DownloadService, localFileUri) +
-                    " | " + FileHelper().getReadableByteCount(FileHelper().getFileSize(this@DownloadService, localFileUri), true)) // todo remove
-
-            // remove ID from active downloads
-            removeFromActiveDownloads(downloadID)
+            // process the finished download
+            processDownload(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
         }
     }
 

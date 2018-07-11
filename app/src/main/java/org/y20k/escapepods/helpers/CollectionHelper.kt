@@ -77,7 +77,7 @@ class CollectionHelper {
     /* Clears the audio folder */
     fun clearAudioFolder(context: Context, podcast: Podcast) {
         // determine number of episodes to keep
-        var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD, Keys.DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD);
+        var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_DOWNLOAD, Keys.DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD);
         if (podcast.episodes.size < numberOfEpisodesToKeep) {
             numberOfEpisodesToKeep = podcast.episodes.size
         }
