@@ -26,6 +26,20 @@ class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podc
                  @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
                  @Expose var lastUpdate: Date = Date(0)) {
 
+    /* overrides toString method */
+    override fun toString(): String {
+        val stringBuilder: StringBuilder = StringBuilder()
+        stringBuilder.append("Format version: $version\n")
+        stringBuilder.append("Last update of collection: $lastUpdate\n")
+        stringBuilder.append("Number of podcasts in collection: ${podcasts.size}\n")
+        podcasts.forEach {
+            stringBuilder.append("${it.toString()}\n")
+        }
+        return stringBuilder.toString()
+    }
+
+
+
 }
 
 

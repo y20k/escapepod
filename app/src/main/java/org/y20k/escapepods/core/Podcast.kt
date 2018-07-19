@@ -36,15 +36,14 @@ class Podcast(@Expose var name: String = "",
         val stringBuilder: StringBuilder = StringBuilder()
         val shortDescriptionLength: Int = if (description.length <= descriptionLength) description.length -1 else descriptionLength
         val shortDescription: String = description.trim().substring(0, shortDescriptionLength)
-        stringBuilder
-                .append("Name: $name\n")
-                .append("CoverUri: $cover\n")
-                .append("CoverURL: $remoteImageFileLocation\n")
-                .append("FeedURL: $remotePodcastFeedLocation\n")
-                .append("Update: ${lastUpdate.toString()}\n")
-                .append("$shortDescription ...\n")
-        for (episode in episodes) {
-            episode.toString()
+        stringBuilder.append("Name: $name\n")
+        stringBuilder.append("CoverUri: $cover\n")
+        stringBuilder.append("CoverURL: $remoteImageFileLocation\n")
+        stringBuilder.append("FeedURL: $remotePodcastFeedLocation\n")
+        stringBuilder.append("Update: ${lastUpdate.toString()}\n")
+        stringBuilder.append("$shortDescription ...\n")
+        episodes.forEach {
+            stringBuilder.append("${it.toString()}\n")
         }
         return stringBuilder.toString()
     }

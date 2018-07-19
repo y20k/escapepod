@@ -45,13 +45,10 @@ class DownloadHelper {
     /* Loads active downloads (IntArray) from shared preferences */
     fun loadActiveDownloads(context: Context): ArrayList<Long> {
         val activeDownloadsString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_ACTIVE_DOWNLOADS, "")
-        val count: Int = activeDownloadsString.count{ it.equals(",") }
-        val st = StringTokenizer(activeDownloadsString, ",")
-        val activeDownloads = ArrayList<Long>(count)
-        for (i in 0 until count) {
-            activeDownloads[i] = st.nextToken().toLong()
-            LogHelper.v(TAG, "Active Download: ID$st") // todo remove
-        }
+        val count = activeDownloadsString.split(",").size - 1
+        val tokenizer = StringTokenizer(activeDownloadsString, ",")
+        val activeDownloads: ArrayList<Long> = arrayListOf<Long>()
+        repeat(count) { activeDownloads.add(tokenizer.nextToken().toLong()) }
         return activeDownloads
     }
 

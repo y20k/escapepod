@@ -37,7 +37,7 @@ class CollectionHelper {
         return MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, episode.remoteAudioFileLocation.hashCode().toString())
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
-                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Radio")
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Podcast")
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, episode.title)
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, podcast.name)
@@ -89,7 +89,6 @@ class CollectionHelper {
                 podcast.episodes[episodeIndex].audio = ""
             }
         }
-        LogHelper.e(TAG, "Result of clearing audio folder:\n$podcast") // todo remove
     }
 
 

@@ -36,11 +36,13 @@ class Episode (@Expose var title: String = "",
         val stringBuilder: StringBuilder = StringBuilder()
         val episodeShortDescriptionLength: Int = if (description.length <= descriptionMaxLength) description.length -1 else descriptionMaxLength
         val episodeShortDescription: String = description.trim().substring(0, episodeShortDescriptionLength)
-        stringBuilder.append("${title}\n")
+        stringBuilder.append("\n${title}\n")
         stringBuilder.append("$episodeShortDescription ...\n")
         stringBuilder.append("${publicationDate}\n")
+        stringBuilder.append("Audio: $audio \n")
+        stringBuilder.append("Cover: $cover \n")
         stringBuilder.append("${remoteAudioFileLocation} \n")
-        stringBuilder.append("${remoteCoverFileLocation} \n")
+        stringBuilder.append("${remoteCoverFileLocation}")
         return stringBuilder.toString()
     }
 

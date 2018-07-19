@@ -67,7 +67,11 @@ class DownloadService(): Service() {
     /* Overrides onDestroy */
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(onCompleteReceiver)
+        try {
+            unregisterReceiver(onCompleteReceiver)
+        } catch (e: IllegalArgumentException) {
+            LogHelper.i(TAG, "Unable to unregister receiver for completed downloads.")
+        }
     }
 
 
@@ -93,8 +97,6 @@ class DownloadService(): Service() {
         downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         // load active downloads
         activeDownloads = DownloadHelper().loadActiveDownloads(this)
-        if (activeDownloads.isNotEmpty())
-            handleFinishedDownloads()
         // listen for completed downloads
         registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
@@ -146,12 +148,12 @@ class DownloadService(): Service() {
             activeDownloads.add(newIDs[i])
         }
         DownloadHelper().saveActiveDownloads(this, activeDownloads)
-        LogHelper.v(TAG, "${uris.size} new files queued for download.")
+        LogHelper.v(TAG, "${uris.size} new file(s) queued for download.")
     }
 
 
     /*  episode and podcast cover */
-    private fun enqueuePodcastmediaFiles(podcast: Podcast, refreshCover: Boolean, isNew: Boolean) {
+    private fun enqueuePodcastMediaFiles(podcast: Podcast, refreshCover: Boolean, isNew: Boolean) {
         if (isNew || CollectionHelper().podcastHasNewEpisodes(collection, podcast)) {
             // start to download podcast cover
             val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
@@ -173,11 +175,15 @@ class DownloadService(): Service() {
 
     /* Processes finished downloads */
     private fun handleFinishedDownloads() {
-        LogHelper.e(TAG, "Handling ${activeDownloads.size} previously finished downloads")
-        for (downloadID: Long in activeDownloads) {
+        var downloadID: Long = -1L
+        val iterator: Iterator<Long> = activeDownloads.iterator()
+        val finishedDownloads: ArrayList<Long> = arrayListOf<Long>()
+        while (iterator.hasNext()) {
+            downloadID = iterator.next()
             if (DownloadHelper().isDownloadFinished(downloadManager, downloadID))
-                processDownload(downloadID)
+                finishedDownloads.add(downloadID)
         }
+        finishedDownloads.forEach { it -> processDownload(it) }
     }
 
 
@@ -213,14 +219,11 @@ class DownloadService(): Service() {
         if (isNew) collection.podcasts.add(podcast)
         else collection.podcasts.set(CollectionHelper().getPodcastIdFromCollection(collection, podcast), podcast)
 
-        // sort and save collection
+        // sort collection
         collection.podcasts.sortBy { it.name }
-        saveCollectionAsync()
 
-        // savely hand over new collection to activity
-        downloadServiceListener.let{
-            it.onDownloadFinished(collection)
-        }
+        // notify activity about changes
+        notifyPodcastActivity()
     }
 
 
@@ -229,17 +232,13 @@ class DownloadService(): Service() {
         for (podcast in collection.podcasts) {
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
                 podcast.cover = localFileUri.toString()
-                LogHelper.v(TAG, podcast.toString()) // todo remove
-            }
-            for (episode in podcast.episodes) {
-                episode.cover = localFileUri.toString()
+                for (episode in podcast.episodes) {
+                    episode.cover = localFileUri.toString()
+                }
             }
         }
-        saveCollectionAsync()
-        // savely hand over new collection to activity
-        downloadServiceListener.let{
-            it.onDownloadFinished(collection)
-        }
+        // notify activity about changes
+        notifyPodcastActivity()
     }
 
 
@@ -249,10 +248,11 @@ class DownloadService(): Service() {
             for (episode in podcast.episodes) {
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
                     episode.audio = localFileUri.toString()
-                    LogHelper.v(TAG, podcast.toString()) // todo remove
                 }
             }
         }
+        // notify activity about changes
+        notifyPodcastActivity()
     }
 
 
@@ -271,6 +271,15 @@ class DownloadService(): Service() {
     }
 
 
+    /* Savely hand over new collection to activity */
+    private fun notifyPodcastActivity() {
+        saveCollectionAsync()
+        downloadServiceListener.let{
+            it.onDownloadFinished(collection)
+        }
+    }
+
+
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) {
         LogHelper.v(TAG, "Reading podcast RSS file async")
@@ -282,7 +291,7 @@ class DownloadService(): Service() {
             // afterwards: add podcast as new podcast or update existing podcast
             val isNew: Boolean = CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)
             addPodcast(result, isNew)
-            enqueuePodcastmediaFiles(result, true, isNew)
+            enqueuePodcastMediaFiles(result, true, isNew)
         }
     }
 
@@ -302,6 +311,11 @@ class DownloadService(): Service() {
             downloadServiceListener.let {
                 it.onDownloadFinished(collection)
             }
+            // check for unfinished business
+            if (activeDownloads.isNotEmpty()) {
+                handleFinishedDownloads()
+            }
+            LogHelper.e(TAG, collection.toString())
         }
     }
 
