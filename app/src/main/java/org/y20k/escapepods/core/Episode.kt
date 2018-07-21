@@ -21,7 +21,8 @@ import java.util.*
 /*
  * Episode class
  */
-class Episode (@Expose var title: String = "",
+class Episode (@Expose var guid: String = "",
+               @Expose var title: String = "",
                @Expose var description: String = "",
                @Expose var audio: String = "",
                @Expose var cover: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
@@ -36,7 +37,8 @@ class Episode (@Expose var title: String = "",
         val stringBuilder: StringBuilder = StringBuilder()
         val episodeShortDescriptionLength: Int = if (description.length <= descriptionMaxLength) description.length -1 else descriptionMaxLength
         val episodeShortDescription: String = description.trim().substring(0, episodeShortDescriptionLength)
-        stringBuilder.append("\n${title}\n")
+        stringBuilder.append("\nGUID: ${guid}\n")
+        stringBuilder.append("${title}\n")
         stringBuilder.append("$episodeShortDescription ...\n")
         stringBuilder.append("${publicationDate}\n")
         stringBuilder.append("Audio: $audio \n")

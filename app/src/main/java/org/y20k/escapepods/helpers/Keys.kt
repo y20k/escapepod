@@ -72,6 +72,7 @@ object Keys {
     val RSS_PODCAST_COVER = "image"
     val RSS_PODCAST_COVER_URL = "url"
     val RSS_EPISODE = "item"
+    val RSS_EPISODE_GUID = "guid"
     val RSS_EPISODE_TITLE = "title"
     val RSS_EPISODE_DESCRIPTION = "description"
     val RSS_EPISODE_PUBLICATION_DATE = "pubDate"

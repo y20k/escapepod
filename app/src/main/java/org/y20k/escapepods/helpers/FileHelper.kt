@@ -67,12 +67,14 @@ class FileHelper {
 
     /* Clears given folder - keeps given number of files */
     fun clearFolder(folder: File, keep: Int) {
-        val files = folder.listFiles()
-        val fileCount: Int = files.size
-        files.sortBy { it.lastModified() }
-        for (fileNumber in files.indices) {
-            if (fileNumber < fileCount - keep)
-                files[fileNumber].delete()
+        if (folder.exists()) {
+            val files = folder.listFiles()
+            val fileCount: Int = files.size
+            files.sortBy { it.lastModified() }
+            for (fileNumber in files.indices) {
+                if (fileNumber < fileCount - keep)
+                    files[fileNumber].delete()
+            }
         }
     }
 

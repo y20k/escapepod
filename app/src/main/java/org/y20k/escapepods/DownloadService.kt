@@ -32,6 +32,7 @@ import kotlinx.coroutines.experimental.launch
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.helpers.*
+import java.util.*
 
 
 /*
@@ -153,23 +154,18 @@ class DownloadService(): Service() {
 
 
     /*  episode and podcast cover */
-    private fun enqueuePodcastMediaFiles(podcast: Podcast, refreshCover: Boolean, isNew: Boolean) {
-        if (isNew || CollectionHelper().podcastHasNewEpisodes(collection, podcast)) {
-            // start to download podcast cover
-            val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
-            if (refreshCover) {
-                FileHelper().clearFolder(this.getExternalFilesDir(Keys.FOLDER_AUDIO), 0)
-                val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
-                enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, subDirectory)
-            }
-            // start to download latest episode audio file
-            CollectionHelper().clearAudioFolder(this, podcast)
-            val episodeUris: Array<Uri> = Array(1) {Uri.parse(podcast.episodes[0].remoteAudioFileLocation)}
-            enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, subDirectory)
-        } else {
-            LogHelper.v(TAG, "No new media files to download.")
+    private fun enqueuePodcastMediaFiles(podcast: Podcast, isNew: Boolean) {
+        // start to download podcast cover
+        val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
+        if (isNew) {
+            CollectionHelper().clearImageFolder(this, podcast)
+            val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
+            enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, subDirectory)
         }
-
+        // start to download latest episode audio file
+        CollectionHelper().clearAudioFolder(this, podcast)
+        val episodeUris: Array<Uri> = Array(1) {Uri.parse(podcast.episodes[0].remoteAudioFileLocation)}
+        enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, subDirectory)
     }
 
 
@@ -273,6 +269,7 @@ class DownloadService(): Service() {
 
     /* Savely hand over new collection to activity */
     private fun notifyPodcastActivity() {
+        collection.lastUpdate = Date()
         saveCollectionAsync()
         downloadServiceListener.let{
             it.onDownloadFinished(collection)
@@ -288,10 +285,16 @@ class DownloadService(): Service() {
             val result: Podcast = async(CommonPool) {
                 XmlReader().read(this@DownloadService, localFileUri, remoteFileLocation)
             }.await()
-            // afterwards: add podcast as new podcast or update existing podcast
+            // afterwards: check if new
             val isNew: Boolean = CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)
+            // check if media download is necessary
+            if (isNew || CollectionHelper().podcastHasNewEpisodes(collection, result)) {
+                enqueuePodcastMediaFiles(result, isNew)
+            } else {
+                LogHelper.v(TAG, "No new media files to download.")
+            }
+            // add podcast as new podcast or update existing podcast
             addPodcast(result, isNew)
-            enqueuePodcastMediaFiles(result, true, isNew)
         }
     }
 

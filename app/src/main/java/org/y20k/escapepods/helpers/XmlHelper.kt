@@ -64,6 +64,16 @@ object XmlHelper {
     }
 
 
+    /* EPISODE: read GUID */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readEpisodeGuid(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_GUID)
+        val title = readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace,  Keys.RSS_EPISODE_GUID)
+        return title
+    }
+
+
     /* EPISODE: read title */
     @Throws(IOException::class, XmlPullParserException::class)
     fun readEpisodeTitle(parser: XmlPullParser, nameSpace: String?): String {

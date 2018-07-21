@@ -20,6 +20,7 @@ import android.support.v4.media.MediaMetadataCompat
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
+import java.io.File
 import java.util.*
 
 
@@ -65,16 +66,16 @@ class CollectionHelper {
     }
 
 
-    /* Checks if podcast has new episodes */
+    /* Checks if podcast has new episodes - compares GUIDs */
     fun podcastHasNewEpisodes(collection: Collection, newPodcast: Podcast): Boolean {
         val oldPodcast = getPodcastFromCollection(collection, newPodcast)
-        val newPodcastLatestEpisode: Date = newPodcast.episodes[0].publicationDate
-        val oldPodcastLatestEpisode: Date = oldPodcast.episodes[0].publicationDate
+        val newPodcastLatestEpisode: String = newPodcast.episodes[0].guid
+        val oldPodcastLatestEpisode: String = oldPodcast.episodes[0].guid
         return newPodcastLatestEpisode != oldPodcastLatestEpisode
     }
 
 
-    /* Clears the audio folder */
+    /* Clears an audio folder for a given podcast */
     fun clearAudioFolder(context: Context, podcast: Podcast) {
         // determine number of episodes to keep
         var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_DOWNLOAD, Keys.DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD);
@@ -82,13 +83,23 @@ class CollectionHelper {
             numberOfEpisodesToKeep = podcast.episodes.size
         }
         // clear audio folder
-        FileHelper().clearFolder(context.getExternalFilesDir(Keys.FOLDER_AUDIO), numberOfEpisodesToKeep)
+        val audioFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_AUDIO), getPodcastSubDirectory(podcast))
+        FileHelper().clearFolder(audioFolder, numberOfEpisodesToKeep)
 
+        // wipe audio file reference
         for (episodeIndex: Int in podcast.episodes.indices) {
             if (episodeIndex > numberOfEpisodesToKeep) {
                 podcast.episodes[episodeIndex].audio = ""
             }
         }
+    }
+
+
+    /* Clears an image folder for a given podcast */
+    fun clearImageFolder(context: Context, podcast: Podcast) {
+        // clear image folder
+        val imagesFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_IMAGES), getPodcastSubDirectory(podcast))
+        FileHelper().clearFolder(imagesFolder, 0)
     }
 
 

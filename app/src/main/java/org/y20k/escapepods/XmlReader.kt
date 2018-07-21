@@ -27,7 +27,6 @@ import org.y20k.escapepods.helpers.LogHelper
 import org.y20k.escapepods.helpers.XmlHelper
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
 import kotlin.coroutines.experimental.suspendCoroutine
 
 
@@ -67,8 +66,8 @@ class XmlReader() {
                 stream.close()
             }
 
-            // sort episodes
-            podcast.episodes.sortBy { it.publicationDate }
+            // sort episodes - newest episode first
+            podcast.episodes.sortByDescending { it.publicationDate }
 
             // return parsing result
             cont.resume(podcast)
@@ -117,7 +116,6 @@ class XmlReader() {
                 // found an episode
                 Keys.RSS_EPISODE -> {
                     val episode: Episode = readEpisode(parser)
-                    val key: Date = episode.publicationDate
                     podcast.episodes.add(episode)
                 }
                 // skip to next tag
@@ -143,6 +141,8 @@ class XmlReader() {
             }
             // read only relevant tags
             when (parser.name) {
+                // found episode title
+                Keys.RSS_EPISODE_GUID -> episode.guid = XmlHelper.readEpisodeGuid(parser, nameSpace)
                 // found episode title
                 Keys.RSS_EPISODE_TITLE -> episode.title = XmlHelper.readEpisodeTitle(parser, nameSpace)
                 // found episode description
