@@ -66,12 +66,21 @@ class CollectionHelper {
     }
 
 
-    /* Checks if podcast has new episodes - compares GUIDs */
-    fun podcastHasNewEpisodes(collection: Collection, newPodcast: Podcast): Boolean {
+    /* Checks if podcast has episodes that can be downloaded */
+    fun podcastHasDownloadableEpisodes(collection: Collection, newPodcast: Podcast): Boolean {
+        // Step 1: New episode check -> compare GUIDs
         val oldPodcast = getPodcastFromCollection(collection, newPodcast)
         val newPodcastLatestEpisode: String = newPodcast.episodes[0].guid
         val oldPodcastLatestEpisode: String = oldPodcast.episodes[0].guid
-        return newPodcastLatestEpisode != oldPodcastLatestEpisode
+        if (newPodcastLatestEpisode != oldPodcastLatestEpisode) {
+            return true
+        }
+        // Step 2: Not yet downloaded episode check -> test if audio field is empty
+        if (newPodcast.episodes[0].audio.isEmpty()) {
+            return true
+        }
+        // Default - no result in step 1 or 2
+        return false
     }
 
 

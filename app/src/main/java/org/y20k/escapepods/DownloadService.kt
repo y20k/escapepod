@@ -288,7 +288,7 @@ class DownloadService(): Service() {
             // afterwards: check if new
             val isNew: Boolean = CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)
             // check if media download is necessary
-            if (isNew || CollectionHelper().podcastHasNewEpisodes(collection, result)) {
+            if (isNew || CollectionHelper().podcastHasDownloadableEpisodes(collection, result)) {
                 enqueuePodcastMediaFiles(result, isNew)
             } else {
                 LogHelper.v(TAG, "No new media files to download.")
