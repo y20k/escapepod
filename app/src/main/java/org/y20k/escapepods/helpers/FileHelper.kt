@@ -65,15 +65,31 @@ class FileHelper {
     }
 
 
+    /* Determines a destination folder */
+    fun determineDestinationFolder(type: Int, podcastName: String): String {
+        val folder: String
+        val subDirectory: String = podcastName.replace("[:/]", "_")
+        when (type) {
+            Keys.FILE_TYPE_RSS -> folder = Keys.FOLDER_TEMP
+            Keys.FILE_TYPE_AUDIO -> folder = Keys.FOLDER_AUDIO + "/" + subDirectory
+            Keys.FILE_TYPE_IMAGE -> folder = Keys.FOLDER_IMAGES + "/" + subDirectory
+            else -> folder = "/"
+        }
+        return folder
+    }
+
+
     /* Clears given folder - keeps given number of files */
     fun clearFolder(folder: File, keep: Int) {
         if (folder.exists()) {
             val files = folder.listFiles()
+            LogHelper.e(TAG, "!!! ${files.size} File") // todo remove
             val fileCount: Int = files.size
             files.sortBy { it.lastModified() }
             for (fileNumber in files.indices) {
                 if (fileNumber < fileCount - keep)
                     files[fileNumber].delete()
+                LogHelper.e(TAG, "!!! ${files[fileNumber]}") // todo remove
             }
         }
     }
@@ -84,7 +100,7 @@ class FileHelper {
         return suspendCoroutine { cont ->
 
             // convert to JSON
-            var json: String = ""
+            var json: String
             val gson: Gson = getCustomGson()
             json = gson.toJson(collection)
 

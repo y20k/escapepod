@@ -53,7 +53,7 @@ class AddPodcastDialog (private var addPodcastDialogListener: AddPodcastDialogLi
         builder.setView(view)
 
         // add "add" button
-        builder.setPositiveButton(R.string.dialog_add_podcast_button) { _, id ->
+        builder.setPositiveButton(R.string.dialog_add_podcast_button) { _, _ ->
             // hand text over to initiating activity
             inputField.text?.let {
                 addPodcastDialogListener.onAddPodcastDialog(it.toString());

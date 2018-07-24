@@ -30,6 +30,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.helpers.*
 import java.util.*
@@ -105,7 +106,7 @@ class DownloadService(): Service() {
 
     /* Download a podcast */
     fun downloadPodcast (uris: Array<Uri>) {
-        enqueueDownload(uris, Keys.FILE_TYPE_RSS, Keys.NO_SUB_DIRECTORY)
+        enqueueDownload(uris, Keys.FILE_TYPE_RSS)
     }
 
 
@@ -114,7 +115,7 @@ class DownloadService(): Service() {
         val uris: Array<Uri> = Array(collection.podcasts.size) {it ->
             Uri.parse(collection.podcasts[it].remotePodcastFeedLocation)
         }
-        enqueueDownload(uris, Keys.FILE_TYPE_RSS, Keys.NO_SUB_DIRECTORY)
+        enqueueDownload(uris, Keys.FILE_TYPE_RSS)
         Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show();
     }
 
@@ -132,9 +133,9 @@ class DownloadService(): Service() {
 
 
     /* Enqueues an Array of files in DownloadManager */
-    private fun enqueueDownload(uris: Array<Uri>, type: Int, subDirectory: String) {
+    private fun enqueueDownload(uris: Array<Uri>, type: Int, podcastName: String = String()) {
         // determine destination folder and allowed network types
-        val folder: String = DownloadHelper().determineDestinationFolder(type, subDirectory)
+        val folder: String = FileHelper().determineDestinationFolder(type, podcastName)
         val allowedNetworkTypes:Int = DownloadHelper().determineAllowedNetworkTypes(this, type)
         // enqueues downloads
         val newIDs = LongArray(uris.size)
@@ -156,22 +157,20 @@ class DownloadService(): Service() {
     /*  episode and podcast cover */
     private fun enqueuePodcastMediaFiles(podcast: Podcast, isNew: Boolean) {
         // start to download podcast cover
-        val subDirectory: String = CollectionHelper().getPodcastSubDirectory(podcast)
         if (isNew) {
             CollectionHelper().clearImageFolder(this, podcast)
             val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
-            enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, subDirectory)
+            enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
         // start to download latest episode audio file
-        CollectionHelper().clearAudioFolder(this, podcast)
         val episodeUris: Array<Uri> = Array(1) {Uri.parse(podcast.episodes[0].remoteAudioFileLocation)}
-        enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, subDirectory)
+        enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
     }
 
 
     /* Processes finished downloads */
     private fun handleFinishedDownloads() {
-        var downloadID: Long = -1L
+        var downloadID: Long
         val iterator: Iterator<Long> = activeDownloads.iterator()
         val finishedDownloads: ArrayList<Long> = arrayListOf<Long>()
         while (iterator.hasNext()) {
@@ -240,10 +239,11 @@ class DownloadService(): Service() {
 
     /* Sets Media Uri in Episode */
     private fun setEpisodeMediaUri(localFileUri: Uri, remoteFileLocation: String) {
-        for (podcast in collection.podcasts) {
-            for (episode in podcast.episodes) {
+        for (podcast: Podcast in collection.podcasts) {
+            for (episode: Episode in podcast.episodes) {
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
                     episode.audio = localFileUri.toString()
+//                    collection = CollectionHelper().clearAudioFolder(this, collection, podcast)
                 }
             }
         }

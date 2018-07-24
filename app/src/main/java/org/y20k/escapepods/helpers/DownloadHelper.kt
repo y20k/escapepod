@@ -77,19 +77,6 @@ class DownloadHelper {
     }
 
 
-    /* Determines a destination folder */
-    fun determineDestinationFolder(type: Int, subDirectory: String): String {
-        val folder: String
-        when (type) {
-            Keys.FILE_TYPE_RSS -> folder = Keys.FOLDER_TEMP
-            Keys.FILE_TYPE_AUDIO -> folder = Keys.FOLDER_AUDIO + "/" + subDirectory
-            Keys.FILE_TYPE_IMAGE -> folder = Keys.FOLDER_IMAGES + "/" + subDirectory
-            else -> folder = "/"
-        }
-        return folder
-    }
-
-
     /* Determine allowed network type */
     fun determineAllowedNetworkTypes(context: Context, type: Int): Int {
         val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);

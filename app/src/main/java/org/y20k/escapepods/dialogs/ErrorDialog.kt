@@ -71,7 +71,7 @@ class ErrorDialog {
         builder.setView(view)
 
         // add rename button
-        builder.setPositiveButton(R.string.dialog_generic_button_okay, DialogInterface.OnClickListener { arg0, arg1 ->
+        builder.setPositiveButton(R.string.dialog_generic_button_okay, DialogInterface.OnClickListener { _, _ ->
             // listen for click on okay button
             // do nothing
         })

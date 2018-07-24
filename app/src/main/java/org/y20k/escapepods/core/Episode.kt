@@ -27,6 +27,7 @@ class Episode (@Expose var guid: String = "",
                @Expose var audio: String = "",
                @Expose var cover: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
                @Expose var publicationDate: Date = Calendar.getInstance().time,
+               @Expose var played: Boolean = false,
                @Expose var remoteCoverFileLocation: String = "",
                @Expose var remoteAudioFileLocation: String = "") {
 
@@ -43,6 +44,7 @@ class Episode (@Expose var guid: String = "",
         stringBuilder.append("${publicationDate}\n")
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")
+        stringBuilder.append("Played: $played \n")
         stringBuilder.append("${remoteAudioFileLocation} \n")
         stringBuilder.append("${remoteCoverFileLocation}")
         return stringBuilder.toString()
