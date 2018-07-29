@@ -32,9 +32,11 @@ dependencies {
 
     implementation "androidx.core:core-ktx:$ktxVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.cardview:cardview:$cardviewVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
 
-    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
+//    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
 
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }

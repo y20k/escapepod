@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardBackgroundColor="@android:color/holo_orange_light"
+    tools:style="@style/CardView">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/pocast_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name of Podcast"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.029" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/episode_0_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name of Episode"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            tools:layout_editor_absoluteX="122dp"
+            tools:layout_editor_absoluteY="88dp" />
+
+        <ImageButton
+            android:id="@+id/episode_0_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_media_play"
+            tools:layout_editor_absoluteX="310dp"
+            tools:layout_editor_absoluteY="76dp" />
+
+        <TextView
+            android:id="@+id/episode_0_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="13.08.2001"
+            tools:layout_editor_absoluteX="122dp"
+            tools:layout_editor_absoluteY="69dp" />
+
+        <ImageButton
+            android:id="@+id/episode_0_state_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/checkbox_on_background"
+            tools:layout_editor_absoluteX="252dp"
+            tools:layout_editor_absoluteY="76dp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
