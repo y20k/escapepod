@@ -16,7 +16,7 @@ package org.y20k.escapepods
 
 import android.app.Application
 import android.os.Build
-import android.support.v7.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate
 import org.y20k.escapepods.helpers.LogHelper
 import org.y20k.escapepods.helpers.NightModeHelper
 

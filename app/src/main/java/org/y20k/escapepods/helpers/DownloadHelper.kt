@@ -18,6 +18,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.database.Cursor
 import android.preference.PreferenceManager
+import androidx.core.content.edit
 import java.net.URL
 import java.util.*
 
@@ -38,7 +39,7 @@ class DownloadHelper {
         for (i in activeDownloads.indices) {
             builder.append(activeDownloads[i]).append(",")
         }
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(Keys.PREF_ACTIVE_DOWNLOADS, builder.toString()).apply()
+        PreferenceManager.getDefaultSharedPreferences(context).edit {putString(Keys.PREF_ACTIVE_DOWNLOADS, builder.toString())}
     }
 
 

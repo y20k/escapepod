@@ -15,8 +15,8 @@
 package org.y20k.escapepods.helpers
 
 import android.content.Context
+import android.media.MediaMetadata
 import android.preference.PreferenceManager
-import android.support.v4.media.MediaMetadataCompat
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
@@ -34,15 +34,15 @@ class CollectionHelper {
 
 
     /* Creates a MediaMetadata for given Episode */
-    fun createMediaMetadata(episode: Episode, podcast: Podcast): MediaMetadataCompat {
-        return MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, episode.remoteAudioFileLocation.hashCode().toString())
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
-                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Podcast")
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, episode.title)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, podcast.name)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI,  podcast.cover)
+    fun createMediaMetadata(episode: Episode, podcast: Podcast): MediaMetadata {
+        return MediaMetadata.Builder()
+                .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, episode.remoteAudioFileLocation.hashCode().toString())
+                .putString(MediaMetadata.METADATA_KEY_MEDIA_URI, episode.audio)
+                .putString(MediaMetadata.METADATA_KEY_GENRE, "Podcast")
+                .putString(MediaMetadata.METADATA_KEY_TITLE, episode.title)
+                .putString(MediaMetadata.METADATA_KEY_ALBUM, podcast.name)
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, podcast.name)
+                .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI,  podcast.cover)
 //                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
 //                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)
                 .build();

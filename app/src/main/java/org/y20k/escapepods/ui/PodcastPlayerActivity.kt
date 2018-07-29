@@ -18,15 +18,15 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import kotlinx.coroutines.experimental.Runnable
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
@@ -132,7 +132,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun downloadPodcastFeed(feedUrl : String) {
         if (DownloadHelper().determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-            val uris = Array(1) {Uri.parse(feedUrl)}
+            val uris = Array(1) {feedUrl.toUri()}
             downloadService.downloadPodcast(uris)
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),

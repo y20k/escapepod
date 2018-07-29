@@ -14,8 +14,8 @@
 
 package org.y20k.escapepods.dialogs
 
-import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
@@ -39,10 +39,10 @@ class AddPodcastDialog (private var addPodcastDialogListener: AddPodcastDialogLi
 
 
     /* Construct and show dialog */
-    fun show(activity: Activity) {
+    fun show(context: Context) {
         // prepare dialog builder
-        val inflater = LayoutInflater.from(activity)
-        val builder = AlertDialog.Builder(activity)
+        val inflater = LayoutInflater.from(context)
+        val builder = AlertDialog.Builder(context)
 
         // get input field
         val view = inflater.inflate(R.layout.dialog_add_podcast, null)

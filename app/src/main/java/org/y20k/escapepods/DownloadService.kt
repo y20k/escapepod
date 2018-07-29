@@ -25,6 +25,7 @@ import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import android.widget.Toast
+import androidx.core.net.toUri
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -113,7 +114,7 @@ class DownloadService(): Service() {
     /* Updates podcast collection */
     fun updateCollection() {
         val uris: Array<Uri> = Array(collection.podcasts.size) {it ->
-            Uri.parse(collection.podcasts[it].remotePodcastFeedLocation)
+            collection.podcasts[it].remotePodcastFeedLocation.toUri()
         }
         enqueueDownload(uris, Keys.FILE_TYPE_RSS)
         Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show();
@@ -159,11 +160,11 @@ class DownloadService(): Service() {
         // start to download podcast cover
         if (isNew) {
             CollectionHelper().clearImageFolder(this, podcast)
-            val coverUris: Array<Uri>  = Array(1) {Uri.parse(podcast.remoteImageFileLocation)}
+            val coverUris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
             enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
         // start to download latest episode audio file
-        val episodeUris: Array<Uri> = Array(1) {Uri.parse(podcast.episodes[0].remoteAudioFileLocation)}
+        val episodeUris: Array<Uri> = Array(1) {podcast.episodes[0].remoteAudioFileLocation.toUri()}
         enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
     }
 
