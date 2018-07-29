@@ -83,13 +83,11 @@ class FileHelper {
     fun clearFolder(folder: File, keep: Int) {
         if (folder.exists()) {
             val files = folder.listFiles()
-            LogHelper.e(TAG, "!!! ${files.size} File") // todo remove
             val fileCount: Int = files.size
             files.sortBy { it.lastModified() }
             for (fileNumber in files.indices) {
                 if (fileNumber < fileCount - keep)
                     files[fileNumber].delete()
-                LogHelper.e(TAG, "!!! ${files[fileNumber]}") // todo remove
             }
         }
     }
@@ -100,9 +98,8 @@ class FileHelper {
         return suspendCoroutine { cont ->
 
             // convert to JSON
-            var json: String
             val gson: Gson = getCustomGson()
-            json = gson.toJson(collection)
+            val json: String = gson.toJson(collection)
 
             // save JSON as text file
             cont.resume(writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE))

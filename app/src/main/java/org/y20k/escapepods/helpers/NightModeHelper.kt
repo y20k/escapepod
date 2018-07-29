@@ -14,12 +14,12 @@
 
 package org.y20k.escapepods.helpers
 
-import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 
 
@@ -30,7 +30,7 @@ object NightModeHelper {
 
 
     /* Switches to opposite theme */
-    fun switchToOpposite(activity: Activity) {
+    fun switchToOpposite(activity: AppCompatActivity) {
         when (getCurrentNightModeState(activity)) {
             Configuration.UI_MODE_NIGHT_NO -> {
                 // night mode is currently not active - turn on night mode
@@ -97,14 +97,14 @@ object NightModeHelper {
 
 
     /* Displays the default status bar */
-    private fun displayDefaultStatusBar(activity: Activity) {
+    private fun displayDefaultStatusBar(activity: AppCompatActivity) {
         val decorView = activity.window.decorView
         decorView.systemUiVisibility = 0
     }
 
 
     /* Displays the light (inverted) status bar - if possible */
-    private fun displayLightStatusBar(activity: Activity) {
+    private fun displayLightStatusBar(activity: AppCompatActivity) {
         val decorView = activity.window.decorView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR

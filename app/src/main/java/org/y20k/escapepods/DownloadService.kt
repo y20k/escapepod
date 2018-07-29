@@ -99,7 +99,7 @@ class DownloadService(): Service() {
         // get download manager
         downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         // load active downloads
-        activeDownloads = DownloadHelper().loadActiveDownloads(this)
+        activeDownloads = DownloadHelper().loadActiveDownloads(this, downloadManager)
         // listen for completed downloads
         registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
@@ -176,8 +176,9 @@ class DownloadService(): Service() {
         val finishedDownloads: ArrayList<Long> = arrayListOf<Long>()
         while (iterator.hasNext()) {
             downloadID = iterator.next()
-            if (DownloadHelper().isDownloadFinished(downloadManager, downloadID))
+            if (DownloadHelper().isDownloadFinished(downloadManager, downloadID)) {
                 finishedDownloads.add(downloadID)
+            }
         }
         finishedDownloads.forEach { it -> processDownload(it) }
     }

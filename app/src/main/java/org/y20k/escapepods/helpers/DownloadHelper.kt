@@ -44,12 +44,14 @@ class DownloadHelper {
 
 
     /* Loads active downloads (IntArray) from shared preferences */
-    fun loadActiveDownloads(context: Context): ArrayList<Long> {
+    fun loadActiveDownloads(context: Context, downloadManager: DownloadManager): ArrayList<Long> {
         val activeDownloadsString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_ACTIVE_DOWNLOADS, "")
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
         val activeDownloads: ArrayList<Long> = arrayListOf<Long>()
-        repeat(count) { activeDownloads.add(tokenizer.nextToken().toLong()) }
+        repeat(count) { if (isDownloadActive(downloadManager, tokenizer.nextToken().toLong())) {
+            activeDownloads.add(tokenizer.nextToken().toLong()) }
+        }
         return activeDownloads
     }
 
@@ -68,13 +70,25 @@ class DownloadHelper {
 
     /* Checks if a given download ID represents a finished download */
     fun isDownloadFinished(downloadManager: DownloadManager, downloadID: Long): Boolean {
-        var downloadStatus: Long = -1L
+        var downloadStatus: Int = -1
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
             cursor.moveToFirst()
-            downloadStatus = cursor.getLong(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+            downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
         }
-        return (downloadStatus >= DownloadManager.STATUS_SUCCESSFUL)
+        return (downloadStatus == DownloadManager.STATUS_SUCCESSFUL)
+    }
+
+
+    /* Checks if a given download ID represents a finished download */
+    fun isDownloadActive(downloadManager: DownloadManager, downloadID: Long): Boolean {
+        var downloadStatus: Int = -1
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+        }
+        return (downloadStatus == DownloadManager.STATUS_RUNNING)
     }
 
 

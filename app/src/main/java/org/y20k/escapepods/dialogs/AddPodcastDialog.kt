@@ -14,11 +14,11 @@
 
 package org.y20k.escapepods.dialogs
 
-import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import org.y20k.escapepods.R
 import org.y20k.escapepods.helpers.LogHelper
 

@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="@android:color/holo_orange_light"
-    tools:style="@style/CardView">
+    app:cardBackgroundColor="@android:color/holo_orange_light">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -29,7 +28,7 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
+            app:srcCompat="@mipmap/ic_launcher"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="16dp" />
 
@@ -46,7 +45,7 @@
             android:id="@+id/episode_0_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_media_play"
+            app:srcCompat="@android:drawable/ic_media_play"
             tools:layout_editor_absoluteX="310dp"
             tools:layout_editor_absoluteY="76dp" />
 
@@ -62,12 +61,12 @@
             android:id="@+id/episode_0_state_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@android:drawable/checkbox_on_background"
+            app:srcCompat="@android:drawable/checkbox_on_background"
             tools:layout_editor_absoluteX="252dp"
             tools:layout_editor_absoluteY="76dp" />
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.cardview.widget.CardView>

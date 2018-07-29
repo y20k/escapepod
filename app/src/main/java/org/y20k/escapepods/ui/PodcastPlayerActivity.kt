@@ -21,12 +21,12 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.experimental.Runnable
 import org.y20k.escapepods.DownloadService
 import org.y20k.escapepods.R
@@ -66,19 +66,22 @@ class PodcastPlayerActivity: AppCompatActivity(),
         setContentView(R.layout.activity_podcast_player)
 
         // get button and listen for clicks
-        val addButton: Button = findViewById(R.id.add_button)
-        addButton.setOnClickListener(View.OnClickListener {
+        val addButton: Button = findViewById(R.id.button_add_new)
+        addButton.setOnClickListener{
             // show the add podcast dialog
             AddPodcastDialog(this).show(this)
-        })
+        }
 
         // get button and listen for clicks
-        val updateButton: Button = findViewById(R.id.update_button)
-        updateButton.setOnClickListener(View.OnClickListener {
+        val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
+        swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection
-            if (downloadServiceBound && CollectionHelper().hasEnoughTimePassedSinceLastUpdate(collection))
+            if (downloadServiceBound && CollectionHelper().hasEnoughTimePassedSinceLastUpdate(collection)) {
                 downloadService.updateCollection()
-        })
+            }
+            // hide refresh icon animation
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
 
@@ -94,6 +97,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onPause */
     override fun onPause() {
         super.onPause()
+
+        downloadProgressHandler.removeCallbacks(downloadProgressRunnable)
         // unbind DownloadService
         unbindService(downloadServiceConnection)
     }
@@ -123,7 +128,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Updates user interface */
     private fun updateUserInterface() {
         // update podcast counter - just a test // todo remove
-        val podcastCounter: TextView = findViewById(R.id.podcast_counter)
+        val podcastCounter: TextView = findViewById(R.id.text_podcast_counter)
         podcastCounter.text = "${collection.podcasts.size} podcasts in your collection"
     }
 
@@ -167,7 +172,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             downloadService.initialize(this@PodcastPlayerActivity)
             downloadServiceBound = true
             // check if downloads are in progress and update UI while service is connected
-            if (!downloadService.activeDownloads.isEmpty()) {
+            if (!downloadService.activeDownloads.isEmpty() ) {
                 downloadProgressRunnable.run()
             }
             // handles the intent that started the activity
