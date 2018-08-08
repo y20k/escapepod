@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha03'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -31,14 +31,14 @@ allprojects {
         versionCode = 2
         versionName = '0.2.0'
 
-        materialVersion = "1.0.0-beta01"
-        appcompatVersion = '1.0.0-beta01'
-        cardviewVersion = '1.0.0-beta01'
+        ktxVersion = "1.0.0-rc01"
+        materialVersion = "1.0.0-rc01"
+        appcompatVersion = '1.0.0-rc01'
+        cardviewVersion = '1.0.0-rc01'
         constraintlayoutVersion = '1.1.2'
 
         supportLibraryVersion = "28.0.0-beta1" // used by bottom sheet behavior - try to remove asap
 
-        ktxVersion = "1.0.0-beta01"
         kotlinxCoroutinesVersion = '0.23.3'
         exoPlayerVersion = '2.8.1'
         gsonVersion = '2.8.5'

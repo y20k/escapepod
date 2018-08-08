@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- NIGHT THEME COLORS -->
+    <color name="app_window_background">@color/escapepods_black</color>
+    <color name="status_bar_background">@color/escapepods_black</color>
+    <color name="app_onboarding_icons">@color/escapepods_white</color>
+
+    <color name="player_sheet_background_main">@color/escapepods_red_dark</color>
+    <color name="player_sheet_text_main">@color/escapepods_white</color>
+    <color name="player_sheet_background_details">@color/escapepods_grey_darker</color>
+    <color name="player_sheet_text_details">@color/escapepods_white</color>
+
+    <color name="list_item_background">@color/escapepods_black</color>
+    <color name="list_item_background_selected">@color/escapepods_grey_dark</color>
+    <color name="list_item_divider">@color/escapepods_grey_darker</color>
+
+    <color name="podcast_image_background">@color/escapepods_grey_light</color>
+
+</resources>

@@ -7,9 +7,6 @@
     <string name="notification_channel">Escapepods_Channel_ID</string>
     <string name="notification_channel_description">Channel ID for Escapepods</string>
 
-    <!-- Additional Strings -->
-    <string name="drawer_add_podcast">Add Podcast XML</string>
-
     <!-- Dialogs -->
     <string name="dialog_generic_button_okay">Okay</string>
     <string name="dialog_generic_button_cancel">Cancel</string>
@@ -29,5 +26,15 @@
     <!-- Toasts -->
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_updating_collection">Updating Podcast Collection.</string>
-    
+
+    <!-- Accessibility Descriptions -->
+    <string name="descr_app_icon">App icon depicting an escapepod in space</string>
+    <string name="descr_podcast_cover">Podcast cover image</string>
+    <string name="descr_podcast_name">Name of podcast</string>
+    <string name="descr_episode_name">Name of episode</string>
+    <string name="descr_episode_date">Publishing date of episode</string>
+    <string name="descr_episode_listened_button">Button for marking an episode listened or un-listened</string>
+    <string name="descr_playback_button">Button for starting and pausing playback</string>
+    <string name="descr_add_new_button">Button for adding new podcast feed</string>
+
 </resources>

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="@android:color/holo_orange_light">
+    app:cardBackgroundColor="@color/list_item_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -13,57 +12,70 @@
 
         <TextView
             android:id="@+id/pocast_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/descr_podcast_name"
             android:text="Name of Podcast"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.029" />
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/ic_launcher"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/descr_podcast_cover"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/episode_0_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/descr_episode_name"
             android:text="Name of Episode"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            tools:layout_editor_absoluteX="122dp"
-            tools:layout_editor_absoluteY="88dp" />
+            app:layout_constraintEnd_toEndOf="@+id/episode_0_date"
+            app:layout_constraintStart_toStartOf="@+id/episode_0_date"
+            app:layout_constraintTop_toBottomOf="@+id/episode_0_date" />
 
         <ImageButton
             android:id="@+id/episode_0_action_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_media_play"
-            tools:layout_editor_absoluteX="310dp"
-            tools:layout_editor_absoluteY="76dp" />
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/descr_playback_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pocast_name"
+            app:srcCompat="@android:drawable/ic_media_play" />
 
         <TextView
             android:id="@+id/episode_0_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/descr_episode_date"
             android:text="13.08.2001"
-            tools:layout_editor_absoluteX="122dp"
-            tools:layout_editor_absoluteY="69dp" />
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
+            app:layout_constraintStart_toStartOf="@+id/pocast_name"
+            app:layout_constraintTop_toBottomOf="@+id/pocast_name" />
 
         <ImageButton
             android:id="@+id/episode_0_state_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/checkbox_on_background"
-            tools:layout_editor_absoluteX="252dp"
-            tools:layout_editor_absoluteY="76dp" />
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/descr_episode_listened_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_action_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_action_button"
+            app:srcCompat="@android:drawable/checkbox_on_background" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
