@@ -56,6 +56,7 @@ object Keys {
     val COLLECTION_FILE: String = "collection.json"
 
     // intent actions and extras
+    val ACTION_UPDATE_COLLECTION: String = "UPDATE_COLLECTION"
     val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "DOWNLOAD_PROGRESS_UPDATE"
     val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"
     val EXTRA_DOWNLOAD_PROGRESS: String  = "DOWNLOAD_PROGRESS"

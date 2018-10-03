@@ -35,6 +35,9 @@ dependencies {
     implementation "androidx.core:core-ktx:$ktxVersion"
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "androidx.cardview:cardview:$cardviewVersion"
+
+    implementation "android.arch.work:work-runtime-ktx:$workVersion"
+
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
 
 //    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"

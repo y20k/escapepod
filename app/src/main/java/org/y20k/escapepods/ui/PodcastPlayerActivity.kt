@@ -27,9 +27,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import kotlinx.coroutines.experimental.Runnable
 import org.y20k.escapepods.DownloadService
-import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
@@ -91,6 +92,12 @@ class PodcastPlayerActivity: AppCompatActivity(),
         super.onResume()
         // bind to DownloadService
         bindService(Intent(this, DownloadService::class.java), downloadServiceConnection, Context.BIND_AUTO_CREATE)
+
+        // just a test todo remove
+        val updateCollectionWork = OneTimeWorkRequestBuilder<DownloadWorker>().build()
+        WorkManager.getInstance().enqueue(updateCollectionWork)
+
+
     }
 
 

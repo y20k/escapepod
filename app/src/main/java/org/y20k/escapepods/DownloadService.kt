@@ -78,6 +78,13 @@ class DownloadService(): Service() {
     }
 
 
+    /* Overrides onStartCommand */
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        LogHelper.e(TAG, "Yay. onStartCommand.") // just a test todo remove
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+
     /* Overrides onBind */
     override fun onBind(intent: Intent): IBinder? {
         return downloadServiceBinder
