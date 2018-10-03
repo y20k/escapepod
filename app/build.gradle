@@ -3,7 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+
     compileSdkVersion project.ext.compileSdkVersion
+    buildToolsVersion project.ext.buildToolsVersion
+
+
     defaultConfig {
         applicationId project.ext.applicationId
         minSdkVersion project.ext.minSdkVersion
@@ -11,11 +15,13 @@ android {
         versionCode project.ext.versionCode
         versionName project.ext.versionName
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 }
 

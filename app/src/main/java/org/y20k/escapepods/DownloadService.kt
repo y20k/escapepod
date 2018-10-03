@@ -26,6 +26,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.work.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -35,6 +36,7 @@ import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.helpers.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 /*
@@ -77,13 +79,27 @@ class DownloadService(): Service() {
         }
     }
 
-
     /* Overrides onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        LogHelper.e(TAG, "Yay. onStartCommand.") // just a test todo remove
+
+        // load collection
+        loadCollectionAsync(true)
+        // get download manager
+        downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+        // load active downloads
+        activeDownloads = DownloadHelper().loadActiveDownloads(this, downloadManager)
+
+        // get last update
+        var lastUpdate: Long = 0
+        if (intent != null) {
+            if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
+                lastUpdate = intent.getLongExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION, 0)
+        }
+        LogHelper.e(TAG, "!!! onStartCommand --> $lastUpdate") // todo remove
+
+
         return super.onStartCommand(intent, flags, startId)
     }
-
 
     /* Overrides onBind */
     override fun onBind(intent: Intent): IBinder? {
@@ -102,13 +118,15 @@ class DownloadService(): Service() {
         // set listener
         downloadServiceListener = listener
         // load collection
-        loadCollectionAsync()
+        loadCollectionAsync(false)
         // get download manager
         downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         // load active downloads
         activeDownloads = DownloadHelper().loadActiveDownloads(this, downloadManager)
         // listen for completed downloads
         registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        // schedule the DownloadWorker
+        scheduleDownloadWorker()
     }
 
 
@@ -309,7 +327,7 @@ class DownloadService(): Service() {
 
 
     /* Async via coroutine: Reads collection from storage using GSON */
-    private fun loadCollectionAsync() {
+    private fun loadCollectionAsync(update: Boolean) {
         LogHelper.v(TAG, "Loading podcast collection from storage async")
         // launch XmlReader for result and await
         launch(UI) {
@@ -327,8 +345,27 @@ class DownloadService(): Service() {
             if (activeDownloads.isNotEmpty()) {
                 handleFinishedDownloads()
             }
-            LogHelper.e(TAG, collection.toString())
+            // update collection
+            if (update) {
+                updateCollection()
+            }
         }
+    }
+
+
+    /* Schedules a DownloadWorker that triggers background updates of the collection */
+    private fun scheduleDownloadWorker() {
+        val lastUpdateData: Data = Data.Builder()
+                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)
+                .build()
+        val unmeteredConstraint = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS)
+                .setInputData(lastUpdateData)
+                .setConstraints(unmeteredConstraint)
+                .build()
+        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.KEEP, updateCollectionPeriodicWork)
     }
 
 
