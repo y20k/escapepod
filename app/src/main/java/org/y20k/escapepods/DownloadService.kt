@@ -237,9 +237,13 @@ class DownloadService(): Service() {
 
     /* Adds podcast to podcast collection*/
     private fun addPodcast(podcast: Podcast, isNew: Boolean) {
-        // add new or replace existing podcast
-        if (isNew) collection.podcasts.add(podcast)
-        else collection.podcasts.set(CollectionHelper().getPodcastIdFromCollection(collection, podcast), podcast)
+        if (isNew)  {
+            // add new
+            collection.podcasts.add(podcast)
+        } else {
+            // replace existing podcast
+            collection = CollectionHelper().replacePodcast(this, collection, podcast)
+        }
 
         // sort collection
         collection.podcasts.sortBy { it.name }
@@ -269,6 +273,7 @@ class DownloadService(): Service() {
         for (podcast: Podcast in collection.podcasts) {
             for (episode: Episode in podcast.episodes) {
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
+                    LogHelper.e(TAG, "DING") // todo remove
                     episode.audio = localFileUri.toString()
                 }
             }
@@ -381,7 +386,6 @@ class DownloadService(): Service() {
                 FileHelper().saveCollection(this@DownloadService, collection)
             }.await()
             // afterwards: do nothing
-            LogHelper.e(TAG, collection.toString()) // todo remove
         }
     }
 

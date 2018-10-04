@@ -66,6 +66,28 @@ class CollectionHelper {
     }
 
 
+    /* Replaces a podcast within collection and  retains audio references */
+    fun replacePodcast(context: Context, collection: Collection, newPodcast: Podcast): Collection {
+        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
+        val oldPodcast: Podcast = getPodcastFromCollection(collection, newPodcast)
+        // check for existing downloaded audio file references
+        for (i in numberOfAudioFilesToKeep -1 downTo 0) {
+            if (i < oldPodcast.episodes.size) {
+                val oldAudio: String = oldPodcast.episodes[i].audio
+                if (oldAudio.length > 0) {
+                    // found an existing downloaded audio file reference
+                    val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i].remoteAudioFileLocation)
+                    // set audio file reference
+                    newPodcast.episodes[newEpisodeId].audio = oldAudio
+                }
+            }
+        }
+        // replace podcast
+        collection.podcasts.set(getPodcastIdFromCollection(collection, newPodcast), newPodcast)
+        return collection
+    }
+
+
     /* Checks if podcast has episodes that can be downloaded */
     fun podcastHasDownloadableEpisodes(collection: Collection, newPodcast: Podcast): Boolean {
         // Step 1: New episode check -> compare GUIDs
@@ -102,11 +124,10 @@ class CollectionHelper {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
         for (podcast: Podcast in collection.podcasts) {
             val podcastSize = podcast.episodes.size
-            for (episodeIndex: Int in podcast.episodes.indices) {
-                if (episodeIndex > numberOfAudioFilesToKeep - 1 && episodeIndex < podcastSize) {
-                    podcast.episodes[episodeIndex].audio = ""
-                }
+            for (i in podcastSize - 1 downTo numberOfAudioFilesToKeep - 1) {
+                podcast.episodes[i].audio = ""
             }
+            LogHelper.e(TAG, "ref zero:${podcast.episodes[0].audio}") // todo remove
         }
         return collection
     }
@@ -125,7 +146,7 @@ class CollectionHelper {
         collection.podcasts.indices.forEach {
             if (podcast.remotePodcastFeedLocation == collection.podcasts[it].remotePodcastFeedLocation) return it
         }
-        return 0
+        return -1
     }
 
 
@@ -136,5 +157,33 @@ class CollectionHelper {
         }
         return Podcast()
     }
+
+
+    /* Get the ID from podcast for given episode */
+    fun getEpisodeIdFromPodcast(podcast: Podcast, episode: Episode): Int {
+        podcast.episodes.indices.forEach {
+            if (episode.remoteAudioFileLocation == podcast.episodes[it].remoteAudioFileLocation) return it
+        }
+        return -1
+    }
+
+
+    /* Get the ID from podcast for given remote audio file location */
+    fun getEpisodeIdFromPodcast(podcast: Podcast, remoteAudioFileLocation: String): Int {
+        podcast.episodes.indices.forEach {
+            if (remoteAudioFileLocation == podcast.episodes[it].remoteAudioFileLocation) return it
+        }
+        return -1
+    }
+
+
+    /* Get the counterpart from podcast for given episode */
+    private fun getEpisodeFromPodcast(podcast: Podcast, episode: Episode): Episode {
+        podcast.episodes.forEach {
+            if (episode.remoteAudioFileLocation == it.remoteAudioFileLocation) return it
+        }
+        return Episode()
+    }
+
 
 }
