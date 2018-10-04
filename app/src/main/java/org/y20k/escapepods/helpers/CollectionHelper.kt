@@ -85,23 +85,26 @@ class CollectionHelper {
 
 
     /* Clears an audio folder for a given podcast */
-    fun clearAudioFolder(context: Context, collection: Collection, newPodcast: Podcast): Collection {
-        // determine number of episodes to keep
-        var numberOfEpisodesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_DOWNLOAD, Keys.DEFAULT_DOWNLOAD_NUMBER_OF_EPISODES_TO_DOWNLOAD);
-        if (newPodcast.episodes.size < numberOfEpisodesToKeep) {
-            numberOfEpisodesToKeep = newPodcast.episodes.size
+    fun clearAudioFolder(context: Context, collection: Collection) {
+        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
+        // clear folders in audio folder
+        val audioFolder: File? = context.getExternalFilesDir(Keys.FOLDER_AUDIO)
+        if (audioFolder != null && audioFolder.isDirectory) {
+            for (podcastFolder: File in audioFolder.listFiles()) {
+                FileHelper().clearFolder(podcastFolder, numberOfAudioFilesToKeep)
+            }
         }
-        // clear audio folder
-        val audioFolder: File = File(FileHelper().determineDestinationFolder(Keys.FILE_TYPE_AUDIO, newPodcast.name))
-        FileHelper().clearFolder(audioFolder, numberOfEpisodesToKeep)
+    }
 
-        // wipe audio file reference
+
+    /* Cleans up unused audio references in collection */
+    fun removeUnusedAudioReferences(context: Context, collection: Collection): Collection {
+        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
         for (podcast: Podcast in collection.podcasts) {
-            if (newPodcast.remotePodcastFeedLocation == podcast.remotePodcastFeedLocation) {
-                for (episodeIndex: Int in getPodcastFromCollection(collection, podcast).episodes.indices) {
-                    if (episodeIndex > numberOfEpisodesToKeep) {
-                        podcast.episodes[episodeIndex].audio = ""
-                    }
+            val podcastSize = podcast.episodes.size
+            for (episodeIndex: Int in podcast.episodes.indices) {
+                if (episodeIndex > numberOfAudioFilesToKeep - 1 && episodeIndex < podcastSize) {
+                    podcast.episodes[episodeIndex].audio = ""
                 }
             }
         }
@@ -110,9 +113,9 @@ class CollectionHelper {
 
 
     /* Clears an image folder for a given podcast */
-    fun clearImageFolder(context: Context, podcast: Podcast) {
+    fun clearImagesFolder(context: Context, podcast: Podcast) {
         // clear image folder
-        val imagesFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_IMAGES), FileHelper().determineDestinationFolder(Keys.FILE_TYPE_IMAGE, podcast.name))
+        val imagesFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_IMAGES), FileHelper().determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name))
         FileHelper().clearFolder(imagesFolder, 0)
     }
 

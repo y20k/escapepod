@@ -1,35 +1,38 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlinVersion = '1.2.61'
+
+    ext.kotlinVersion = '1.2.71'
+
     repositories {
         google()
         jcenter()
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-alpha04'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
 
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+
 }
 
 allprojects {
+
     repositories {
         google()
         jcenter()
     }
 
     project.ext {
-        compileSdkVersion = 28
-        buildToolsVersion = '28.0.3'
-
         applicationId = 'org.y20k.escapepods'
-        minSdkVersion = 25
-        targetSdkVersion = 28
         versionCode = 2
         versionName = '0.2.0'
+
+        compileSdkVersion = 28
+        targetSdkVersion = 28
+        minSdkVersion = 25
 
         ktxVersion = "1.0.0"
         materialVersion = "1.0.0"

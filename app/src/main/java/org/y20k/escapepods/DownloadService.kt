@@ -161,7 +161,7 @@ class DownloadService(): Service() {
     /* Enqueues an Array of files in DownloadManager */
     private fun enqueueDownload(uris: Array<Uri>, type: Int, podcastName: String = String()) {
         // determine destination folder and allowed network types
-        val folder: String = FileHelper().determineDestinationFolder(type, podcastName)
+        val folder: String = FileHelper().determineDestinationFolderPath(type, podcastName)
         val allowedNetworkTypes:Int = DownloadHelper().determineAllowedNetworkTypes(this, type)
         // enqueues downloads
         val newIDs = LongArray(uris.size)
@@ -184,7 +184,7 @@ class DownloadService(): Service() {
     private fun enqueuePodcastMediaFiles(podcast: Podcast, isNew: Boolean) {
         // start to download podcast cover
         if (isNew) {
-            CollectionHelper().clearImageFolder(this, podcast)
+            CollectionHelper().clearImagesFolder(this, podcast)
             val coverUris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
             enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
@@ -270,10 +270,13 @@ class DownloadService(): Service() {
             for (episode: Episode in podcast.episodes) {
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
                     episode.audio = localFileUri.toString()
-//                    collection = CollectionHelper().clearAudioFolder(this, collection, podcast)
                 }
             }
         }
+        // remove unused audio references from collection
+        collection = CollectionHelper().removeUnusedAudioReferences(this, collection)
+        // clear audio folder
+        CollectionHelper().clearAudioFolder(this, collection)
         // notify activity about changes
         notifyPodcastActivity()
     }
@@ -378,6 +381,7 @@ class DownloadService(): Service() {
                 FileHelper().saveCollection(this@DownloadService, collection)
             }.await()
             // afterwards: do nothing
+            LogHelper.e(TAG, collection.toString()) // todo remove
         }
     }
 

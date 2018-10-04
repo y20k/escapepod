@@ -31,7 +31,7 @@ class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podc
         val stringBuilder: StringBuilder = StringBuilder()
         stringBuilder.append("Format version: $version\n")
         stringBuilder.append("Last update of collection: $lastUpdate\n")
-        stringBuilder.append("Number of podcasts in collection: ${podcasts.size}\n")
+        stringBuilder.append("Number of podcasts in collection: ${podcasts.size}\n\n")
         podcasts.forEach {
             stringBuilder.append("${it.toString()}\n")
         }

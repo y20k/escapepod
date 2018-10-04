@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
 
     compileSdkVersion project.ext.compileSdkVersion
-    buildToolsVersion project.ext.buildToolsVersion
+    // buildToolsVersion is optional because the plugin uses a recommended version by default
 
 
     defaultConfig {

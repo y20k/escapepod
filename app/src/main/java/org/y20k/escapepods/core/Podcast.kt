@@ -41,10 +41,17 @@ class Podcast(@Expose var name: String = "",
         stringBuilder.append("CoverURL: $remoteImageFileLocation\n")
         stringBuilder.append("FeedURL: $remotePodcastFeedLocation\n")
         stringBuilder.append("Update: ${lastUpdate.toString()}\n")
+        stringBuilder.append("Episodes: ${episodes.size}\n")
         stringBuilder.append("$shortDescription ...\n")
-        episodes.forEach {
-            stringBuilder.append("${it.toString()}\n")
-        }
+//        episodes.forEach {
+//            stringBuilder.append("${it.toString()}\n")
+//        }
+        // print only the three most recent episodes
+        stringBuilder.append(episodes[0].toString())
+        stringBuilder.append(episodes[1].toString())
+        stringBuilder.append(episodes[3].toString())
+
+
         return stringBuilder.toString()
     }
 

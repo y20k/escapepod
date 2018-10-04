@@ -66,16 +66,16 @@ class FileHelper {
 
 
     /* Determines a destination folder */
-    fun determineDestinationFolder(type: Int, podcastName: String): String {
-        val folder: String
+    fun determineDestinationFolderPath(type: Int, podcastName: String): String {
+        val folderPath: String
         val subDirectory: String = podcastName.replace("[:/]", "_")
         when (type) {
-            Keys.FILE_TYPE_RSS -> folder = Keys.FOLDER_TEMP
-            Keys.FILE_TYPE_AUDIO -> folder = Keys.FOLDER_AUDIO + "/" + subDirectory
-            Keys.FILE_TYPE_IMAGE -> folder = Keys.FOLDER_IMAGES + "/" + subDirectory
-            else -> folder = "/"
+            Keys.FILE_TYPE_RSS -> folderPath = Keys.FOLDER_TEMP
+            Keys.FILE_TYPE_AUDIO -> folderPath = Keys.FOLDER_AUDIO + "/" + subDirectory
+            Keys.FILE_TYPE_IMAGE -> folderPath = Keys.FOLDER_IMAGES + "/" + subDirectory
+            else -> folderPath = "/"
         }
-        return folder
+        return folderPath
     }
 
 
@@ -86,8 +86,9 @@ class FileHelper {
             val fileCount: Int = files.size
             files.sortBy { it.lastModified() }
             for (fileNumber in files.indices) {
-                if (fileNumber < fileCount - keep)
+                if (fileNumber < fileCount - keep) {
                     files[fileNumber].delete()
+                }
             }
         }
     }
