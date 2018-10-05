@@ -19,6 +19,8 @@ import android.content.Context
 import android.database.Cursor
 import android.preference.PreferenceManager
 import androidx.core.content.edit
+import java.io.IOException
+import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
 
@@ -111,6 +113,7 @@ class DownloadHelper {
 
         // THEN check for type
         if (feedUrl.endsWith("xml", true)) return Keys.MIME_TYPE_XML
+        if (feedUrl.endsWith("rss", true)) return Keys.MIME_TYPE_XML
         if (feedUrl.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
         if (feedUrl.endsWith("png", true)) return Keys.MIME_TYPE_PNG
         if (feedUrl.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
@@ -132,4 +135,25 @@ class DownloadHelper {
         }
         return true
     }
+
+
+    fun identifyFileTypeUsingUrlConnectionGetContentType(feedUrl: String): String {
+        var fileType = "Undetermined"
+        try {
+            val url = URL(feedUrl)
+            val connection = url.openConnection()
+            fileType = connection.contentType
+        } catch (badUrlEx: MalformedURLException) {
+            LogHelper.w("ERROR: Bad URL - $badUrlEx")
+        } catch (ioEx: IOException) {
+            LogHelper.w("Cannot access URLConnection - $ioEx")
+        }
+        if (fileType == "application/rss+xml") {
+            return Keys.MIME_TYPE_XML
+        } else {
+            return Keys.MIME_TYPE_UNSUPPORTED
+        }
+    }
+
+
 }

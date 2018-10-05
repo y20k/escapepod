@@ -27,10 +27,8 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.work.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
@@ -58,7 +56,7 @@ class DownloadService(): Service() {
     /* Main class variables */
     var activeDownloads: ArrayList<Long> = ArrayList<Long>()
     private var collection: Collection = Collection()
-    private lateinit var downloadServiceListener: DownloadServiceListener
+    private var downloadServiceListener: DownloadServiceListener? = null
     private val downloadServiceBinder: LocalBinder = LocalBinder()
     private lateinit var downloadManager: DownloadManager
 
@@ -81,13 +79,8 @@ class DownloadService(): Service() {
 
     /* Overrides onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        // load collection
-        loadCollectionAsync(true)
-        // get download manager
-        downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
-        // load active downloads
-        activeDownloads = DownloadHelper().loadActiveDownloads(this, downloadManager)
+        // initialize the service
+        initialize(null, true)
 
         // get last update
         var lastUpdate: Long = 0
@@ -96,7 +89,6 @@ class DownloadService(): Service() {
                 lastUpdate = intent.getLongExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION, 0)
         }
         LogHelper.e(TAG, "!!! onStartCommand --> $lastUpdate") // todo remove
-
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -114,19 +106,18 @@ class DownloadService(): Service() {
 
 
     /* Initializes the service -> must ALWAYS be called */
-    fun initialize(listener: DownloadServiceListener) {
+    fun initialize(listener: DownloadServiceListener?, update: Boolean) {
         // set listener
         downloadServiceListener = listener
         // load collection
-        loadCollectionAsync(false)
+        loadCollectionAsync(update)
         // get download manager
         downloadManager = getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         // load active downloads
         activeDownloads = DownloadHelper().loadActiveDownloads(this, downloadManager)
         // listen for completed downloads
         registerReceiver(onCompleteReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-        // schedule the DownloadWorker
-        scheduleDownloadWorker()
+
     }
 
 
@@ -306,58 +297,7 @@ class DownloadService(): Service() {
     private fun notifyPodcastActivity() {
         collection.lastUpdate = Date()
         saveCollectionAsync()
-        downloadServiceListener.let{
-            it.onDownloadFinished(collection)
-        }
-    }
-
-
-    /* Async via coroutine: Reads podcast feed */
-    private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) {
-        LogHelper.v(TAG, "Reading podcast RSS file async")
-        launch(UI) {
-            // launch XmlReader for result and await
-            val result: Podcast = async(CommonPool) {
-                XmlReader().read(this@DownloadService, localFileUri, remoteFileLocation)
-            }.await()
-            // afterwards: check if new
-            val isNew: Boolean = CollectionHelper().isNewPodcast(result.remotePodcastFeedLocation, collection)
-            // check if media download is necessary
-            if (isNew || CollectionHelper().podcastHasDownloadableEpisodes(collection, result)) {
-                enqueuePodcastMediaFiles(result, isNew)
-            } else {
-                LogHelper.v(TAG, "No new media files to download.")
-            }
-            // add podcast as new podcast or update existing podcast
-            addPodcast(result, isNew)
-        }
-    }
-
-
-    /* Async via coroutine: Reads collection from storage using GSON */
-    private fun loadCollectionAsync(update: Boolean) {
-        LogHelper.v(TAG, "Loading podcast collection from storage async")
-        // launch XmlReader for result and await
-        launch(UI) {
-            val result = async(CommonPool) {
-                // get JSON from text file
-                FileHelper().readCollection(this@DownloadService)
-            }.await()
-            // afterwards: update collection
-            collection = result
-            // savely hand over new collection to activity
-            downloadServiceListener.let {
-                it.onDownloadFinished(collection)
-            }
-            // check for unfinished business
-            if (activeDownloads.isNotEmpty()) {
-                handleFinishedDownloads()
-            }
-            // update collection
-            if (update) {
-                updateCollection()
-            }
-        }
+        downloadServiceListener?.onDownloadFinished(collection)
     }
 
 
@@ -369,7 +309,7 @@ class DownloadService(): Service() {
         val unmeteredConstraint = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED)
                 .build()
-        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS)
+        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
                 .setInputData(lastUpdateData)
                 .setConstraints(unmeteredConstraint)
                 .build()
@@ -377,16 +317,55 @@ class DownloadService(): Service() {
     }
 
 
-    /* Async via coroutine: Saves podcast collection */
-    private fun saveCollectionAsync() {
-        LogHelper.v(TAG, "Saving podcast collection to storage async")
-        launch(UI) {
-            // launch FileHelper for result and await
-            val result = async(CommonPool) {
-                FileHelper().saveCollection(this@DownloadService, collection)
-            }.await()
-            // afterwards: do nothing
+    /* Async via coroutine: Reads podcast feed */
+    private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) = runBlocking<Unit> {
+        LogHelper.v(TAG, "Reading podcast RSS file async")
+        // async: read xml
+        val result = async { XmlReader().read(this@DownloadService, localFileUri, remoteFileLocation) }
+        // wait for result and create podcast
+        val podcast = result.await()
+        // check if new
+        val isNew: Boolean = CollectionHelper().isNewPodcast(podcast.remotePodcastFeedLocation, collection)
+        // check if media download is necessary
+        if (isNew || CollectionHelper().podcastHasDownloadableEpisodes(collection, podcast)) {
+            enqueuePodcastMediaFiles(podcast, isNew)
+            addPodcast(podcast, isNew)
+        } else {
+            LogHelper.v(TAG, "No new media files to download.")
         }
+    }
+
+
+    /* Async via coroutine: Reads collection from storage using GSON */
+    private fun loadCollectionAsync(update: Boolean) = runBlocking<Unit> {
+        LogHelper.v(TAG, "Loading podcast collection from storage async")
+        // async: get JSON from text file
+        val result = async { FileHelper().readCollection(this@DownloadService) }
+        // wait for result and update collection
+        collection = result.await()
+        // savely hand over new collection to activity
+        downloadServiceListener?.onDownloadFinished(collection)
+        // check for unfinished business
+        if (activeDownloads.isNotEmpty()) {
+            handleFinishedDownloads()
+        }
+        if (update) {
+            // if update requested -> update collection
+            updateCollection()
+        } else {
+            // else -> schedule the DownloadWorker
+            scheduleDownloadWorker()
+        }
+    }
+
+
+    /* Async via coroutine: Saves podcast collection */
+    private fun saveCollectionAsync() = runBlocking<Unit> {
+        LogHelper.v(TAG, "Saving podcast collection to storage async")
+        val result = async { FileHelper().saveCollection(this@DownloadService, collection) }
+        result.await()
+        // afterwards: do nothing
+        LogHelper.e(TAG,collection.toString()) // todo remove
     }
 
 

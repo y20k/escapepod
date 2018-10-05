@@ -108,12 +108,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onAddPodcastDialog from AddPodcastDialog */
     override fun onAddPodcastDialog(textInput: String) {
         super.onAddPodcastDialog(textInput)
-        if (CollectionHelper().isNewPodcast(textInput, collection)) {
-            downloadPodcastFeed(textInput)
+        val podcastUrl = textInput.trim()
+        if (CollectionHelper().isNewPodcast(podcastUrl, collection)) {
+            downloadPodcastFeed(podcastUrl)
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_duplicate),
                     getString(R.string.dialog_error_message_podcast_duplicate),
-                    textInput)
+                    podcastUrl)
         }
     }
 
@@ -130,7 +131,24 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun updateUserInterface() {
         // update podcast counter - just a test // todo remove
         val podcastCounter: TextView = findViewById(R.id.text_podcast_counter)
-        podcastCounter.text = "${collection.podcasts.size} podcasts in your collection"
+        podcastCounter.text = createCollectionInfoString()
+    }
+
+
+    /* For debug purposes: create a string containing collection info */ // todo remove
+    private fun createCollectionInfoString(): String {
+        var episodesTotal: Int = 0
+        collection.podcasts.forEach{
+            it.episodes.forEach{
+                if (it.audio.length > 0) {
+                    episodesTotal++
+                }
+            }
+        }
+        val stringBuilder: StringBuilder = StringBuilder()
+        stringBuilder.append("${collection.podcasts.size} podcasts & ")
+        stringBuilder.append("$episodesTotal episodes")
+        return stringBuilder.toString()
     }
 
 
@@ -170,7 +188,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // get service from binder
             val binder = service as DownloadService.LocalBinder
             downloadService = binder.getService()
-            downloadService.initialize(this@PodcastPlayerActivity)
+            downloadService.initialize(this@PodcastPlayerActivity, false)
             downloadServiceBound = true
             // check if downloads are in progress and update UI while service is connected
             if (!downloadService.activeDownloads.isEmpty() ) {
