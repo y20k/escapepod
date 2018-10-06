@@ -79,16 +79,17 @@ class DownloadService(): Service() {
 
     /* Overrides onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // initialize the service
-        initialize(null, true)
-
+        LogHelper.e(TAG, "!!! onStartCommand") // todo remove
         // get last update
         var lastUpdate: Long = 0
-        if (intent != null) {
-            if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
+        if (intent != null && intent.action == Keys.ACTION_UPDATE_COLLECTION) {
+            if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION)) {
                 lastUpdate = intent.getLongExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION, 0)
+                LogHelper.e(TAG, "!!! onStartCommand last update --> $lastUpdate") // todo remove
+            }
+            // initialize the service
+            initialize(null, true)
         }
-        LogHelper.e(TAG, "!!! onStartCommand --> $lastUpdate") // todo remove
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -157,17 +158,19 @@ class DownloadService(): Service() {
         // enqueues downloads
         val newIDs = LongArray(uris.size)
         for (i in uris.indices)  {
-            val request: DownloadManager.Request = DownloadManager.Request(uris[i])
-                    .setAllowedNetworkTypes(allowedNetworkTypes)
-                    .setAllowedOverRoaming(false)
-                    .setTitle(uris[i].lastPathSegment)
-                    .setDestinationInExternalFilesDir(this, folder, uris[i].lastPathSegment)
-                    .setMimeType(DownloadHelper().determineMimeType(uris[i].toString()))
-            newIDs[i] = downloadManager.enqueue(request)
-            activeDownloads.add(newIDs[i])
+            LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
+            if (uris[i].scheme.startsWith("http")) {
+                val request: DownloadManager.Request = DownloadManager.Request(uris[i])
+                        .setAllowedNetworkTypes(allowedNetworkTypes)
+                        .setAllowedOverRoaming(false)
+                        .setTitle(uris[i].lastPathSegment)
+                        .setDestinationInExternalFilesDir(this, folder, uris[i].lastPathSegment)
+                        .setMimeType(DownloadHelper().determineMimeType(uris[i].toString()))
+                newIDs[i] = downloadManager.enqueue(request)
+                activeDownloads.add(newIDs[i])
+            }
         }
         DownloadHelper().saveActiveDownloads(this, activeDownloads)
-        LogHelper.v(TAG, "${uris.size} new file(s) queued for download.")
     }
 
 
@@ -319,19 +322,22 @@ class DownloadService(): Service() {
 
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) = runBlocking<Unit> {
-        LogHelper.v(TAG, "Reading podcast RSS file async")
+        LogHelper.v(TAG, "Reading podcast RSS file async: $remoteFileLocation")
         // async: read xml
         val result = async { XmlReader().read(this@DownloadService, localFileUri, remoteFileLocation) }
         // wait for result and create podcast
         val podcast = result.await()
-        // check if new
-        val isNew: Boolean = CollectionHelper().isNewPodcast(podcast.remotePodcastFeedLocation, collection)
-        // check if media download is necessary
-        if (isNew || CollectionHelper().podcastHasDownloadableEpisodes(collection, podcast)) {
-            enqueuePodcastMediaFiles(podcast, isNew)
-            addPodcast(podcast, isNew)
-        } else {
-            LogHelper.v(TAG, "No new media files to download.")
+        LogHelper.w(TAG, "${podcast.toString()}") // todo remove
+        if (CollectionHelper().validatePodcast(podcast)) {
+            // check if new
+            val isNew: Boolean = CollectionHelper().isNewPodcast(podcast.remotePodcastFeedLocation, collection)
+            // check if media download is necessary
+            if (isNew || CollectionHelper().podcastHasDownloadableEpisodes(collection, podcast)) {
+                enqueuePodcastMediaFiles(podcast, isNew)
+                addPodcast(podcast, isNew)
+            } else {
+                LogHelper.v(TAG, "No new media files to download.")
+            }
         }
     }
 

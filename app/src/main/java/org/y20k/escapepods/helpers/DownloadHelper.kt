@@ -51,8 +51,10 @@ class DownloadHelper {
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
         val activeDownloads: ArrayList<Long> = arrayListOf<Long>()
-        repeat(count) { if (isDownloadActive(downloadManager, tokenizer.nextToken().toLong())) {
-            activeDownloads.add(tokenizer.nextToken().toLong()) }
+        repeat(count) {
+            val token = tokenizer.nextToken().toLong()
+            if (isDownloadActive(downloadManager, token)) {
+                activeDownloads.add(token) }
         }
         return activeDownloads
     }

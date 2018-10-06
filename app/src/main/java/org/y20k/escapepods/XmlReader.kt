@@ -112,7 +112,8 @@ class XmlReader() {
                 // found a podcast description
                 Keys.RSS_PODCAST_DESCRIPTION -> podcast.description = XmlHelper.readPodcastDescription(parser,nameSpace)
                 // found a podcast remoteImageFileLocation
-                Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = XmlHelper.readPodcastImage(parser, nameSpace)
+                Keys.RSS_PODCAST_COVER_ITUNES -> podcast.remoteImageFileLocation = XmlHelper.readPodcastCoverItunes(parser, nameSpace)
+                Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = XmlHelper.readPodcastCover(parser, nameSpace)
                 // found an episode
                 Keys.RSS_EPISODE -> {
                     val episode: Episode = readEpisode(parser)

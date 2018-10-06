@@ -58,6 +58,25 @@ class CollectionHelper {
     }
 
 
+    /* Check if podcast has cover and audio files */
+    fun validatePodcast(podcast: Podcast): Boolean {
+        var isValid: Boolean = true
+        // check for cover url
+        if (podcast.remoteImageFileLocation.isEmpty())  {
+            LogHelper.e("Validation failed: Missing cover.")
+            isValid = false
+        }
+        // check for audio files
+        podcast.episodes.forEach {
+            if (it.remoteAudioFileLocation.isEmpty()) {
+                LogHelper.e("Validation failed: Missing audio file.")
+                isValid = false
+            }
+        }
+        return isValid
+    }
+
+
     /* Checks if enough time passed since last update */
     fun hasEnoughTimePassedSinceLastUpdate(collection: Collection): Boolean {
         val currentDate: Date = Calendar.getInstance().time

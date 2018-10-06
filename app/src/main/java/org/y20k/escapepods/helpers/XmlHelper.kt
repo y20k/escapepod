@@ -103,9 +103,10 @@ object XmlHelper {
         return DateHelper().convertRFC2822(publicationDate)
     }
 
-    /* PODCAST: read remoteImageFileLocation */
+
+    /* PODCAST: read remoteImageFileLocation - standard tag variant */
     @Throws(IOException::class, XmlPullParserException::class)
-    fun readPodcastImage(parser: XmlPullParser, nameSpace: String?): String {
+    fun readPodcastCover(parser: XmlPullParser, nameSpace: String?): String {
         var link = ""
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER)
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -132,6 +133,21 @@ object XmlHelper {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER_URL)
         val link = readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_COVER_URL)
+        return link
+    }
+
+
+    /* PODCAST: read remoteImageFileLocation - itunes tag variant */
+    @Throws(IOException::class, XmlPullParserException::class)
+    fun readPodcastCoverItunes(parser: XmlPullParser, nameSpace: String?): String {
+        var link = ""
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER_ITUNES)
+        val tag = parser.name
+        if (tag == Keys.RSS_PODCAST_COVER_ITUNES) {
+            link = parser.getAttributeValue(null, Keys.RSS_PODCAST_COVER_ITUNES_URL)
+            parser.nextTag()
+        }
+        parser.require(XmlPullParser.END_TAG, nameSpace,Keys.RSS_PODCAST_COVER_ITUNES)
         return link
     }
 
