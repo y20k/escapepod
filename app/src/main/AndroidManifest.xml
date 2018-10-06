@@ -21,7 +21,7 @@
 
         <!-- Main activity for podcast playback on phone -->
         <activity
-            android:name=".ui.PodcastPlayerActivity"
+            android:name=".PodcastPlayerActivity"
             android:label="@string/app_name">
 
             <!-- makes activity react to main intents -->

@@ -8,7 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_window_background"
-    tools:context="org.y20k.escapepods.ui.PodcastPlayerActivity">
+    tools:context="org.y20k.escapepods.PodcastPlayerActivity">
 
     <!-- PODCAST LIST -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

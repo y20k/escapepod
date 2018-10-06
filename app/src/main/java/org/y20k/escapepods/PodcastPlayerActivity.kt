@@ -12,46 +12,37 @@
  */
 
 
-package org.y20k.escapepods.ui
+package org.y20k.escapepods
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import kotlinx.coroutines.experimental.Runnable
-import org.y20k.escapepods.DownloadService
-import org.y20k.escapepods.R
+import androidx.work.*
+import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.*
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 /*
  * PodcastPlayerActivity class
  */
-class PodcastPlayerActivity: AppCompatActivity(),
-                             AddPodcastDialog.AddPodcastDialogListener,
-                             DownloadService.DownloadServiceListener {
-//class PodcastPlayerActivity: BaseActivity(), AddPodcastDialog.AddPodcastDialogListener {
+class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)
 
 
     /* Main class variables */
-    private lateinit var downloadService: DownloadService
-    private var downloadServiceBound = false
-    private val downloadProgressHandler = Handler()
     private var collection: Collection = Collection()
 
 
@@ -61,6 +52,19 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
         // clear temp folder
         FileHelper().clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
+
+        // create view model for collection and observe changes
+        val collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
+        collectionViewModel.getCollection().observe(this, Observer<Collection> { it ->
+            // update collection
+            collection = it
+            // update ui
+            updateUserInterface()
+            LogHelper.w(TAG, "CHANGES!!! \n${collection.toString()}") // todo remove
+        })
+
+        // start worker that updates the podcast collection at a defined interval
+        schedulePeriodicUpdateWorker()
 
         // set layout
         setContentView(R.layout.activity_podcast_player)
@@ -76,10 +80,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection
-            if (downloadServiceBound && CollectionHelper().hasEnoughTimePassedSinceLastUpdate(collection)) {
-                downloadService.updateCollection()
-            }
-            // hide refresh icon animation
+            startOneTimeUpdateWorker()
             swipeRefreshLayout.isRefreshing = false
         }
     }
@@ -90,8 +91,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onResume() {
         super.onResume()
 
-        // bind to DownloadService
-        bindService(Intent(this, DownloadService::class.java), downloadServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
 
@@ -99,9 +98,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onPause() {
         super.onPause()
 
-        downloadProgressHandler.removeCallbacks(downloadProgressRunnable)
-        // unbind DownloadService
-        unbindService(downloadServiceConnection)
     }
 
 
@@ -116,14 +112,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
                     getString(R.string.dialog_error_message_podcast_duplicate),
                     podcastUrl)
         }
-    }
-
-
-    /* Overrides onDownloadFinished from DownloadService */
-    override fun onDownloadFinished(newCollection: Collection) {
-        LogHelper.v(TAG, "Received a new collection via onDownloadFinished. Updating UI.")
-        collection= newCollection
-        updateUserInterface()
     }
 
 
@@ -157,7 +145,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
         if (DownloadHelper().determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
             val uris = Array(1) {feedUrl.toUri()}
-            downloadService.downloadPodcast(uris)
+            // todo start the worker with -> uris
+
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),
                     getString(R.string.dialog_error_message_podcast_invalid_feed),
@@ -166,44 +155,55 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Runnable that updates the startDownload progress every second */
-    private val downloadProgressRunnable = object: Runnable {
-        override fun run() {
-            for (activeDownload in downloadService.activeDownloads) {
-                val size = downloadService.getFileSizeSoFar(activeDownload)
-                // TODO update UI
-                LogHelper.i(TAG, "DownloadID = " + activeDownload + " | Size so far: " + FileHelper().getReadableByteCount(size, true) + " " + downloadService.activeDownloads.isEmpty()) // todo remove
-            }
-            downloadProgressHandler.postDelayed(this, Keys.ONE_SECOND_IN_MILLISECONDS)
-        }
+    /* Schedules a DownloadWorker that triggers background updates of the collection periodically */
+    private fun schedulePeriodicUpdateWorker() {
+        val requestData: Data = Data.Builder()
+                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
+                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)
+                .build()
+        val unmeteredConstraint = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
+                .setInputData(requestData)
+                .setConstraints(unmeteredConstraint)
+                .build()
+        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.KEEP, updateCollectionPeriodicWork)
+
+        observerCollectionUpdateWork(updateCollectionPeriodicWork.id)
     }
 
 
-    /*
-     * Defines callbacks for service binding, passed to bindService()
-     */
-    private val downloadServiceConnection = object: ServiceConnection {
+    /* Schedules a DownloadWorker that triggers a one time background update of the collection */
+    private fun startOneTimeUpdateWorker() {
+        val requestData: Data = Data.Builder()
+                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
+                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)
+                .build()
+        val unmeteredConstraint = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+        val updateCollectionOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(requestData)
+                .setConstraints(unmeteredConstraint)
+                .build()
+        WorkManager.getInstance().enqueue(updateCollectionOneTimeWork)
 
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            // get service from binder
-            val binder = service as DownloadService.LocalBinder
-            downloadService = binder.getService()
-            downloadService.initialize(this@PodcastPlayerActivity, false)
-            downloadServiceBound = true
-            // check if downloads are in progress and update UI while service is connected
-            if (!downloadService.activeDownloads.isEmpty() ) {
-                downloadProgressRunnable.run()
-            }
-            // handles the intent that started the activity
-            if (Intent.ACTION_VIEW == intent.action) {
-                LogHelper.v(TAG, "Received an Intent request to add a new podcast subscription.")
-                downloadPodcastFeed(intent.data.toString())
-                intent.action == ""
-            }
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            downloadServiceBound = false
-        }
+        observerCollectionUpdateWork(updateCollectionOneTimeWork.id)
     }
+
+
+    /* observe result of update work */
+    private fun observerCollectionUpdateWork(updateCollectionWorkStatus: UUID) {
+        WorkManager.getInstance().getStatusById(updateCollectionWorkStatus)
+                .observe(this, Observer { status ->
+                    if (status != null && status.state.isFinished) {
+                        val updateResult: Boolean = status.outputData.getBoolean(Keys.KEY_RESULT_NEW_COLLECTION, false)
+                        if (updateResult) {
+                            // todo: ping live data / view model to reload collection
+                        }
+                    }
+                })
+    }
+
 }

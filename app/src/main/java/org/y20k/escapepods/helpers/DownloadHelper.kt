@@ -30,7 +30,6 @@ import java.util.*
  */
 class DownloadHelper {
 
-
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(DownloadHelper::class.java)
 
