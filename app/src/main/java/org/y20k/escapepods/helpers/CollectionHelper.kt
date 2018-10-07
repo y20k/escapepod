@@ -78,10 +78,11 @@ class CollectionHelper {
 
 
     /* Checks if enough time passed since last update */
-    fun hasEnoughTimePassedSinceLastUpdate(collection: Collection): Boolean {
+    fun hasEnoughTimePassedSinceLastUpdate(context: Context): Boolean {
+        val lastUpdate = PreferenceManager.getDefaultSharedPreferences(context).getLong(Keys.PREF_LAST_UPDATE_COLLECTION, 0L)
         val currentDate: Date = Calendar.getInstance().time
-        return true // todo remove
-//        return currentDate.time - collection.lastUpdate.time  > FIVE_MINUTES_IN_MILLISECONDS
+//        return currentDate.time - lastUpdate  > Keys.FIVE_MINUTES_IN_MILLISECONDS // todo uncomment for production
+        return currentDate.time - lastUpdate  > Keys.ONE_MINUTE_IN_MILLISECONDS
     }
 
 
@@ -146,7 +147,6 @@ class CollectionHelper {
             for (i in podcastSize - 1 downTo numberOfAudioFilesToKeep - 1) {
                 podcast.episodes[i].audio = ""
             }
-            LogHelper.e(TAG, "ref zero:${podcast.episodes[0].audio}") // todo remove
         }
         return collection
     }

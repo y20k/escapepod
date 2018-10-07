@@ -17,12 +17,15 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.preference.PreferenceManager
 import android.provider.OpenableColumns
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.y20k.escapepods.core.Collection
 import java.io.*
 import java.text.NumberFormat
+import java.util.*
 import kotlin.coroutines.experimental.suspendCoroutine
 
 
@@ -97,11 +100,12 @@ class FileHelper {
     /* Suspend function: Saves podcast collection as JSON text file */
     suspend fun saveCollection(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
-
+            // set last update
+            collection.lastUpdate = Calendar.getInstance().time
+            PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)}
             // convert to JSON
             val gson: Gson = getCustomGson()
             val json: String = gson.toJson(collection)
-
             // save JSON as text file
             cont.resume(writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE))
         }

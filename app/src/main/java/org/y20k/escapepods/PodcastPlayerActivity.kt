@@ -19,18 +19,16 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.*
+import androidx.work.WorkManager
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 /*
@@ -43,6 +41,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
 
 
     /* Main class variables */
+    private lateinit var collectionViewModel: CollectionViewModel
     private var collection: Collection = Collection()
 
 
@@ -53,18 +52,9 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         // clear temp folder
         FileHelper().clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
 
-        // create view model for collection and observe changes
-        val collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
-        collectionViewModel.getCollection().observe(this, Observer<Collection> { it ->
-            // update collection
-            collection = it
-            // update ui
-            updateUserInterface()
-            LogHelper.w(TAG, "CHANGES!!! \n${collection.toString()}") // todo remove
-        })
-
-        // start worker that updates the podcast collection at a defined interval
-        schedulePeriodicUpdateWorker()
+        // create view model and observe changes in collection view model
+        collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
+        observeCollectionViewModel()
 
         // set layout
         setContentView(R.layout.activity_podcast_player)
@@ -79,12 +69,16 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         // get button and listen for clicks
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
-            // update podcast collection
-            startOneTimeUpdateWorker()
+            // update podcast collection and observe download work
+            if (CollectionHelper().hasEnoughTimePassedSinceLastUpdate(this)) {
+                Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
+                observeDownloadWork(DownloadHelper().startOneTimeUpdateWorker(collection.lastUpdate.time))
+            } else {
+                Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
+            }
             swipeRefreshLayout.isRefreshing = false
         }
     }
-
 
 
     /* Overrides onResume */
@@ -144,9 +138,8 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     private fun downloadPodcastFeed(feedUrl : String) {
         if (DownloadHelper().determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-            val uris = Array(1) {feedUrl.toUri()}
-            // todo start the worker with -> uris
-
+            // start download and observe download work
+            observeDownloadWork(DownloadHelper().startOneTimeAddPodcastWorker(feedUrl))
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),
                     getString(R.string.dialog_error_message_podcast_invalid_feed),
@@ -155,52 +148,28 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     }
 
 
-    /* Schedules a DownloadWorker that triggers background updates of the collection periodically */
-    private fun schedulePeriodicUpdateWorker() {
-        val requestData: Data = Data.Builder()
-                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
-                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)
-                .build()
-        val unmeteredConstraint = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED)
-                .build()
-        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
-                .setInputData(requestData)
-                .setConstraints(unmeteredConstraint)
-                .build()
-        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.KEEP, updateCollectionPeriodicWork)
-
-        observerCollectionUpdateWork(updateCollectionPeriodicWork.id)
+    /* Observe view model of podcast collection*/
+    private fun observeCollectionViewModel() {
+        collectionViewModel.getCollection().observe(this, Observer<Collection> { it ->
+            // update collection
+            collection = it
+            // update ui
+            updateUserInterface()
+            // start worker that updates the podcast collection and observe download work
+            observeDownloadWork(DownloadHelper().schedulePeriodicUpdateWorker(collection.lastUpdate.time))
+        })
     }
 
 
-    /* Schedules a DownloadWorker that triggers a one time background update of the collection */
-    private fun startOneTimeUpdateWorker() {
-        val requestData: Data = Data.Builder()
-                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
-                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)
-                .build()
-        val unmeteredConstraint = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED)
-                .build()
-        val updateCollectionOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
-                .setInputData(requestData)
-                .setConstraints(unmeteredConstraint)
-                .build()
-        WorkManager.getInstance().enqueue(updateCollectionOneTimeWork)
-
-        observerCollectionUpdateWork(updateCollectionOneTimeWork.id)
-    }
-
-
-    /* observe result of update work */
-    private fun observerCollectionUpdateWork(updateCollectionWorkStatus: UUID) {
-        WorkManager.getInstance().getStatusById(updateCollectionWorkStatus)
+    /* Observe result of update work */
+    private fun observeDownloadWork(downloadWorkStatus: UUID) {
+        WorkManager.getInstance().getStatusById(downloadWorkStatus)
                 .observe(this, Observer { status ->
                     if (status != null && status.state.isFinished) {
                         val updateResult: Boolean = status.outputData.getBoolean(Keys.KEY_RESULT_NEW_COLLECTION, false)
                         if (updateResult) {
-                            // todo: ping live data / view model to reload collection
+                            // reload collection
+                            collectionViewModel.getCollection()
                         }
                     }
                 })

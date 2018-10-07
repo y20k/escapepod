@@ -25,7 +25,8 @@
 
     <!-- Toasts -->
     <string name="toast_message_adding_podcast">Adding podcast.</string>
-    <string name="toast_message_updating_collection">Updating Podcast Collection.</string>
+    <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
+    <string name="toast_message_updating_collection">Updating podcast collection.</string>
 
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an escapepod in space</string>

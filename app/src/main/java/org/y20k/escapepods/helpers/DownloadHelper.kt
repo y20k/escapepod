@@ -19,10 +19,12 @@ import android.content.Context
 import android.database.Cursor
 import android.preference.PreferenceManager
 import androidx.core.content.edit
+import androidx.work.*
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 /*
@@ -127,6 +129,63 @@ class DownloadHelper {
     }
 
 
+    /* Schedules a DownloadWorker that triggers a one time background update of the collection */
+    fun startOneTimeAddPodcastWorker(podcastUrl: String): UUID {
+        val requestData: Data = Data.Builder()
+                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_ADD_PODCAST)
+                .putString(Keys.KEY_NEW_PODCAST_URL, podcastUrl)
+                .build()
+        val unmeteredConstraint = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+        val addPodcastOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(requestData)
+                .setConstraints(unmeteredConstraint)
+                .build()
+        WorkManager.getInstance().enqueue(addPodcastOneTimeWork)
+
+        return addPodcastOneTimeWork.id
+    }
+
+
+    /* Schedules a DownloadWorker that triggers a one time background update of the collection */
+    fun startOneTimeUpdateWorker(lastUpdate: Long): UUID {
+        val requestData: Data = Data.Builder()
+                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
+                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
+                .build()
+        val unmeteredConstraint = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+        val updateCollectionOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
+                .setInputData(requestData)
+                .setConstraints(unmeteredConstraint)
+                .build()
+        WorkManager.getInstance().enqueue(updateCollectionOneTimeWork)
+
+        return updateCollectionOneTimeWork.id
+    }
+
+
+    /* Schedules a DownloadWorker that triggers background updates of the collection periodically */
+    fun schedulePeriodicUpdateWorker(lastUpdate: Long): UUID {
+        val requestData: Data = Data.Builder()
+                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
+                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
+                .build()
+        val unmeteredConstraint = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.UNMETERED)
+                .build()
+        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
+                .setInputData(requestData)
+                .setConstraints(unmeteredConstraint)
+                .build()
+        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.KEEP, updateCollectionPeriodicWork)
+
+        return updateCollectionPeriodicWork.id
+    }
+
+
     /* Tries to parse feed URL string as URL */
     private fun feedUrlIsParsable(feedUrl: String): Boolean {
         try {
@@ -138,7 +197,7 @@ class DownloadHelper {
     }
 
 
-    fun identifyFileTypeUsingUrlConnectionGetContentType(feedUrl: String): String {
+    fun identifyFileType(feedUrl: String): String {
         var fileType = "Undetermined"
         try {
             val url = URL(feedUrl)

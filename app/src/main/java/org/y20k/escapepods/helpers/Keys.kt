@@ -24,6 +24,7 @@ object Keys {
     val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
 
     // preferences
+    val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"
     val PREF_DOWNLOAD_OVER_MOBILE: String = "DOWNLOAD_OVER_MOBILE"
     val PREF_NUMBER_OF_EPISODES_TO_KEEP: String = "NUMBER_OF_EPISODES_TO_KEEP"
@@ -82,6 +83,7 @@ object Keys {
     // values
     val ONE_SECOND_IN_MILLISECONDS: Long = 1000L
     val FIVE_MINUTES_IN_MILLISECONDS: Long = 300000L
+    val ONE_MINUTE_IN_MILLISECONDS: Long = 60000L
 
     // rss tags
     val RSS_RSS = "rss"
