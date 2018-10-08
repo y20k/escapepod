@@ -15,29 +15,263 @@
 package org.y20k.escapepods.helpers
 
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.core.content.edit
-import androidx.work.*
+import androidx.core.net.toUri
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.work.Data
+import androidx.work.workDataOf
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
+import org.y20k.escapepods.XmlReader
+import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Episode
+import org.y20k.escapepods.core.Podcast
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 /*
  * DownloadHelper class
  */
-class DownloadHelper {
+class DownloadHelper(): BroadcastReceiver() {
+
+    /* Main class variables */
+    private lateinit var context: Context
+    private lateinit var downloadManager: DownloadManager
+    private lateinit var collection: Collection
+    private lateinit var activeDownloads: ArrayList<Long>
+
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(DownloadHelper::class.java)
 
 
+    /* Initializes the main class variables of DownloadHelper */
+    private fun initialize(c: Context) {
+        context = c
+        downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+        activeDownloads =  loadActiveDownloads(context, downloadManager)
+        loadCollectionAsync()
+    }
+
+
+    /* Overrides onReceive */
+    override fun onReceive(c: Context, intent: Intent) {
+        // set main class variables
+        initialize(c)
+        // process the finished download
+        processDownload(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
+    }
+
+
+    /* Download a podcast */
+    fun downloadPodcast (c: Context, feedUrl: String) {
+        // set main class variables
+        initialize(c)
+        // enqueue podcast
+        val uris = Array(1) {feedUrl.toUri()}
+        enqueueDownload(uris, Keys.FILE_TYPE_RSS)
+    }
+
+
+    /* Updates podcast collection */
+    fun updateCollection(c: Context) {
+        // set main class variables
+        initialize(c)
+        // re-download all podcast xml episode lists
+        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
+            val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
+                collection.podcasts[it].remotePodcastFeedLocation.toUri()
+            }
+            enqueueDownload(uris, Keys.FILE_TYPE_RSS)
+        } else {
+            LogHelper.v(TAG, "Update not initiated: not enough time has passed since last update.")
+        }
+    }
+
+
+    /* Processes a given download ID */
+    private fun processDownload(downloadID: Long) {
+        // get local Uri in content://downloads/all_downloads/ for startDownload ID
+        val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
+        // get remote URL for startDownload ID
+        val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadID)
+
+        // Log completed startDownload // todo remove
+        LogHelper.v(TAG, "Download complete: " + FileHelper.getFileName(context, localFileUri) +
+                " | " + FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)) // todo remove
+
+        // determine what to
+        when (FileHelper.getFileType(context, localFileUri)) {
+            Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_MP3 -> setEpisodeMediaUri(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_JPG -> setPodcastImage(localFileUri, remoteFileLocation)
+            Keys.MIME_TYPE_PNG -> setPodcastImage(localFileUri, remoteFileLocation)
+            else -> {}
+        }
+        // remove ID from active downloads
+        removeFromActiveDownloads(downloadID)
+    }
+
+
+    /* Enqueues an Array of files in DownloadManager */
+    private fun enqueueDownload(uris: Array<Uri>, type: Int, podcastName: String = String()) {
+        // determine destination folder and allowed network types
+        val folder: String = FileHelper.determineDestinationFolderPath(type, podcastName)
+        val allowedNetworkTypes:Int = determineAllowedNetworkTypes(context, type)
+        // enqueues downloads
+        val newIDs = LongArray(uris.size)
+        for (i in uris.indices)  {
+            LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
+            if (uris[i].scheme.startsWith("http")) {
+                val request: DownloadManager.Request = DownloadManager.Request(uris[i])
+                        .setAllowedNetworkTypes(allowedNetworkTypes)
+                        .setAllowedOverRoaming(false)
+                        .setTitle(uris[i].lastPathSegment)
+                        .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
+                        .setMimeType(FileHelper.determineMimeType(uris[i].toString()))
+                newIDs[i] = downloadManager.enqueue(request)
+                activeDownloads.add(newIDs[i])
+            }
+        }
+        saveActiveDownloads(context, activeDownloads)
+    }
+
+
+    /*  episode and podcast cover */
+    private fun enqueuePodcastMediaFiles(podcast: Podcast, isNew: Boolean) {
+        // start to download podcast cover
+        if (isNew) {
+            CollectionHelper.clearImagesFolder(context, podcast)
+            val coverUris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
+            enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
+        }
+        // start to download latest episode audio file
+        val episodeUris: Array<Uri> = Array(1) {podcast.episodes[0].remoteAudioFileLocation.toUri()}
+        enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
+    }
+
+
+    /* Adds podcast to podcast collection*/
+    private fun addPodcast(podcast: Podcast, isNew: Boolean) {
+        if (isNew)  {
+            // add new
+            collection.podcasts.add(podcast)
+        } else {
+            // replace existing podcast
+            collection = CollectionHelper.replacePodcast(context, collection, podcast)
+        }
+        // sort collection
+        collection.podcasts.sortBy { it.name }
+        // save collection
+        saveCollectionAsync()
+    }
+
+
+    /* Sets podcast cover */
+    private fun setPodcastImage(localFileUri: Uri, remoteFileLocation: String) {
+        for (podcast in collection.podcasts) {
+            if (podcast.remoteImageFileLocation == remoteFileLocation) {
+                podcast.cover = localFileUri.toString()
+                for (episode in podcast.episodes) {
+                    episode.cover = localFileUri.toString()
+                }
+            }
+        }
+        // save collection
+        saveCollectionAsync()
+    }
+
+
+    /* Sets Media Uri in Episode */
+    private fun setEpisodeMediaUri(localFileUri: Uri, remoteFileLocation: String) {
+        for (podcast: Podcast in collection.podcasts) {
+            for (episode: Episode in podcast.episodes) {
+                if (episode.remoteAudioFileLocation == remoteFileLocation) {
+                    episode.audio = localFileUri.toString()
+                }
+            }
+        }
+        // remove unused audio references from collection
+        collection = CollectionHelper.removeUnusedAudioReferences(context, collection)
+        // clear audio folder
+        CollectionHelper.clearAudioFolder(context, collection)
+        // save collection
+        saveCollectionAsync()
+        // notify activity: on success set output data to true
+        val output: Data = workDataOf(Keys.KEY_RESULT_NEW_COLLECTION to true)
+        //setOutputData(output)
+    }
+
+
+    /* Savely remove given startDownload ID from active downloads */
+    private fun removeFromActiveDownloads(downloadID: Long): Boolean {
+        val iterator: MutableIterator<Long> = activeDownloads.iterator()
+        while (iterator.hasNext()) {
+            val activeDownload = iterator.next()
+            if (activeDownload.equals(downloadID)) {
+                iterator.remove()
+                saveActiveDownloads(context, activeDownloads)
+                return true
+            }
+        }
+        return false
+    }
+
+
+    /* Async via coroutine: Reads podcast feed */
+    private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) = runBlocking<Unit> {
+        LogHelper.v(TAG, "Reading podcast RSS file async: $remoteFileLocation")
+        // async: read xml
+        val result = async { XmlReader().read(context, localFileUri, remoteFileLocation) }
+        // wait for result and create podcast
+        val podcast = result.await()
+        if (CollectionHelper.validatePodcast(podcast)) {
+            // check if new
+            val isNew: Boolean = CollectionHelper.isNewPodcast(podcast.remotePodcastFeedLocation, collection)
+            // check if media download is necessary
+            if (isNew || CollectionHelper.podcastHasDownloadableEpisodes(collection, podcast)) {
+                enqueuePodcastMediaFiles(podcast, isNew)
+                addPodcast(podcast, isNew)
+            } else {
+                LogHelper.v(TAG, "No new media files to download.")
+            }
+        }
+    }
+
+
+    /* Async via coroutine: Reads collection from storage using GSON */
+    private fun loadCollectionAsync() = runBlocking<Unit> {
+        LogHelper.v(TAG, "Loading podcast collection from storage async")
+        // async: get JSON from text file
+        val result = async { FileHelper.readCollection(context) }
+        collection = result.await()
+    }
+
+
+    /* Async via coroutine: Saves podcast collection */
+    private fun saveCollectionAsync() = runBlocking<Unit> {
+        LogHelper.v(TAG, "Saving podcast collection to storage async")
+        // save time oflast update
+        PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.PREF_LAST_UPDATE_COLLECTION, Calendar.getInstance().timeInMillis)}
+        // save collection to storage
+        val result = async { FileHelper.saveCollection(context, collection) }
+        result.await()
+        // broadcast update (to activity)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(Keys.ACTION_COLLECTION_CHANGED))
+    }
+
+
     /* Saves active downloads (IntArray) to shared preferences */
-    fun saveActiveDownloads(context: Context, activeDownloads: ArrayList<Long>) {
+    private fun saveActiveDownloads(context: Context, activeDownloads: ArrayList<Long>) {
         val builder = StringBuilder()
         for (i in activeDownloads.indices) {
             builder.append(activeDownloads[i]).append(",")
@@ -47,7 +281,7 @@ class DownloadHelper {
 
 
     /* Loads active downloads (IntArray) from shared preferences */
-    fun loadActiveDownloads(context: Context, downloadManager: DownloadManager): ArrayList<Long> {
+    private fun loadActiveDownloads(context: Context, downloadManager: DownloadManager): ArrayList<Long> {
         val activeDownloadsString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_ACTIVE_DOWNLOADS, "")
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
@@ -62,7 +296,7 @@ class DownloadHelper {
 
 
     /* Determines the remote file location (the original URL) */
-    fun getRemoteFileLocation(downloadManager: DownloadManager, downloadID: Long): String {
+    private fun getRemoteFileLocation(downloadManager: DownloadManager, downloadID: Long): String {
         var remoteFileLocation: String = ""
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
@@ -74,7 +308,7 @@ class DownloadHelper {
 
 
     /* Checks if a given download ID represents a finished download */
-    fun isDownloadFinished(downloadManager: DownloadManager, downloadID: Long): Boolean {
+    private fun isDownloadFinished(downloadManager: DownloadManager, downloadID: Long): Boolean {
         var downloadStatus: Int = -1
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
@@ -86,7 +320,7 @@ class DownloadHelper {
 
 
     /* Checks if a given download ID represents a finished download */
-    fun isDownloadActive(downloadManager: DownloadManager, downloadID: Long): Boolean {
+    private fun isDownloadActive(downloadManager: DownloadManager, downloadID: Long): Boolean {
         var downloadStatus: Int = -1
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
@@ -98,7 +332,7 @@ class DownloadHelper {
 
 
     /* Determine allowed network type */
-    fun determineAllowedNetworkTypes(context: Context, type: Int): Int {
+    private fun determineAllowedNetworkTypes(context: Context, type: Int): Int {
         val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
         var allowedNetworkTypes:Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         when (type) {
@@ -108,96 +342,8 @@ class DownloadHelper {
     }
 
 
-    /* Checks if given feed string is XML */
-    fun determineMimeType(feedUrl: String): String {
-        // FIRST check if NOT an URL
-        if (!feedUrl.startsWith("http", true)) return Keys.MIME_TYPE_UNSUPPORTED
-        if (!feedUrlIsParsable(feedUrl)) return Keys.MIME_TYPE_UNSUPPORTED
-
-        // THEN check for type
-        if (feedUrl.endsWith("xml", true)) return Keys.MIME_TYPE_XML
-        if (feedUrl.endsWith("rss", true)) return Keys.MIME_TYPE_XML
-        if (feedUrl.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
-        if (feedUrl.endsWith("png", true)) return Keys.MIME_TYPE_PNG
-        if (feedUrl.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
-        if (feedUrl.endsWith("jpeg", true)) return Keys.MIME_TYPE_JPG
-
-        // todo implement a real mime type check
-        // https://developer.android.com/reference/java/net/URLConnection#guessContentTypeFromName(java.lang.String)
-
-        return Keys.MIME_TYPE_UNSUPPORTED
-    }
-
-
-    /* Schedules a DownloadWorker that triggers a one time background update of the collection */
-    fun startOneTimeAddPodcastWorker(podcastUrl: String): UUID {
-        val requestData: Data = Data.Builder()
-                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_ADD_PODCAST)
-                .putString(Keys.KEY_NEW_PODCAST_URL, podcastUrl)
-                .build()
-        val unmeteredConstraint = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED)
-                .build()
-        val addPodcastOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
-                .setInputData(requestData)
-                .setConstraints(unmeteredConstraint)
-                .build()
-        WorkManager.getInstance().enqueue(addPodcastOneTimeWork)
-
-        return addPodcastOneTimeWork.id
-    }
-
-
-    /* Schedules a DownloadWorker that triggers a one time background update of the collection */
-    fun startOneTimeUpdateWorker(lastUpdate: Long): UUID {
-        val requestData: Data = Data.Builder()
-                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
-                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
-                .build()
-        val unmeteredConstraint = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED)
-                .build()
-        val updateCollectionOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
-                .setInputData(requestData)
-                .setConstraints(unmeteredConstraint)
-                .build()
-        WorkManager.getInstance().enqueue(updateCollectionOneTimeWork)
-
-        return updateCollectionOneTimeWork.id
-    }
-
-
-    /* Schedules a DownloadWorker that triggers background updates of the collection periodically */
-    fun schedulePeriodicUpdateWorker(lastUpdate: Long): UUID {
-        val requestData: Data = Data.Builder()
-                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
-                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
-                .build()
-        val unmeteredConstraint = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED)
-                .build()
-        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
-                .setInputData(requestData)
-                .setConstraints(unmeteredConstraint)
-                .build()
-        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.KEEP, updateCollectionPeriodicWork)
-
-        return updateCollectionPeriodicWork.id
-    }
-
-
-    /* Tries to parse feed URL string as URL */
-    private fun feedUrlIsParsable(feedUrl: String): Boolean {
-        try {
-            URL(feedUrl)
-        } catch (e: Exception) {
-            return false
-        }
-        return true
-    }
-
-
-    fun identifyFileType(feedUrl: String): String {
+    /* Just a test */
+    private fun identifyFileType(feedUrl: String): String {
         var fileType = "Undetermined"
         try {
             val url = URL(feedUrl)
@@ -214,6 +360,4 @@ class DownloadHelper {
             return Keys.MIME_TYPE_UNSUPPORTED
         }
     }
-
-
 }

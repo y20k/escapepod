@@ -14,6 +14,10 @@
 
 package org.y20k.escapepods
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -21,14 +25,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.work.WorkManager
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.helpers.*
-import java.util.*
 
 
 /*
@@ -50,7 +53,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         super.onCreate(savedInstanceState)
 
         // clear temp folder
-        FileHelper().clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
+        FileHelper.clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
 
         // create view model and observe changes in collection view model
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
@@ -70,9 +73,9 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection and observe download work
-            if (CollectionHelper().hasEnoughTimePassedSinceLastUpdate(this)) {
+            if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
                 Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
-                observeDownloadWork(DownloadHelper().startOneTimeUpdateWorker(collection.lastUpdate.time))
+                WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time)
             } else {
                 Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
             }
@@ -84,14 +87,17 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     /* Overrides onResume */
     override fun onResume() {
         super.onResume()
-
+        // listen for collection changes initiated by DownloadHelper
+        LocalBroadcastManager.getInstance(this).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
+        // reload collection // todo check if necessary
+        collectionViewModel.reload()
     }
 
 
     /* Overrides onPause */
     override fun onPause() {
         super.onPause()
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(collectionChangedReceiver)
     }
 
 
@@ -99,7 +105,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     override fun onAddPodcastDialog(textInput: String) {
         super.onAddPodcastDialog(textInput)
         val podcastUrl = textInput.trim()
-        if (CollectionHelper().isNewPodcast(podcastUrl, collection)) {
+        if (CollectionHelper.isNewPodcast(podcastUrl, collection)) {
             downloadPodcastFeed(podcastUrl)
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_duplicate),
@@ -136,10 +142,10 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
 
     /* Download podcast feed */
     private fun downloadPodcastFeed(feedUrl : String) {
-        if (DownloadHelper().determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
+        if (FileHelper.determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
             // start download and observe download work
-            observeDownloadWork(DownloadHelper().startOneTimeAddPodcastWorker(feedUrl))
+            WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
         } else {
             ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),
                     getString(R.string.dialog_error_message_podcast_invalid_feed),
@@ -156,23 +162,18 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
             // update ui
             updateUserInterface()
             // start worker that updates the podcast collection and observe download work
-            observeDownloadWork(DownloadHelper().schedulePeriodicUpdateWorker(collection.lastUpdate.time))
+            WorkerHelper.schedulePeriodicUpdateWorker(collection.lastUpdate.time)
         })
     }
 
 
-    /* Observe result of update work */
-    private fun observeDownloadWork(downloadWorkStatus: UUID) {
-        WorkManager.getInstance().getStatusById(downloadWorkStatus)
-                .observe(this, Observer { status ->
-                    if (status != null && status.state.isFinished) {
-                        val updateResult: Boolean = status.outputData.getBoolean(Keys.KEY_RESULT_NEW_COLLECTION, false)
-                        if (updateResult) {
-                            // reload collection
-                            collectionViewModel.getCollection()
-                        }
-                    }
-                })
+    /* Observe changes made by DownloadHelper */
+    private val collectionChangedReceiver = object: BroadcastReceiver(){
+        override fun onReceive(context: Context, intent: Intent) {
+            // reload collection
+            collectionViewModel.reload()
+        }
     }
+
 
 }

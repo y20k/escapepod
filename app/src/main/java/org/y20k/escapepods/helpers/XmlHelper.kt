@@ -1,6 +1,6 @@
 /*
  * XmlHelper.kt
- * Implements the XmlHelper class
+ * Implements the XmlHelper object
  * A XmlHelper provides helper methods for reading and parsing podcast rss feeds
  *
  * This file is part of
@@ -21,7 +21,7 @@ import java.util.*
 
 
 /*
- * XmlHelper class
+ * XmlHelper object
  */
 object XmlHelper {
 
@@ -100,7 +100,7 @@ object XmlHelper {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
         val publicationDate = readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        return DateHelper().convertRFC2822(publicationDate)
+        return DateHelper.convertRFC2822(publicationDate)
     }
 
 

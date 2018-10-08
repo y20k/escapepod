@@ -49,11 +49,17 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     }
 
 
+    /* Reloads collection from storage */
+    fun reload() {
+        loadCollectionAsync()
+    }
+
+
     /* Async via coroutine: Reads collection from storage using GSON */
     private fun loadCollectionAsync() = runBlocking<Unit> {
-        LogHelper.v(TAG, "Loading podcast collection from storage async")
+        LogHelper.v(TAG, "Loading podcast collection from storage async - setting view model")
         // async: get JSON from text file
-        val result = async { FileHelper().readCollection(getApplication()) }
+        val result = async { FileHelper.readCollection(getApplication()) }
         // wait for result and update collection view model
         collectionViewModel.value = result.await()
     }

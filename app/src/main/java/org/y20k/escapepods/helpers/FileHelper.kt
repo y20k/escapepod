@@ -1,6 +1,6 @@
 /*
  * FileHelper.kt
- * Implements the FileHelper class
+ * Implements the FileHelper object
  * A FileHelper provides helper methods for reading and writing files from and to device storage
  *
  * This file is part of
@@ -24,15 +24,16 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.y20k.escapepods.core.Collection
 import java.io.*
+import java.net.URL
 import java.text.NumberFormat
 import java.util.*
 import kotlin.coroutines.experimental.suspendCoroutine
 
 
 /*
- * FileHelper class
+ * FileHelper object
  */
-class FileHelper {
+object FileHelper {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(FileHelper::class.java)
@@ -66,6 +67,26 @@ class FileHelper {
     fun getFileType(context: Context, uri: Uri): String {
         return context.contentResolver.getType(uri)
     }
+
+
+
+    /* Checks if given feed string is XML */
+    fun determineMimeType(feedUrl: String): String {
+        // FIRST check if NOT an URL
+        if (!feedUrl.startsWith("http", true)) return Keys.MIME_TYPE_UNSUPPORTED
+        if (!isParsableAsUrl(feedUrl)) return Keys.MIME_TYPE_UNSUPPORTED
+        // THEN check for type
+        if (feedUrl.endsWith("xml", true)) return Keys.MIME_TYPE_XML
+        if (feedUrl.endsWith("rss", true)) return Keys.MIME_TYPE_XML
+        if (feedUrl.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
+        if (feedUrl.endsWith("png", true)) return Keys.MIME_TYPE_PNG
+        if (feedUrl.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
+        if (feedUrl.endsWith("jpeg", true)) return Keys.MIME_TYPE_JPG
+        // todo implement a real mime type check
+        // https://developer.android.com/reference/java/net/URLConnection#guessContentTypeFromName(java.lang.String)
+        return Keys.MIME_TYPE_UNSUPPORTED
+    }
+
 
 
     /* Determines a destination folder */
@@ -209,4 +230,16 @@ class FileHelper {
     private fun getNoMediaFile(folder: File): File {
         return File(folder, ".nomedia")
     }
+
+
+    /* Tries to parse feed URL string as URL */
+    private fun isParsableAsUrl(feedUrl: String): Boolean {
+        try {
+            URL(feedUrl)
+        } catch (e: Exception) {
+            return false
+        }
+        return true
+    }
+
 }

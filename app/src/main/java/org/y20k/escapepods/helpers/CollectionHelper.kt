@@ -1,6 +1,6 @@
 /*
  * CollectionHelper.kt
- * Implements the CollectionHelper class
+ * Implements the CollectionHelper object
  * A CollectionHelper provides helper methods for the podcast collection
  *
  * This file is part of
@@ -25,9 +25,9 @@ import java.util.*
 
 
 /*
- * CollectionHelper class
+ * CollectionHelper object
  */
-class CollectionHelper {
+object CollectionHelper {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(CollectionHelper::class.java)
@@ -133,7 +133,7 @@ class CollectionHelper {
         val audioFolder: File? = context.getExternalFilesDir(Keys.FOLDER_AUDIO)
         if (audioFolder != null && audioFolder.isDirectory) {
             for (podcastFolder: File in audioFolder.listFiles()) {
-                FileHelper().clearFolder(podcastFolder, numberOfAudioFilesToKeep)
+                FileHelper.clearFolder(podcastFolder, numberOfAudioFilesToKeep)
             }
         }
     }
@@ -155,8 +155,8 @@ class CollectionHelper {
     /* Clears an image folder for a given podcast */
     fun clearImagesFolder(context: Context, podcast: Podcast) {
         // clear image folder
-        val imagesFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_IMAGES), FileHelper().determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name))
-        FileHelper().clearFolder(imagesFolder, 0)
+        val imagesFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_IMAGES), FileHelper.determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name))
+        FileHelper.clearFolder(imagesFolder, 0)
     }
 
 

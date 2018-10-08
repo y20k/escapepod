@@ -51,7 +51,7 @@ class XmlReader() {
             podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
 
             // try parsing
-            val stream: InputStream = FileHelper().getTextFileStream(context, localFileUri)
+            val stream: InputStream = FileHelper.getTextFileStream(context, localFileUri)
             try {
                 // create XmlPullParser for InputStream
                 val parser: XmlPullParser = Xml.newPullParser()

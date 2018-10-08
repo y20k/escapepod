@@ -23,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 
 
+/*
+ * NightModeHelper object
+ */
 object NightModeHelper {
 
     /* Define log tag */

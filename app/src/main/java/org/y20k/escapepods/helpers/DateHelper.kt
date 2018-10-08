@@ -1,6 +1,6 @@
 /*
  * DateHelper.kt
- * Implements the DateHelper class
+ * Implements the DateHelper object
  * A DateHelper provides helper methods for converting Date and Time objects
  *
  * This file is part of
@@ -19,9 +19,9 @@ import java.util.*
 
 
 /*
- * DateHelper class
+ * DateHelper object
  */
-class DateHelper {
+object DateHelper {
 
 
     /* Converts RFC 2822 string representation of a date to DATE */
