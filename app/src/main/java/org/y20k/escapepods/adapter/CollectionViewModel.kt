@@ -43,7 +43,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     fun getCollection(): LiveData<Collection> {
         if (!::collectionViewModel.isInitialized) {
             collectionViewModel = MutableLiveData()
-            loadCollectionAsync()
+            loadCollection()
         }
         return collectionViewModel
     }
@@ -51,14 +51,14 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Reloads collection from storage */
     fun reload() {
-        loadCollectionAsync()
+        loadCollection()
     }
 
 
-    /* Async via coroutine: Reads collection from storage using GSON */
-    private fun loadCollectionAsync() = runBlocking<Unit> {
+    /* Reads podcast collection from storage using GSON */
+    private fun loadCollection() = runBlocking<Unit> {
         LogHelper.v(TAG, "Loading podcast collection from storage async - setting view model")
-        // async: get JSON from text file
+        // get JSON from text file async
         val result = async { FileHelper.readCollection(getApplication()) }
         // wait for result and update collection view model
         collectionViewModel.value = result.await()

@@ -31,13 +31,14 @@ import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
+import org.y20k.escapepods.dialogs.MeteredNetworkDialog
 import org.y20k.escapepods.helpers.*
 
 
 /*
  * PodcastPlayerActivity class
  */
-class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener {
+class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener, MeteredNetworkDialog.MeteredNetworkDialogListener {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)
@@ -74,8 +75,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection and observe download work
             if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
-                Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
-                WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time)
+                updateCollection()
             } else {
                 Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
             }
@@ -108,9 +108,22 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         if (CollectionHelper.isNewPodcast(podcastUrl, collection)) {
             downloadPodcastFeed(podcastUrl)
         } else {
-            ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_duplicate),
-                    getString(R.string.dialog_error_message_podcast_duplicate),
-                    podcastUrl)
+            ErrorDialog().show(this, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
+        }
+    }
+
+
+    /* Overrides onMeteredNetworkDialog from MeteredNetworkDialog*/
+    override fun onMeteredNetworkDialog(dialogType: Int) {
+        super.onMeteredNetworkDialog(dialogType)
+        when (dialogType) {
+            Keys.DIALOG_UPDATE_WITHOUT_WIFI -> {
+                Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
+                WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time, true) // todo implement ignoreWifiRestriction in DownloadHelper
+            }
+            Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
+                // todo implement
+            }
         }
     }
 
@@ -140,16 +153,27 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     }
 
 
+    /* Updates podcast collection */
+    private fun updateCollection() {
+        if (NetworkHelper.isConnectedToWifi(this)) {
+            Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
+            WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time)
+        } else if (NetworkHelper.isConnectedToCellular(this)) {
+            MeteredNetworkDialog(this).show(this, Keys.DIALOG_UPDATE_WITHOUT_WIFI, R.string.dialog_metered_update_title, R.string.dialog_metered_update_message, R.string.dialog_metered_update_button_okay)
+        } else {
+            ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+        }
+    }
+
+
+
     /* Download podcast feed */
     private fun downloadPodcastFeed(feedUrl : String) {
         if (FileHelper.determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
             Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-            // start download and observe download work
             WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
         } else {
-            ErrorDialog().show(this, getString(R.string.dialog_error_title_podcast_invalid_feed),
-                    getString(R.string.dialog_error_message_podcast_invalid_feed),
-                    feedUrl)
+            ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
         }
     }
 

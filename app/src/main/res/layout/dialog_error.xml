@@ -26,6 +26,7 @@
         android:text="@string/dialog_error_details_button_default"
         android:layout_gravity="center_horizontal"
         android:scrollbars="vertical"
+        android:visibility="gone"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.Button" />
     <TextView
         android:id="@+id/dialog_error_details"

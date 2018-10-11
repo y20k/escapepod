@@ -144,7 +144,7 @@ object CollectionHelper {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
         for (podcast: Podcast in collection.podcasts) {
             val podcastSize = podcast.episodes.size
-            for (i in podcastSize - 1 downTo numberOfAudioFilesToKeep - 1) {
+            for (i in podcastSize - 1 downTo numberOfAudioFilesToKeep) {
                 podcast.episodes[i].audio = ""
             }
         }
@@ -179,7 +179,7 @@ object CollectionHelper {
 
 
     /* Get the ID from podcast for given episode */
-    fun getEpisodeIdFromPodcast(podcast: Podcast, episode: Episode): Int {
+    private fun getEpisodeIdFromPodcast(podcast: Podcast, episode: Episode): Int {
         podcast.episodes.indices.forEach {
             if (episode.remoteAudioFileLocation == podcast.episodes[it].remoteAudioFileLocation) return it
         }
@@ -188,7 +188,7 @@ object CollectionHelper {
 
 
     /* Get the ID from podcast for given remote audio file location */
-    fun getEpisodeIdFromPodcast(podcast: Podcast, remoteAudioFileLocation: String): Int {
+    private fun getEpisodeIdFromPodcast(podcast: Podcast, remoteAudioFileLocation: String): Int {
         podcast.episodes.indices.forEach {
             if (remoteAudioFileLocation == podcast.episodes[it].remoteAudioFileLocation) return it
         }

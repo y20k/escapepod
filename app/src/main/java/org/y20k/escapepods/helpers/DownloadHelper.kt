@@ -24,9 +24,9 @@ import android.preference.PreferenceManager
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.work.Data
-import androidx.work.workDataOf
+import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
 import org.y20k.escapepods.XmlReader
 import org.y20k.escapepods.core.Collection
@@ -59,7 +59,7 @@ class DownloadHelper(): BroadcastReceiver() {
         context = c
         downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         activeDownloads =  loadActiveDownloads(context, downloadManager)
-        loadCollectionAsync()
+        loadCollection()
     }
 
 
@@ -79,6 +79,16 @@ class DownloadHelper(): BroadcastReceiver() {
         // enqueue podcast
         val uris = Array(1) {feedUrl.toUri()}
         enqueueDownload(uris, Keys.FILE_TYPE_RSS)
+    }
+
+
+    /* Download an episode */
+    fun downloadEpisode (c: Context, remoteAudioFileLocation: String, podcast: Podcast) {
+        // set main class variables
+        initialize(c)
+        // enqueue episode
+        val uris = Array(1) {remoteAudioFileLocation.toUri()}
+        enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, podcast.name)
     }
 
 
@@ -172,7 +182,7 @@ class DownloadHelper(): BroadcastReceiver() {
         // sort collection
         collection.podcasts.sortBy { it.name }
         // save collection
-        saveCollectionAsync()
+        saveCollection()
     }
 
 
@@ -187,7 +197,7 @@ class DownloadHelper(): BroadcastReceiver() {
             }
         }
         // save collection
-        saveCollectionAsync()
+        saveCollection()
     }
 
 
@@ -205,10 +215,7 @@ class DownloadHelper(): BroadcastReceiver() {
         // clear audio folder
         CollectionHelper.clearAudioFolder(context, collection)
         // save collection
-        saveCollectionAsync()
-        // notify activity: on success set output data to true
-        val output: Data = workDataOf(Keys.KEY_RESULT_NEW_COLLECTION to true)
-        //setOutputData(output)
+        saveCollection()
     }
 
 
@@ -248,23 +255,23 @@ class DownloadHelper(): BroadcastReceiver() {
     }
 
 
-    /* Async via coroutine: Reads collection from storage using GSON */
-    private fun loadCollectionAsync() = runBlocking<Unit> {
-        LogHelper.v(TAG, "Loading podcast collection from storage async")
-        // async: get JSON from text file
+    /* Reads podcast collection from storage using GSON */
+    private fun loadCollection() = runBlocking<Unit> {
+        LogHelper.v(TAG, "Loading podcast collection from storage")
+        // get JSON from text file async
         val result = async { FileHelper.readCollection(context) }
+        // wait for result and update collection
         collection = result.await()
     }
 
 
-    /* Async via coroutine: Saves podcast collection */
-    private fun saveCollectionAsync() = runBlocking<Unit> {
-        LogHelper.v(TAG, "Saving podcast collection to storage async")
+    /* Saves podcast collection */
+    private fun saveCollection() {
+        LogHelper.v(TAG, "Saving podcast collection to storage")
         // save time oflast update
         PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.PREF_LAST_UPDATE_COLLECTION, Calendar.getInstance().timeInMillis)}
-        // save collection to storage
-        val result = async { FileHelper.saveCollection(context, collection) }
-        result.await()
+        // save collection to storage - launch = fire & forget (no return value from save collection)
+        GlobalScope.launch { FileHelper.saveCollection(context, collection) }
         // broadcast update (to activity)
         LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(Keys.ACTION_COLLECTION_CHANGED))
     }

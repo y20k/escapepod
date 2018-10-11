@@ -48,7 +48,7 @@ object WorkerHelper {
 
 
     /* Schedules a OneTimeCollectionUpdateWorker that triggers a one time background update of the collection */
-    fun startOneTimeUpdateWorker(lastUpdate: Long): UUID {
+    fun startOneTimeUpdateWorker(lastUpdate: Long, ignoreWifiRestriction: Boolean = false): UUID {
         val requestData: Data = Data.Builder()
                 .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
                 .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)

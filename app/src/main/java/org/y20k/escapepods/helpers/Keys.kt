@@ -36,6 +36,10 @@ object Keys {
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
     const val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
 
+    // dialog types
+    const val DIALOG_UPDATE_WITHOUT_WIFI: Int = 1
+    const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2
+
     // file types
     const val FILE_TYPE_RSS: Int = 1
     const val FILE_TYPE_AUDIO: Int  = 2

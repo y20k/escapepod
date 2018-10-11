@@ -1,7 +1,7 @@
 /*
  * ErrorDialog.kt
- * Implements the DialogError class
- * A DialogError shows an error dialog with details
+ * Implements the ErrorDialog class
+ * A ErrorDialog shows an error dialog with details
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
@@ -22,6 +22,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import org.y20k.escapepods.R
+import org.y20k.escapepods.helpers.LogHelper
 
 
 /*
@@ -29,8 +30,12 @@ import org.y20k.escapepods.R
  */
 class ErrorDialog {
 
+    /* Define log tag */
+    private val TAG: String = LogHelper.makeLogTag(ErrorDialog::class.java)
+
+
     /* Construct and show dialog */
-    fun show(context: Context, errorTitle: String, errorMessage: String, errorDetails: String) {
+    fun show(context: Context, errorTitle: Int, errorMessage: Int, errorDetails: String = String()) {
         // prepare dialog builder
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -44,7 +49,7 @@ class ErrorDialog {
 
         if (errorDetails.isNotEmpty()) {
             // show details link
-            errorDetailsLinkView.visibility == View.VISIBLE
+            errorDetailsLinkView.setVisibility(View.VISIBLE)
 
             // allow scrolling on details view
             errorDetailsView.movementMethod = ScrollingMovementMethod()
@@ -52,25 +57,25 @@ class ErrorDialog {
             // show and hide details on click
             errorDetailsLinkView.setOnClickListener {
                 when (errorDetailsView.visibility) {
-                    View.GONE -> errorDetailsView.visibility = View.VISIBLE
-                    View.VISIBLE -> errorDetailsView.visibility = View.GONE
+                    View.GONE -> errorDetailsView.setVisibility(View.VISIBLE)
+                    View.VISIBLE -> errorDetailsView.setVisibility(View.GONE)
                 }
             }
             // set details text view
             errorDetailsView.text = errorDetails
         } else {
             // hide details link
-            errorDetailsLinkView.visibility == View.GONE
+            errorDetailsLinkView.setVisibility(View.GONE)
         }
 
         // set text views
-        errorTitleView.text = errorTitle
-        errorMessageView.text = errorMessage
+        errorTitleView.text = context.getString(errorTitle)
+        errorMessageView.text = context.getString(errorMessage)
 
         // set dialog view
         builder.setView(view)
 
-        // add rename button
+        // add okay button
         builder.setPositiveButton(R.string.dialog_generic_button_okay, DialogInterface.OnClickListener { _, _ ->
             // listen for click on okay button
             // do nothing
