@@ -64,6 +64,7 @@ object Keys {
     const val COLLECTION_OPML_FILE: String = "collection_opml.xml"
 
     // intent actions and extras
+    const val ACTION_SHOW_PLAYER: String = "SHOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "COLLECTION_CHANGED"
     const val ACTION_UPDATE_COLLECTION: String = "UPDATE_COLLECTION"
     const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"

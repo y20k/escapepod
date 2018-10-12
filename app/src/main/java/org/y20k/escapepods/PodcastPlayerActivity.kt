@@ -18,6 +18,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -91,6 +92,8 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         LocalBroadcastManager.getInstance(this).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
         // reload collection // todo check if necessary
         collectionViewModel.reload()
+        // handle start intent
+        handleStartIntent()
     }
 
 
@@ -174,6 +177,40 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
             WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+        }
+    }
+
+
+    /* Handles this activity's start intent */
+    private fun handleStartIntent() {
+        if (intent.action != null) {
+            when (intent.action) {
+                Keys.ACTION_SHOW_PLAYER -> handlesShowPlayer()
+                Intent.ACTION_VIEW -> handleViewIntent()
+            }
+        }
+    }
+
+
+    /* Handles ACTION_SHOW_PLAYER request from notification */
+    private fun handlesShowPlayer() {
+        // todo check if intent action needs to be cleared
+
+        // todo implement
+    }
+
+
+    /* Handles ACTION_VIEW request to add Podcast or import OPML */
+    private fun handleViewIntent() {
+        // todo check if intent action needs to be cleared
+        val contentUri: Uri = intent.data
+        if (contentUri != null && contentUri.scheme != null) {
+            when {
+                // download new podcast
+                contentUri.scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download
+                // read opml from file
+                contentUri.scheme.startsWith("content") -> true // todo implement OPML read
+            }
         }
     }
 

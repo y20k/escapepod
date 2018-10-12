@@ -24,19 +24,19 @@
             android:name=".PodcastPlayerActivity"
             android:label="@string/app_name">
 
-            <!-- makes activity react to main intents -->
+            <!-- react to main intents -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <!-- Use this intent filter to get voice searches, like "Play Security Now" -->
+            <!-- react to voice searches, like "Play Security Now" -->
             <intent-filter>
                 <action android:name="android.media.action.MEDIA_PLAY_FROM_SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <!-- handle file extension intent from web browser -->
+            <!-- react to podcast RSS-links based on file extension -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -44,10 +44,11 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="*" />
+                <data android:pathPattern=".*\\.rss" />
                 <data android:pathPattern=".*\\.xml" />
             </intent-filter>
 
-            <!-- handle mimetype intent from web browser -->
+            <!-- react to podcast RSS-links based on mimetype -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -55,7 +56,24 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="*" />
-                <data android:mimeType="text/xml" />
+                <data android:mimeType="text/xml"/>
+                <data android:mimeType="application/rss+xml"/>
+                <data android:mimeType="application/atom+xml"/>
+                <data android:mimeType="application/xml"/>
+            </intent-filter>
+
+            <!-- react to OPML file open requests -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="file"/>
+                <data android:scheme="content"/>
+                <data android:host="*"/>
+                <data android:mimeType="text/xml"/>
+                <data android:mimeType="text/x-opml"/>
+                <data android:mimeType="application/xml"/>
+                <data android:mimeType="application/octet-stream"/>
             </intent-filter>
 
         </activity>
