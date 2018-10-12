@@ -150,6 +150,17 @@ object FileHelper {
     }
 
 
+    /* Suspend function: Exports podcast collection as OPML file */
+    suspend fun exportCollection(context: Context, collection: Collection) {
+        return suspendCoroutine { cont ->
+            // create OPML string
+            val opmlString: String = OpmlHelper.createOpmlString(collection)
+            // save OPML as text file
+            cont.resume(writeTextFile(context, opmlString, Keys.FOLDER_COLLECTION, Keys.COLLECTION_OPML_FILE))
+        }
+    }
+
+
     /*  Creates a Gson object */
     private fun getCustomGson(): Gson {
         val gsonBuilder = GsonBuilder()

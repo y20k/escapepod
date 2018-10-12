@@ -181,6 +181,8 @@ class DownloadHelper(): BroadcastReceiver() {
         }
         // sort collection
         collection.podcasts.sortBy { it.name }
+        // export collection as OPML
+        exportCollection()
         // save collection
         saveCollection()
     }
@@ -268,12 +270,20 @@ class DownloadHelper(): BroadcastReceiver() {
     /* Saves podcast collection */
     private fun saveCollection() {
         LogHelper.v(TAG, "Saving podcast collection to storage")
-        // save time oflast update
+        // save time of last update
         PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.PREF_LAST_UPDATE_COLLECTION, Calendar.getInstance().timeInMillis)}
         // save collection to storage - launch = fire & forget (no return value from save collection)
         GlobalScope.launch { FileHelper.saveCollection(context, collection) }
         // broadcast update (to activity)
         LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(Keys.ACTION_COLLECTION_CHANGED))
+    }
+
+
+    /* Export podcast collection as OPML */
+    private fun exportCollection() {
+        LogHelper.v(TAG, "Exporting podcast collection as OPML")
+        // export collection as OPML - launch = fire & forget (no return value from save collection)
+        GlobalScope.launch { FileHelper.exportCollection(context, collection) }
     }
 
 

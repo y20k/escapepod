@@ -61,6 +61,7 @@ object Keys {
 
     // file names
     const val COLLECTION_FILE: String = "collection.json"
+    const val COLLECTION_OPML_FILE: String = "collection_opml.xml"
 
     // intent actions and extras
     const val ACTION_COLLECTION_CHANGED: String = "COLLECTION_CHANGED"
