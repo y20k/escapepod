@@ -23,6 +23,7 @@ import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.xml.OpmlHelper
 import java.io.*
 import java.net.URL
 import java.text.NumberFormat
@@ -154,7 +155,7 @@ object FileHelper {
     suspend fun exportCollection(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
             // create OPML string
-            val opmlString: String = OpmlHelper.createOpmlString(collection)
+            val opmlString: String = OpmlHelper().createOpmlString(collection)
             // save OPML as text file
             cont.resume(writeTextFile(context, opmlString, Keys.FOLDER_COLLECTION, Keys.COLLECTION_OPML_FILE))
         }

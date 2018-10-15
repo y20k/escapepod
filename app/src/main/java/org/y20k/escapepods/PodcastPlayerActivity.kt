@@ -28,12 +28,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.runBlocking
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.dialogs.MeteredNetworkDialog
 import org.y20k.escapepods.helpers.*
+import org.y20k.escapepods.xml.OpmlHelper
 
 
 /*
@@ -181,6 +184,18 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     }
 
 
+    /* Read OPML file */
+    private fun readOpmlFile(opmlUri: Uri) = runBlocking<Unit> {
+        val result = async { OpmlHelper().read(this@PodcastPlayerActivity, opmlUri) }
+        // wait for result and update collection
+        val feedUrlList: ArrayList<String> = result.await()
+        feedUrlList.forEach {
+            LogHelper.v(TAG, it) // todo remove
+        }
+        LogHelper.v(TAG, "${CollectionHelper.compareWithUrlList(collection, feedUrlList)} new podcasts found!") // todo remove
+    }
+
+
     /* Handles this activity's start intent */
     private fun handleStartIntent() {
         if (intent.action != null) {
@@ -207,9 +222,9 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         if (contentUri != null && contentUri.scheme != null) {
             when {
                 // download new podcast
-                contentUri.scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download
+                contentUri.scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download + dialog and stuff
                 // read opml from file
-                contentUri.scheme.startsWith("content") -> true // todo implement OPML read
+                contentUri.scheme.startsWith("content") -> readOpmlFile(contentUri) // todo implement OPML read + dialog and stuff
             }
         }
     }

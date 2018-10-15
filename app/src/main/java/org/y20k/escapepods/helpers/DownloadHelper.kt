@@ -28,10 +28,10 @@ import kotlinx.coroutines.experimental.GlobalScope
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.runBlocking
-import org.y20k.escapepods.XmlReader
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
+import org.y20k.escapepods.xml.RssHelper
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
@@ -240,7 +240,7 @@ class DownloadHelper(): BroadcastReceiver() {
     private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) = runBlocking<Unit> {
         LogHelper.v(TAG, "Reading podcast RSS file async: $remoteFileLocation")
         // async: read xml
-        val result = async { XmlReader().read(context, localFileUri, remoteFileLocation) }
+        val result = async { RssHelper().read(context, localFileUri, remoteFileLocation) }
         // wait for result and create podcast
         val podcast = result.await()
         if (CollectionHelper.validatePodcast(podcast)) {

@@ -93,6 +93,7 @@ object Keys {
     const val ONE_MINUTE_IN_MILLISECONDS: Long = 60000L
 
     // rss tags
+    val XML_NAME_SPACE: String? = null
     const val RSS_RSS = "rss"
     const val RSS_PODCAST = "channel"
     const val RSS_PODCAST_NAME = "title"
@@ -109,6 +110,13 @@ object Keys {
     const val RSS_EPISODE_AUDIO_LINK = "enclosure"
     const val RSS_EPISODE_AUDIO_LINK_TYPE = "type"
     const val RSS_EPISODE_AUDIO_LINK_URL = "url"
+    const val OPML_OPML = "opml"
+    const val OPML_BODY = "body"
+    const val OPML_OUTLINE = "outline"
+    const val OPML_OUTLINE_PODCAST = "outline"
+    const val OPML_OUTLINE_PODCAST_TYPE = "type"
+    const val OPML_OUTLINE_PODCAST_TYPE_RSS = "rss"
+    const val OPML_OUTLINE_PODCAST_URL = "xmlUrl"
 
     // custom MediaMetadata keys for episodes
     const val METADATA_CUSTOM_KEY_DESCRIPTION = "CUSTOM_KEY_DESCRIPTION"

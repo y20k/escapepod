@@ -160,6 +160,13 @@ object CollectionHelper {
     }
 
 
+    /* Compares given collection and feed url list - returns number of new podcasts */
+    fun compareWithUrlList(collection: Collection, feedUrlList: ArrayList<String>): Int {
+        // todo implement
+        return 0
+    }
+
+
     /* Get the ID from collection for given podcast */
     fun getPodcastIdFromCollection(collection: Collection, podcast: Podcast): Int {
         collection.podcasts.indices.forEach {
