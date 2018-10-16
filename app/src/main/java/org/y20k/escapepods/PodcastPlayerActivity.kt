@@ -35,6 +35,7 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.dialogs.ErrorDialog
 import org.y20k.escapepods.dialogs.MeteredNetworkDialog
+import org.y20k.escapepods.dialogs.OpmlImportDialog
 import org.y20k.escapepods.helpers.*
 import org.y20k.escapepods.xml.OpmlHelper
 
@@ -42,7 +43,7 @@ import org.y20k.escapepods.xml.OpmlHelper
 /*
  * PodcastPlayerActivity class
  */
-class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener, MeteredNetworkDialog.MeteredNetworkDialogListener {
+class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener, MeteredNetworkDialog.MeteredNetworkDialogListener, OpmlImportDialog.OpmlImportDialogListener {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)
@@ -68,7 +69,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         setContentView(R.layout.activity_podcast_player)
 
         // get button and listen for clicks
-        val addButton: Button = findViewById(R.id.button_add_new)
+        val addButton: Button = findViewById<Button>(R.id.button_add_new)
         addButton.setOnClickListener{
             // show the add podcast dialog
             AddPodcastDialog(this).show(this)
@@ -119,7 +120,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     }
 
 
-    /* Overrides onMeteredNetworkDialog from MeteredNetworkDialog*/
+    /* Overrides onMeteredNetworkDialog from MeteredNetworkDialog */
     override fun onMeteredNetworkDialog(dialogType: Int) {
         super.onMeteredNetworkDialog(dialogType)
         when (dialogType) {
@@ -130,6 +131,15 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
                 // todo implement
             }
+        }
+    }
+
+
+    /* Overrides onOpmlImportDialog from OpmlImportDialog */
+    override fun onOpmlImportDialog(feedUrlList: ArrayList<String>) {
+        super.onOpmlImportDialog(feedUrlList)
+        feedUrlList.forEach {
+            LogHelper.e(TAG, "$it \n")
         }
     }
 
@@ -188,11 +198,13 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     private fun readOpmlFile(opmlUri: Uri) = runBlocking<Unit> {
         val result = async { OpmlHelper().read(this@PodcastPlayerActivity, opmlUri) }
         // wait for result and update collection
-        val feedUrlList: ArrayList<String> = result.await()
+        var feedUrlList: ArrayList<String> = result.await()
         feedUrlList.forEach {
             LogHelper.v(TAG, it) // todo remove
         }
-        LogHelper.v(TAG, "${CollectionHelper.compareWithUrlList(collection, feedUrlList)} new podcasts found!") // todo remove
+        feedUrlList = CollectionHelper.removeDuplicates(collection, feedUrlList)
+        OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrlList)
+        LogHelper.v(TAG, "${feedUrlList.size} new podcasts found!") // todo remove
     }
 
 

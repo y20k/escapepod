@@ -47,6 +47,9 @@ class ErrorDialog {
         val errorDetailsLinkView: TextView = view.findViewById(R.id.dialog_error_details_link) as TextView
         val errorDetailsView: TextView = view.findViewById(R.id.dialog_error_details) as TextView
 
+        // set dialog view
+        builder.setView(view)
+
         if (errorDetails.isNotEmpty()) {
             // show details link
             errorDetailsLinkView.setVisibility(View.VISIBLE)
@@ -71,9 +74,6 @@ class ErrorDialog {
         // set text views
         errorTitleView.text = context.getString(errorTitle)
         errorMessageView.text = context.getString(errorMessage)
-
-        // set dialog view
-        builder.setView(view)
 
         // add okay button
         builder.setPositiveButton(R.string.dialog_generic_button_okay, DialogInterface.OnClickListener { _, _ ->

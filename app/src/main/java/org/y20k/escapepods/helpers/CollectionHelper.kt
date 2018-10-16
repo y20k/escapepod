@@ -160,10 +160,12 @@ object CollectionHelper {
     }
 
 
-    /* Compares given collection and feed url list - returns number of new podcasts */
-    fun compareWithUrlList(collection: Collection, feedUrlList: ArrayList<String>): Int {
-        // todo implement
-        return 0
+    /* Removes feeds that are already in the podcast collection */
+    fun removeDuplicates(collection: Collection, feedUrlList: ArrayList<String>): ArrayList<String> {
+        collection.podcasts.forEach { podcast ->
+            feedUrlList.remove(podcast.remotePodcastFeedLocation)
+        }
+        return feedUrlList
     }
 
 

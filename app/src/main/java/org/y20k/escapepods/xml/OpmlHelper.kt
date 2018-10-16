@@ -38,7 +38,7 @@ class OpmlHelper {
 
 
     /* Main class variables */
-    var feedUrlList: ArrayList<String> = arrayListOf()
+    private var feedUrlList: ArrayList<String> = arrayListOf()
 
 
     /* Read OPML feed from given input stream - async using coroutine */

@@ -68,7 +68,7 @@ class MeteredNetworkDialog (private var meteredNetworkDialogListener: MeteredNet
             // do nothing
         }
 
-        // display error dialog
+        // display dialog
         builder.show()
     }
 }

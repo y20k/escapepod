@@ -10,6 +10,8 @@
     <!-- Dialogs -->
     <string name="dialog_generic_button_okay">Okay</string>
     <string name="dialog_generic_button_cancel">Cancel</string>
+    <string name="dialog_generic_details_button">Show details</string>
+    <string name="dialog_generic_details_default">No details available</string>
     <string name="dialog_add_podcast_button">Add</string>
     <string name="dialog_add_podcast_input_hint">Paste podcast link</string>
     <string name="dialog_add_podcast_message">Add new podcast</string>
@@ -20,6 +22,12 @@
     <string name="dialog_metered_update_title">Update without Wifi</string>
     <string name="dialog_metered_update_message">Your device is not connected to a Wifi network. Do you want to update your podcasts anyway?</string>
     <string name="dialog_metered_update_button_okay">Update anyway</string>
+    <string name="dialog_opml_import_title">OMPL Import</string>
+    <string name="dialog_opml_import_message">Do you want to add new podcasts to your collection? Number of new podcasts found:</string>
+    <string name="dialog_opml_import_message_error">Unable to import OPML file. No new podcasts found.</string>
+    <string name="dialog_opml_import_button_okay">Import</string>
+    <string name="dialog_opml_import_details_button">Show details</string>
+    <string name="dialog_opml_import_details_default">No details available</string>
     <string name="dialog_error_title_podcast_invalid_feed">Invalid Podcast Feed</string>
     <string name="dialog_error_message_podcast_invalid_feed">This address is not an RSS feed.</string>
     <string name="dialog_error_title_podcast_duplicate">Duplicate Podcast</string>
@@ -28,8 +36,7 @@
     <string name="dialog_error_message_no_network">Your device has no network connection.</string>
     <string name="dialog_error_title_default">Error</string>
     <string name="dialog_error_message_default">An error occurred</string>
-    <string name="dialog_error_details_button_default">Show details</string>
-    <string name="dialog_error_details_default">No details available</string>
+
 
 
     <!-- Toasts -->

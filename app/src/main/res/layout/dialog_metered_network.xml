@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/dialog_metered_network_title_default"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
+
     <TextView
         android:id="@+id/dialog_metered_network_message"
         android:layout_width="match_parent"
@@ -18,4 +19,5 @@
         android:layout_marginTop="20dp"
         android:text="@string/dialog_metered_network_message_default"
         android:textAppearance="@android:style/TextAppearance.Medium" />
+
 </LinearLayout>

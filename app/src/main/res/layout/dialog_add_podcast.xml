@@ -27,4 +27,5 @@
         android:layout_marginTop="20dp"
         android:text="@string/dialog_add_podcast_howto"
         android:textAppearance="@android:style/TextAppearance.Small" />
+
 </LinearLayout>
