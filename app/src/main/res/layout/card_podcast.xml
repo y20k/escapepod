@@ -10,23 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/pocast_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:contentDescription="@string/descr_podcast_name"
-            android:text="Name of Podcast"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/podcast_cover"
+            android:layout_width="96"
+            android:layout_height="96"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/descr_podcast_cover"
@@ -35,47 +22,111 @@
             app:srcCompat="@mipmap/ic_launcher" />
 
         <TextView
-            android:id="@+id/episode_0_name"
+            android:id="@+id/pocast_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/descr_episode_name"
-            android:text="Name of Episode"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toEndOf="@+id/episode_0_date"
-            app:layout_constraintStart_toStartOf="@+id/episode_0_date"
-            app:layout_constraintTop_toBottomOf="@+id/episode_0_date" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/descr_podcast_name"
+            android:elevation="2dp"
+            android:text="Name of Podcast"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/text_default"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/podcast_cover"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/episode_0_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/episode_0_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:contentDescription="@string/descr_playback_button"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_action_button"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/pocast_name"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            app:srcCompat="@color/episiode_element_background" />
 
         <TextView
             android:id="@+id/episode_0_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:contentDescription="@string/descr_episode_date"
+            android:elevation="2dp"
             android:text="13.08.2001"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
-            app:layout_constraintStart_toStartOf="@+id/pocast_name"
-            app:layout_constraintTop_toBottomOf="@+id/pocast_name" />
+            app:layout_constraintStart_toStartOf="@+id/episode_0_background"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_state_button" />
 
-        <ImageButton
+        <TextView
+            android:id="@+id/episode_0_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:contentDescription="@string/descr_episode_name"
+            android:elevation="2dp"
+            android:text="Name of Episode"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_default"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_state_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
+            app:layout_constraintStart_toStartOf="@+id/episode_0_date"
+            app:layout_constraintTop_toBottomOf="@+id/episode_0_date" />
+
+        <ImageView
             android:id="@+id/episode_0_state_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/escapepods_transparent"
             android:contentDescription="@string/descr_episode_listened_button"
+            android:elevation="2dp"
+            android:padding="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_action_button"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_action_button"
             app:layout_constraintTop_toTopOf="@+id/episode_0_action_button"
-            app:srcCompat="@android:drawable/checkbox_on_background" />
+            app:srcCompat="@drawable/ic_radio_button_checked_24dp" />
+
+        <ImageView
+            android:id="@+id/episode_0_action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/escapepods_transparent"
+            android:contentDescription="@string/descr_playback_button"
+            android:elevation="2dp"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
+            app:layout_constraintTop_toBottomOf="@+id/pocast_name"
+            app:srcCompat="@drawable/ic_play_circle_outline_36dp" />
+
+        <ImageView
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
+            app:layout_constraintStart_toStartOf="@+id/episode_0_background"
+            app:layout_constraintTop_toBottomOf="@+id/episode_0_background"
+            app:srcCompat="@color/episiode_element_background" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Older Episodes"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_default"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/divider"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

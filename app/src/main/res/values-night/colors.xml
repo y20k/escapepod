@@ -6,6 +6,14 @@
     <color name="status_bar_background">@color/escapepods_black</color>
     <color name="app_onboarding_icons">@color/escapepods_white</color>
 
+    <color name="text_default">@color/escapepods_white</color>
+    <color name="text_lightweight">@color/escapepods_grey_very_light</color>
+
+    <color name="icon_default">@color/escapepods_white</color>
+    <color name="icon_lightweight">@color/escapepods_grey_very_light</color>
+
+    <color name="episiode_element_background">@color/escapepods_grey_dark</color>
+
     <color name="player_sheet_background_main">@color/escapepods_red_dark</color>
     <color name="player_sheet_text_main">@color/escapepods_white</color>
     <color name="player_sheet_background_details">@color/escapepods_grey_darker</color>
