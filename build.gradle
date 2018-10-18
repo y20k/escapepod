@@ -38,6 +38,7 @@ allprojects {
         materialVersion = "1.0.0"
         appcompatVersion = '1.0.0'
         cardviewVersion = '1.0.0'
+        paletteVersion = '1.0.0'
         constraintlayoutVersion = '1.1.3'
 
         workVersion = '1.0.0-alpha09'

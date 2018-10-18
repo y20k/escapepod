@@ -20,16 +20,19 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
+import org.y20k.escapepods.adapter.CollectionAdapter
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.dialogs.AddPodcastDialog
@@ -51,6 +54,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
 
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
+    private lateinit var recyclerView: RecyclerView
     private var collection: Collection = Collection()
 
 
@@ -65,15 +69,23 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
         observeCollectionViewModel()
 
-        // set layout
-        setContentView(R.layout.activity_podcast_player)
+        //
+        val collectionAdapter: CollectionAdapter = CollectionAdapter(this)
 
-        // get button and listen for clicks
-        val addButton: Button = findViewById<Button>(R.id.button_add_new)
-        addButton.setOnClickListener{
-            // show the add podcast dialog
-            AddPodcastDialog(this).show(this)
+        // find views
+        setContentView(R.layout.activity_podcast_player)
+        recyclerView = findViewById(R.id.recyclerview_list)
+
+        // set up recycler view
+        val layoutManager: LinearLayoutManager = object: LinearLayoutManager(this) {
+            override fun supportsPredictiveItemAnimations(): Boolean {
+                return true
+            }
         }
+        recyclerView.setLayoutManager(layoutManager)
+        recyclerView.setItemAnimator(DefaultItemAnimator())
+        recyclerView.setAdapter(collectionAdapter)
+
 
         // get button and listen for clicks
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)

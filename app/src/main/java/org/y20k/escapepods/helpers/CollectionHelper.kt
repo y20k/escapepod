@@ -86,9 +86,21 @@ object CollectionHelper {
     }
 
 
+    /* Adds new podcast to collection */
+    fun addPodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
+        var newPodcast: Podcast = podcast
+        // trim episode list
+        newPodcast = trimEpisodeList(context, newPodcast)
+        // add podcast
+        collection.podcasts.add(newPodcast)
+        return collection
+    }
+
+
     /* Replaces a podcast within collection and  retains audio references */
-    fun replacePodcast(context: Context, collection: Collection, newPodcast: Podcast): Collection {
+    fun replacePodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
+        var newPodcast: Podcast = podcast
         val oldPodcast: Podcast = getPodcastFromCollection(collection, newPodcast)
         // check for existing downloaded audio file references
         for (i in numberOfAudioFilesToKeep -1 downTo 0) {
@@ -102,6 +114,8 @@ object CollectionHelper {
                 }
             }
         }
+        // trim episode list
+        newPodcast = trimEpisodeList(context, newPodcast)
         // replace podcast
         collection.podcasts.set(getPodcastIdFromCollection(collection, newPodcast), newPodcast)
         return collection
@@ -175,6 +189,18 @@ object CollectionHelper {
             if (podcast.remotePodcastFeedLocation == collection.podcasts[it].remotePodcastFeedLocation) return it
         }
         return -1
+    }
+
+
+    /* Deletes unneeded episodes in podcast */
+    private fun trimEpisodeList(context: Context, podcast: Podcast): Podcast {
+        var podcastSize: Int = podcast.episodes.size
+        var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP);
+        if (numberOfEpisodesToKeep > podcastSize) {
+            numberOfEpisodesToKeep = podcastSize
+        }
+        podcast.episodes.subList(numberOfEpisodesToKeep, podcastSize)
+        return podcast
     }
 
 

@@ -36,6 +36,16 @@ object Keys {
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
     const val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
 
+    // view types
+    const val VIEW_TYPE_ADD_NEW: Int = 1
+    const val VIEW_TYPE_PODCAST: Int = 2
+
+    // view holder update types
+    const val HOLDER_UPDATE_COVER: Int = 0
+    const val HOLDER_UPDATE_NAME: Int = 1
+    const val HOLDER_UPDATE_PLAYBACK_STATE: Int = 2
+    const val HOLDER_UPDATE_DOWNLOAD_STATE: Int = 3
+
     // dialog types
     const val DIALOG_UPDATE_WITHOUT_WIFI: Int = 1
     const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2

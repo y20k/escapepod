@@ -2,7 +2,7 @@
 
 <resources>
     <!-- DAY THEME COLORS -->
-    <color name="app_window_background">@color/escapepods_white</color>
+    <color name="app_window_background">@color/escapepods_grey_very_light</color>
     <color name="status_bar_background">@color/escapepods_white</color>
     <color name="app_onboarding_icons">@color/escapepods_grey_dark</color>
 
