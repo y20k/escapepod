@@ -37,7 +37,8 @@ object ImageHelper {
 
     /* get a small version of the podcast cover */
     fun getSmallPodcastCover(context: Context, imageUri: Uri): Bitmap {
-        return decodeSampledBitmapFromUri(context, imageUri, 96, 96)
+        val size: Int = (Keys.SIZE_COVER_SMALL * getDensityScalingFactor(context)).toInt()
+        return decodeSampledBitmapFromUri(context, imageUri, size, size)
     }
 
 
@@ -121,7 +122,10 @@ object ImageHelper {
     }
 
 
-
+    /* Get scaling factor from display density */
+    private fun getDensityScalingFactor(context: Context): Float {
+        return context.getResources().getDisplayMetrics().density
+    }
 
 
 }

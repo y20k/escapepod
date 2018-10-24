@@ -15,6 +15,7 @@
 package org.y20k.escapepods.core
 
 import com.google.gson.annotations.Expose
+import org.y20k.escapepods.helpers.Keys
 import java.util.*
 
 
@@ -23,7 +24,7 @@ import java.util.*
  */
 class Podcast(@Expose var name: String = "",
               @Expose var description: String = "",
-              @Expose var cover: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover",
+              @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
               @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
               @Expose var lastUpdate: Date = Calendar.getInstance().time,
               @Expose var remoteImageFileLocation: String = "",

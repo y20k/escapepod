@@ -158,10 +158,12 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /*  episode and podcast cover */
     private fun enqueuePodcastMediaFiles(podcast: Podcast, isNew: Boolean) {
-        // start to download podcast cover
-        CollectionHelper.clearImagesFolder(context, podcast)
-        val coverUris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
-        enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
+        if (isNew) {
+            // start to download podcast cover
+            CollectionHelper.clearImagesFolder(context, podcast)
+            val coverUris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
+            enqueueDownload(coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
+        }
         // start to download latest episode audio file
         val episodeUris: Array<Uri> = Array(1) {podcast.episodes[0].remoteAudioFileLocation.toUri()}
         enqueueDownload(episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)

@@ -73,6 +73,13 @@ object Keys {
     const val COLLECTION_FILE: String = "collection.json"
     const val COLLECTION_OPML_FILE: String = "collection_opml.xml"
 
+    // locations
+    const val LOCATION_DEFAULT_COVER: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover"
+
+    // sizes (in dp)
+    const val SIZE_COVER_SMALL: Int = 96
+
+
     // intent actions and extras
     const val ACTION_SHOW_PLAYER: String = "SHOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "COLLECTION_CHANGED"

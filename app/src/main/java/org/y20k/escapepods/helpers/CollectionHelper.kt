@@ -114,6 +114,10 @@ object CollectionHelper {
                 }
             }
         }
+        // check for existing cover
+        if (oldPodcast.cover != Keys.LOCATION_DEFAULT_COVER) {
+            newPodcast.cover = oldPodcast.cover
+        }
         // trim episode list
         newPodcast = trimEpisodeList(context, newPodcast)
         // replace podcast
