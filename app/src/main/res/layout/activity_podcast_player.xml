@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -29,31 +27,8 @@
     <!-- ONBOARDING -->
     <!--<include layout="@layout/layout_onboarding" />-->
 
-    <!-- BOTTOM SHEET -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:behavior_hideable="false"
-        app:behavior_peekHeight="54dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/statistics_sheet"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:background="@color/player_sheet_background_main">
-
-            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <!-- PLAYBACK CONTROLS -->
-                <include layout="@layout/bottom_sheet_playback_controls" />
-            </ScrollView>
-
-        </androidx.core.widget.NestedScrollView>
-
-    </LinearLayout>
+    <!-- PLAYER SHEER -->
+    <include layout="@layout/bottom_sheet_playback_controls" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

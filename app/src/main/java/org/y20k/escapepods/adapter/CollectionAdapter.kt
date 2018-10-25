@@ -110,7 +110,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 // get reference to StationViewHolder
                 val podcastViewHolder: PodcastViewHolder = holder as PodcastViewHolder
 
-                podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getSmallPodcastCover(activity, Uri.parse(podcast.cover)))
+                podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(activity, Uri.parse(podcast.cover), Keys.SIZE_COVER_SMALL))
                 podcastViewHolder.pocastNameView.setText(podcast.name)
                 podcastViewHolder.pocastEpisode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
                 podcastViewHolder.pocastEpisode0NameView.setText(podcast.episodes[0].title)
@@ -215,7 +215,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
      * Inner class: ViewHolder for a podcast
      */
     private inner class PodcastViewHolder (val podcastCardLayout: View) : RecyclerView.ViewHolder(podcastCardLayout) {
-        val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.podcast_cover)
+        val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.player_podcast_cover)
         val pocastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val pocastEpisode0DateView: TextView = podcastCardLayout.findViewById(R.id.episode_0_date)
         val pocastEpisode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)

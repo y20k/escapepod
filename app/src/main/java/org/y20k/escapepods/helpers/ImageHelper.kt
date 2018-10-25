@@ -36,8 +36,8 @@ object ImageHelper {
 
 
     /* get a small version of the podcast cover */
-    fun getSmallPodcastCover(context: Context, imageUri: Uri): Bitmap {
-        val size: Int = (Keys.SIZE_COVER_SMALL * getDensityScalingFactor(context)).toInt()
+    fun getPodcastCover(context: Context, imageUri: Uri, coverSize: Int): Bitmap {
+        val size: Int = (coverSize * getDensityScalingFactor(context)).toInt()
         return decodeSampledBitmapFromUri(context, imageUri, size, size)
     }
 

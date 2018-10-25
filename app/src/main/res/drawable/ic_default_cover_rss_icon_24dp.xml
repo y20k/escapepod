@@ -4,7 +4,7 @@
         android:viewportWidth="24.0"
         android:viewportHeight="24.0">
     <path
-        android:fillColor="@color/escapepods_grey_dark"
+        android:fillColor="@color/escapepods_grey_darker"
         android:pathData="M0,0h24v24h-24z"/>
     <path
         android:fillColor="@color/escapepods_white"

@@ -20,9 +20,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -30,6 +33,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.runBlocking
 import org.y20k.escapepods.adapter.CollectionAdapter
@@ -55,6 +59,9 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
     private lateinit var recyclerView: RecyclerView
+    private lateinit var bottomSheet: ConstraintLayout
+    private lateinit var playerViews: Group
+    private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
 
 
@@ -69,13 +76,22 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
         observeCollectionViewModel()
 
-        //
-        val collectionAdapter: CollectionAdapter = CollectionAdapter(this)
+        // create collection adapter
+        collectionAdapter = CollectionAdapter(this)
 
         // find views
         setContentView(R.layout.activity_podcast_player)
         recyclerView = findViewById(R.id.recyclerview_list)
+        bottomSheet = findViewById(R.id.bottom_sheet)
+        playerViews = findViewById(R.id.player_views)
 
+        // set up views
+        setUpViews()
+    }
+
+
+
+    private fun setUpViews() {
         // set up recycler view
         val layoutManager: LinearLayoutManager = object: LinearLayoutManager(this) {
             override fun supportsPredictiveItemAnimations(): Boolean {
@@ -86,8 +102,32 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         recyclerView.setItemAnimator(DefaultItemAnimator())
         recyclerView.setAdapter(collectionAdapter)
 
+        // show / hide the small player
+        var bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(view: View, slideOffset: Float) {
+                // do nothing
+            }
+            override fun onStateChanged(view: View, state: Int) {
+                when (state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> playerViews.setVisibility(View.VISIBLE)
+                    BottomSheetBehavior.STATE_DRAGGING -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_EXPANDED -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_SETTLING -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_HIDDEN -> playerViews.setVisibility(View.VISIBLE)
+                }
+            }
+        })
+        // toggle collapsed state on tap
+        bottomSheet.setOnClickListener {
+            when (bottomSheetBehavior.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
 
-        // get button and listen for clicks
+        // listen for swipe to refresh event
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection and observe download work
@@ -98,6 +138,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
             }
             swipeRefreshLayout.isRefreshing = false
         }
+
     }
 
 
@@ -159,7 +200,7 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     /* Updates user interface */
     private fun updateUserInterface() {
         // update podcast counter - just a test // todo remove
-        val podcastCounter: TextView = findViewById(R.id.text_podcast_counter)
+        val podcastCounter: TextView = findViewById(R.id.player_episode_name)
         podcastCounter.text = createCollectionInfoString()
     }
 

@@ -19,6 +19,10 @@
         <!-- Default window background used for resizing on v24 -->
         <item name="android:windowBackgroundFallback">@color/escapepods_red_dark</item>
 
+        <!-- Colors used by playback seek bar -->
+        <!-- <item name="android:colorControlActivated"></item> -->
+        <!-- <item name="android:colorControlNormal"></item> -->
+
     </style>
 
 </resources>

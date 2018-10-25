@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -13,12 +14,12 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/podcast_cover"
+            android:id="@+id/player_podcast_cover"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:contentDescription="@string/descr_podcast_cover"
+            android:contentDescription="@string/descr_card_podcast_cover"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@mipmap/ic_launcher" />
@@ -29,16 +30,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:contentDescription="@string/descr_podcast_name"
+            android:contentDescription="@string/descr_card_podcast_name"
             android:elevation="2dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/sample_text_podcast_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/text_default"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/podcast_cover"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/sample_text_podcast_name" />
 
         <ImageView
             android:id="@+id/episode_0_background"
@@ -49,7 +50,7 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_action_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/podcast_cover"
+            app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
             app:srcCompat="@color/episiode_element_background" />
 
@@ -59,40 +60,40 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:contentDescription="@string/descr_episode_date"
+            android:contentDescription="@string/descr_card_episode_date"
             android:elevation="2dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/sample_text_episode_0_date"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_background"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_state_button" />
+            app:layout_constraintTop_toTopOf="@+id/episode_0_state_button"
+            tools:text="@string/sample_text_episode_0_date" />
 
         <TextView
             android:id="@+id/episode_0_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:contentDescription="@string/descr_episode_name"
+            android:contentDescription="@string/descr_card_episode_name"
             android:elevation="2dp"
             android:ellipsize="end"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
-            android:text="@string/sample_text_episode_0_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_default"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_state_button"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_date"
-            app:layout_constraintTop_toBottomOf="@+id/episode_0_date" />
+            app:layout_constraintTop_toBottomOf="@+id/episode_0_date"
+            tools:text="@string/sample_text_episode_0_name" />
 
         <ImageView
             android:id="@+id/episode_0_state_button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:backgroundTint="@color/escapepods_transparent"
-            android:contentDescription="@string/descr_episode_listened_button"
+            android:contentDescription="@string/descr_card_episode_listened_button"
             android:elevation="2dp"
             android:padding="4dp"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_action_button"
@@ -106,7 +107,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:backgroundTint="@color/escapepods_transparent"
-            android:contentDescription="@string/descr_small_playback_button"
+            android:contentDescription="@string/descr_card_small_playback_button"
             android:elevation="2dp"
             android:padding="8dp"
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"

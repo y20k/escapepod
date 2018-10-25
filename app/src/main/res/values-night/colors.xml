@@ -14,9 +14,9 @@
 
     <color name="episiode_element_background">@color/escapepods_grey_dark</color>
 
-    <color name="player_sheet_background_main">@color/escapepods_red_dark</color>
+    <color name="player_background">@color/escapepods_red_dark</color>
     <color name="player_sheet_text_main">@color/escapepods_white</color>
-    <color name="player_sheet_background_details">@color/escapepods_grey_darker</color>
+    <color name="player_sheet_background">@color/escapepods_grey_darker</color>
     <color name="player_sheet_text_details">@color/escapepods_white</color>
 
     <color name="list_item_background">@color/escapepods_black</color>

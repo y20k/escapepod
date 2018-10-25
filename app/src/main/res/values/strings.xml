@@ -48,17 +48,28 @@
 
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an escapepod in space</string>
-    <string name="descr_podcast_cover">Podcast cover image</string>
-    <string name="descr_podcast_name">Name of podcast</string>
-    <string name="descr_episode_name">Name of episode</string>
-    <string name="descr_episode_date">Publishing date of episode</string>
-    <string name="descr_episode_listened_button">Small button for marking an episode listened or un-listened</string>
-    <string name="descr_small_playback_button">Small button for starting and pausing playback</string>
-    <string name="descr_add_new_button">Button for adding new podcast feed</string>
+    <string name="descr_card_podcast_cover">Podcast cover image</string>
+    <string name="descr_card_podcast_name">Name of podcast</string>
+    <string name="descr_card_episode_name">Name of episode</string>
+    <string name="descr_card_episode_date">Publishing date of episode</string>
+    <string name="descr_card_episode_listened_button">Small button for marking an episode listened or un-listened</string>
+    <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
+    <string name="descr_card_add_new_button">Button for adding new podcast feed</string>
+    <string name="descr_player_playback_button">Main button for starting and pausing playback</string>
+    <string name="descr_player_podcast_cover">Small podcast cover image</string>
+    <string name="descr_player_podcast_name">Name of current podcast</string>
+    <string name="descr_player_episode_name">Name of current episode</string>
+    <string name="descr_expanded_player_podcast_cover">Large podcast cover image</string>
+    <string name="descr_expanded_player_episode_name">Name of current episode</string>
+    <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
+    <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
+    <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
 
     <!-- Sample Text -->
-    <string name="sample_text_podcast_name">Security Now</string>
-    <string name="sample_text_episode_0_date">19 Aug 2005</string>
-    <string name="sample_text_episode_0_name">As the Worm Turns</string>
+    <string name="sample_text_podcast_name" translatable="false">Security Now</string>
+    <string name="sample_text_episode_0_name" translatable="false">As the Worm Turns</string>
+    <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
+    <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
+    <string name="sample_text_episode_0_remaining_time" translatable="false">-18:00</string>
 
 </resources>
