@@ -108,9 +108,11 @@ object CollectionHelper {
                 val oldAudio: String = oldPodcast.episodes[i].audio
                 if (oldAudio.length > 0) {
                     // found an existing downloaded audio file reference
-                    val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i].remoteAudioFileLocation)
-                    // set audio file reference
-                    newPodcast.episodes[newEpisodeId].audio = oldAudio
+                    val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i])
+                    // set audio file reference, if episode id was found
+                    if (newEpisodeId > -1) {
+                        newPodcast.episodes[newEpisodeId].audio = oldAudio
+                    }
                 }
             }
         }

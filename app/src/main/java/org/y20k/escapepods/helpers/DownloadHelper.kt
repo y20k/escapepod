@@ -73,7 +73,7 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Download a podcast */
-    fun downloadPodcast (c: Context, feedUrl: String) {
+    fun downloadPodcast(c: Context, feedUrl: String) {
         // set main class variables
         initialize(c)
         // enqueue podcast
@@ -83,12 +83,23 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Download an episode */
-    fun downloadEpisode (c: Context, remoteAudioFileLocation: String, podcast: Podcast) {
+    fun downloadEpisode(c: Context, remoteAudioFileLocation: String, podcast: Podcast) {
         // set main class variables
         initialize(c)
         // enqueue episode
         val uris = Array(1) {remoteAudioFileLocation.toUri()}
         enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, podcast.name)
+    }
+
+
+    /* Refresh cover of given podcast */
+    fun refreshCover(c: Context, podcast: Podcast) {
+        // set main class variables
+        initialize(c)
+        // start to download podcast cover
+        CollectionHelper.clearImagesFolder(context, podcast)
+        val uris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
+        enqueueDownload(uris, Keys.FILE_TYPE_IMAGE, podcast.name)
     }
 
 
@@ -190,7 +201,6 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Sets podcast cover */
     private fun setPodcastImage(localFileUri: Uri, remoteFileLocation: String) {
-        LogHelper.e(TAG, "SETTING COVER") // todo remove
         for (podcast in collection.podcasts) {
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
                 podcast.cover = localFileUri.toString()

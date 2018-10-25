@@ -41,6 +41,7 @@
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
+    <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
 
     <!-- Podcast List -->
     <string name="podcast_list_button_toggle_show_older_episodes">Older Episodes</string>

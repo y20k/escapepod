@@ -15,12 +15,15 @@
 package org.y20k.escapepods.adapter
 
 import android.app.Activity
+import android.content.Context
 import android.net.Uri
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
@@ -31,6 +34,7 @@ import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
+import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.ImageHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
@@ -110,11 +114,21 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 // get reference to StationViewHolder
                 val podcastViewHolder: PodcastViewHolder = holder as PodcastViewHolder
 
+                // set up views
                 podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(activity, Uri.parse(podcast.cover), Keys.SIZE_COVER_SMALL))
                 podcastViewHolder.pocastNameView.setText(podcast.name)
                 podcastViewHolder.pocastEpisode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
                 podcastViewHolder.pocastEpisode0NameView.setText(podcast.episodes[0].title)
 
+
+                podcastViewHolder.podcastImageView.setOnLongClickListener {
+                    DownloadHelper().refreshCover(activity, podcast)
+                    Toast.makeText(activity as Context, activity.getText(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
+                    val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    v.vibrate(50)
+                    // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+                    true
+                }
             }
         }
     }
