@@ -14,13 +14,12 @@
 
 package org.y20k.escapepods
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -50,7 +49,11 @@ import org.y20k.escapepods.xml.OpmlHelper
 /*
  * PodcastPlayerActivity class
  */
-class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDialogListener, MeteredNetworkDialog.MeteredNetworkDialogListener, OpmlImportDialog.OpmlImportDialogListener {
+class PodcastPlayerActivity: AppCompatActivity(),
+        PlayerService.PlayerServiceListener,
+        AddPodcastDialog.AddPodcastDialogListener,
+        MeteredNetworkDialog.MeteredNetworkDialogListener,
+        OpmlImportDialog.OpmlImportDialogListener {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)
@@ -58,11 +61,15 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
 
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
+    private lateinit var playerService: PlayerService
     private lateinit var recyclerView: RecyclerView
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var playerViews: Group
+    private lateinit var playButton: ImageView
+    private lateinit var sheetPlayButton: ImageView
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
+    private var playerServiceBound = false
 
 
     /* Overrides onCreate */
@@ -84,67 +91,19 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         recyclerView = findViewById(R.id.recyclerview_list)
         bottomSheet = findViewById(R.id.bottom_sheet)
         playerViews = findViewById(R.id.player_views)
+        playButton = findViewById(R.id.player_play_button)
+        sheetPlayButton = findViewById(R.id.sheet_play_button)
 
         // set up views
         setUpViews()
     }
 
 
-
-    private fun setUpViews() {
-        // set up recycler view
-        val layoutManager: LinearLayoutManager = object: LinearLayoutManager(this) {
-            override fun supportsPredictiveItemAnimations(): Boolean {
-                return true
-            }
-        }
-        recyclerView.setLayoutManager(layoutManager)
-        recyclerView.setItemAnimator(DefaultItemAnimator())
-        recyclerView.setAdapter(collectionAdapter)
-
-        // show / hide the small player
-        var bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(view: View, slideOffset: Float) {
-                // do nothing
-            }
-            override fun onStateChanged(view: View, state: Int) {
-                when (state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playerViews.setVisibility(View.VISIBLE)
-                    BottomSheetBehavior.STATE_DRAGGING -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_EXPANDED -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_SETTLING -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_HIDDEN -> playerViews.setVisibility(View.VISIBLE)
-                }
-            }
-        })
-        // toggle collapsed state on tap
-        bottomSheet.setOnClickListener {
-            when (bottomSheetBehavior.state) {
-                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }
-
-        // listen for swipe to refresh event
-        val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
-        swipeRefreshLayout.setOnRefreshListener {
-            // update podcast collection and observe download work
-            if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
-                updateCollection()
-            } else {
-                Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
-            }
-            swipeRefreshLayout.isRefreshing = false
-        }
-
-    }
-
-
     /* Overrides onResume */
     override fun onResume() {
         super.onResume()
+        // bind to PlayerService
+        bindService(Intent(this, PlayerService::class.java), playerServiceConnection, Context.BIND_AUTO_CREATE)
         // listen for collection changes initiated by DownloadHelper
         LocalBroadcastManager.getInstance(this).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
         // reload collection // todo check if necessary
@@ -158,6 +117,15 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
     override fun onPause() {
         super.onPause()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(collectionChangedReceiver)
+        // unbind PlayerService
+        unbindService(playerServiceConnection)
+    }
+
+
+    /* Overrides onPlaybackStateChanged from PlayerService */
+    override fun onPlaybackStateChanged() {
+        super.onPlaybackStateChanged()
+        LogHelper.v(TAG, "Playback State changed. Update UI.")
     }
 
 
@@ -194,6 +162,70 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         feedUrlList.forEach {
             LogHelper.e(TAG, "$it \n")
         }
+    }
+
+
+    /* Sets up views and connects tap listeners */
+    private fun setUpViews() {
+        // set up recycler view
+        val layoutManager: LinearLayoutManager = object: LinearLayoutManager(this) {
+            override fun supportsPredictiveItemAnimations(): Boolean {
+                return true
+            }
+        }
+        recyclerView.setLayoutManager(layoutManager)
+        recyclerView.setItemAnimator(DefaultItemAnimator())
+        recyclerView.setAdapter(collectionAdapter)
+
+        // show / hide the small player
+        var bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(view: View, slideOffset: Float) {
+                // do nothing
+            }
+            override fun onStateChanged(view: View, state: Int) {
+                when (state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> playerViews.setVisibility(View.VISIBLE)
+                    BottomSheetBehavior.STATE_DRAGGING -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_EXPANDED -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_SETTLING -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_HIDDEN -> playerViews.setVisibility(View.VISIBLE)
+                }
+            }
+        })
+        // toggle collapsed state on tap
+        bottomSheet.setOnClickListener {
+            when (bottomSheetBehavior.state) {
+                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        // main play/pause button
+        playButton.setOnClickListener {
+            LogHelper.v(TAG, "Tap on main play button registered") // todo remove
+            playerService.togglePlayback()
+        }
+
+        // bottom sheet play/pause button
+        sheetPlayButton.setOnClickListener {
+            LogHelper.v(TAG, "Tap on play button in sheet registered") // todo remove
+            playerService.togglePlayback()
+        }
+
+        // listen for swipe to refresh event
+        val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
+        swipeRefreshLayout.setOnRefreshListener {
+            // update podcast collection and observe download work
+            if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
+                updateCollection()
+            } else {
+                Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
+            }
+            swipeRefreshLayout.isRefreshing = false
+        }
+
     }
 
 
@@ -316,5 +348,23 @@ class PodcastPlayerActivity: AppCompatActivity(), AddPodcastDialog.AddPodcastDia
         }
     }
 
+
+    /*
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private val playerServiceConnection = object: ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            // get service from binder
+            val binder = service as PlayerService.LocalBinder
+            playerService = binder.getService()
+            playerService.initialize(this@PodcastPlayerActivity, false)
+            playerServiceBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            playerServiceBound = false
+        }
+    }
 
 }

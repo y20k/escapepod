@@ -106,7 +106,7 @@ object CollectionHelper {
         for (i in numberOfAudioFilesToKeep -1 downTo 0) {
             if (i < oldPodcast.episodes.size) {
                 val oldAudio: String = oldPodcast.episodes[i].audio
-                if (oldAudio.length > 0) {
+                if (oldAudio.isEmpty()) {
                     // found an existing downloaded audio file reference
                     val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i])
                     // set audio file reference, if episode id was found

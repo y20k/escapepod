@@ -91,9 +91,11 @@
         android:layout_height="56dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_circle_gold_56dp"
         android:contentDescription="@string/descr_player_playback_button"
         android:scaleType="center"
+        android:background="@drawable/ic_circle_gold_56dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/player_background"
         app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
@@ -161,21 +163,23 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/player_sheet_text_main"
-        app:layout_constraintBottom_toTopOf="@+id/sheet_playback_button"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_play_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/sample_text_episode_0_name" />
 
     <ImageView
-        android:id="@+id/sheet_playback_button"
+        android:id="@+id/sheet_play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/ic_circle_gold_84dp"
         android:contentDescription="@string/descr_expanded_player_playback_button"
         android:scaleType="center"
+        android:background="@drawable/ic_circle_gold_84dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -187,9 +191,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
         android:contentDescription="@string/descr_expanded_player_replay_button"
-        app:layout_constraintBottom_toBottomOf="@+id/sheet_playback_button"
-        app:layout_constraintEnd_toStartOf="@+id/sheet_playback_button"
-        app:layout_constraintTop_toTopOf="@+id/sheet_playback_button"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
+        app:layout_constraintEnd_toStartOf="@+id/sheet_play_button"
+        app:layout_constraintTop_toTopOf="@+id/sheet_play_button"
         app:srcCompat="@drawable/ic_replay_10sek_56dp" />
 
     <ImageView
@@ -198,9 +205,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:contentDescription="@string/descr_expanded_player_forward_button"
-        app:layout_constraintBottom_toBottomOf="@+id/sheet_playback_button"
-        app:layout_constraintStart_toEndOf="@+id/sheet_playback_button"
-        app:layout_constraintTop_toTopOf="@+id/sheet_playback_button"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
+        app:layout_constraintStart_toEndOf="@+id/sheet_play_button"
+        app:layout_constraintTop_toTopOf="@+id/sheet_play_button"
         app:srcCompat="@drawable/ic_forward_30sek_56dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
