@@ -23,11 +23,14 @@
     <color name="list_item_background">@color/escapepods_white</color>
     <color name="list_item_background_selected">@color/escapepods_grey_very_light</color>
     <color name="list_item_divider">@color/escapepods_grey_very_light</color>
+    <color name="list_item_delete_background">@color/escapepods_red_bright</color>
+
 
     <color name="podcast_image_background">@color/escapepods_grey_lighter</color>
 
 
     <!-- COLOR NAMES -->
+    <color name="escapepods_red_bright">#FFf44336</color>
     <color name="escapepods_red">#FFD93025</color>              <!-- Material Design 2: Red 600 -->
     <color name="escapepods_red_dark">#FFB31412</color>         <!-- Material Design 2: Red 800 -->
     <color name="escapepods_red_darker">#FF7C0000</color>

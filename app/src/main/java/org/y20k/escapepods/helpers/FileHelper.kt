@@ -105,7 +105,7 @@ object FileHelper {
 
 
     /* Clears given folder - keeps given number of files */
-    fun clearFolder(folder: File, keep: Int) {
+    fun clearFolder(folder: File, keep: Int, deleteFolder: Boolean = false) {
         if (folder.exists()) {
             val files = folder.listFiles()
             val fileCount: Int = files.size
@@ -114,6 +114,9 @@ object FileHelper {
                 if (fileNumber < fileCount - keep) {
                     files[fileNumber].delete()
                 }
+            }
+            if (deleteFolder && keep == 0) {
+                folder.delete()
             }
         }
     }

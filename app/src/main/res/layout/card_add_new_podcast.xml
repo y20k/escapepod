@@ -10,7 +10,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_add_new_podcast"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/text_add_new_podcast"
@@ -25,9 +28,6 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_default"
             android:textStyle="bold"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

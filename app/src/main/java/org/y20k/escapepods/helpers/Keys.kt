@@ -55,6 +55,9 @@ object Keys {
     const val FILE_TYPE_AUDIO: Int  = 2
     const val FILE_TYPE_IMAGE: Int  = 3
 
+    // options
+    const val OPTION_REMOVE_FOLDER: Int = -1
+
     // mime types
     const val MIME_TYPE_JPG = "image/jpeg"
     const val MIME_TYPE_PNG = "image/png"
@@ -74,7 +77,7 @@ object Keys {
     const val COLLECTION_OPML_FILE: String = "collection_opml.xml"
 
     // locations
-    const val LOCATION_DEFAULT_COVER: String = "android.resource://org.y20k.escapepods/drawable/default_podcast_cover"
+    const val LOCATION_DEFAULT_COVER: String = "android.resource://org.y20k.escapepods/drawable/ic_default_cover_rss_icon_24dp"
 
     // sizes (in dp)
     const val SIZE_COVER_SMALL: Int = 96
@@ -98,7 +101,6 @@ object Keys {
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
     const val REQUEST_ADD_PODCAST: Int = 2
-
 
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"

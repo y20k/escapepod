@@ -22,6 +22,7 @@
     <color name="list_item_background">@color/escapepods_black</color>
     <color name="list_item_background_selected">@color/escapepods_grey_dark</color>
     <color name="list_item_divider">@color/escapepods_grey_darker</color>
+    <color name="list_item_delete_background">@color/escapepods_red_bright</color>
 
     <color name="podcast_image_background">@color/escapepods_grey_light</color>
 

@@ -29,6 +29,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -176,6 +177,15 @@ class PodcastPlayerActivity: AppCompatActivity(),
         recyclerView.setLayoutManager(layoutManager)
         recyclerView.setItemAnimator(DefaultItemAnimator())
         recyclerView.setAdapter(collectionAdapter)
+        // enable swipe in recycler view
+        val swipeHandler = object : UiHelper.SwipeToDeleteCallback(this) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                LogHelper.v(TAG, "Remove item at position #${viewHolder.adapterPosition}")
+                collectionAdapter.remove(this@PodcastPlayerActivity, viewHolder.adapterPosition )
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
         // show / hide the small player
         var bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)

@@ -15,8 +15,15 @@
 package org.y20k.escapepods.helpers
 
 import android.content.Context
+import android.content.Intent
 import android.media.MediaMetadata
 import android.preference.PreferenceManager
+import androidx.core.content.edit
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import kotlinx.coroutines.experimental.GlobalScope
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
@@ -175,8 +182,19 @@ object CollectionHelper {
     /* Clears an image folder for a given podcast */
     fun clearImagesFolder(context: Context, podcast: Podcast) {
         // clear image folder
-        val imagesFolder: File = File(context.getExternalFilesDir(Keys.FOLDER_IMAGES), FileHelper.determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name))
+        val imagesFolder: File = File(context.getExternalFilesDir(""), FileHelper.determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name))
         FileHelper.clearFolder(imagesFolder, 0)
+    }
+
+
+    /* Deletes Images and Audio folder of a given podcast */
+    fun deletePodcastFolders(context: Context, podcast: Podcast) {
+        // delete image folder
+        val imagesFolder: File = File(context.getExternalFilesDir(""), FileHelper.determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name))
+        FileHelper.clearFolder(imagesFolder, 0, true)
+        // delete audio folder
+        val audioFolder: File = File(context.getExternalFilesDir(""), FileHelper.determineDestinationFolderPath(Keys.FILE_TYPE_AUDIO, podcast.name))
+        FileHelper.clearFolder(audioFolder, 0, true)
     }
 
 
@@ -198,14 +216,36 @@ object CollectionHelper {
     }
 
 
+    /* Saves podcast collection */
+    fun saveCollection (context: Context, collection: Collection) = runBlocking<Unit> {
+        LogHelper.v(TAG, "Saving podcast collection to storage")
+        // save time of last update
+        PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.PREF_LAST_UPDATE_COLLECTION, Calendar.getInstance().timeInMillis)}
+        // save collection to storage - async
+        val result = async { FileHelper.saveCollection(context, collection) }
+        // wait for result and broadcast update (to activity)
+        result.await()
+        LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(Keys.ACTION_COLLECTION_CHANGED))
+    }
+
+
+    /* Export podcast collection as OPML */
+    fun exportCollection(context: Context, collection: Collection) {
+        LogHelper.v(TAG, "Exporting podcast collection as OPML")
+        // export collection as OPML - launch = fire & forget (no return value from save collection)
+        GlobalScope.launch { FileHelper.exportCollection(context, collection) }
+    }
+
+
     /* Deletes unneeded episodes in podcast */
     private fun trimEpisodeList(context: Context, podcast: Podcast): Podcast {
-        var podcastSize: Int = podcast.episodes.size
+        val podcastSize: Int = podcast.episodes.size
         var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP);
         if (numberOfEpisodesToKeep > podcastSize) {
             numberOfEpisodesToKeep = podcastSize
         }
-        podcast.episodes.subList(numberOfEpisodesToKeep, podcastSize)
+        val episodesTrimmed: MutableList<Episode> = podcast.episodes.subList(0, numberOfEpisodesToKeep)
+        podcast.episodes = episodesTrimmed
         return podcast
     }
 

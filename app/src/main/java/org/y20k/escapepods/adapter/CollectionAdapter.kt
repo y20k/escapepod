@@ -34,10 +34,7 @@ import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
-import org.y20k.escapepods.helpers.DownloadHelper
-import org.y20k.escapepods.helpers.ImageHelper
-import org.y20k.escapepods.helpers.Keys
-import org.y20k.escapepods.helpers.LogHelper
+import org.y20k.escapepods.helpers.*
 import java.text.DateFormat
 
 
@@ -181,6 +178,19 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     override fun getItemCount(): Int {
         // +1 ==> the add podcast card
         return collection.podcasts.size + 1
+    }
+
+
+    /* Removes a podcast from collection */
+    fun remove(context: Context, position: Int) {
+        // delete folders and assets
+        CollectionHelper.deletePodcastFolders(context, collection.podcasts[position])
+        // remove podcast from collection
+        collection.podcasts.removeAt(position)
+        // export collection as OPML
+        CollectionHelper.exportCollection(context, collection)
+        // save collection and broadcast changes
+        CollectionHelper.saveCollection(context, collection)
     }
 
 
