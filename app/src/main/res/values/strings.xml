@@ -36,6 +36,13 @@
     <string name="dialog_error_message_no_network">Your device has no network connection.</string>
     <string name="dialog_error_title_default">Error</string>
     <string name="dialog_error_message_default">An error occurred</string>
+    <string name="dialog_yes_no_title_remove_podcast">Remove podcast</string>
+    <string name="dialog_yes_no_message_remove_podcast">Do you want to remove this podcast?</string>
+    <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
+    <string name="dialog_yes_no_title_default">Decide</string>
+    <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
+    <string name="dialog_yes_no_positive_button_default">Yes</string>
+    <string name="dialog_yes_no_negative_button_default">No</string>
 
     <!-- Toasts -->
     <string name="toast_message_adding_podcast">Adding podcast.</string>

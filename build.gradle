@@ -2,7 +2,7 @@
 
 buildscript {
 
-    ext.kotlinVersion = '1.2.71'
+    ext.kotlinVersion = '1.3.0'
 
     repositories {
         google()
@@ -45,7 +45,7 @@ allprojects {
         workVersion = '1.0.0-alpha10'
         supportLibraryVersion = "28.0.0-beta1" // used by bottom sheet behavior - try to remove asap
 
-        kotlinxCoroutinesVersion = '0.30.0'
+        kotlinxCoroutinesVersion = '1.0.0'
         exoPlayerVersion = '2.8.1'
         gsonVersion = '2.8.5'
 

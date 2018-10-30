@@ -23,8 +23,8 @@ import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast

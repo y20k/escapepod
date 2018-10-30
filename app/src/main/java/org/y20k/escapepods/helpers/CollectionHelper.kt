@@ -20,10 +20,10 @@ import android.media.MediaMetadata
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.experimental.GlobalScope
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast

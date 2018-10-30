@@ -51,9 +51,3 @@ dependencies {
 //    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
 }
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}

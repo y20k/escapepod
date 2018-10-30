@@ -49,6 +49,11 @@ object Keys {
     // dialog types
     const val DIALOG_UPDATE_WITHOUT_WIFI: Int = 1
     const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2
+    const val DIALOG_REMOVE_PODCAST: Int = 3
+
+    // dialog results
+    const val DIALOG_RESULT_DEFAULT: Int = -1
+
 
     // file types
     const val FILE_TYPE_RSS: Int = 1

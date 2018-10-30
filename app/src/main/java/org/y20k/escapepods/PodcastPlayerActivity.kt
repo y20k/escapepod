@@ -34,15 +34,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.adapter.CollectionAdapter
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
-import org.y20k.escapepods.dialogs.AddPodcastDialog
-import org.y20k.escapepods.dialogs.ErrorDialog
-import org.y20k.escapepods.dialogs.MeteredNetworkDialog
-import org.y20k.escapepods.dialogs.OpmlImportDialog
+import org.y20k.escapepods.dialogs.*
 import org.y20k.escapepods.helpers.*
 import org.y20k.escapepods.xml.OpmlHelper
 
@@ -54,7 +51,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
         PlayerService.PlayerServiceListener,
         AddPodcastDialog.AddPodcastDialogListener,
         MeteredNetworkDialog.MeteredNetworkDialogListener,
-        OpmlImportDialog.OpmlImportDialogListener {
+        OpmlImportDialog.OpmlImportDialogListener,
+        YesNoDialog.YesNoDialogListener {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)
@@ -166,6 +164,23 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+    /* Overrides onYesNoDialog from YesNoDialog */
+    override fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayload: Int) {
+        super.onYesNoDialog(dialogType, dialogResult, dialogPayload)
+        when (dialogType) {
+            // handle result of remove dialog
+            Keys.DIALOG_REMOVE_PODCAST -> {
+                when (dialogResult) {
+                    // user tapped remove
+                    true -> collectionAdapter.remove(this@PodcastPlayerActivity, dialogPayload)
+                    // user tapped cancel
+                    false -> collectionAdapter.notifyItemChanged(dialogPayload)
+                }
+            }
+        }
+    }
+
+
     /* Sets up views and connects tap listeners */
     private fun setUpViews() {
         // set up recycler view
@@ -177,11 +192,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
         recyclerView.setLayoutManager(layoutManager)
         recyclerView.setItemAnimator(DefaultItemAnimator())
         recyclerView.setAdapter(collectionAdapter)
-        // enable swipe in recycler view
+        // enable swipe to delete in recycler view
         val swipeHandler = object : UiHelper.SwipeToDeleteCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                LogHelper.v(TAG, "Remove item at position #${viewHolder.adapterPosition}")
-                collectionAdapter.remove(this@PodcastPlayerActivity, viewHolder.adapterPosition )
+                // ask user
+                val adapterPosition: Int = viewHolder.adapterPosition
+                val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n\n- ${collection.podcasts[adapterPosition].name}"
+                YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_REMOVE_PODCAST, adapterPosition,  R.string.dialog_yes_no_title_remove_podcast, dialogMessage, R.string.dialog_yes_no_positive_button_remove_podcast)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)

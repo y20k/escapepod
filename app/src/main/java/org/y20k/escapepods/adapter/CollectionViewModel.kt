@@ -18,8 +18,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.LogHelper
