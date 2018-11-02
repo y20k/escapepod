@@ -3,5 +3,5 @@
     android:shape="rectangle">
 
     <solid android:color="@color/player_sheet_background" />
-    <corners android:topRightRadius="20dp" />
+    <corners android:topLeftRadius="20dp" android:topRightRadius="20dp" />
 </shape>

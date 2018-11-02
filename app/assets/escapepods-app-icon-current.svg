@@ -5,7 +5,8 @@
     xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="192pt" height="192pt"
     viewBox="0 0 67.733335 67.733333" version="1.1" id="svg8" inkscape:version="0.92.2 5c3e80d, 2017-08-06"
-    sodipodi:docname="escapepods-app-icon-current.svg">
+    sodipodi:docname="escapepods-app-icon-current.svg" inkscape:export-filename="/Users/solaris/Desktop/escapepods/app/assets/escapepods-app-icon-current.png"
+    inkscape:export-xdpi="600" inkscape:export-ydpi="600">
   <defs
      id="defs2">
     <filter
@@ -81,16 +82,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="-231.50704"
+     inkscape:cx="-390.00704"
      inkscape:cy="46.873732"
      inkscape:document-units="pt"
-     inkscape:current-layer="g3850"
+     inkscape:current-layer="layer1"
      showgrid="false"
      units="pt"
      inkscape:snap-object-midpoints="true"
-     inkscape:window-width="1866"
+     inkscape:window-width="1869"
      inkscape:window-height="1155"
-     inkscape:window-x="54"
+     inkscape:window-x="51"
      inkscape:window-y="1"
      inkscape:window-maximized="1"
      inkscape:snap-global="false"
@@ -120,7 +121,7 @@
        height="53.622223"
        x="7.0555553"
        y="236.32222"
-       style="fill:#880605;fill-opacity:1;stroke-width:0.09333912"
+       style="fill:#19405b;fill-opacity:1;stroke-width:0.09333912"
        inkscape:label="rectangle 152" />
   </g>
   <g
@@ -129,7 +130,7 @@
      inkscape:label="Circular Background"
      style="display:inline">
     <circle
-       style="display:inline;fill:#880605;fill-opacity:1;stroke-width:0.26458335"
+       style="display:inline;fill:#19405b;fill-opacity:1;stroke-width:0.26458335"
        id="path3726"
        cx="33.866669"
        cy="34.164097"
@@ -148,7 +149,7 @@
        inkscape:label="rss with thruster">
       <path
          sodipodi:nodetypes="ccccccccc"
-         style="display:inline;opacity:1;fill:#2e0000;fill-opacity:1;stroke-width:1.58704627"
+         style="display:inline;opacity:1;fill:#3c4043;fill-opacity:1;stroke-width:1.58704627"
          id="path3862"
          d="m 30.021005,13.852487 v 13.531888 l -3.737456,7.935415 1.618357,5.316974 5.291638,1.568599 8.048397,-3.666127 13.473509,0.0076 c 0,-13.632797 -11.061711,-24.694386 -24.694445,-24.694386 z"
          inkscape:connector-curvature="0"

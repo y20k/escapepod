@@ -65,7 +65,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var playerViews: Group
     private lateinit var playButton: ImageView
+    private lateinit var cover: ImageView
     private lateinit var sheetPlayButton: ImageView
+    private lateinit var sheetCover: ImageView
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceBound = false
@@ -91,7 +93,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
         bottomSheet = findViewById(R.id.bottom_sheet)
         playerViews = findViewById(R.id.player_views)
         playButton = findViewById(R.id.player_play_button)
+        cover = findViewById(R.id.player_podcast_cover)
         sheetPlayButton = findViewById(R.id.sheet_play_button)
+        sheetCover = findViewById(R.id.sheet_large_podcast_cover)
 
         // set up views
         setUpViews()
@@ -228,6 +232,10 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
+
+        // apply rounded corner mask to cover
+        cover.setImageResource(R.drawable.ic_default_cover_rss_icon_24dp)
+        cover.setClipToOutline(true)
 
         // main play/pause button
         playButton.setOnClickListener {

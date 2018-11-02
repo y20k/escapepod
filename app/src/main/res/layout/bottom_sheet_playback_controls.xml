@@ -39,11 +39,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/shape_cover"
         android:contentDescription="@string/descr_player_podcast_cover"
         app:layout_constraintBottom_toBottomOf="@+id/player_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+    <!-- android:clipToOutline="true" does not work at the moment -->
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
@@ -93,7 +95,7 @@
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/descr_player_playback_button"
         android:scaleType="center"
-        android:background="@drawable/ic_circle_gold_56dp"
+        android:background="@drawable/ic_circle_play_button_56dp"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -177,7 +179,7 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/descr_expanded_player_playback_button"
         android:scaleType="center"
-        android:background="@drawable/ic_circle_gold_84dp"
+        android:background="@drawable/ic_circle_play_button_84dp"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
