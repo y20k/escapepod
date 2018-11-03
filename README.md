@@ -1,5 +1,5 @@
 # Escapepods
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/app/assets/escapepods-app-icon-current.png" width="300" />
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/escapepods-app-icon-current.png" width="300" />
 
 Free and Open Podcast Player #experiment #learningkotlin
 
