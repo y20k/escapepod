@@ -26,7 +26,7 @@
 
     <!-- COLOR NAMES -->
     <color name="escapepods_grey">#FF5F6368</color>             <!-- Material Design 2: Grey 700 -->
-    <color name="escapepods_grey_light">#BDC1C6</color>         <!-- Material Design 2: Grey 400 -->
+    <color name="escapepods_grey_light">#FFBDC1C6</color>         <!-- Material Design 2: Grey 400 -->
     <color name="escapepods_grey_lighter">#FFD2D6DA</color>
     <color name="escapepods_grey_very_light">#FFF1F3F4</color>  <!-- Material Design 2: Grey 100 -->
     <color name="escapepods_grey_dark">#FF3C4043</color>        <!-- Material Design 2: Grey 800 -->
