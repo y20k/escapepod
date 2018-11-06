@@ -113,6 +113,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
                 // set up views
                 podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(activity, Uri.parse(podcast.cover), Keys.SIZE_COVER_SMALL))
+                // podcastViewHolder.podcastImageView.setClipToOutline(true)
                 podcastViewHolder.pocastNameView.setText(podcast.name)
                 podcastViewHolder.pocastEpisode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
                 podcastViewHolder.pocastEpisode0NameView.setText(podcast.episodes[0].title)

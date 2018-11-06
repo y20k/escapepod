@@ -23,6 +23,14 @@ object Keys {
     // version numbers
     const val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
 
+    // playback state
+    const val STATE_STOPPED: Int = 0
+    const val STATE_PLAYING: Int = 1
+
+    // notification
+    const val PLAYER_SERVICE_NOTIFICATION_ID: Int = 42
+    const val NOTIFICATION_CHANNEL_ID_PLAYBACK_CHANNEL = "notificationChannelIdPlaybackChannel"
+
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"

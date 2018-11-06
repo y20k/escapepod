@@ -4,8 +4,8 @@
 <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="192pt" height="192pt"
-    viewBox="0 0 67.733335 67.733333" version="1.1" id="svg8" inkscape:version="0.92.2 2405546, 2018-03-11"
-    sodipodi:docname="escapepods-app-icon-current.svg" inkscape:export-filename="/home/solaris/Desktop/escapepods/assets/escapepods-app-icon-current-no-background.png"
+    viewBox="0 0 67.733335 67.733333" version="1.1" id="svg8" inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+    sodipodi:docname="escapepods-app-icon-current.svg" inkscape:export-filename="/Users/solaris/Desktop/escapepods/assets/escapepods-app-icon-current-no-background.png"
     inkscape:export-xdpi="600" inkscape:export-ydpi="600">
   <defs
      id="defs2">
@@ -146,17 +146,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.64"
-     inkscape:cx="345.66254"
+     inkscape:cx="194.71557"
      inkscape:cy="44.532848"
      inkscape:document-units="pt"
-     inkscape:current-layer="g3741"
+     inkscape:current-layer="g853"
      showgrid="false"
      units="pt"
      inkscape:snap-object-midpoints="true"
-     inkscape:window-width="2560"
-     inkscape:window-height="1379"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
+     inkscape:window-width="1864"
+     inkscape:window-height="1155"
+     inkscape:window-x="56"
+     inkscape:window-y="1"
      inkscape:window-maximized="1"
      inkscape:snap-global="false"
      showguides="true"
@@ -212,7 +212,7 @@
        style="display:inline"
        inkscape:label="RSS with thruster">
       <path
-         style="display:none;opacity:0.12999998;fill:#3c4043;fill-opacity:1;stroke-width:5.99828482"
+         style="display:inline;opacity:0.12999998;fill:#3c4043;fill-opacity:1;stroke-width:5.99828482"
          d="m 112.00195,51.898438 v 51.144532 l -14.124997,29.99219 0.03516,0.11718 c -0.0037,-0.007 -0.07031,-0.13476 -0.07031,-0.13476 l -43.177735,20.34961 48.984382,48.98242 83.49242,55.74439 71.20397,0.0933 1.95007,-133.3455 -112.59937,-65.8687 c -10.99716,-4.558548 -23.05297,-7.074712 -35.69358,-7.074712 z"
          transform="matrix(0.26458334,0,0,0.26458334,0.3869732,0.1211073)"
          id="path2541"
@@ -221,20 +221,20 @@
          inkscape:label="Outline shadow 2" />
       <g
          id="g852"
-         style="display:inline;filter:url(#filter1104)">
+         style="display:none;filter:url(#filter1104)">
         <path
            inkscape:label="Background"
            inkscape:connector-curvature="0"
            d="m 30.021005,13.852487 v 13.531888 l -3.737456,7.935415 1.618357,5.316974 5.291638,1.568599 8.048397,-3.666127 13.473509,0.0076 c 0,-13.632797 -11.061711,-24.694386 -24.694445,-24.694386 z"
            id="path3862"
-           style="display:inline;opacity:1;fill:#5f6368;fill-opacity:1;stroke-width:1.58704627;"
+           style="display:inline;opacity:1;fill:#5f6368;fill-opacity:1;stroke-width:1.58704627"
            sodipodi:nodetypes="ccccccccc" />
         <path
            sodipodi:nodetypes="cscccc"
            inkscape:connector-curvature="0"
            id="path3846"
            d="m 26.274037,35.31518 c 0,0 1.541431,3.040391 2.727831,4.224544 1.176048,1.173785 4.192744,2.696038 4.192744,2.696038 L 27.810526,53.659625 14.850167,40.699273 Z"
-           style="display:inline;fill:#ffffff;stroke-width:0.47888312;"
+           style="display:inline;fill:#ffffff;stroke-width:0.47888312"
            inkscape:label="Thruster" />
       </g>
       <ellipse
@@ -243,18 +243,18 @@
          cx="33.480816"
          cy="35.087173"
          id="circle3852"
-         style="display:inline;fill:#f9f9f9;stroke-width:1.58704627"
+         style="display:none;fill:#f9f9f9;stroke-width:1.58704627"
          inkscape:label="RSS symbol dot" />
       <path
          inkscape:label="RSS symbol upper"
          inkscape:connector-curvature="0"
          d="m 30.021005,13.852487 v 4.491294 c 11.156932,0 20.203109,9.046197 20.203109,20.203092 h 4.491336 c 0,-13.632797 -11.061711,-24.694386 -24.694445,-24.694386 z m 0,8.982598 v 4.491295 c 6.189481,0 11.220419,5.03099 11.220419,11.220493 h 4.491345 c 0,-8.681105 -7.030615,-15.711788 -15.711764,-15.711788 z"
          id="path3854"
-         style="display:inline;fill:#f9f9f9;stroke-width:1.58704627" />
+         style="display:none;fill:#f9f9f9;stroke-width:1.58704627" />
     </g>
   </g>
   <g
-     style="display:none"
+     style="display:inline"
      inkscape:groupmode="layer"
      id="g855"
      inkscape:label="Escapepod without shadow">
@@ -268,7 +268,7 @@
          inkscape:connector-curvature="0"
          d="m 30.021005,13.852487 v 13.531888 l -3.737456,7.935415 1.618357,5.316974 5.291638,1.568599 8.048397,-3.666127 13.473509,0.0076 c 0,-13.632797 -11.061711,-24.694386 -24.694445,-24.694386 z"
          id="path845"
-         style="display:inline;opacity:1;fill:#5f6368;fill-opacity:1;stroke-width:1.58704627"
+         style="display:none;opacity:1;fill:#5f6368;fill-opacity:1;stroke-width:1.58704627"
          sodipodi:nodetypes="ccccccccc" />
       <path
          sodipodi:nodetypes="cscccc"
@@ -279,14 +279,14 @@
          inkscape:label="Thruster" />
       <ellipse
          inkscape:label="RSS symbol dot"
-         style="display:inline;fill:#f9f9f9;stroke-width:1.58704627"
+         style="display:inline;fill:#ffffff;stroke-width:1.58704627"
          id="ellipse849"
          cy="35.087173"
          cx="33.480816"
          rx="3.4597626"
          ry="3.4597595" />
       <path
-         style="display:inline;fill:#f9f9f9;stroke-width:1.58704627"
+         style="display:inline;fill:#ffffff;stroke-width:1.58704627"
          id="path851"
          d="m 30.021005,13.852487 v 4.491294 c 11.156932,0 20.203109,9.046197 20.203109,20.203092 h 4.491336 c 0,-13.632797 -11.061711,-24.694386 -24.694445,-24.694386 z m 0,8.982598 v 4.491295 c 6.189481,0 11.220419,5.03099 11.220419,11.220493 h 4.491345 c 0,-8.681105 -7.030615,-15.711788 -15.711764,-15.711788 z"
          inkscape:connector-curvature="0"

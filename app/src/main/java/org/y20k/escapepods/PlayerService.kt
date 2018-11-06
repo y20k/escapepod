@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
+import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
 
@@ -30,7 +31,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
     /* Interface used to communicate back to activity */
     interface PlayerServiceListener {
-        fun onPlaybackStateChanged() {
+        fun onPlaybackStateChanged(playbackState: Int) {
         }
     }
 
@@ -40,6 +41,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
 
     /* Main class variables */
+    var playbackState = Keys.STATE_STOPPED
     private val downloadServiceBinder: LocalBinder = LocalBinder()
     private var playerServiceListener: PlayerServiceListener? = null
 
@@ -93,7 +95,11 @@ class PlayerService(): MediaBrowserServiceCompat() {
     /* Toggles play and pause */
     fun togglePlayback(): Boolean {
         LogHelper.v(TAG, "Toggling playback")
-        playerServiceListener?.onPlaybackStateChanged()
+        when (playbackState) {
+            Keys.STATE_STOPPED -> playbackState = Keys.STATE_PLAYING
+            Keys.STATE_PLAYING -> playbackState = Keys.STATE_STOPPED
+        }
+        playerServiceListener?.onPlaybackStateChanged(playbackState)
         return true
     }
 

@@ -19,6 +19,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -63,6 +65,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var playerService: PlayerService
     private lateinit var recyclerView: RecyclerView
     private lateinit var bottomSheet: ConstraintLayout
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var playerViews: Group
     private lateinit var playButton: ImageView
     private lateinit var cover: ImageView
@@ -71,6 +74,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceBound = false
+    private var playbackState: Int = Keys.STATE_STOPPED
 
 
     /* Overrides onCreate */
@@ -126,8 +130,10 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Overrides onPlaybackStateChanged from PlayerService */
-    override fun onPlaybackStateChanged() {
-        super.onPlaybackStateChanged()
+    override fun onPlaybackStateChanged(state: Int) {
+        super.onPlaybackStateChanged(state)
+        playbackState = state
+        animatePlaybackButtonStateTransition()
         LogHelper.v(TAG, "Playback State changed. Update UI.")
     }
 
@@ -209,18 +215,22 @@ class PodcastPlayerActivity: AppCompatActivity(),
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
         // show / hide the small player
-        var bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(view: View, slideOffset: Float) {
-                // do nothing
+                if (slideOffset < 0.25f) {
+                    playerViews.setVisibility(View.VISIBLE);
+                } else {
+                    playerViews.setVisibility(View.GONE);
+                }
             }
             override fun onStateChanged(view: View, state: Int) {
                 when (state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> playerViews.setVisibility(View.VISIBLE)
-                    BottomSheetBehavior.STATE_DRAGGING -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_DRAGGING -> Unit // do nothing
                     BottomSheetBehavior.STATE_EXPANDED -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_SETTLING -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  Unit // do nothing
+                    BottomSheetBehavior.STATE_SETTLING -> Unit // do nothing
                     BottomSheetBehavior.STATE_HIDDEN -> playerViews.setVisibility(View.VISIBLE)
                 }
             }
@@ -233,9 +243,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
             }
         }
 
-        // apply rounded corner mask to cover
-        cover.setImageResource(R.drawable.ic_default_cover_rss_icon_24dp)
+        // apply rounded corner mask to covers
         cover.setClipToOutline(true)
+        sheetCover.setClipToOutline(true)
 
         // main play/pause button
         playButton.setOnClickListener {
@@ -261,6 +271,65 @@ class PodcastPlayerActivity: AppCompatActivity(),
             swipeRefreshLayout.isRefreshing = false
         }
 
+    }
+
+
+    /* Initiates the rotation animation of the play button  */
+    private fun animatePlaybackButtonStateTransition() {
+        when (playbackState) {
+            Keys.STATE_STOPPED -> {
+                val rotateCounterClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise_fast)
+                rotateCounterClockwise.setAnimationListener(createAnimationListener())
+                when (bottomSheetBehavior.state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateCounterClockwise)
+                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons()
+                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateCounterClockwise)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons()
+                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons()
+                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons()
+                }
+            }
+            Keys.STATE_PLAYING -> {
+                val rotateClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_clockwise_slow)
+                rotateClockwise.setAnimationListener(createAnimationListener())
+                when (bottomSheetBehavior.state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateClockwise)
+                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons()
+                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateClockwise)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons()
+                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons()
+                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons()
+                }
+            }
+        }
+    }
+
+
+    /* Creates AnimationListener for play button */
+    private fun createAnimationListener(): Animation.AnimationListener {
+        return object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {}
+            override fun onAnimationEnd(animation: Animation) {
+                // set up button symbol and playback indicator afterwards
+                setupPlayButtons()
+            }
+            override fun onAnimationRepeat(animation: Animation) {}
+        }
+    }
+
+
+    /* Set up play/pause buttons */
+    private fun setupPlayButtons() {
+        when (playbackState) {
+            Keys.STATE_PLAYING -> {
+                playButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
+                sheetPlayButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
+            }
+            Keys.STATE_STOPPED -> {
+                playButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
+                sheetPlayButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
+            }
+        }
     }
 
 
@@ -395,6 +464,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
             playerService = binder.getService()
             playerService.initialize(this@PodcastPlayerActivity, false)
             playerServiceBound = true
+            // update playback state
+            playbackState = playerService.playbackState
+            setupPlayButtons()
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {

@@ -19,6 +19,7 @@
             android:layout_height="96dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/shape_cover_small"
             android:contentDescription="@string/descr_card_podcast_cover"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

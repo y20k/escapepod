@@ -17,7 +17,7 @@ Free and Open Podcast Player #experiment #learningkotlin
 * that's all folks
 
 ## Blueprint
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/app/assets/escapepod-drawing-01.png" width="300" />
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/escapepod-drawing-01.png" width="300" />
 
 ## Early User Interface Ideas (October 2018)
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/app/assets/early-ui-screenshot-2018-10-18.png" width="300" />
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/early-ui-screenshot-2018-10-18.png" width="300" />

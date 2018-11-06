@@ -54,6 +54,13 @@
     <string name="podcast_list_button_toggle_show_older_episodes">Older Episodes</string>
     <string name="podcast_list_button_add_new_podcast">Add new podcast</string>
 
+    <!-- Notification -->
+    <string name="notification_play">Play</string>
+    <string name="notification_pause">Pause</string>
+    <string name="notification_playing">Playing</string>
+    <string name="notification_channel_playback_name">Playback Controls</string>
+    <string name="notification_channel_playback_description">Playback controls, episode name and logo.</string>
+
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an escapepod in space</string>
     <string name="descr_card_podcast_cover">Podcast cover image</string>
@@ -67,6 +74,7 @@
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
     <string name="descr_player_podcast_name">Name of current podcast</string>
     <string name="descr_player_episode_name">Name of current episode</string>
+    <string name="descr_expanded_player_sleep_timer_button">Sleep timer button</string>
     <string name="descr_expanded_player_podcast_cover">Large podcast cover image</string>
     <string name="descr_expanded_player_episode_name">Name of current episode</string>
     <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
@@ -79,5 +87,6 @@
     <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
     <string name="sample_text_episode_0_remaining_time" translatable="false">-18:00</string>
+
 
 </resources>
