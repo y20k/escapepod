@@ -15,13 +15,17 @@
 package org.y20k.escapepods
 
 import android.content.Intent
-import android.os.Binder
 import android.os.Bundle
-import android.os.IBinder
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.text.TextUtils
+import androidx.core.app.NotificationManagerCompat
 import androidx.media.MediaBrowserServiceCompat
+import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
+import org.y20k.escapepods.helpers.NotificationHelper
 
 
 /**
@@ -29,26 +33,31 @@ import org.y20k.escapepods.helpers.LogHelper
  */
 class PlayerService(): MediaBrowserServiceCompat() {
 
-    /* Interface used to communicate back to activity */
-    interface PlayerServiceListener {
-        fun onPlaybackStateChanged(playbackState: Int) {
-        }
-    }
-
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PlayerService::class.java)
 
 
     /* Main class variables */
-    var playbackState = Keys.STATE_STOPPED
-    private val downloadServiceBinder: LocalBinder = LocalBinder()
-    private var playerServiceListener: PlayerServiceListener? = null
+    private var collection: Collection = Collection()
+    private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var notificationManager: NotificationManagerCompat
+    private lateinit var notificationHelper: NotificationHelper
 
 
     /* Overrides onCreate */
     override fun onCreate() {
         super.onCreate()
+
+        // create media session
+        mediaSession = createMediaSession()
+
+        // initialize notification helper and notification manager
+        notificationHelper = NotificationHelper(this)
+        notificationManager = NotificationManagerCompat.from(this)
+
+        // initialize listener for headphone unplug
+        // todo
     }
 
 
@@ -58,61 +67,170 @@ class PlayerService(): MediaBrowserServiceCompat() {
     }
 
 
-    /* Overrides onBind */
-    override fun onBind(intent: Intent): IBinder? {
-        return downloadServiceBinder
+    /* Overrides onTaskRemoved */
+    override fun onTaskRemoved(rootIntent: Intent) {
+        super.onTaskRemoved(rootIntent)
+        stopSelf()
     }
 
 
-    /* Overrides onUnbind */
-    override fun onUnbind(intent: Intent?): Boolean {
-        return super.onUnbind(intent)
+    /* Overrides onDestroy */
+    override fun onDestroy() {
+        // release media session
+        mediaSession.run {
+            isActive = false
+            release()
+        }
     }
 
 
     /* Overrides onLoadChildren */
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        LogHelper.v(TAG, "OnLoadChildren called.")
+        // todo fill collection provider
     }
 
 
     /* Overrides onGetRoot */
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        // TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return null
+        // todo implement a package validator
+        // if not validated
+        return MediaBrowserServiceCompat.BrowserRoot(Keys.MEDIA_ID_EMPTY_ROOT, null)
+        // if validated - afterwards go load children
+        // return MediaBrowserServiceCompat.BrowserRoot(Keys.MEDIA_ID_ROOT, null)
     }
 
 
-    /* Initializes the service -> must ALWAYS be called */
-    fun initialize(listener: PlayerServiceListener?, update: Boolean) {
-        // set listener
-        playerServiceListener = listener
-        // load collection
-        // ...
+    /* Updates collection */
+    fun updateCollection(newCollection: Collection) {
+        collection = newCollection
+        LogHelper.w(TAG, "New Collection: ${collection.toString()}")
     }
 
 
-    /* Toggles play and pause */
-    fun togglePlayback(): Boolean {
-        LogHelper.v(TAG, "Toggling playback")
-        when (playbackState) {
-            Keys.STATE_STOPPED -> playbackState = Keys.STATE_PLAYING
-            Keys.STATE_PLAYING -> playbackState = Keys.STATE_STOPPED
+    /* Starts playback */
+    private fun startPlayback() {
+        LogHelper.d(TAG, "Starting Playback")
+        mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING))
+        // notificationHelper.show(mediaSession.sessionToken, collection.podcasts[0], 0) // todo collection is empty here - change that
+    }
+
+
+    /* Stops / pauses playback */
+    private fun stopPlayback(dismissNotification: Boolean) {
+        LogHelper.d(TAG, "Pausing Playback")
+        mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED))
+        // notificationHelper.update(mediaSession.sessionToken, collection.podcasts[0], 0) // todo collection is empty here - change that
+    }
+
+
+    /* Skips playback forward */
+    private fun skipForwardPlayback() {
+        LogHelper.d(TAG, "Skipping forward")
+    }
+
+
+    /* Skips playback back */
+    private fun skipBackPlayback() {
+        LogHelper.d(TAG, "Skipping back")
+    }
+
+
+    /* Removes the now playing notification. */
+    private fun removeNowPlayingNotification() {
+        stopForeground(true)
+    }
+
+
+    /* Creates media session */
+    private fun createMediaSession(): MediaSessionCompat {
+        val session = MediaSessionCompat(this, TAG)
+        session.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        session.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED))
+        session.setCallback(MediaSessionCallback())
+        setSessionToken(session.sessionToken)
+        return session
+    }
+
+
+    /* Creates playback state - actions for playback state to be used in media session callback */
+    private fun createPlaybackState(state: Int): PlaybackStateCompat {
+        val skipActions: Long = PlaybackStateCompat.ACTION_FAST_FORWARD or PlaybackStateCompat.ACTION_REWIND
+        when(state) {
+            PlaybackStateCompat.STATE_PLAYING -> {
+                return PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_PLAYING, 0, 0f)
+                        .setActions(PlaybackStateCompat.ACTION_STOP or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or skipActions)
+                        .build()
+            }
+            else -> {
+                return PlaybackStateCompat.Builder()
+                        .setState(PlaybackStateCompat.STATE_STOPPED, 0, 0f)
+                        .setActions(PlaybackStateCompat.ACTION_PLAY or skipActions)
+                        .build()
+            }
         }
-        playerServiceListener?.onPlaybackStateChanged(playbackState)
-        return true
     }
+
 
 
     /*
-     * Inner class: Local Binder that returns this service
+     * Inner class: Handles callback from active media session
      */
-    inner class LocalBinder: Binder() {
-        fun getService(): PlayerService {
-            // return this instance of PlayerService so clients can call public methods
-            return this@PlayerService
+    private inner class MediaSessionCallback : MediaSessionCompat.Callback() {
+        override fun onPlay() {
+            // start playback
+            startPlayback()
         }
+
+        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+            startPlayback()
+        }
+
+        override fun onPause() {
+            // pause playback - keep notification
+            stopPlayback(false)
+        }
+
+        override fun onStop() {
+            // stop playback - remove notification
+            stopPlayback(true)
+        }
+
+        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+            // handle requests to begin playback from a search query (eg. Assistant, Android Auto, etc.)
+            LogHelper.i(TAG, "playFromSearch  query=$query extras=$extras")
+
+            if (TextUtils.isEmpty(query)) {
+                // user provided generic string e.g. 'Play music'
+                // mStation = Station(mStationListProvider.getFirstStation())
+            } else {
+                // try to match station name and voice query
+//                for (stationMetadata in mStationListProvider.getAllStations()) {
+//                    val words = query!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+//                    for (word in words) {
+//                        if (stationMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE).toLowerCase().contains(word.toLowerCase())) {
+//                            mStation = Station(stationMetadata)
+//                        }
+//                    }
+//                }
+            }
+            // start playback
+            startPlayback()
+        }
+
+        override fun onFastForward() {
+            super.onFastForward()
+            skipForwardPlayback()
+        }
+
+        override fun onRewind() {
+            super.onRewind()
+            skipBackPlayback()
+        }
+
     }
-
-
+    /*
+     * End of inner class
+     */
 }

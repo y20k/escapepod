@@ -94,6 +94,8 @@
             <intent-filter>
                 <action android:name="org.y20k.escapepods.action.PLAY" />
                 <action android:name="org.y20k.escapepods.action.PAUSE" />
+                <action android:name="org.y20k.escapepods.action.FORWARD" />
+                <action android:name="org.y20k.escapepods.action.REPLAY" />
                 <action android:name="org.y20k.escapepods.action.DISMISS" />
             </intent-filter>
             <intent-filter>

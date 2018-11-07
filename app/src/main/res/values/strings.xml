@@ -2,10 +2,6 @@
 
     <!-- App Name -->
     <string name="app_name">Escapepods</string>
-    
-    <!-- Notification Channel -->
-    <string name="notification_channel">Escapepods_Channel_ID</string>
-    <string name="notification_channel_description">Channel ID for Escapepods</string>
 
     <!-- Dialogs -->
     <string name="dialog_generic_button_okay">Okay</string>
@@ -57,9 +53,11 @@
     <!-- Notification -->
     <string name="notification_play">Play</string>
     <string name="notification_pause">Pause</string>
+    <string name="notification_skip_forward">Skip forward</string>
+    <string name="notification_skip_back">Skip back</string>
     <string name="notification_playing">Playing</string>
-    <string name="notification_channel_playback_name">Playback Controls</string>
-    <string name="notification_channel_playback_description">Playback controls, episode name and logo.</string>
+    <string name="notification_now_playing_channel_name">Playback Controls</string>
+    <string name="notification_now_playing_channel_description">Playback controls, episode name and logo.</string>
 
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an escapepod in space</string>

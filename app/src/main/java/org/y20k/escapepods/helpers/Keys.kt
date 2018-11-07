@@ -23,13 +23,34 @@ object Keys {
     // version numbers
     const val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
 
-    // playback state
-    const val STATE_STOPPED: Int = 0
-    const val STATE_PLAYING: Int = 1
+    // user agent
+    const val USER_AGENT = "org.y20k.escapepods"
 
     // notification
-    const val PLAYER_SERVICE_NOTIFICATION_ID: Int = 42
-    const val NOTIFICATION_CHANNEL_ID_PLAYBACK_CHANNEL = "notificationChannelIdPlaybackChannel"
+    const val NOTIFICATION_NOW_PLAYING_ID: Int = 42
+    const val NOTIFICATION_NOW_PLAYING_CHANNEL = "notificationChannelIdPlaybackChannel"
+
+    // intent actions
+    const val ACTION_PLAY = "org.y20k.escapepods.action.PLAY"
+    const val ACTION_PAUSE = "org.y20k.escapepods.action.PAUSE"
+    const val ACTION_FORWARD = "org.y20k.escapepods.action.FORWARD"
+    const val ACTION_REPLAY = "org.y20k.escapepods.action.REPLAY"
+    const val ACTION_DISMISS = "org.y20k.escapepods.action.DISMISS"
+    const val ACTION_PLAYBACK_STATE_CHANGED = "org.y20k.escapepods.action.PLAYBACK_STATE_CHANGED"
+    const val ACTION_METADATA_CHANGED = "org.y20k.escapepods.action.METADATA_CHANGED"
+    const val ACTION_SHOW_PLAYER = "org.y20k.escapepods.action.HOW_PLAYER"
+    const val ACTION_TIMER_RUNNING = "org.y20k.escapepods.action.TIMER_RUNNING"
+    const val ACTION_TIMER_START = "org.y20k.escapepods.action.TIMER_START"
+    const val ACTION_TIMER_STOP = "org.y20k.escapepods.action.TIMER_STOP"
+    const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepods.action.COLLECTION_CHANGED"
+    const val ACTION_UPDATE_COLLECTION: String = "org.y20k.escapepods.action.UPDATE_COLLECTION"
+    const val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "org.y20k.escapepods.action.DOWNLOAD_PROGRESS_UPDATE"
+
+    // intent extras
+    const val EXTRA_EPISODE: String = "EPISODE"
+    const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
+    const val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"
+    const val EXTRA_DOWNLOAD_PROGRESS: String  = "DOWNLOAD_PROGRESS"
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
@@ -43,6 +64,10 @@ object Keys {
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
     const val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
+
+    // media browser
+    const val MEDIA_ID_ROOT = "__ROOT__"
+    const val MEDIA_ID_EMPTY_ROOT = "__EMPTY__"
 
     // view types
     const val VIEW_TYPE_ADD_NEW: Int = 1
@@ -61,7 +86,6 @@ object Keys {
 
     // dialog results
     const val DIALOG_RESULT_DEFAULT: Int = -1
-
 
     // file types
     const val FILE_TYPE_RSS: Int = 1
@@ -94,16 +118,6 @@ object Keys {
 
     // sizes (in dp)
     const val SIZE_COVER_SMALL: Int = 96
-
-
-    // intent actions and extras
-    const val ACTION_SHOW_PLAYER: String = "SHOW_PLAYER"
-    const val ACTION_COLLECTION_CHANGED: String = "COLLECTION_CHANGED"
-    const val ACTION_UPDATE_COLLECTION: String = "UPDATE_COLLECTION"
-    const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
-    const val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "DOWNLOAD_PROGRESS_UPDATE"
-    const val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"
-    const val EXTRA_DOWNLOAD_PROGRESS: String  = "DOWNLOAD_PROGRESS"
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"

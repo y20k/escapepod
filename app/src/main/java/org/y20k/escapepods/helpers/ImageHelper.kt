@@ -35,15 +35,15 @@ object ImageHelper {
     private val TAG: String = LogHelper.makeLogTag(ImageHelper::class.java)
 
 
-    /* get a small version of the podcast cover */
+    /* Get a scaled version of the podcast cover */
     fun getPodcastCover(context: Context, imageUri: Uri, coverSize: Int): Bitmap {
         val size: Int = (coverSize * getDensityScalingFactor(context)).toInt()
         return decodeSampledBitmapFromUri(context, imageUri, size, size)
     }
 
 
-    /* Extracts color from station icon */
-    fun getStationImageColor(context: Context, imageUri: Uri): Int {
+    /* Extracts color from an image */
+    fun getMainColor(context: Context, imageUri: Uri): Int {
 
         // extract color palette from station image
         val palette: Palette = Palette.from(decodeSampledBitmapFromUri(context, imageUri, 72, 72)).generate()
@@ -61,7 +61,7 @@ object ImageHelper {
             return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
         } else {
             // default return
-            return context.resources.getColor(R.color.escapepods_grey_lighter, null)
+            return context.resources.getColor(R.color.escapepods_grey_light, null)
         }
     }
 

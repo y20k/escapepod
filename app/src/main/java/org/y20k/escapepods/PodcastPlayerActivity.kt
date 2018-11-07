@@ -15,9 +15,13 @@
 package org.y20k.escapepods
 
 import android.content.*
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.MediaControllerCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -50,7 +54,6 @@ import org.y20k.escapepods.xml.OpmlHelper
  * PodcastPlayerActivity class
  */
 class PodcastPlayerActivity: AppCompatActivity(),
-        PlayerService.PlayerServiceListener,
         AddPodcastDialog.AddPodcastDialogListener,
         MeteredNetworkDialog.MeteredNetworkDialogListener,
         OpmlImportDialog.OpmlImportDialogListener,
@@ -61,8 +64,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Main class variables */
+    private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var collectionViewModel: CollectionViewModel
-    private lateinit var playerService: PlayerService
     private lateinit var recyclerView: RecyclerView
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -73,8 +76,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var sheetCover: ImageView
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
-    private var playerServiceBound = false
-    private var playbackState: Int = Keys.STATE_STOPPED
+    private var playerServiceConnected = false
 
 
     /* Overrides onCreate */
@@ -90,6 +92,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
         // create collection adapter
         collectionAdapter = CollectionAdapter(this)
+
+        // Create MediaBrowserCompat
+        mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallbacks, null)
 
         // find views
         setContentView(R.layout.activity_podcast_player)
@@ -107,10 +112,21 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Overrides onResume */
+    public override fun onStart() {
+        super.onStart()
+        // connect to PlayerService
+        mediaBrowser.connect()
+    }
+
+
+
+    /* Overrides onResume */
     override fun onResume() {
         super.onResume()
-        // bind to PlayerService
-        bindService(Intent(this, PlayerService::class.java), playerServiceConnection, Context.BIND_AUTO_CREATE)
+//        // bind to PlayerService
+//        bindService(Intent(this, PlayerService::class.java), playerServiceConnection, Context.BIND_AUTO_CREATE)
+        // assign volume buttons to music volume
+        volumeControlStream = AudioManager.STREAM_MUSIC
         // listen for collection changes initiated by DownloadHelper
         LocalBroadcastManager.getInstance(this).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
         // reload collection // todo check if necessary
@@ -124,17 +140,17 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onPause() {
         super.onPause()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(collectionChangedReceiver)
-        // unbind PlayerService
-        unbindService(playerServiceConnection)
+//        // unbind PlayerService
+//        unbindService(playerServiceConnection)
     }
 
 
-    /* Overrides onPlaybackStateChanged from PlayerService */
-    override fun onPlaybackStateChanged(state: Int) {
-        super.onPlaybackStateChanged(state)
-        playbackState = state
-        animatePlaybackButtonStateTransition()
-        LogHelper.v(TAG, "Playback State changed. Update UI.")
+    public override fun onStop() {
+        super.onStop()
+        // (see "stay in sync with the MediaSession")
+        MediaControllerCompat.getMediaController(this)?.unregisterCallback(controllerCallback)
+        mediaBrowser.disconnect()
+        playerServiceConnected = false
     }
 
 
@@ -247,18 +263,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
         cover.setClipToOutline(true)
         sheetCover.setClipToOutline(true)
 
-        // main play/pause button
-        playButton.setOnClickListener {
-            LogHelper.v(TAG, "Tap on main play button registered") // todo remove
-            playerService.togglePlayback()
-        }
-
-        // bottom sheet play/pause button
-        sheetPlayButton.setOnClickListener {
-            LogHelper.v(TAG, "Tap on play button in sheet registered") // todo remove
-            playerService.togglePlayback()
-        }
-
         // listen for swipe to refresh event
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
@@ -274,44 +278,82 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Initiates the rotation animation of the play button  */
-    private fun animatePlaybackButtonStateTransition() {
-        when (playbackState) {
-            Keys.STATE_STOPPED -> {
-                val rotateCounterClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise_fast)
-                rotateCounterClockwise.setAnimationListener(createAnimationListener())
-                when (bottomSheetBehavior.state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateCounterClockwise)
-                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons()
-                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateCounterClockwise)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons()
-                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons()
-                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons()
-                }
+    /* Builds playback controls - used after connected to player service */
+    private fun buildPlaybackControls() {
+        val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
+        val playbackState = mediaController.playbackState
+
+        // set up the play button - to offer play or pause
+        setupPlayButtons(playbackState.state)
+
+        // main play/pause button
+        playButton.setOnClickListener {
+            LogHelper.v(TAG, "Tap on main play button registered") // todo remove
+            when (mediaController.playbackState.state) {
+                PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
+                else -> mediaController.transportControls.play()
             }
-            Keys.STATE_PLAYING -> {
+        }
+
+        // bottom sheet play/pause button
+        sheetPlayButton.setOnClickListener {
+            LogHelper.v(TAG, "Tap on play button in sheet registered") // todo remove
+            LogHelper.v(TAG, "Tap on main play button registered") // todo remove
+            when (mediaController.playbackState.state) {
+                PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
+                else -> mediaController.transportControls.play()
+            }
+        }
+
+        // display the initial state
+        val metadata = mediaController.metadata
+        val pbState = mediaController.playbackState
+
+        // register a callback to stay in sync
+        mediaController.registerCallback(controllerCallback)
+    }
+
+
+    /* Initiates the rotation animation of the play button  */
+    private fun animatePlaybackButtonStateTransition(playbackState: Int) {
+        when (playbackState) {
+            PlaybackStateCompat.STATE_PLAYING -> {
                 val rotateClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_clockwise_slow)
-                rotateClockwise.setAnimationListener(createAnimationListener())
+                rotateClockwise.setAnimationListener(createAnimationListener(playbackState))
                 when (bottomSheetBehavior.state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateClockwise)
-                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons()
+                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons(playbackState)
                     BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateClockwise)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons()
-                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons()
-                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons()
+                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons(playbackState)
+                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons(playbackState)
+                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons(playbackState)
                 }
             }
+
+            else -> {
+                val rotateCounterClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise_fast)
+                rotateCounterClockwise.setAnimationListener(createAnimationListener(playbackState))
+                when (bottomSheetBehavior.state) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateCounterClockwise)
+                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons(playbackState)
+                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateCounterClockwise)
+                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons(playbackState)
+                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons(playbackState)
+                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons(playbackState)
+                }
+            }
+
         }
     }
 
 
     /* Creates AnimationListener for play button */
-    private fun createAnimationListener(): Animation.AnimationListener {
+    private fun createAnimationListener(playbackState: Int): Animation.AnimationListener {
         return object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
                 // set up button symbol and playback indicator afterwards
-                setupPlayButtons()
+                setupPlayButtons(playbackState)
             }
             override fun onAnimationRepeat(animation: Animation) {}
         }
@@ -319,13 +361,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Set up play/pause buttons */
-    private fun setupPlayButtons() {
+    private fun setupPlayButtons(playbackState: Int ) {
         when (playbackState) {
-            Keys.STATE_PLAYING -> {
+            PlaybackStateCompat.STATE_PLAYING -> {
                 playButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
                 sheetPlayButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
             }
-            Keys.STATE_STOPPED -> {
+            else -> {
                 playButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
                 sheetPlayButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
             }
@@ -401,24 +443,24 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun handleStartIntent() {
         if (intent.action != null) {
             when (intent.action) {
-                Keys.ACTION_SHOW_PLAYER -> handlesShowPlayer()
+                Keys.ACTION_SHOW_PLAYER -> handleShowPlayer()
                 Intent.ACTION_VIEW -> handleViewIntent()
             }
         }
+        // clear intent action to prevent double calls
+        intent.setAction("")
     }
 
 
     /* Handles ACTION_SHOW_PLAYER request from notification */
-    private fun handlesShowPlayer() {
-        // todo check if intent action needs to be cleared
-
+    private fun handleShowPlayer() {
+        LogHelper.i(TAG, "Tap on notification registered.")
         // todo implement
     }
 
 
     /* Handles ACTION_VIEW request to add Podcast or import OPML */
     private fun handleViewIntent() {
-        // todo check if intent action needs to be cleared
         val contentUri: Uri = intent.data
         if (contentUri != null && contentUri.scheme != null) {
             when {
@@ -438,6 +480,10 @@ class PodcastPlayerActivity: AppCompatActivity(),
             collection = it
             // update ui
             updateUserInterface()
+//            // hand over collection to player service
+//            if (playerServiceConnected && collection.podcasts.isNotEmpty()) {
+//                playerService.updateCollection(collection)
+//            }
             // start worker that updates the podcast collection and observe download work
             WorkerHelper.schedulePeriodicUpdateWorker(collection.lastUpdate.time)
         })
@@ -454,24 +500,86 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /*
-     * Defines callbacks for service binding, passed to bindService()
+     * Defines callbacks for media browser service connection
      */
-    private val playerServiceConnection = object: ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            // get service from binder
-            val binder = service as PlayerService.LocalBinder
-            playerService = binder.getService()
-            playerService.initialize(this@PodcastPlayerActivity, false)
-            playerServiceBound = true
-            // update playback state
-            playbackState = playerService.playbackState
-            setupPlayButtons()
+    private val mediaBrowserConnectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+        override fun onConnected() {
+            // get the token for the MediaSession
+            mediaBrowser.sessionToken.also { token ->
+                // create a MediaControllerCompat
+                val mediaController = MediaControllerCompat(this@PodcastPlayerActivity, token)
+                // save the controller
+                MediaControllerCompat.setMediaController(this@PodcastPlayerActivity, mediaController)
+            }
+            playerServiceConnected = true
+            // finish building the UI
+            buildPlaybackControls()
         }
 
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            playerServiceBound = false
+        override fun onConnectionSuspended() {
+            playerServiceConnected = false
+            // service has crashed. Disable transport controls until it automatically reconnects
+        }
+
+        override fun onConnectionFailed() {
+            playerServiceConnected = false
+            // service has refused our connection
         }
     }
+
+
+    /*
+     * Defines callbacks for media browser service subscription
+     */
+    private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
+        override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
+            super.onChildrenLoaded(parentId, children)
+            // todo get collection from here and fill recycler adapter - first load children in service!!
+        }
+
+        override fun onError(parentId: String) {
+            super.onError(parentId)
+        }
+    }
+
+
+    /*
+     * Defines callbacks for state changes of player service
+     */
+    private var controllerCallback = object : MediaControllerCompat.Callback() {
+
+        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
+            LogHelper.d(TAG, "Metadata changed. Update UI.")
+        }
+
+        override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
+            LogHelper.d(TAG, "Playback State changed. Update UI.")
+            animatePlaybackButtonStateTransition(playbackState.state)
+        }
+    }
+
+
+
+//    /*
+//     * Defines callbacks for service binding, passed to bindService()
+//     */
+//    private val playerServiceConnection = object: ServiceConnection {
+//
+//        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+//            // get service from binder
+//            val binder = service as PlayerService.LocalBinder
+//            playerService = binder.getService()
+//            playerService.initialize(this@PodcastPlayerActivity, false)
+//            playerServiceConnected = true
+//            // hand over collection to service
+//            if (collection.podcasts.isNotEmpty()) {
+//                playerService.updateCollection(collection)
+//            }
+//        }
+//
+//        override fun onServiceDisconnected(arg0: ComponentName) {
+//            playerServiceConnected = false
+//        }
+//    }
 
 }
