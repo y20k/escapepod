@@ -65,6 +65,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Main class variables */
     private lateinit var mediaBrowser: MediaBrowserCompat
+    private lateinit var mediaController: MediaControllerCompat
     private lateinit var collectionViewModel: CollectionViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var bottomSheet: ConstraintLayout
@@ -281,10 +282,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Builds playback controls - used after connected to player service */
     private fun buildPlaybackControls() {
         val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
-        val playbackState = mediaController.playbackState
 
         // set up the play button - to offer play or pause
-        setupPlayButtons(playbackState.state)
+        setupPlayButtons(mediaController.playbackState.state)
 
         // main play/pause button
         playButton.setOnClickListener {
@@ -514,6 +514,12 @@ class PodcastPlayerActivity: AppCompatActivity(),
             playerServiceConnected = true
             // finish building the UI
             buildPlaybackControls()
+
+            mediaBrowser.subscribe(Keys.MEDIA_ID_ROOT, mediaBrowserSubscriptionCallback)
+
+            // todo test send command to playerservice
+//            val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
+//            mediaController.sendCommand("TESTCOMMAND", null, ResultReceiver()) // todo implement a ResultReceiver at PodcastPlayerActivity
         }
 
         override fun onConnectionSuspended() {
@@ -528,12 +534,14 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+
     /*
      * Defines callbacks for media browser service subscription
      */
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             super.onChildrenLoaded(parentId, children)
+            LogHelper.e(TAG, "onChildrenLoaded called in Activity. Result: ${children.toString()}") // todo remove
             // todo get collection from here and fill recycler adapter - first load children in service!!
         }
 
@@ -558,28 +566,5 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
     }
 
-
-
-//    /*
-//     * Defines callbacks for service binding, passed to bindService()
-//     */
-//    private val playerServiceConnection = object: ServiceConnection {
-//
-//        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-//            // get service from binder
-//            val binder = service as PlayerService.LocalBinder
-//            playerService = binder.getService()
-//            playerService.initialize(this@PodcastPlayerActivity, false)
-//            playerServiceConnected = true
-//            // hand over collection to service
-//            if (collection.podcasts.isNotEmpty()) {
-//                playerService.updateCollection(collection)
-//            }
-//        }
-//
-//        override fun onServiceDisconnected(arg0: ComponentName) {
-//            playerServiceConnected = false
-//        }
-//    }
 
 }

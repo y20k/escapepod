@@ -20,11 +20,11 @@ package org.y20k.escapepods.helpers
  */
 object Keys {
 
+    // application name
+    const val APPLICATION_NAME: String = "Escapepods"
+
     // version numbers
     const val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
-
-    // user agent
-    const val USER_AGENT = "org.y20k.escapepods"
 
     // notification
     const val NOTIFICATION_NOW_PLAYING_ID: Int = 42
@@ -101,6 +101,9 @@ object Keys {
     const val MIME_TYPE_MP3 = "audio/mpeg3"
     const val MIME_TYPE_XML = "text/xml"
     const val MIME_TYPE_UNSUPPORTED = "unsupported"
+
+    // media genre
+    const val MEDIA_GENRE = "Podcast"
 
     // folder names
     const val FOLDER_COLLECTION: String = "collection"

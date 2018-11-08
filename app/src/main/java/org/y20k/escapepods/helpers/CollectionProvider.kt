@@ -17,6 +17,10 @@ package org.y20k.escapepods.helpers
 
 import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Podcast
 import java.util.*
 
 
@@ -33,6 +37,12 @@ class CollectionProvider {
     private val episodeListById: TreeMap<String, MediaMetadataCompat> = TreeMap()
     private enum class State { NON_INITIALIZED, INITIALIZING, INITIALIZED }
     private var currentState = State.NON_INITIALIZED
+
+
+    /* Callback used by PlayerService */
+    interface EpisodeListProviderCallback {
+        fun onEpisodeListReady(success: Boolean)
+    }
 
 
     /* Return list of all available episodes */
@@ -100,7 +110,7 @@ class CollectionProvider {
 
 
     /* Return current state */
-     fun isInitialized(): Boolean {
+    fun isInitialized(): Boolean {
         return currentState == State.INITIALIZED
     }
 
@@ -111,21 +121,55 @@ class CollectionProvider {
     }
 
 
-//    /* Creates MediaMetadata from station */
-//    private fun buildMediaMetadata(station:Station):MediaMetadataCompat {
-//
-//        return MediaMetadataCompat.Builder()
-//                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, station.getStationId())
-//                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, station.getStreamUri().toString())
-//                //                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, station.getStationName())
-//                //                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, station.getStationName())
-//                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Radio")
-//                //                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, iconUrl)
-//                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, station.getStationName())
-//                //                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
-//                //                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)
-//                .build()
-//    }
+    /* Gets list of episodes and caches track information in TreeMap */
+    fun retrieveMedia(context: Context, episodeListProviderCallback: EpisodeListProviderCallback) {
+        if (currentState == State.INITIALIZED) {
+            // already initialized, set callback immediately
+            episodeListProviderCallback.onEpisodeListReady(true)
+        } else {
+            // load collection
+            val collection: Collection = loadCollection(context)
+            // fill episode list
+            for (podcast in collection.podcasts) {
+                for (episodeId: Int in podcast.episodes.indices) {
+                    // add only episodes with downloaded audio
+                    if (podcast.episodes[episodeId].audio.isNotEmpty()) {
+                        LogHelper.e(TAG, "Adding ID = $episodeId / Episodes = ${podcast.episodes.size} / Name = ${podcast.episodes[episodeId].title}") // todo remove
+                        val item: MediaMetadataCompat = buildMediaMetadata(podcast, episodeId)
+                        val mediaId: String = item.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)
+                        episodeListById.put(mediaId, item)
+                    }
+                }
+            }
+            // afterwards: update state and set callback
+            currentState = State.INITIALIZED
+            episodeListProviderCallback.onEpisodeListReady(true)
+        }
+    }
 
+
+    /* Reads podcast collection from storage using GSON */
+    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
+        // get JSON from text file async
+        val result = async { FileHelper.readCollection(context) }
+        // wait for result and return collection
+        return@runBlocking result.await()
+    }
+
+
+    /* Creates MediaMetadata for one episode */
+    private fun buildMediaMetadata(podcast: Podcast, episodeId: Int):MediaMetadataCompat {
+        return MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, podcast.episodes[episodeId].remoteAudioFileLocation)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, podcast.episodes[episodeId].audio)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, Keys.APPLICATION_NAME)
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, Keys.MEDIA_GENRE)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.cover)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, podcast.episodes[episodeId].title)
+                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, podcast.episodes.size.toLong())
+                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, episodeId.toLong())
+                .build()
+    }
 
 }
