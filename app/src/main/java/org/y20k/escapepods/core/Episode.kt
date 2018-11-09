@@ -14,7 +14,9 @@
 
 package org.y20k.escapepods.core
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
+import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.helpers.Keys
 import java.text.DateFormat
 import java.util.*
@@ -23,15 +25,16 @@ import java.util.*
 /*
  * Episode class
  */
-class Episode (@Expose var guid: String = "",
-               @Expose var title: String = "",
-               @Expose var description: String = "",
-               @Expose var audio: String = "",
-               @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
-               @Expose var publicationDate: Date = Calendar.getInstance().time,
-               @Expose var played: Boolean = false,
-               @Expose var remoteCoverFileLocation: String = "",
-               @Expose var remoteAudioFileLocation: String = "") {
+@Parcelize
+data class Episode (@Expose var guid: String = "",
+                    @Expose var title: String = "",
+                    @Expose var description: String = "",
+                    @Expose var audio: String = "",
+                    @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
+                    @Expose var publicationDate: Date = Calendar.getInstance().time,
+                    @Expose var played: Boolean = false,
+                    @Expose var remoteCoverFileLocation: String = "",
+                    @Expose var remoteAudioFileLocation: String = ""): Parcelable {
 
 
     /* overrides toString method */
@@ -58,6 +61,5 @@ class Episode (@Expose var guid: String = "",
     fun getDateString(dateStyle: Int): String {
         return DateFormat.getDateInstance(dateStyle, Locale.getDefault()).format(publicationDate)
     }
-
 
 }

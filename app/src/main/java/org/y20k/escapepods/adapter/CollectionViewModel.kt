@@ -15,13 +15,18 @@
 package org.y20k.escapepods.adapter
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.FileHelper
+import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
 
@@ -30,28 +35,42 @@ import org.y20k.escapepods.helpers.LogHelper
  */
 class CollectionViewModel(application: Application) : AndroidViewModel(application) {
 
-
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(CollectionViewModel::class.java)
 
 
     /* Main class variables */
-    private lateinit var collectionViewModel: MutableLiveData<Collection>
+    val collectionLiveData: MutableLiveData<Collection>
+    private var collectionChangedReceiver: BroadcastReceiver
 
 
-    /* Initializes collection live data */
-    fun getCollection(): LiveData<Collection> {
-        if (!::collectionViewModel.isInitialized) {
-            collectionViewModel = MutableLiveData()
-            loadCollection()
-        }
-        return collectionViewModel
+    /* Init constructor */
+    init {
+        // create empty view model
+        collectionLiveData = MutableLiveData<Collection>()
+        // load collection
+        loadCollection()
+        // create and register collection changed receiver
+        collectionChangedReceiver = createCollectionChangedReceiver()
+        LocalBroadcastManager.getInstance(application).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
     }
 
 
-    /* Reloads collection from storage */
-    fun reload() {
-        loadCollection()
+    /* Overrides onCleared */
+    override fun onCleared() {
+        super.onCleared()
+        LocalBroadcastManager.getInstance(getApplication()).unregisterReceiver(collectionChangedReceiver)
+    }
+
+
+    /* Creates the collectionChangedReceiver - handles Keys.ACTION_COLLECTION_CHANGED */
+    private fun createCollectionChangedReceiver(): BroadcastReceiver {
+        return object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                // load collection and update collectionLiveData
+                loadCollection()
+            }
+        }
     }
 
 
@@ -61,7 +80,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         // get JSON from text file async
         val result = async { FileHelper.readCollection(getApplication()) }
         // wait for result and update collection view model
-        collectionViewModel.value = result.await()
+        collectionLiveData.value = result.await()
     }
+
 
 }

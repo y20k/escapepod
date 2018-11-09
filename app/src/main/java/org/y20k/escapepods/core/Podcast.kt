@@ -14,7 +14,9 @@
 
 package org.y20k.escapepods.core
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
+import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.helpers.Keys
 import java.util.*
 
@@ -22,13 +24,14 @@ import java.util.*
 /*
  * Podcast class
  */
-class Podcast(@Expose var name: String = "",
-              @Expose var description: String = "",
-              @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
-              @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
-              @Expose var lastUpdate: Date = Calendar.getInstance().time,
-              @Expose var remoteImageFileLocation: String = "",
-              @Expose var remotePodcastFeedLocation: String = "") {
+@Parcelize
+data class Podcast(@Expose var name: String = "",
+                   @Expose var description: String = "",
+                   @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
+                   @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
+                   @Expose var lastUpdate: Date = Calendar.getInstance().time,
+                   @Expose var remoteImageFileLocation: String = "",
+                   @Expose var remotePodcastFeedLocation: String = ""): Parcelable {
 
 
     /* overrides toString method */

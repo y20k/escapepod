@@ -14,7 +14,9 @@
 
 package org.y20k.escapepods.core
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
+import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.helpers.Keys
 import java.util.*
 
@@ -22,9 +24,11 @@ import java.util.*
 /*
  * Collection class
  */
-class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
-                 @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
-                 @Expose var lastUpdate: Date = Date(0)) {
+@Parcelize
+data class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
+                      @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
+                      @Expose var lastUpdate: Date = Date(0)): Parcelable {
+
 
     /* overrides toString method */
     override fun toString(): String {
@@ -37,8 +41,6 @@ class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podc
         }
         return stringBuilder.toString()
     }
-
-
 
 }
 

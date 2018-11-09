@@ -225,7 +225,8 @@ object CollectionHelper {
         val result = async { FileHelper.saveCollection(context, collection) }
         // wait for result and broadcast update (to activity)
         result.await()
-        LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(Keys.ACTION_COLLECTION_CHANGED))
+        // broadcast collection
+        sendCollectionBroadcast(context)
     }
 
 
@@ -234,6 +235,14 @@ object CollectionHelper {
         LogHelper.v(TAG, "Exporting podcast collection as OPML")
         // export collection as OPML - launch = fire & forget (no return value from save collection)
         GlobalScope.launch { FileHelper.exportCollection(context, collection) }
+    }
+
+
+    /* Sends a broadcast containing the collction as parcel */
+    fun sendCollectionBroadcast(context: Context) {
+        val collectionChangedIntent = Intent()
+        collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
+        LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
     }
 
 

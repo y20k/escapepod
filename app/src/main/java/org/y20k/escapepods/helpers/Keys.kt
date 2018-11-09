@@ -47,6 +47,8 @@ object Keys {
     const val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "org.y20k.escapepods.action.DOWNLOAD_PROGRESS_UPDATE"
 
     // intent extras
+    const val EXTRA_COLLECTION: String = "COLLECTION"
+    const val EXTRA_PODCAST: String = "PODCAST"
     const val EXTRA_EPISODE: String = "EPISODE"
     const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"

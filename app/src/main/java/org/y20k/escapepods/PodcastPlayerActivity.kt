@@ -14,7 +14,8 @@
 
 package org.y20k.escapepods
 
-import android.content.*
+import android.content.ComponentName
+import android.content.Intent
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
@@ -33,7 +34,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -124,14 +124,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onResume */
     override fun onResume() {
         super.onResume()
-//        // bind to PlayerService
-//        bindService(Intent(this, PlayerService::class.java), playerServiceConnection, Context.BIND_AUTO_CREATE)
         // assign volume buttons to music volume
         volumeControlStream = AudioManager.STREAM_MUSIC
-        // listen for collection changes initiated by DownloadHelper
-        LocalBroadcastManager.getInstance(this).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
-        // reload collection // todo check if necessary
-        collectionViewModel.reload()
         // handle start intent
         handleStartIntent()
     }
@@ -140,9 +134,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /* Overrides onPause */
     override fun onPause() {
         super.onPause()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(collectionChangedReceiver)
-//        // unbind PlayerService
-//        unbindService(playerServiceConnection)
     }
 
 
@@ -475,27 +466,14 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel() {
-        collectionViewModel.getCollection().observe(this, Observer<Collection> { it ->
+        collectionViewModel.collectionLiveData.observe(this, Observer<Collection> { it ->
             // update collection
             collection = it
             // update ui
             updateUserInterface()
-//            // hand over collection to player service
-//            if (playerServiceConnected && collection.podcasts.isNotEmpty()) {
-//                playerService.updateCollection(collection)
-//            }
             // start worker that updates the podcast collection and observe download work
             WorkerHelper.schedulePeriodicUpdateWorker(collection.lastUpdate.time)
         })
-    }
-
-
-    /* Observe changes made by DownloadHelper */
-    private val collectionChangedReceiver = object: BroadcastReceiver(){
-        override fun onReceive(context: Context, intent: Intent) {
-            // reload collection
-            collectionViewModel.reload()
-        }
     }
 
 

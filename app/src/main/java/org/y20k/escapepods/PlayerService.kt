@@ -14,7 +14,10 @@
 
 package org.y20k.escapepods
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
@@ -22,6 +25,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.text.TextUtils
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.util.Util
 import org.y20k.escapepods.core.Collection
@@ -47,6 +51,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
+    private lateinit var collectionChangedReceiver: BroadcastReceiver
 
 
     /* Overrides onCreate */
@@ -64,6 +69,10 @@ class PlayerService(): MediaBrowserServiceCompat() {
         // initialize notification helper and notification manager
         notificationHelper = NotificationHelper(this)
         notificationManager = NotificationManagerCompat.from(this)
+
+        // create and register collection changed receiver
+        collectionChangedReceiver = createCollectionChangedReceiver()
+        LocalBroadcastManager.getInstance(application).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
 
         // initialize listener for headphone unplug
         // todo
@@ -222,6 +231,17 @@ class PlayerService(): MediaBrowserServiceCompat() {
             }
         }
         result.sendResult(mediaItems)
+    }
+
+
+    /* Creates the collectionChangedReceiver - handles Keys.ACTION_COLLECTION_CHANGED */
+    private fun createCollectionChangedReceiver(): BroadcastReceiver {
+        return object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                LogHelper.e(TAG, "Collection changed. Do something") // todo remove
+                // todo reload mediaItems
+            }
+        }
     }
 
 

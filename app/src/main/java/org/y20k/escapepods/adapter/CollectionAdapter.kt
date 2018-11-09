@@ -209,7 +209,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
-        collectionViewModel.getCollection().observe(owner, Observer<Collection> { it ->
+        collectionViewModel.collectionLiveData.observe(owner, Observer<Collection> { it ->
             // update collection
             collection = it
 

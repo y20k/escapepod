@@ -144,6 +144,7 @@ class CollectionProvider {
             // afterwards: update state and set callback
             currentState = State.INITIALIZED
             episodeListProviderCallback.onEpisodeListReady(true)
+
         }
     }
 
@@ -155,6 +156,10 @@ class CollectionProvider {
         // wait for result and return collection
         return@runBlocking result.await()
     }
+
+
+
+
 
 
     /* Creates MediaMetadata for one episode */

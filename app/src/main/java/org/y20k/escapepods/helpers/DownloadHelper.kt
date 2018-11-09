@@ -60,7 +60,7 @@ class DownloadHelper(): BroadcastReceiver() {
     }
 
 
-    /* Overrides onReceive */
+    /* Overrides onReceive - reacts to android.intent.action.DOWNLOAD_COMPLETE */
     override fun onReceive(c: Context, intent: Intent) {
         // set main class variables
         initialize(c)
