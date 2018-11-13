@@ -45,6 +45,7 @@ import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.adapter.CollectionAdapter
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.dialogs.*
 import org.y20k.escapepods.helpers.*
 import org.y20k.escapepods.xml.OpmlHelper
@@ -55,6 +56,7 @@ import org.y20k.escapepods.xml.OpmlHelper
  */
 class PodcastPlayerActivity: AppCompatActivity(),
         AddPodcastDialog.AddPodcastDialogListener,
+        CollectionAdapter.CollectionAdapterListener,
         MeteredNetworkDialog.MeteredNetworkDialogListener,
         OpmlImportDialog.OpmlImportDialogListener,
         YesNoDialog.YesNoDialogListener {
@@ -65,7 +67,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Main class variables */
     private lateinit var mediaBrowser: MediaBrowserCompat
-    private lateinit var mediaController: MediaControllerCompat
     private lateinit var collectionViewModel: CollectionViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var bottomSheet: ConstraintLayout
@@ -95,7 +96,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         collectionAdapter = CollectionAdapter(this)
 
         // Create MediaBrowserCompat
-        mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallbacks, null)
+        mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallback, null)
 
         // find views
         setContentView(R.layout.activity_podcast_player)
@@ -140,13 +141,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
     public override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
-        MediaControllerCompat.getMediaController(this)?.unregisterCallback(controllerCallback)
+        MediaControllerCompat.getMediaController(this)?.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
     }
 
 
-    /* Overrides onAddPodcastDialog from AddPodcastDialog */
+    /* Overrides onAddPodcastDialog from AddPodcastDialogListener */
     override fun onAddPodcastDialog(textInput: String) {
         super.onAddPodcastDialog(textInput)
         val podcastUrl = textInput.trim()
@@ -158,7 +159,18 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Overrides onMeteredNetworkDialog from MeteredNetworkDialog */
+    /* Overrides onPlayButtonTapped from CollectionAdapterListener */
+    override fun onPlayButtonTapped(mediaId: String) {
+        // get episode
+        val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
+        // setup ui
+        // todo
+        // start playback
+        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
+    }
+
+
+    /* Overrides onMeteredNetworkDialog from MeteredNetworkDialogListener */
     override fun onMeteredNetworkDialog(dialogType: Int) {
         super.onMeteredNetworkDialog(dialogType)
         when (dialogType) {
@@ -173,7 +185,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Overrides onOpmlImportDialog from OpmlImportDialog */
+    /* Overrides onOpmlImportDialog from OpmlImportDialogListener */
     override fun onOpmlImportDialog(feedUrlList: ArrayList<String>) {
         super.onOpmlImportDialog(feedUrlList)
         feedUrlList.forEach {
@@ -182,7 +194,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Overrides onYesNoDialog from YesNoDialog */
+    /* Overrides onYesNoDialog from YesNoDialogListener */
     override fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayload: Int) {
         super.onYesNoDialog(dialogType, dialogResult, dialogPayload)
         when (dialogType) {
@@ -272,14 +284,15 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Builds playback controls - used after connected to player service */
     private fun buildPlaybackControls() {
-        val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
+
+        // get reference to media controller
+        val mediaController = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
 
         // set up the play button - to offer play or pause
         setupPlayButtons(mediaController.playbackState.state)
 
         // main play/pause button
         playButton.setOnClickListener {
-            LogHelper.v(TAG, "Tap on main play button registered") // todo remove
             when (mediaController.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
                 else -> mediaController.transportControls.play()
@@ -288,8 +301,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
         // bottom sheet play/pause button
         sheetPlayButton.setOnClickListener {
-            LogHelper.v(TAG, "Tap on play button in sheet registered") // todo remove
-            LogHelper.v(TAG, "Tap on main play button registered") // todo remove
             when (mediaController.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
                 else -> mediaController.transportControls.play()
@@ -301,7 +312,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         val pbState = mediaController.playbackState
 
         // register a callback to stay in sync
-        mediaController.registerCallback(controllerCallback)
+        mediaController.registerCallback(mediaControllerCallback)
     }
 
 
@@ -352,7 +363,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Set up play/pause buttons */
-    private fun setupPlayButtons(playbackState: Int ) {
+    private fun setupPlayButtons(playbackState: Int) {
         when (playbackState) {
             PlaybackStateCompat.STATE_PLAYING -> {
                 playButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
@@ -362,6 +373,16 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 playButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
                 sheetPlayButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
             }
+        }
+    }
+
+
+    private fun changeBottomSheetPeekHeight(playbackState: Int) {
+        when (playbackState) {
+            PlaybackStateCompat.STATE_STOPPED -> bottomSheetBehavior.peekHeight = 0
+            PlaybackStateCompat.STATE_NONE ->  bottomSheetBehavior.peekHeight = 0
+            PlaybackStateCompat.STATE_ERROR ->  bottomSheetBehavior.peekHeight = 0
+            else -> bottomSheetBehavior.peekHeight = (ImageHelper.getDensityScalingFactor(this) * Keys.BOTTOM_SHEET_PEEK_HEIGHT).toInt()
         }
     }
 
@@ -480,7 +501,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     /*
      * Defines callbacks for media browser service connection
      */
-    private val mediaBrowserConnectionCallbacks = object : MediaBrowserCompat.ConnectionCallback() {
+    private val mediaBrowserConnectionCallback = object : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
             // get the token for the MediaSession
             mediaBrowser.sessionToken.also { token ->
@@ -494,6 +515,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
             buildPlaybackControls()
 
             mediaBrowser.subscribe(Keys.MEDIA_ID_ROOT, mediaBrowserSubscriptionCallback)
+
+
 
             // todo test send command to playerservice
 //            val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
@@ -510,7 +533,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
             // service has refused our connection
         }
     }
-
+    /*
+     * End of callback
+     */
 
 
     /*
@@ -519,20 +544,21 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private val mediaBrowserSubscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             super.onChildrenLoaded(parentId, children)
-            LogHelper.e(TAG, "onChildrenLoaded called in Activity. Result: ${children.toString()}") // todo remove
-            // todo get collection from here and fill recycler adapter - first load children in service!!
         }
 
         override fun onError(parentId: String) {
             super.onError(parentId)
         }
     }
+    /*
+     * End of callback
+     */
 
 
     /*
      * Defines callbacks for state changes of player service
      */
-    private var controllerCallback = object : MediaControllerCompat.Callback() {
+    private var mediaControllerCallback = object : MediaControllerCompat.Callback() {
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             LogHelper.d(TAG, "Metadata changed. Update UI.")
@@ -541,8 +567,16 @@ class PodcastPlayerActivity: AppCompatActivity(),
         override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
             LogHelper.d(TAG, "Playback State changed. Update UI.")
             animatePlaybackButtonStateTransition(playbackState.state)
+            changeBottomSheetPeekHeight(playbackState.state)
+        }
+
+        override fun onSessionDestroyed() {
+            super.onSessionDestroyed()
+            mediaBrowserConnectionCallback.onConnectionSuspended()
         }
     }
-
+    /*
+     * End of callback
+     */
 
 }

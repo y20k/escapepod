@@ -52,7 +52,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_action_button"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
@@ -103,13 +103,13 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_action_button"
-            app:layout_constraintEnd_toStartOf="@+id/episode_0_action_button"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_action_button"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_play_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
             app:srcCompat="@drawable/ic_radio_button_checked_24dp" />
 
         <ImageView
-            android:id="@+id/episode_0_action_button"
+            android:id="@+id/episode_0_play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

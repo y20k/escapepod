@@ -49,19 +49,24 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
+    private lateinit var collectionAdapterListener: CollectionAdapterListener
     private var collection: Collection = Collection()
 
 
     /* Listener Interface */
     interface CollectionAdapterListener {
-        fun itemSelected (isLongPress: Boolean)
-        fun jumpToPosition (position: Int)
+//        fun onItemSelected (mediaId: String, isLongPress: Boolean)
+        fun onPlayButtonTapped (mediaId: String)
+//        fun onJumpToPosition (position: Int)
     }
 
 
     /* Overrides onAttachedToRecyclerView */
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
+
+        // get reference to listener
+        collectionAdapterListener = activity as CollectionAdapterListener
 
         // create view model and observe changes in collection view model
         collectionViewModel = ViewModelProviders.of(activity as AppCompatActivity).get(CollectionViewModel::class.java)
@@ -111,14 +116,10 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 // get reference to StationViewHolder
                 val podcastViewHolder: PodcastViewHolder = holder as PodcastViewHolder
 
-                // set up views
+                // set up main podcast views
                 podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(activity, Uri.parse(podcast.cover), Keys.SIZE_COVER_SMALL))
                 // podcastViewHolder.podcastImageView.setClipToOutline(true)
                 podcastViewHolder.pocastNameView.setText(podcast.name)
-                podcastViewHolder.pocastEpisode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
-                podcastViewHolder.pocastEpisode0NameView.setText(podcast.episodes[0].title)
-
-
                 podcastViewHolder.podcastImageView.setOnLongClickListener {
                     DownloadHelper().refreshCover(activity, podcast)
                     Toast.makeText(activity as Context, activity.getText(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
@@ -126,6 +127,13 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                     v.vibrate(50)
                     // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
                     true
+                }
+
+                // set up episode 0 views
+                podcastViewHolder.pocastEpisode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
+                podcastViewHolder.pocastEpisode0NameView.setText(podcast.episodes[0].title)
+                podcastViewHolder.pocastEpisode0PlayButtonView.setOnClickListener {
+                    collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId())
                 }
             }
         }
@@ -244,6 +252,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         val pocastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val pocastEpisode0DateView: TextView = podcastCardLayout.findViewById(R.id.episode_0_date)
         val pocastEpisode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)
+        val pocastEpisode0PlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_play_button)
+
     }
     /**
      * End of inner class

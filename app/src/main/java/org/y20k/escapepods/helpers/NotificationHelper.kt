@@ -29,6 +29,7 @@ import androidx.core.app.NotificationCompat
 import androidx.media.session.MediaButtonReceiver
 import org.y20k.escapepods.PlayerService
 import org.y20k.escapepods.R
+import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 
 
@@ -46,7 +47,7 @@ class NotificationHelper(private val playerService: PlayerService) {
 
 
     /* Creates notification */
-    private fun buildNotification(sessionToken: MediaSessionCompat.Token, podcast: Podcast, episodeId: Int): Notification {
+    fun buildNotification(sessionToken: MediaSessionCompat.Token, episode: Episode): Notification {
         if (shouldCreateNowPlayingChannel()) {
             createNowPlayingChannel()
         }
@@ -59,23 +60,23 @@ class NotificationHelper(private val playerService: PlayerService) {
 
         // add actions
         builder.addAction(skipBackAction)
-//        when (playerService.playbackState) {
-//            Keys.STATE_PLAYING -> builder.addAction(pauseAction)
-//            Keys.STATE_NOT_PLAYING -> builder.addAction(playAction)
-//        }
+        when (controller.playbackState.state) {
+            PlaybackStateCompat.STATE_PLAYING -> builder.addAction(pauseAction)
+            else -> builder.addAction(playAction)
+        }
         builder.addAction(skipForwardAction)
 
         val mediaStyle = androidx.media.app.NotificationCompat.MediaStyle()
                 .setCancelButtonIntent(stopPendingIntent)
                 .setMediaSession(sessionToken)
-                .setShowActionsInCompactView(3)
+                .setShowActionsInCompactView(1)
                 .setShowCancelButton(true)
 
         return builder.setContentIntent(controller.sessionActivity) // todo check if sessionActivity is correct
-                .setContentTitle(podcast.name)
-                .setContentText(podcast.episodes[episodeId].title)
+                .setContentTitle(episode.podcastName)
+                .setContentText(episode.title)
                 .setDeleteIntent(stopPendingIntent)
-                .setLargeIcon(ImageHelper.getPodcastCover(playerService, Uri.parse(podcast.cover), 256))
+                .setLargeIcon(ImageHelper.getPodcastCover(playerService, Uri.parse(episode.cover), 256))
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
                 .setStyle(mediaStyle)
@@ -85,16 +86,16 @@ class NotificationHelper(private val playerService: PlayerService) {
 
 
     /* Create and put up notification */
-    fun show(sessionToken: MediaSessionCompat.Token, podcast: Podcast, episodeId: Int) {
+    fun show(sessionToken: MediaSessionCompat.Token, episode: Episode) {
         // display notification - first run
-        playerService.startForeground(Keys.NOTIFICATION_NOW_PLAYING_ID, buildNotification(sessionToken, podcast, episodeId))
+        playerService.startForeground(Keys.NOTIFICATION_NOW_PLAYING_ID, buildNotification(sessionToken, episode))
     }
 
 
     /* Updates notification */
-    fun update(sessionToken: MediaSessionCompat.Token, podcast: Podcast, episodeId: Int) {
+    fun update(sessionToken: MediaSessionCompat.Token, episode: Episode) {
         // update existing notification
-        notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, buildNotification(sessionToken, podcast, episodeId))
+        notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, buildNotification(sessionToken, episode))
 //        if (playerService.playbackState == Keys.STATE_NOT_PLAYING) {
 //            // make notification swipe-able
 //            playerService.stopForeground(false)

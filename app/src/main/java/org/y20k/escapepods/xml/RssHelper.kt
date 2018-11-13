@@ -28,7 +28,8 @@ import org.y20k.escapepods.helpers.LogHelper
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 /*
@@ -49,6 +50,8 @@ class RssHelper {
         return suspendCoroutine {cont ->
             // store remote feed location
             podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
+
+            LogHelper.e(TAG, "RSS read") // todo remove
 
             // try parsing
             val stream: InputStream = FileHelper.getTextFileStream(context, localFileUri)
@@ -100,6 +103,9 @@ class RssHelper {
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readPodcast(parser: XmlPullParser) {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_PODCAST)
+
+        LogHelper.e(TAG, "parsing podcast") // todo remove
+
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
@@ -116,7 +122,7 @@ class RssHelper {
                 Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = readPodcastCover(parser, Keys.XML_NAME_SPACE)
                 // found an episode
                 Keys.RSS_EPISODE -> {
-                    val episode: Episode = readEpisode(parser)
+                    val episode: Episode = readEpisode(parser, podcast)
                     podcast.episodes.add(episode)
                 }
                 // skip to next tag
@@ -129,11 +135,16 @@ class RssHelper {
 
     /* Reads episode element - within podcast element (within feed) */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readEpisode(parser: XmlPullParser): Episode {
+    private fun readEpisode(parser: XmlPullParser, podcast: Podcast): Episode {
+
+        LogHelper.e(TAG, "parsing episode") // todo remove
+
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_EPISODE)
 
-        // variables needed for MediaMetadata builder
-        var episode: Episode = Episode()
+        // initialize episode
+        val episode: Episode = Episode()
+        episode.podcastName = podcast.name
+        episode.cover = podcast.cover
 
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag

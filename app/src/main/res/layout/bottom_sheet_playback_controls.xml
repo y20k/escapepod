@@ -11,7 +11,7 @@
     android:paddingBottom="16dp"
     android:visibility="visible"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="72dp"
+    app:behavior_peekHeight="0dp"
     app:layout_behavior="@string/bottom_sheet_behavior"
     tools:layout_editor_absoluteY="25dp"
     tools:showIn="@layout/activity_podcast_player">

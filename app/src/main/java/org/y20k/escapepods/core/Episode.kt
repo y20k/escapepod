@@ -34,7 +34,8 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var publicationDate: Date = Calendar.getInstance().time,
                     @Expose var played: Boolean = false,
                     @Expose var remoteCoverFileLocation: String = "",
-                    @Expose var remoteAudioFileLocation: String = ""): Parcelable {
+                    @Expose var remoteAudioFileLocation: String = "",
+                    @Expose var podcastName: String = ""): Parcelable {
 
 
     /* overrides toString method */
@@ -60,6 +61,12 @@ data class Episode (@Expose var guid: String = "",
     /* Creates a readable date string */
     fun getDateString(dateStyle: Int): String {
         return DateFormat.getDateInstance(dateStyle, Locale.getDefault()).format(publicationDate)
+    }
+
+
+    /* Return a unique media id - currently just the remoteAudioFileLocation */
+    fun getMediaId(): String {
+        return remoteAudioFileLocation
     }
 
 }

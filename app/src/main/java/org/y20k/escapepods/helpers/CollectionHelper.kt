@@ -16,8 +16,8 @@ package org.y20k.escapepods.helpers
 
 import android.content.Context
 import android.content.Intent
-import android.media.MediaMetadata
 import android.preference.PreferenceManager
+import android.support.v4.media.MediaMetadataCompat
 import androidx.core.content.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.GlobalScope
@@ -38,22 +38,6 @@ object CollectionHelper {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(CollectionHelper::class.java)
-
-
-    /* Creates a MediaMetadata for given Episode */
-    fun createMediaMetadata(episode: Episode, podcast: Podcast): MediaMetadata {
-        return MediaMetadata.Builder()
-                .putString(MediaMetadata.METADATA_KEY_MEDIA_ID, episode.remoteAudioFileLocation.hashCode().toString())
-                .putString(MediaMetadata.METADATA_KEY_MEDIA_URI, episode.audio)
-                .putString(MediaMetadata.METADATA_KEY_GENRE, "Podcast")
-                .putString(MediaMetadata.METADATA_KEY_TITLE, episode.title)
-                .putString(MediaMetadata.METADATA_KEY_ALBUM, podcast.name)
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, podcast.name)
-                .putString(MediaMetadata.METADATA_KEY_ALBUM_ART_URI,  podcast.cover)
-//                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, trackNumber)
-//                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, totalTrackCount)
-                .build();
-    }
 
 
     /* Checks if feed is already in collection */
@@ -130,7 +114,7 @@ object CollectionHelper {
         // trim episode list
         newPodcast = trimEpisodeList(context, newPodcast)
         // replace podcast
-        collection.podcasts.set(getPodcastIdFromCollection(collection, newPodcast), newPodcast)
+        collection.podcasts.set(getPodcastId(collection, newPodcast), newPodcast)
         return collection
     }
 
@@ -208,11 +192,24 @@ object CollectionHelper {
 
 
     /* Get the ID from collection for given podcast */
-    fun getPodcastIdFromCollection(collection: Collection, podcast: Podcast): Int {
+    fun getPodcastId(collection: Collection, podcast: Podcast): Int {
         collection.podcasts.indices.forEach {
             if (podcast.remotePodcastFeedLocation == collection.podcasts[it].remotePodcastFeedLocation) return it
         }
         return -1
+    }
+
+
+    /* Get Episode from collection for given media ID String */
+    fun getEpisode(collection: Collection, mediaId: String): Episode {
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                if (episode.getMediaId() == mediaId) {
+                    return episode
+                }
+            }
+        }
+        return Episode()
     }
 
 
@@ -243,6 +240,22 @@ object CollectionHelper {
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
+    }
+
+
+    /* Creates MediaMetadata for one episode */
+    fun buildMediaMetadata(podcast: Podcast, episodeId: Int): MediaMetadataCompat {
+        return MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, podcast.episodes[episodeId].remoteAudioFileLocation)
+                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, podcast.episodes[episodeId].audio)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, Keys.APPLICATION_NAME)
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, Keys.MEDIA_GENRE)
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.cover)
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, podcast.episodes[episodeId].title)
+                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, podcast.episodes.size.toLong())
+                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, episodeId.toLong())
+                .build()
     }
 
 

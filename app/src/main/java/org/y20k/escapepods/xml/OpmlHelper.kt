@@ -25,7 +25,8 @@ import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 import java.io.IOException
 import java.io.InputStream
-import kotlin.coroutines.experimental.suspendCoroutine
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 /*

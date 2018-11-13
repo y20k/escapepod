@@ -34,6 +34,11 @@ object ImageHelper {
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(ImageHelper::class.java)
 
+    /* Get scaling factor from display density */
+    fun getDensityScalingFactor(context: Context): Float {
+        return context.getResources().getDisplayMetrics().density
+    }
+
 
     /* Get a scaled version of the podcast cover */
     fun getPodcastCover(context: Context, imageUri: Uri, coverSize: Int): Bitmap {
@@ -120,12 +125,5 @@ object ImageHelper {
         }
         return inSampleSize
     }
-
-
-    /* Get scaling factor from display density */
-    private fun getDensityScalingFactor(context: Context): Float {
-        return context.getResources().getDisplayMetrics().density
-    }
-
 
 }

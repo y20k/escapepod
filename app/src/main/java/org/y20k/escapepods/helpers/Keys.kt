@@ -123,6 +123,7 @@ object Keys {
 
     // sizes (in dp)
     const val SIZE_COVER_SMALL: Int = 96
+    const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
