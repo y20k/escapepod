@@ -15,9 +15,12 @@
     <string name="dialog_metered_network_message_default">Your device is connected to a metered network.</string>
     <string name="dialog_metered_network_button_okay_default">Proceed anyway</string>
     <string name="dialog_metered_network_title_default">Metered Network</string>
-    <string name="dialog_metered_update_title">Update without Wifi</string>
-    <string name="dialog_metered_update_message">Your device is not connected to a Wifi network. Do you want to update your podcasts anyway?</string>
-    <string name="dialog_metered_update_button_okay">Update anyway</string>
+    <string name="dialog_metered_update_collection_title">Update without Wifi</string>
+    <string name="dialog_metered_update_collection_message">Your device is not connected to a Wifi network. Do you want to update your podcasts anyway?</string>
+    <string name="dialog_metered_update_collection_button_okay">Update anyway</string>
+    <string name="dialog_metered_download_episode_title">Download without Wifi</string>
+    <string name="dialog_metered_download_episode_message">Your device is not connected to a Wifi network. Do you want to download this episode anyway?</string>
+    <string name="dialog_metered_download_episode_button_okay">Download anyway</string>
     <string name="dialog_opml_import_title">OMPL Import</string>
     <string name="dialog_opml_import_message">Do you want to add new podcasts to your collection? Number of new podcasts found:</string>
     <string name="dialog_opml_import_message_error">Unable to import OPML file. No new podcasts found.</string>
@@ -44,6 +47,7 @@
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
+    <string name="toast_message_downloading_episode">Downloading Episode.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
 
     <!-- Podcast List -->

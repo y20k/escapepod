@@ -88,6 +88,7 @@ object Keys {
 
     // dialog results
     const val DIALOG_RESULT_DEFAULT: Int = -1
+    const val DIALOG_EMPTY_PAYLOAD: String = ""
 
     // file types
     const val FILE_TYPE_RSS: Int = 1
@@ -126,14 +127,17 @@ object Keys {
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // keys
+    const val KEY_IGNORE_WIFI_RESTRICTION: String = "IGNORE_WIFI_RESTRICTION"
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
     const val KEY_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
-    const val KEY_NEW_PODCAST_URL: String = "NEW_PODCAST_URL"
-    const val KEY_RESULT_NEW_COLLECTION = "RESULT_NEW_COLLECTION"
+    const val KEY_PODCAST_URL: String = "PODCAST_URL"
+    const val KEY_EPISODE_MEDIA_ID: String = "EPISODE_MEDIA_ID"
+
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
     const val REQUEST_ADD_PODCAST: Int = 2
+    const val REQUEST_DOWNLOAD_EPISODE: Int = 3
 
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"

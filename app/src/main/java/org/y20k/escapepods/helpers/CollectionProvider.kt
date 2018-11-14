@@ -17,8 +17,6 @@ package org.y20k.escapepods.helpers
 
 import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.core.Collection
 import java.util.*
 
@@ -33,7 +31,6 @@ class CollectionProvider {
 
 
     /* Main class variables */
-    var collection: Collection = Collection()
     private enum class State { NON_INITIALIZED, INITIALIZING, INITIALIZED }
     private val episodeListById: TreeMap<String, MediaMetadataCompat> = TreeMap()
     private var currentState = State.NON_INITIALIZED
@@ -95,7 +92,7 @@ class CollectionProvider {
     }
 
 
-    /* Return the last played episode */
+    /* Return the last listened episode */
     fun getLastPlayedEpisode(context:Context):MediaMetadataCompat? {
         // todo implement
         // fallback: first station
@@ -122,13 +119,11 @@ class CollectionProvider {
 
 
     /* Gets list of episodes and caches track information in TreeMap */
-    fun retrieveMedia(context: Context, episodeListProviderCallback: CollectionProviderCallback) {
+    fun retrieveMedia(context: Context, collection: Collection,episodeListProviderCallback: CollectionProviderCallback) {
         if (currentState == State.INITIALIZED) {
             // already initialized, set callback immediately
             episodeListProviderCallback.onEpisodeListReady(true)
         } else {
-            // load collection
-            collection = loadCollection(context)
             // fill episode list
             for (podcast in collection.podcasts) {
                 for (episodeId: Int in podcast.episodes.indices) {
@@ -144,17 +139,7 @@ class CollectionProvider {
             // afterwards: update state and set callback
             currentState = State.INITIALIZED
             episodeListProviderCallback.onEpisodeListReady(true)
-
         }
-    }
-
-
-    /* Reads podcast collection from storage using GSON */
-    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
-        // get JSON from text file async
-        val result = async { FileHelper.readCollection(context) }
-        // wait for result and return collection
-        return@runBlocking result.await()
     }
 
 }

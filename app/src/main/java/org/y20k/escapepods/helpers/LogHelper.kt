@@ -26,7 +26,7 @@ object LogHelper {
     private val TESTING: Boolean = true
     private val LOG_PREFIX: String = "escapepods_"
     private val LOG_PREFIX_LENGTH: Int = LOG_PREFIX.length
-    private val MAX_LOG_TAG_LENGTH: Int = 23
+    private val MAX_LOG_TAG_LENGTH: Int = 64
 
     fun makeLogTag(str: String): String {
         return if (str.length > MAX_LOG_TAG_LENGTH - LOG_PREFIX_LENGTH) {

@@ -34,7 +34,9 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
             // CASE: update collection
             Keys.REQUEST_UPDATE_COLLECTION -> DownloadHelper().updateCollection(applicationContext)
             // CASE: add podcast to collection
-            Keys.REQUEST_ADD_PODCAST -> DownloadHelper().downloadPodcast(applicationContext, inputData.getString(Keys.KEY_NEW_PODCAST_URL).toString())
+            Keys.REQUEST_ADD_PODCAST -> DownloadHelper().downloadPodcast(applicationContext, inputData.getString(Keys.KEY_PODCAST_URL).toString())
+            // CASE: download episode
+            Keys.REQUEST_DOWNLOAD_EPISODE -> DownloadHelper().downloadEpisode(applicationContext, inputData.getString(Keys.KEY_EPISODE_MEDIA_ID).toString(), inputData.getBoolean(Keys.KEY_IGNORE_WIFI_RESTRICTION, false))
         }
         // indicate success or failure
         return Result.SUCCESS

@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import org.y20k.escapepods.R
+import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
 
@@ -30,7 +31,7 @@ class MeteredNetworkDialog (private var meteredNetworkDialogListener: MeteredNet
 
     /* Interface used to communicate back to activity */
     interface MeteredNetworkDialogListener {
-        fun onMeteredNetworkDialog(dialogType: Int) {
+        fun onMeteredNetworkDialog(dialogType: Int, payload: String) {
         }
     }
 
@@ -39,7 +40,7 @@ class MeteredNetworkDialog (private var meteredNetworkDialogListener: MeteredNet
 
 
     /* Construct and show dialog */
-    fun show(context: Context, dialogType: Int, meteredNetworkTitle: Int, meteredNetworkMessage: Int, okayButtonString: Int) {
+    fun show(context: Context, dialogType: Int, meteredNetworkTitle: Int, meteredNetworkMessage: Int, okayButtonString: Int, payload: String = Keys.DIALOG_EMPTY_PAYLOAD) {
         // prepare dialog builder
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -59,7 +60,7 @@ class MeteredNetworkDialog (private var meteredNetworkDialogListener: MeteredNet
         // add okay button
         builder.setPositiveButton(okayButtonString) { _, _ ->
             // listen for click on okay button
-            meteredNetworkDialogListener.onMeteredNetworkDialog(dialogType)
+            meteredNetworkDialogListener.onMeteredNetworkDialog(dialogType, payload)
         }
 
         // add cancel button

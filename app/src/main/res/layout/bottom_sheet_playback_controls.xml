@@ -55,7 +55,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/sheet_episode_name"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_episode_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -88,7 +88,7 @@
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
         android:text="@string/sample_text_episode_0_name"
-        android:id="@+id/sheet_episode_name"
+        android:id="@+id/sheet_episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -154,7 +154,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="visible"
-        app:constraint_referenced_ids="player_background,player_podcast_cover,player_podcast_name,player_episode_name,player_play_button" />
+        app:constraint_referenced_ids="player_background,player_podcast_cover,player_podcast_name,player_episode_title,player_play_button" />
 
     <View
         android:id="@+id/player_background"
@@ -195,7 +195,7 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/player_sheet_text_main"
-        app:layout_constraintBottom_toTopOf="@+id/player_episode_name"
+        app:layout_constraintBottom_toTopOf="@+id/player_episode_title"
         app:layout_constraintEnd_toStartOf="@+id/player_play_button"
         app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
         app:layout_constraintTop_toTopOf="@+id/player_podcast_cover"
@@ -203,7 +203,7 @@
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
-        android:id="@+id/player_episode_name"
+        android:id="@+id/player_episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

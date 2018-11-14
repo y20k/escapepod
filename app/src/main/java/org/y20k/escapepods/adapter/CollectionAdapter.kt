@@ -32,9 +32,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
-import org.y20k.escapepods.helpers.*
+import org.y20k.escapepods.helpers.CollectionHelper
+import org.y20k.escapepods.helpers.DownloadHelper
+import org.y20k.escapepods.helpers.Keys
+import org.y20k.escapepods.helpers.LogHelper
 import java.text.DateFormat
 
 
@@ -56,7 +60,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /* Listener Interface */
     interface CollectionAdapterListener {
 //        fun onItemSelected (mediaId: String, isLongPress: Boolean)
-        fun onPlayButtonTapped (mediaId: String)
+        fun onPlayButtonTapped(mediaId: String, startPlayback: Boolean)
+        fun onDownloadButtonTapped(episode: Episode)
 //        fun onJumpToPosition (position: Int)
     }
 
@@ -116,28 +121,87 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 // get reference to StationViewHolder
                 val podcastViewHolder: PodcastViewHolder = holder as PodcastViewHolder
 
-                // set up main podcast views
-                podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(activity, Uri.parse(podcast.cover), Keys.SIZE_COVER_SMALL))
-                // podcastViewHolder.podcastImageView.setClipToOutline(true)
-                podcastViewHolder.pocastNameView.setText(podcast.name)
-                podcastViewHolder.podcastImageView.setOnLongClickListener {
-                    DownloadHelper().refreshCover(activity, podcast)
-                    Toast.makeText(activity as Context, activity.getText(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
-                    val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    v.vibrate(50)
-                    // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-                    true
-                }
-
-                // set up episode 0 views
-                podcastViewHolder.pocastEpisode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
-                podcastViewHolder.pocastEpisode0NameView.setText(podcast.episodes[0].title)
-                podcastViewHolder.pocastEpisode0PlayButtonView.setOnClickListener {
-                    collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId())
-                }
+                // set up views
+                setPodcastName(podcastViewHolder, podcast)
+                setPodcastImage(podcastViewHolder, podcast)
+                setEpisodeTitles(podcastViewHolder, podcast)
+                setEpisodePlayButtons(podcastViewHolder, podcast)
             }
         }
     }
+
+
+    /* Sets the podcast name view */
+    private fun setPodcastName(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+        podcastViewHolder.pocastNameView.setText(podcast.name)
+    }
+
+
+    /* Sets the episode title views */
+    private fun setEpisodeTitles(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+        val episodeListSize = podcast.episodes.size
+
+        // episode 0
+        podcastViewHolder.episode0DateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
+        podcastViewHolder.episode0NameView.setText(podcast.episodes[0].title)
+
+        // episode 1
+        if (episodeListSize > 1) {
+//            podcastViewHolder.episode1DateView.setText(podcast.episodes[1].getDateString(DateFormat.MEDIUM))
+//            podcastViewHolder.episode1NameView.setText(podcast.episodes[1].title)
+        } else {
+            // todo hide episode 1 views
+        }
+    }
+
+
+    /* Sets the podcast image view */
+    private fun setPodcastImage(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+        podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.cover))
+        podcastViewHolder.podcastImageView.setOnLongClickListener {
+            DownloadHelper().refreshCover(activity, podcast)
+            Toast.makeText(activity as Context, activity.getText(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
+            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+            true
+        }
+    }
+
+
+    /* Sets the episode play button views */
+    private fun setEpisodePlayButtons(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+        val episodeListSize = podcast.episodes.size
+
+        // episode 0
+        if (podcast.episodes[0].audio.isNotEmpty()) {
+            val isPlaying: Boolean = podcast.episodes[0].isPlaying
+            when (isPlaying) {
+                true -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_36dp)
+                false -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_36dp)
+            }
+            podcastViewHolder.episode0PlayButtonView.setOnClickListener {
+                collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), startPlayback = !isPlaying)
+            }
+        } else {
+            podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_cloud_download_36dp)
+            podcastViewHolder.episode0PlayButtonView.setOnClickListener {
+                collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
+            }
+        }
+
+        // episode 1
+        if (episodeListSize > 1) {
+            // setup episode 1 play button
+        } else {
+            // todo hide episode 1 views
+        }
+
+    }
+
+
+
+
 
 
     /* Overrides onBindViewHolder */
@@ -250,9 +314,10 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     private inner class PodcastViewHolder (val podcastCardLayout: View) : RecyclerView.ViewHolder(podcastCardLayout) {
         val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.player_podcast_cover)
         val pocastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
-        val pocastEpisode0DateView: TextView = podcastCardLayout.findViewById(R.id.episode_0_date)
-        val pocastEpisode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)
-        val pocastEpisode0PlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_play_button)
+        val episode0DateView: TextView = podcastCardLayout.findViewById(R.id.episode_0_date)
+        val episode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)
+        val episode0ListenedStateView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_listened_state_button)
+        val episode0PlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_play_button)
 
     }
     /**

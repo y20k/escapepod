@@ -32,7 +32,9 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var audio: String = "",
                     @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
                     @Expose var publicationDate: Date = Calendar.getInstance().time,
-                    @Expose var played: Boolean = false,
+                    @Expose var isPlaying: Boolean = false,
+                    @Expose var playbackPosition: Long = 0L,
+                    @Expose var listened: Boolean = false,
                     @Expose var remoteCoverFileLocation: String = "",
                     @Expose var remoteAudioFileLocation: String = "",
                     @Expose var podcastName: String = ""): Parcelable {
@@ -51,7 +53,6 @@ data class Episode (@Expose var guid: String = "",
         stringBuilder.append("${publicationDate}\n")
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")
-        stringBuilder.append("Played: $played \n")
         stringBuilder.append("${remoteAudioFileLocation} \n")
         stringBuilder.append("${remoteCoverFileLocation} \n")
         return stringBuilder.toString()
@@ -67,6 +68,7 @@ data class Episode (@Expose var guid: String = "",
     /* Return a unique media id - currently just the remoteAudioFileLocation */
     fun getMediaId(): String {
         return remoteAudioFileLocation
+        // return (remoteAudioFileLocation + guid).hashCode().toString() // hash value of remoteAudioFileLocation and guid
     }
 
 }

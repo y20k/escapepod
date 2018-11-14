@@ -19,6 +19,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_WIFI
+import android.net.NetworkInfo
 
 
 /*
@@ -51,6 +52,14 @@ object NetworkHelper {
         } else {
             return connMgr.getNetworkCapabilities(activeNetwork).hasTransport(TRANSPORT_CELLULAR)
         }
+    }
+
+
+    /* Checks if the active network connection is over Cellular */
+    fun isConnectedToNetwork(context: Context): Boolean {
+        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo: NetworkInfo = connMgr.activeNetworkInfo
+        return activeNetworkInfo.isConnected
     }
 
 }

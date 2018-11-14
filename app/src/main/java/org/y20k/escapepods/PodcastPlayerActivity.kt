@@ -72,10 +72,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private lateinit var playerViews: Group
-    private lateinit var playButton: ImageView
-    private lateinit var cover: ImageView
-    private lateinit var sheetPlayButton: ImageView
-    private lateinit var sheetCover: ImageView
+    private lateinit var coverView: ImageView
+    private lateinit var podcastNameView: TextView
+    private lateinit var episodeTitleView: TextView
+    private lateinit var playButtonView: ImageView
+    private lateinit var sheetCoverView: ImageView
+    private lateinit var sheetEpisodeTitleView: TextView
+    private lateinit var sheetPlayButtonView: ImageView
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceConnected = false
@@ -103,13 +106,16 @@ class PodcastPlayerActivity: AppCompatActivity(),
         recyclerView = findViewById(R.id.recyclerview_list)
         bottomSheet = findViewById(R.id.bottom_sheet)
         playerViews = findViewById(R.id.player_views)
-        playButton = findViewById(R.id.player_play_button)
-        cover = findViewById(R.id.player_podcast_cover)
-        sheetPlayButton = findViewById(R.id.sheet_play_button)
-        sheetCover = findViewById(R.id.sheet_large_podcast_cover)
+        coverView = findViewById(R.id.player_podcast_cover)
+        podcastNameView = findViewById(R.id.player_podcast_name)
+        episodeTitleView = findViewById(R.id.player_episode_title)
+        playButtonView = findViewById(R.id.player_play_button)
+        sheetCoverView = findViewById(R.id.sheet_large_podcast_cover)
+        sheetEpisodeTitleView = findViewById(R.id.sheet_episode_title)
+        sheetPlayButtonView = findViewById(R.id.sheet_play_button)
 
         // set up views
-        setUpViews()
+        initializeViews()
     }
 
 
@@ -160,26 +166,32 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Overrides onPlayButtonTapped from CollectionAdapterListener */
-    override fun onPlayButtonTapped(mediaId: String) {
+    override fun onPlayButtonTapped(mediaId: String, startPlayback: Boolean) {
         // get episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
         // setup ui
-        // todo
-        // start playback
-        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
+        updatePlayerViews(episode)
+        // start / pause playback
+        when (startPlayback) {
+            true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
+            false -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        }
+    }
+
+
+    /* Overrides onDownloadButtonTapped from CollectionAdapterListener */
+    override fun onDownloadButtonTapped(episode: Episode) {
+        downloadEpisode(episode)
     }
 
 
     /* Overrides onMeteredNetworkDialog from MeteredNetworkDialogListener */
-    override fun onMeteredNetworkDialog(dialogType: Int) {
-        super.onMeteredNetworkDialog(dialogType)
+    override fun onMeteredNetworkDialog(dialogType: Int, payload: String) {
+        super.onMeteredNetworkDialog(dialogType, payload)
         when (dialogType) {
-            Keys.DIALOG_UPDATE_WITHOUT_WIFI -> {
-                Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
-                WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time, true) // todo implement ignoreWifiRestriction in DownloadHelper
-            }
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
-                // todo implement
+                Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
+                WorkerHelper.startOneTimeEpisodeDownloadWorker(payload, true)
             }
         }
     }
@@ -211,8 +223,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Sets up views and connects tap listeners */
-    private fun setUpViews() {
+    /* Sets up views and connects tap listeners - first run */
+    private fun initializeViews() {
         // set up recycler view
         val layoutManager: LinearLayoutManager = object: LinearLayoutManager(this) {
             override fun supportsPredictiveItemAnimations(): Boolean {
@@ -263,10 +275,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
             }
         }
 
-        // apply rounded corner mask to covers
-        cover.setClipToOutline(true)
-        sheetCover.setClipToOutline(true)
-
         // listen for swipe to refresh event
         val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
@@ -292,7 +300,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         setupPlayButtons(mediaController.playbackState.state)
 
         // main play/pause button
-        playButton.setOnClickListener {
+        playButtonView.setOnClickListener {
             when (mediaController.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
                 else -> mediaController.transportControls.play()
@@ -300,7 +308,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
 
         // bottom sheet play/pause button
-        sheetPlayButton.setOnClickListener {
+        sheetPlayButtonView.setOnClickListener {
             when (mediaController.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
                 else -> mediaController.transportControls.play()
@@ -323,9 +331,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 val rotateClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_clockwise_slow)
                 rotateClockwise.setAnimationListener(createAnimationListener(playbackState))
                 when (bottomSheetBehavior.state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateClockwise)
+                    BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateClockwise)
                     BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateClockwise)
+                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateClockwise)
                     BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons(playbackState)
                     BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons(playbackState)
                     BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons(playbackState)
@@ -336,9 +344,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 val rotateCounterClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise_fast)
                 rotateCounterClockwise.setAnimationListener(createAnimationListener(playbackState))
                 when (bottomSheetBehavior.state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playButton.startAnimation(rotateCounterClockwise)
+                    BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateCounterClockwise)
                     BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButton.startAnimation(rotateCounterClockwise)
+                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateCounterClockwise)
                     BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons(playbackState)
                     BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons(playbackState)
                     BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons(playbackState)
@@ -366,17 +374,18 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun setupPlayButtons(playbackState: Int) {
         when (playbackState) {
             PlaybackStateCompat.STATE_PLAYING -> {
-                playButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
-                sheetPlayButton.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
+                playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
             }
             else -> {
-                playButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
-                sheetPlayButton.setImageResource(R.drawable.ic_play_symbol_white_36dp)
+                playButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
             }
         }
     }
 
 
+    /* Adjusts peek height of the player - effectively hiding it when playback is stopped (not paused or playing) */
     private fun changeBottomSheetPeekHeight(playbackState: Int) {
         when (playbackState) {
             PlaybackStateCompat.STATE_STOPPED -> bottomSheetBehavior.peekHeight = 0
@@ -387,11 +396,17 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Updates user interface */
-    private fun updateUserInterface() {
-        // update podcast counter - just a test // todo remove
-        val podcastCounter: TextView = findViewById(R.id.player_episode_name)
-        podcastCounter.text = createCollectionInfoString()
+    /* Updates player views with Episode */
+    private fun updatePlayerViews(episode: Episode) {
+        coverView.setImageURI(Uri.parse(episode.cover))
+        coverView.clipToOutline = true // apply rounded corner mask to covers
+        coverView.contentDescription = "${getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
+        podcastNameView.text = episode.podcastName
+        episodeTitleView.text = episode.title
+        sheetCoverView.setImageURI(Uri.parse(episode.cover))
+        sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
+        sheetCoverView.contentDescription = "${getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
+        sheetEpisodeTitleView.text = episode.title
     }
 
 
@@ -414,11 +429,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Updates podcast collection */
     private fun updateCollection() {
-        if (NetworkHelper.isConnectedToWifi(this)) {
+        if (NetworkHelper.isConnectedToNetwork(this)) {
             Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
             WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time)
-        } else if (NetworkHelper.isConnectedToCellular(this)) {
-            MeteredNetworkDialog(this).show(this, Keys.DIALOG_UPDATE_WITHOUT_WIFI, R.string.dialog_metered_update_title, R.string.dialog_metered_update_message, R.string.dialog_metered_update_button_okay)
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
@@ -426,13 +439,30 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
 
+    /* Updates podcast collection */
+    private fun downloadEpisode(episode: Episode) {
+        if (NetworkHelper.isConnectedToWifi(this)) {
+            Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
+            WorkerHelper.startOneTimeEpisodeDownloadWorker(episode.getMediaId(), true)
+        } else if (NetworkHelper.isConnectedToCellular(this)) {
+            MeteredNetworkDialog(this).show(this, Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, R.string.dialog_metered_download_episode_title, R.string.dialog_metered_download_episode_message, R.string.dialog_metered_download_episode_button_okay, episode.getMediaId())
+        } else {
+            ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+        }
+    }
+
+
     /* Download podcast feed */
     private fun downloadPodcastFeed(feedUrl : String) {
-        if (FileHelper.determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
-            Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-            WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
+        if (NetworkHelper.isConnectedToNetwork(this)) {
+            if (FileHelper.determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
+                Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+                WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
+            } else {
+                ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+            }
         } else {
-            ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+            ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
@@ -490,8 +520,10 @@ class PodcastPlayerActivity: AppCompatActivity(),
         collectionViewModel.collectionLiveData.observe(this, Observer<Collection> { it ->
             // update collection
             collection = it
-            // update ui
-            updateUserInterface()
+            // toast podcast count - just a test // todo remove
+            Toast.makeText(this, createCollectionInfoString(), Toast.LENGTH_LONG).show()
+//            // update ui
+//            updateUserInterface()
             // start worker that updates the podcast collection and observe download work
             WorkerHelper.schedulePeriodicUpdateWorker(collection.lastUpdate.time)
         })

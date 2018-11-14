@@ -80,12 +80,13 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Download an episode */
-    fun downloadEpisode(c: Context, remoteAudioFileLocation: String, podcast: Podcast) {
+    fun downloadEpisode(c: Context, mediaID: String, ignoreWifiRestriction: Boolean) {
         // set main class variables
         initialize(c)
         // enqueue episode
-        val uris = Array(1) {remoteAudioFileLocation.toUri()}
-        enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, podcast.name)
+        val episode: Episode = CollectionHelper.getEpisode(collection, mediaID)
+        val uris = Array(1) {episode.remoteAudioFileLocation.toUri()}
+        enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
     }
 
 
@@ -141,10 +142,10 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Enqueues an Array of files in DownloadManager */
-    private fun enqueueDownload(uris: Array<Uri>, type: Int, podcastName: String = String()) {
+    private fun enqueueDownload(uris: Array<Uri>, type: Int, podcastName: String = String(), ignoreWifiRestriction: Boolean = false) {
         // determine destination folder and allowed network types
         val folder: String = FileHelper.determineDestinationFolderPath(type, podcastName)
-        val allowedNetworkTypes:Int = determineAllowedNetworkTypes(context, type)
+        val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
         // enqueues downloads
         val newIDs = LongArray(uris.size)
         for (i in uris.indices)  {
@@ -213,8 +214,8 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Sets Media Uri in Episode */
     private fun setEpisodeMediaUri(localFileUri: Uri, remoteFileLocation: String) {
-        for (podcast: Podcast in collection.podcasts) {
-            for (episode: Episode in podcast.episodes) {
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
                     episode.audio = localFileUri.toString()
                 }
@@ -337,11 +338,15 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Determine allowed network type */
-    private fun determineAllowedNetworkTypes(context: Context, type: Int): Int {
+    private fun determineAllowedNetworkTypes(context: Context, type: Int, ignoreWifiRestriction: Boolean): Int {
         val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
         var allowedNetworkTypes:Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         when (type) {
-            Keys.FILE_TYPE_AUDIO -> if (!downloadOverMobile) allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
+            Keys.FILE_TYPE_AUDIO -> {
+                if (!downloadOverMobile or !ignoreWifiRestriction) {
+                    allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
+                }
+            }
         }
         return allowedNetworkTypes
     }

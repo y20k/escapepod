@@ -50,9 +50,6 @@ class RssHelper {
         return suspendCoroutine {cont ->
             // store remote feed location
             podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
-
-            LogHelper.e(TAG, "RSS read") // todo remove
-
             // try parsing
             val stream: InputStream = FileHelper.getTextFileStream(context, localFileUri)
             try {
@@ -82,6 +79,7 @@ class RssHelper {
     @Throws(XmlPullParserException::class, IOException::class)
     private fun parseFeed(parser: XmlPullParser): Podcast {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_RSS)
+
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
@@ -103,8 +101,6 @@ class RssHelper {
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readPodcast(parser: XmlPullParser) {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_PODCAST)
-
-        LogHelper.e(TAG, "parsing podcast") // todo remove
 
         while (parser.next() != XmlPullParser.END_TAG) {
             // abort loop early if no start tag
@@ -136,9 +132,6 @@ class RssHelper {
     /* Reads episode element - within podcast element (within feed) */
     @Throws(XmlPullParserException::class, IOException::class)
     private fun readEpisode(parser: XmlPullParser, podcast: Podcast): Episode {
-
-        LogHelper.e(TAG, "parsing episode") // todo remove
-
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_EPISODE)
 
         // initialize episode

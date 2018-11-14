@@ -40,6 +40,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.Util
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.*
@@ -75,12 +77,15 @@ class PlayerService(): MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
+        // load collection
+        collection = loadCollection(this)
+        LogHelper.e(TAG, collection.toString())
+
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
 
         // get the package validator // todo can be local?
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
-
 
         val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
         val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
@@ -136,6 +141,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
     /* Overrides onDestroy */
     override fun onDestroy() {
+        stopPlayback()
         // release media session
         mediaSession.run {
             isActive = false
@@ -167,10 +173,9 @@ class PlayerService(): MediaBrowserServiceCompat() {
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
             result.detach()
-            collectionProvider.retrieveMedia(this, object: CollectionProvider.CollectionProviderCallback {
+            collectionProvider.retrieveMedia(this, collection, object: CollectionProvider.CollectionProviderCallback {
                 override fun onEpisodeListReady(success: Boolean) {
                     if (success) {
-                        collection = collectionProvider.collection
                         loadChildren(parentId, result)
                     }
                 }
@@ -184,9 +189,9 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
     /* Starts playback */
     private fun startPlayback() {
-        LogHelper.d(TAG, "Starting Playback ... ${episode.toString()}")
         if (episode.audio.isNotBlank()) {
             LogHelper.d(TAG, "Starting Playback")
+            CollectionHelper.savePlaybackstate(this, collection, episode, true)
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING,0))
             mediaSession.setActive(true)
         }
@@ -197,6 +202,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
     private fun pausePlayback() {
         if (episode.audio.isNotEmpty()) {
             LogHelper.d(TAG, "Pausing Playback")
+            CollectionHelper.savePlaybackstate(this, collection, episode, false)
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED, 0))
             mediaSession.setActive(true)
         } else {
@@ -208,6 +214,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
     /* Stops playback - remove notification */
     private fun stopPlayback() {
         LogHelper.d(TAG, "Stopping Playback")
+        CollectionHelper.savePlaybackstate(this, collection, episode, false)
         mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED, 0))
         mediaSession.setActive(false)
     }
@@ -290,10 +297,18 @@ class PlayerService(): MediaBrowserServiceCompat() {
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                LogHelper.e(TAG, "Collection changed. Do something") // todo remove
-                // todo reload mediaItems
+                collection = loadCollection(this@PlayerService)
             }
         }
+    }
+
+
+    /* Reads podcast collection from storage using GSON */
+    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
+        // get JSON from text file async
+        val result = async { FileHelper.readCollection(context) }
+        // wait for result and return collection
+        return@runBlocking result.await()
     }
 
 

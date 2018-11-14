@@ -69,9 +69,9 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_listened_state_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_background"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_state_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_listened_state_button"
             tools:text="@string/sample_text_episode_0_date" />
 
         <TextView
@@ -86,23 +86,23 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_default"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_state_button"
-            app:layout_constraintEnd_toStartOf="@+id/episode_0_state_button"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_listened_state_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_listened_state_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_date"
             app:layout_constraintTop_toBottomOf="@+id/episode_0_date"
             tools:text="@string/sample_text_episode_0_name" />
 
         <ImageView
-            android:id="@+id/episode_0_state_button"
+            android:id="@+id/episode_0_listened_state_button"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:backgroundTint="@color/escapepods_transparent"
+            android:clickable="true"
             android:contentDescription="@string/descr_card_episode_listened_button"
             android:elevation="2dp"
-            android:padding="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
             android:focusable="true"
+            android:padding="4dp"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_play_button"
             app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"

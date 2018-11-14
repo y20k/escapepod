@@ -213,6 +213,24 @@ object CollectionHelper {
     }
 
 
+    /* Saves the playpack state of a given episode */
+    fun savePlaybackstate(context: Context, collection: Collection, episode: Episode = Episode(), isPlaying: Boolean): Collection {
+        collection.podcasts.forEach {
+            it.episodes.forEach {
+                // reset playback state everywhere
+                it.isPlaying = false
+                // set playback true state at this episode
+                if (it.getMediaId() == episode.getMediaId()) {
+                    it.isPlaying = isPlaying
+                }
+            }
+        }
+        saveCollection(context, collection)
+        return collection
+    }
+
+
+
     /* Saves podcast collection */
     fun saveCollection (context: Context, collection: Collection) = runBlocking<Unit> {
         LogHelper.v(TAG, "Saving podcast collection to storage")
