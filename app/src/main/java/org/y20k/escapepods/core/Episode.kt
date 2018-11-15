@@ -49,7 +49,7 @@ data class Episode (@Expose var guid: String = "",
         val episodeShortDescription: String = description
         stringBuilder.append("\nGUID: ${guid}\n")
         stringBuilder.append("${title}\n")
-        stringBuilder.append("$episodeShortDescription ...\n")
+        //stringBuilder.append("$episodeShortDescription ...\n")
         stringBuilder.append("${publicationDate}\n")
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")

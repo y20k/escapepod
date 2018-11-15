@@ -85,10 +85,12 @@ object Keys {
     const val DIALOG_UPDATE_WITHOUT_WIFI: Int = 1
     const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2
     const val DIALOG_REMOVE_PODCAST: Int = 3
+    const val DIALOG_DELETE_EPISODE: Int = 4
 
     // dialog results
     const val DIALOG_RESULT_DEFAULT: Int = -1
-    const val DIALOG_EMPTY_PAYLOAD: String = ""
+    const val DIALOG_EMPTY_PAYLOAD_STRING: String = ""
+    const val DIALOG_EMPTY_PAYLOAD_INT: Int = -1
 
     // file types
     const val FILE_TYPE_RSS: Int = 1

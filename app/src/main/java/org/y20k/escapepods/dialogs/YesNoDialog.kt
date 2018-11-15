@@ -20,6 +20,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import org.y20k.escapepods.R
+import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
 
@@ -30,7 +31,7 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
 
     /* Interface used to communicate back to activity */
     interface YesNoDialogListener {
-        fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayload: Int) {
+        fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayloadInt: Int, dialogPayloadString: String) {
         }
     }
 
@@ -40,14 +41,28 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
 
 
     /* Construct and show dialog */
-    fun show(context: Context, dialogType: Int, dialogPayload: Int, yesNoTitleRessouce: Int, yesNoMessageRessouce: Int, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel) {
+    fun show(context: Context, dialogType: Int, yesNoTitleRessouce: Int, yesNoMessageRessouce: Int, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel, dialogPayloadInt: Int = Keys.DIALOG_EMPTY_PAYLOAD_INT, dialogPayloadString: String = Keys.DIALOG_EMPTY_PAYLOAD_STRING) {
         // variant of "show" that only accepts ressource ints
-        show(context, dialogPayload, dialogType, yesNoTitleRessouce, context.getString(yesNoMessageRessouce), yesButtonRessouce, noButtonRessouce)
+        show(context, dialogType, yesNoTitleRessouce, context.getString(yesNoMessageRessouce), yesButtonRessouce, noButtonRessouce, dialogPayloadInt, dialogPayloadString)
     }
 
 
+//    /* Construct and show dialog */
+//    fun show(context: Context, dialogType: Int, dialogPayloadInt: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel) {
+//        // variant of "show" that only accepts a int payload
+//        show(context, dialogType, yesNoTitleRessouce, yesNoMessageString, yesButtonRessouce, noButtonRessouce, dialogPayloadInt, Keys.DIALOG_EMPTY_PAYLOAD_STRING)
+//    }
+//
+//
+//    /* Construct and show dialog */
+//    fun show(context: Context, dialogType: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel) {
+//        // variant of "show" that only accepts a string payload
+//        show(context, dialogType, yesNoTitleRessouce, yesNoMessageString, yesButtonRessouce, noButtonRessouce, Keys.DIALOG_EMPTY_PAYLOAD_INT, dialogPayloadString)
+//    }
+
+
     /* Construct and show dialog */
-    fun show(context: Context, dialogType: Int, dialogPayload: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel) {
+    fun show(context: Context, dialogType: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel, dialogPayloadInt: Int = Keys.DIALOG_EMPTY_PAYLOAD_INT, dialogPayloadString: String = Keys.DIALOG_EMPTY_PAYLOAD_STRING) {
         // prepare dialog builder
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -64,16 +79,22 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
         // set dialog view
         builder.setView(view)
 
+
         // add yes button
         builder.setPositiveButton(yesButtonRessouce) { _, _ ->
             // listen for click on yes button
-            yesNoDialogListener.onYesNoDialog(dialogType, true, dialogPayload)
+            yesNoDialogListener.onYesNoDialog(dialogType, true, dialogPayloadInt, dialogPayloadString)
         }
 
         // add no button
         builder.setNegativeButton(noButtonRessouce) { _, _ ->
             // listen for click on no button
-            yesNoDialogListener.onYesNoDialog(dialogType, false, dialogPayload)
+            yesNoDialogListener.onYesNoDialog(dialogType, false, dialogPayloadInt, dialogPayloadString)
+        }
+
+        // handle outside-click as "no"
+        builder.setOnCancelListener(){
+            yesNoDialogListener.onYesNoDialog(dialogType, false, dialogPayloadInt, dialogPayloadString)
         }
 
         // display dialog

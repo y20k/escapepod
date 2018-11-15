@@ -7,10 +7,10 @@
     <color name="app_onboarding_icons">@color/escapepods_grey_dark</color>
 
     <color name="text_default">@color/escapepods_grey_dark</color>
-    <color name="text_lightweight">@color/escapepods_grey</color>
+    <color name="text_lightweight">@color/escapepods_grey_light</color>
 
-    <color name="icon_default">@color/escapepods_grey_dark</color>
-    <color name="icon_lightweight">@color/escapepods_grey</color>
+    <color name="icon_default">@color/escapepods_grey</color>
+    <color name="icon_lightweight">@color/escapepods_grey_light</color>
 
     <color name="player_button_background">@color/escapepods_blue</color>
     <color name="player_background">@color/escapepods_grey_darker</color>

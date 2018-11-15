@@ -13,7 +13,6 @@
     app:behavior_hideable="false"
     app:behavior_peekHeight="0dp"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:layout_editor_absoluteY="25dp"
     tools:showIn="@layout/activity_podcast_player">
 
     <ImageView
@@ -24,8 +23,8 @@
         android:layout_marginEnd="32dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:focusable="true"
         android:contentDescription="@string/descr_expanded_player_sleep_timer_button"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_sleep_timer_24dp" />
@@ -38,20 +37,21 @@
         android:layout_marginTop="84dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/shape_cover_large"
         android:contentDescription="@string/descr_expanded_player_podcast_cover"
+        app:layout_constraintHeight_min="48dp"
+        app:layout_constraintWidth_min="48dp"
         app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_default="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+    <!-- android:background="@drawable/shape_cover_large" removed only necessary if used with setClipToOutline(true) -->
     <!-- android:clipToOutline="true" does not work at the moment - use setClipToOutline(true) on code instead-->
 
     <SeekBar
         android:id="@+id/playback_seek_bar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="29dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
@@ -61,10 +61,10 @@
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
-        android:text="@string/sample_text_episode_0_played_time"
         android:id="@+id/time_played_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/sample_text_episode_0_played_time"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/player_sheet_text_details"
@@ -74,10 +74,10 @@
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
-        android:text="@string/sample_text_episode_0_remaining_time"
         android:id="@+id/time_remaining_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/sample_text_episode_0_remaining_time"
         android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/player_sheet_text_details"
@@ -87,12 +87,12 @@
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
-        android:text="@string/sample_text_episode_0_name"
         android:id="@+id/sheet_episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:contentDescription="@string/descr_expanded_player_episode_name"
+        android:text="@string/sample_text_episode_0_name"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/player_sheet_text_main"
@@ -108,11 +108,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="@string/descr_expanded_player_playback_button"
-        android:scaleType="center"
         android:background="@drawable/ic_circle_play_button_84dp"
         android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_playback_button"
         android:focusable="true"
+        android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -123,9 +123,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
-        android:contentDescription="@string/descr_expanded_player_replay_button"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_replay_button"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
         app:layout_constraintEnd_toStartOf="@+id/sheet_play_button"
@@ -137,9 +137,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:contentDescription="@string/descr_expanded_player_forward_button"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_forward_button"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
         app:layout_constraintStart_toEndOf="@+id/sheet_play_button"
@@ -179,6 +179,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+    <!-- android:background="@drawable/shape_cover_small" removed only necessary if used with setClipToOutline(true) -->
     <!-- android:clipToOutline="true" does not work at the moment - use setClipToOutline(true) on code instead-->
 
     <!-- todo: remove android:text="@string/sample..." here -->
@@ -227,11 +228,11 @@
         android:layout_height="56dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/descr_player_playback_button"
-        android:scaleType="center"
         android:background="@drawable/ic_circle_play_button_56dp"
         android:clickable="true"
+        android:contentDescription="@string/descr_player_playback_button"
         android:focusable="true"
+        android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/player_background"
         app:srcCompat="@drawable/ic_play_symbol_white_36dp" />

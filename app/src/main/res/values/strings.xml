@@ -38,6 +38,9 @@
     <string name="dialog_yes_no_title_remove_podcast">Remove podcast</string>
     <string name="dialog_yes_no_message_remove_podcast">Do you want to remove this podcast?</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
+    <string name="dialog_yes_no_title_delete_episode">Delete episode</string>
+    <string name="dialog_yes_no_message_delete_episode">Do you want to delete this episode?</string>
+    <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
     <string name="dialog_yes_no_title_default">Decide</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_positive_button_default">Yes</string>

@@ -40,7 +40,7 @@ class MeteredNetworkDialog (private var meteredNetworkDialogListener: MeteredNet
 
 
     /* Construct and show dialog */
-    fun show(context: Context, dialogType: Int, meteredNetworkTitle: Int, meteredNetworkMessage: Int, okayButtonString: Int, payload: String = Keys.DIALOG_EMPTY_PAYLOAD) {
+    fun show(context: Context, dialogType: Int, meteredNetworkTitle: Int, meteredNetworkMessage: Int, okayButtonString: Int, payload: String = Keys.DIALOG_EMPTY_PAYLOAD_STRING) {
         // prepare dialog builder
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)

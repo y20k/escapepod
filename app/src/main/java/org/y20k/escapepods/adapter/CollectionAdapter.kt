@@ -62,6 +62,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 //        fun onItemSelected (mediaId: String, isLongPress: Boolean)
         fun onPlayButtonTapped(mediaId: String, startPlayback: Boolean)
         fun onDownloadButtonTapped(episode: Episode)
+        fun onDeleteButtonTapped(episode: Episode)
 //        fun onJumpToPosition (position: Int)
     }
 
@@ -125,7 +126,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 setPodcastName(podcastViewHolder, podcast)
                 setPodcastImage(podcastViewHolder, podcast)
                 setEpisodeTitles(podcastViewHolder, podcast)
-                setEpisodePlayButtons(podcastViewHolder, podcast)
+                setEpisodeButtons(podcastViewHolder, podcast)
             }
         }
     }
@@ -169,8 +170,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     }
 
 
-    /* Sets the episode play button views */
-    private fun setEpisodePlayButtons(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+    /* Sets the episode play, download and delete button views */
+    private fun setEpisodeButtons(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
         val episodeListSize = podcast.episodes.size
 
         // episode 0
@@ -183,11 +184,16 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
                 collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), startPlayback = !isPlaying)
             }
+            podcastViewHolder.episode0DeleteButtonView.visibility = View.VISIBLE
+            podcastViewHolder.episode0DeleteButtonView.setOnClickListener {
+                collectionAdapterListener.onDeleteButtonTapped(podcast.episodes[0])
+            }
         } else {
             podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_cloud_download_36dp)
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
                 collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
             }
+            podcastViewHolder.episode0DeleteButtonView.visibility = View.INVISIBLE
         }
 
         // episode 1
@@ -316,7 +322,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         val pocastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val episode0DateView: TextView = podcastCardLayout.findViewById(R.id.episode_0_date)
         val episode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)
-        val episode0ListenedStateView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_listened_state_button)
+        val episode0DeleteButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_delete_button)
         val episode0PlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_play_button)
 
     }

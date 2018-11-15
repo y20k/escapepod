@@ -185,6 +185,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+    /* Overrides onDeleteButtonTapped from CollectionAdapterListener */
+    override fun onDeleteButtonTapped(episode: Episode) {
+        val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_delete_episode)}\n\n- ${episode.title}"
+        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_DELETE_EPISODE, R.string.dialog_yes_no_title_delete_episode, dialogMessage, R.string.dialog_yes_no_positive_button_delete_episode, dialogPayloadString = episode.getMediaId())
+    }
+
+
     /* Overrides onMeteredNetworkDialog from MeteredNetworkDialogListener */
     override fun onMeteredNetworkDialog(dialogType: Int, payload: String) {
         super.onMeteredNetworkDialog(dialogType, payload)
@@ -207,16 +214,22 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Overrides onYesNoDialog from YesNoDialogListener */
-    override fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayload: Int) {
-        super.onYesNoDialog(dialogType, dialogResult, dialogPayload)
+    override fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayloadInt: Int, dialogPayloadString: String) {
+        super.onYesNoDialog(dialogType, dialogResult, dialogPayloadInt, dialogPayloadString)
         when (dialogType) {
             // handle result of remove dialog
             Keys.DIALOG_REMOVE_PODCAST -> {
                 when (dialogResult) {
                     // user tapped remove
-                    true -> collectionAdapter.remove(this@PodcastPlayerActivity, dialogPayload)
+                    true -> collectionAdapter.remove(this@PodcastPlayerActivity, dialogPayloadInt)
                     // user tapped cancel
-                    false -> collectionAdapter.notifyItemChanged(dialogPayload)
+                    false -> collectionAdapter.notifyItemChanged(dialogPayloadInt)
+                }
+            }
+            Keys.DIALOG_DELETE_EPISODE -> {
+                when (dialogResult) {
+                    // user tapped delete
+                    true -> deleteEpisode(dialogPayloadString)
                 }
             }
         }
@@ -240,7 +253,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 // ask user
                 val adapterPosition: Int = viewHolder.adapterPosition
                 val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n\n- ${collection.podcasts[adapterPosition].name}"
-                YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_REMOVE_PODCAST, adapterPosition,  R.string.dialog_yes_no_title_remove_podcast, dialogMessage, R.string.dialog_yes_no_positive_button_remove_podcast)
+                YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_REMOVE_PODCAST, R.string.dialog_yes_no_title_remove_podcast, dialogMessage, R.string.dialog_yes_no_positive_button_remove_podcast, dialogPayloadInt = adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
@@ -437,6 +450,12 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
     }
 
+
+    /* Deletes an episode */
+    private fun deleteEpisode(mediaId: String) {
+        // todo implement
+        LogHelper.v(TAG, "Deleting: $mediaId") // todo remove
+    }
 
 
     /* Updates podcast collection */
