@@ -100,12 +100,14 @@ object Keys {
     // options
     const val OPTION_REMOVE_FOLDER: Int = -1
 
-    // mime types
+    // mime types and charsets
+    const val CHARSET_UNDEFINDED = "undefined"
     const val MIME_TYPE_JPG = "image/jpeg"
     const val MIME_TYPE_PNG = "image/png"
     const val MIME_TYPE_MP3 = "audio/mpeg3"
     const val MIME_TYPE_XML = "text/xml"
     const val MIME_TYPE_UNSUPPORTED = "unsupported"
+    val MIME_TYPES_PODCAST = arrayOf("text/xml", "application/rss+xml", "application/xml", "application/atom+xml")
 
     // media genre
     const val MEDIA_GENRE = "Podcast"

@@ -40,8 +40,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.y20k.escapepods.adapter.CollectionAdapter
 import org.y20k.escapepods.adapter.CollectionViewModel
 import org.y20k.escapepods.core.Collection
@@ -471,17 +470,24 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Download podcast feed */
-    private fun downloadPodcastFeed(feedUrl : String) {
-        if (NetworkHelper.isConnectedToNetwork(this)) {
-            if (FileHelper.determineMimeType(feedUrl) == Keys.MIME_TYPE_XML) {
-                Toast.makeText(this, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-                WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
-            } else {
-                ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+    /* Download podcast feed using async co-routine */
+    private fun downloadPodcastFeed(feedUrl : String) = runBlocking<Unit> {
+        if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
+            val job = GlobalScope.launch(Dispatchers.Main) {
+                val result = async { NetworkHelper.detectContentType(feedUrl) }
+                val contentType = result.await()
+                if (Keys.MIME_TYPES_PODCAST.contains(contentType.type)) {
+                    // todo implement toast https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html
+                    // Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+                    WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
+                } else {
+                    // todo implement dialog https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html
+                    // ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+                }
             }
+            job.join()
         } else {
-            ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+            ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
