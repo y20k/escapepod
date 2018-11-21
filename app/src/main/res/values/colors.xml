@@ -11,6 +11,7 @@
 
     <color name="icon_default">@color/escapepods_grey</color>
     <color name="icon_lightweight">@color/escapepods_grey_light</color>
+    <color name="icon_very_lightweight">@color/escapepods_grey_lighter</color>
 
     <color name="player_button_background">@color/escapepods_blue</color>
     <color name="player_background">@color/escapepods_grey_darker</color>
@@ -19,11 +20,10 @@
     <color name="player_sheet_text_details">@color/escapepods_white</color>
     <color name="player_sheet_icon">@color/escapepods_white</color>
 
-    <color name="list_item_background">@color/escapepods_white</color>
-    <color name="list_item_background_selected">@color/escapepods_grey_very_light</color>
-    <color name="list_item_divider">@color/escapepods_grey_very_light</color>
-    <color name="list_item_delete_background">@color/escapepods_red</color>
-    <color name="episiode_element_background">@color/escapepods_grey_very_light</color>
+    <color name="list_card_background">@color/escapepods_white</color>
+    <color name="list_card_divider">@color/escapepods_grey_very_light</color>
+    <color name="list_card_delete_background">@color/escapepods_red</color>
+    <color name="list_card_episiode_background">@color/escapepods_grey_very_light</color>
 
     <!-- COLOR NAMES -->
     <color name="escapepods_grey">#FF5F6368</color>             <!-- Material Design 2: Grey 700 -->

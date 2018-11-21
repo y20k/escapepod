@@ -72,8 +72,10 @@
     <string name="descr_card_podcast_name">Name of podcast</string>
     <string name="descr_card_episode_name">Name of episode</string>
     <string name="descr_card_episode_date">Publishing date of episode</string>
-    <string name="descr_card_episode_listened_button">Small button for marking an episode listened or un-listened</string>
+    <string name="descr_card_delete_episode_button">Small button deleting a downloaded episode</string>
+    <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
+    <string name="descr_card_playback_indicator">Indicator for playback progress</string>
     <string name="descr_card_add_new_button">Button for adding new podcast feed</string>
     <string name="descr_player_playback_button">Main button for starting and pausing playback</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
@@ -100,7 +102,8 @@
         <![CDATA[
         <signature name=\"%1$s\" package=\"%2$s\">\n\t<key>%3$s</key>\n</signature>\n
         ]]>
-</string>
+    </string>
+
 
 
 </resources>

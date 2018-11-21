@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardBackgroundColor="@color/list_item_background"
+    app:cardBackgroundColor="@color/list_card_background"
     app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,7 +56,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
-            app:srcCompat="@color/episiode_element_background" />
+            app:srcCompat="@color/list_card_episiode_background" />
 
         <TextView
             android:id="@+id/episode_0_date"
@@ -97,14 +97,17 @@
             android:id="@+id/episode_0_delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/escapepods_transparent"
-            android:contentDescription="@string/descr_card_episode_listened_button"
-            android:elevation="2dp"
-            android:padding="4dp"
+            android:layout_marginEnd="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:backgroundTint="@color/escapepods_transparent"
             android:clickable="true"
+            android:contentDescription="@string/descr_card_delete_episode_button"
+            android:elevation="2dp"
             android:focusable="true"
+            android:paddingStart="4dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="12dp"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_play_button"
             app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
@@ -115,16 +118,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:backgroundTint="@color/escapepods_transparent"
+            android:clickable="true"
             android:contentDescription="@string/descr_card_small_playback_button"
             android:elevation="2dp"
-            android:padding="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
             android:focusable="true"
+            android:paddingStart="8dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
-            app:srcCompat="@drawable/ic_play_circle_outline_36dp" />
+            app:srcCompat="@drawable/ic_play_circle_outline_24dp" />
+
+        <ImageView
+            android:id="@+id/playback_process"
+            android:layout_width="4dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/descr_card_playback_indicator"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
+            app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
+            app:srcCompat="@color/icon_lightweight" />
 
         <ImageView
             android:id="@+id/divider"
@@ -134,7 +151,7 @@
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
             app:layout_constraintStart_toStartOf="@+id/episode_0_background"
             app:layout_constraintTop_toBottomOf="@+id/episode_0_background"
-            app:srcCompat="@color/episiode_element_background" />
+            app:srcCompat="@color/list_card_episiode_background" />
 
         <TextView
             android:id="@+id/older_episodes_toggle"

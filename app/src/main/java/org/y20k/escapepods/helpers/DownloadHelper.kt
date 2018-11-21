@@ -123,19 +123,14 @@ class DownloadHelper(): BroadcastReceiver() {
         val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
         // get remote URL for startDownload ID
         val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadID)
-
-        // Log completed startDownload // todo remove
-        LogHelper.v(TAG, "Download complete: " + FileHelper.getFileName(context, localFileUri) +
-                " | " + FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)) // todo remove
-
         // determine what to
-        when (FileHelper.getFileType(context, localFileUri)) {
-            Keys.MIME_TYPE_XML -> readPodcastFeedAsync(localFileUri, remoteFileLocation)
-            Keys.MIME_TYPE_MP3 -> setEpisodeMediaUri(localFileUri, remoteFileLocation)
-            Keys.MIME_TYPE_JPG -> setPodcastImage(localFileUri, remoteFileLocation)
-            Keys.MIME_TYPE_PNG -> setPodcastImage(localFileUri, remoteFileLocation)
-            else -> {}
-        }
+        val fileType = FileHelper.getFileType(context, localFileUri)
+        // Log completed startDownload // todo remove
+        LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
+        if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeedAsync(localFileUri, remoteFileLocation)
+        if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
+        if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(localFileUri, remoteFileLocation)
+        if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(localFileUri, remoteFileLocation)
         // remove ID from active downloads
         removeFromActiveDownloads(downloadID)
     }
@@ -156,7 +151,6 @@ class DownloadHelper(): BroadcastReceiver() {
                         .setAllowedOverRoaming(false)
                         .setTitle(uris[i].lastPathSegment)
                         .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
-                        .setMimeType(FileHelper.determineMimeType(uris[i].toString()))
                 newIDs[i] = downloadManager.enqueue(request)
                 activeDownloads.add(newIDs[i])
             }

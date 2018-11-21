@@ -104,10 +104,14 @@ object Keys {
     const val CHARSET_UNDEFINDED = "undefined"
     const val MIME_TYPE_JPG = "image/jpeg"
     const val MIME_TYPE_PNG = "image/png"
-    const val MIME_TYPE_MP3 = "audio/mpeg3"
+    const val MIME_TYPE_MP3 = "audio/mpeg"
     const val MIME_TYPE_XML = "text/xml"
     const val MIME_TYPE_UNSUPPORTED = "unsupported"
-    val MIME_TYPES_PODCAST = arrayOf("text/xml", "application/rss+xml", "application/xml", "application/atom+xml")
+    val MIME_TYPES_IMAGE = arrayOf("image/png", "image/jpeg")
+    val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3")
+    val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml")
+    val MIME_TYPES_ATOM = arrayOf("application/atom+xml")
+
 
     // media genre
     const val MEDIA_GENRE = "Podcast"

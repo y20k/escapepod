@@ -178,9 +178,10 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         if (podcast.episodes[0].audio.isNotEmpty()) {
             val isPlaying: Boolean = podcast.episodes[0].isPlaying
             when (isPlaying) {
-                true -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_36dp)
-                false -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_36dp)
+                true -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
+                false -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_24dp)
             }
+            podcastViewHolder.episode0PlayButtonView.contentDescription = activity.getString(R.string.descr_card_small_playback_button)
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
                 collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), startPlayback = !isPlaying)
             }
@@ -189,7 +190,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 collectionAdapterListener.onDeleteButtonTapped(podcast.episodes[0])
             }
         } else {
-            podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_cloud_download_36dp)
+            podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_cloud_download_24dp)
+            podcastViewHolder.episode0PlayButtonView.contentDescription = activity.getString(R.string.descr_card_small_download_button)
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
                 collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
             }

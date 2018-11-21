@@ -45,7 +45,7 @@ abstract class UiHelper {
         private val intrinsicWidth: Int = deleteIcon?.intrinsicWidth ?: 0
         private val intrinsicHeight: Int = deleteIcon?.intrinsicHeight ?: 0
         private val background: ColorDrawable = ColorDrawable()
-        private val backgroundColor = context.resources.getColor(R.color.list_item_delete_background, null)
+        private val backgroundColor = context.resources.getColor(R.color.list_card_delete_background, null)
         private val clearPaint: Paint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {

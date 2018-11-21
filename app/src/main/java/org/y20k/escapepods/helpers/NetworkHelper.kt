@@ -93,6 +93,7 @@ object NetworkHelper {
                         contentType.charset = charsetString.trim();
                     }
                 }
+                connection.disconnect()
             }
             LogHelper.i(TAG, "content type: ${contentType.type} / character set: ${contentType.charset}")
             cont.resume(contentType)

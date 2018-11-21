@@ -68,10 +68,11 @@ object FileHelper {
     /* Get MIME type for given file */
     fun getFileType(context: Context, uri: Uri): String {
         val fileType: String = context.contentResolver.getType(uri)
+        LogHelper.e(TAG, "Filetype fom contentResolver: $fileType ($uri)")
         if (fileType == Keys.MIME_TYPE_UNSUPPORTED) {
             val fileName = getFileName(context, uri)
             if (fileName.endsWith("xml", true)) return Keys.MIME_TYPE_XML
-            if (fileName.endsWith("rss", true)) return Keys.MIME_TYPE_XML
+            // if (fileName.endsWith("rss", true)) return Keys.MIME_TYPE_XML // todo remove
             if (fileName.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
             if (fileName.endsWith("png", true)) return Keys.MIME_TYPE_PNG
             if (fileName.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG

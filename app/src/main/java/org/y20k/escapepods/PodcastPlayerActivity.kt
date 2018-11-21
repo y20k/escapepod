@@ -48,12 +48,14 @@ import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.dialogs.*
 import org.y20k.escapepods.helpers.*
 import org.y20k.escapepods.xml.OpmlHelper
+import kotlin.coroutines.CoroutineContext
 
 
 /*
  * PodcastPlayerActivity class
  */
 class PodcastPlayerActivity: AppCompatActivity(),
+        CoroutineScope,
         AddPodcastDialog.AddPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
         MeteredNetworkDialog.MeteredNetworkDialogListener,
@@ -65,6 +67,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Main class variables */
+    private lateinit var backgroundJob: Job
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var collectionViewModel: CollectionViewModel
     private lateinit var recyclerView: RecyclerView
@@ -83,9 +86,16 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private var playerServiceConnected = false
 
 
+    /* Overrides coroutineContext variable */
+    override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
+
+
     /* Overrides onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // todo move somewhere else
+        backgroundJob = Job()
 
         // clear temp folder
         FileHelper.clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
@@ -471,21 +481,18 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Download podcast feed using async co-routine */
-    private fun downloadPodcastFeed(feedUrl : String) = runBlocking<Unit> {
+    private fun downloadPodcastFeed(feedUrl : String) {
         if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
-            val job = GlobalScope.launch(Dispatchers.Main) {
-                val result = async { NetworkHelper.detectContentType(feedUrl) }
-                val contentType = result.await()
-                if (Keys.MIME_TYPES_PODCAST.contains(contentType.type)) {
-                    // todo implement toast https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html
-                    // Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+            launch {
+                val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentType(feedUrl) }
+                val contentType: NetworkHelper.ContentType = deferred.await()
+                if ((contentType.type in Keys.MIME_TYPES_RSS) or (contentType.type in Keys.MIME_TYPES_ATOM)) {
+                    Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
                     WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
                 } else {
-                    // todo implement dialog https://kotlinlang.org/docs/reference/coroutines/coroutine-context-and-dispatchers.html
-                    // ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+                    ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
                 }
             }
-            job.join()
         } else {
             ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
