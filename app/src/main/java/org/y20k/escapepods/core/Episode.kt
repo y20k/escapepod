@@ -35,6 +35,7 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var isPlaying: Boolean = false,
                     @Expose var playbackPosition: Long = 0L,
                     @Expose var listened: Boolean = false,
+                    @Expose var manuallyDownloaded: Boolean = false,
                     @Expose var remoteCoverFileLocation: String = "",
                     @Expose var remoteAudioFileLocation: String = "",
                     @Expose var podcastName: String = ""): Parcelable {
@@ -48,13 +49,14 @@ data class Episode (@Expose var guid: String = "",
 //        val episodeShortDescription: String = description.trim().substring(0, episodeShortDescriptionLength)
         val episodeShortDescription: String = description
         stringBuilder.append("\nGUID: ${guid}\n")
-        stringBuilder.append("${title}\n")
+        stringBuilder.append("Title: ${title}\n")
         //stringBuilder.append("$episodeShortDescription ...\n")
         stringBuilder.append("${publicationDate}\n")
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")
-        stringBuilder.append("${remoteAudioFileLocation} \n")
-        stringBuilder.append("${remoteCoverFileLocation} \n")
+        stringBuilder.append("Audio URL: ${remoteAudioFileLocation} \n")
+        // stringBuilder.append("Cover URL: ${remoteCoverFileLocation} \n") // is currently not being read by RssHelper
+        stringBuilder.append("Manually downloaded: $manuallyDownloaded \n")
         return stringBuilder.toString()
     }
 

@@ -20,10 +20,7 @@ import android.preference.PreferenceManager
 import android.support.v4.media.MediaMetadataCompat
 import androidx.core.content.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
@@ -137,6 +134,17 @@ object CollectionHelper {
     }
 
 
+    /* Puts the podcast cover in episodes with no cover  */
+    fun fillEmptyEpisodeCovers(podcast: Podcast): Podcast {
+        podcast.episodes.forEach {episode ->
+            if (episode.cover == Keys.LOCATION_DEFAULT_COVER) {
+                episode.cover = podcast.cover
+            }
+        }
+        return podcast
+    }
+
+
     /* Clears an audio folder for a given podcast */
     fun clearAudioFolder(context: Context, collection: Collection) {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
@@ -213,6 +221,21 @@ object CollectionHelper {
     }
 
 
+    /* Sets the flag "manually downloaded" in Episode for given media ID String */
+    fun setManuallyDownloaded(context: Context, collection: Collection, mediaId: String): Episode {
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                if (episode.getMediaId() == mediaId) {
+                    episode.manuallyDownloaded = true
+                    saveCollection(context, collection)
+                    return episode
+                }
+            }
+        }
+        return Episode()
+    }
+
+
     /* Saves the playpack state of a given episode */
     fun savePlaybackstate(context: Context, collection: Collection, episode: Episode = Episode(), isPlaying: Boolean): Collection {
         collection.podcasts.forEach {
@@ -230,18 +253,22 @@ object CollectionHelper {
     }
 
 
-
     /* Saves podcast collection */
-    fun saveCollection (context: Context, collection: Collection) = runBlocking<Unit> {
+    fun saveCollection (context: Context, collection: Collection) {
         LogHelper.v(TAG, "Saving podcast collection to storage")
         // save time of last update
         PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.PREF_LAST_UPDATE_COLLECTION, Calendar.getInstance().timeInMillis)}
-        // save collection to storage - async
-        val result = async { FileHelper.saveCollection(context, collection) }
-        // wait for result and broadcast update (to activity)
-        result.await()
-        // broadcast collection
-        sendCollectionBroadcast(context)
+        val backgroundJob = Job()
+        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+        uiScope.launch {
+            // save collection on background thread
+            val deferred = async(Dispatchers.Default) { FileHelper.saveCollection(context, collection) }
+            // wait for result
+            deferred.await()
+            // broadcast collection update
+            sendCollectionBroadcast(context)
+            backgroundJob.cancel()
+        }
     }
 
 

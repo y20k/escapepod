@@ -208,10 +208,6 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     }
 
 
-
-
-
-
     /* Overrides onBindViewHolder */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: List<Any>) {
 

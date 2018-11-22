@@ -25,8 +25,9 @@ import java.util.*
  * Collection class
  */
 @Parcelize
-data class Collection(@Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
-                      @Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
+data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
+                      @Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
+                      @Expose val currentMediaId: String = String(),
                       @Expose var lastUpdate: Date = Date(0)): Parcelable {
 
 

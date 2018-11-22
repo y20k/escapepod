@@ -23,8 +23,7 @@ import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
@@ -62,7 +61,7 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Overrides onReceive - reacts to android.intent.action.DOWNLOAD_COMPLETE */
     override fun onReceive(c: Context, intent: Intent) {
-        // set main class variables
+        // set main class variables - required for all public methods
         initialize(c)
         // process the finished download
         processDownload(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
@@ -71,7 +70,7 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Download a podcast */
     fun downloadPodcast(c: Context, feedUrl: String) {
-        // set main class variables
+        // set main class variables - required for all public methods
         initialize(c)
         // enqueue podcast
         val uris = Array(1) {feedUrl.toUri()}
@@ -81,10 +80,10 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Download an episode */
     fun downloadEpisode(c: Context, mediaID: String, ignoreWifiRestriction: Boolean) {
-        // set main class variables
+        // set main class variables - required for all public methods
         initialize(c)
         // enqueue episode
-        val episode: Episode = CollectionHelper.getEpisode(collection, mediaID)
+        val episode: Episode = CollectionHelper.setManuallyDownloaded(context, collection, mediaID)
         val uris = Array(1) {episode.remoteAudioFileLocation.toUri()}
         enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
     }
@@ -92,7 +91,7 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Refresh cover of given podcast */
     fun refreshCover(c: Context, podcast: Podcast) {
-        // set main class variables
+        // set main class variables - required for all public methods
         initialize(c)
         // start to download podcast cover
         CollectionHelper.clearImagesFolder(context, podcast)
@@ -103,7 +102,7 @@ class DownloadHelper(): BroadcastReceiver() {
 
     /* Updates podcast collection */
     fun updateCollection(c: Context) {
-        // set main class variables
+        // set main class variables - required for all public methods
         initialize(c)
         // re-download all podcast xml episode lists
         if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
@@ -127,7 +126,7 @@ class DownloadHelper(): BroadcastReceiver() {
         val fileType = FileHelper.getFileType(context, localFileUri)
         // Log completed startDownload // todo remove
         LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
-        if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeedAsync(localFileUri, remoteFileLocation)
+        if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(localFileUri, remoteFileLocation)
         if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
         if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(localFileUri, remoteFileLocation)
         if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(localFileUri, remoteFileLocation)
@@ -240,21 +239,24 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Async via coroutine: Reads podcast feed */
-    private fun readPodcastFeedAsync(localFileUri: Uri, remoteFileLocation: String) = runBlocking<Unit> {
-        LogHelper.v(TAG, "Reading podcast RSS file async: $remoteFileLocation")
-        // async: read xml
-        val result = async { RssHelper().read(context, localFileUri, remoteFileLocation) }
-        // wait for result and create podcast
-        val podcast = result.await()
-        if (CollectionHelper.validatePodcast(podcast)) {
-            // check if new
-            val isNew: Boolean = CollectionHelper.isNewPodcast(podcast.remotePodcastFeedLocation, collection)
-            // check if media download is necessary
-            if (isNew || CollectionHelper.podcastHasDownloadableEpisodes(collection, podcast)) {
-                enqueuePodcastMediaFiles(podcast, isNew)
-                addPodcast(podcast, isNew)
-            } else {
-                LogHelper.v(TAG, "No new media files to download.")
+    private fun readPodcastFeed(localFileUri: Uri, remoteFileLocation: String) {
+        GlobalScope.launch() {
+            LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
+            // async: read xml
+            val deferred: Deferred<Podcast> = async { RssHelper().read(context, localFileUri, remoteFileLocation) }
+            // wait for result and create podcast
+            var podcast: Podcast = deferred.await()
+            podcast = CollectionHelper.fillEmptyEpisodeCovers(podcast)
+            if (CollectionHelper.validatePodcast(podcast)) {
+                // check if new
+                val isNew: Boolean = CollectionHelper.isNewPodcast(podcast.remotePodcastFeedLocation, collection)
+                // check if media download is necessary
+                if (isNew || CollectionHelper.podcastHasDownloadableEpisodes(collection, podcast)) {
+                    enqueuePodcastMediaFiles(podcast, isNew)
+                    addPodcast(podcast, isNew)
+                } else {
+                    LogHelper.v(TAG, "No new media files to download.")
+                }
             }
         }
     }

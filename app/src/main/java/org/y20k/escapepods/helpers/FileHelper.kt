@@ -68,11 +68,10 @@ object FileHelper {
     /* Get MIME type for given file */
     fun getFileType(context: Context, uri: Uri): String {
         val fileType: String = context.contentResolver.getType(uri)
-        LogHelper.e(TAG, "Filetype fom contentResolver: $fileType ($uri)")
         if (fileType == Keys.MIME_TYPE_UNSUPPORTED) {
             val fileName = getFileName(context, uri)
             if (fileName.endsWith("xml", true)) return Keys.MIME_TYPE_XML
-            // if (fileName.endsWith("rss", true)) return Keys.MIME_TYPE_XML // todo remove
+            if (fileName.endsWith("rss", true)) return Keys.MIME_TYPE_XML
             if (fileName.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
             if (fileName.endsWith("png", true)) return Keys.MIME_TYPE_PNG
             if (fileName.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
@@ -138,6 +137,7 @@ object FileHelper {
     /* Suspend function: Saves podcast collection as JSON text file */
     suspend fun saveCollection(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
+            LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
             // set last update
             collection.lastUpdate = Calendar.getInstance().time
             PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)}
@@ -150,10 +150,10 @@ object FileHelper {
     }
 
 
-
     /* Suspend function: Reads podcast collection from storage using GSON */
     suspend fun readCollection(context: Context): Collection {
         return suspendCoroutine {cont ->
+            LogHelper.v(TAG, "Reading collection - Thread: ${Thread.currentThread().name}")
             // get JSON from text file
             val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
             if (json.isEmpty()) {
@@ -170,6 +170,7 @@ object FileHelper {
     /* Suspend function: Exports podcast collection as OPML file */
     suspend fun exportCollection(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
+            LogHelper.v(TAG, "Exporting collection as OPML - Thread: ${Thread.currentThread().name}")
             // create OPML string
             val opmlString: String = OpmlHelper().createOpmlString(collection)
             // save OPML as text file

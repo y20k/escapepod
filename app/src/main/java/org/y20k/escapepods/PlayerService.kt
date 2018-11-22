@@ -40,8 +40,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.*
@@ -76,10 +75,6 @@ class PlayerService(): MediaBrowserServiceCompat() {
     /* Overrides onCreate */
     override fun onCreate() {
         super.onCreate()
-
-        // load collection
-        collection = loadCollection(this)
-        LogHelper.e(TAG, collection.toString())
 
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
@@ -121,6 +116,10 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
         // initialize listener for headphone unplug
         becomingNoisyReceiver = BecomingNoisyReceiver(this, mediaSession.sessionToken)
+
+        // load collection
+        // collection = loadCollection(this) todo remove
+        loadCollection(this)
     }
 
 
@@ -297,18 +296,31 @@ class PlayerService(): MediaBrowserServiceCompat() {
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                collection = loadCollection(this@PlayerService)
+                loadCollection(context)
+//                collection = loadCollection(this@PlayerService) // todo remove
             }
         }
     }
 
 
+//    /* Reads podcast collection from storage using GSON */
+//    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
+//        // get JSON from text file async
+//        val result = async { FileHelper.readCollection(context) }
+//        // wait for result and return collection
+//        return@runBlocking result.await()
+//    }
+
+
+
     /* Reads podcast collection from storage using GSON */
-    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
-        // get JSON from text file async
-        val result = async { FileHelper.readCollection(context) }
-        // wait for result and return collection
-        return@runBlocking result.await()
+    private fun loadCollection(context: Context) {
+        GlobalScope.launch(Dispatchers.Main) {
+            // get JSON from text file async
+            val deferred: Deferred<Collection> = async { FileHelper.readCollection(context) }
+            // wait for result and return collection
+            collection = deferred.await()
+        }
     }
 
 

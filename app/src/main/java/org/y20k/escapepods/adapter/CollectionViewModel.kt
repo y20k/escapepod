@@ -22,8 +22,7 @@ import android.content.IntentFilter
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
@@ -42,6 +41,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     /* Main class variables */
     val collectionLiveData: MutableLiveData<Collection>
     private var collectionChangedReceiver: BroadcastReceiver
+    private val backgroundJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
 
 
     /* Init constructor */
@@ -59,6 +60,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     /* Overrides onCleared */
     override fun onCleared() {
         super.onCleared()
+        backgroundJob.cancel()
         LocalBroadcastManager.getInstance(getApplication()).unregisterReceiver(collectionChangedReceiver)
     }
 
@@ -75,13 +77,14 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
 
     /* Reads podcast collection from storage using GSON */
-    private fun loadCollection() = runBlocking<Unit> {
-        LogHelper.v(TAG, "Loading podcast collection from storage async - setting view model")
-        // get JSON from text file async
-        val result = async { FileHelper.readCollection(getApplication()) }
-        // wait for result and update collection view model
-        collectionLiveData.value = result.await()
+    private fun loadCollection() {
+        uiScope.launch {
+            // load collection on background thread
+            val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollection(getApplication()) }
+            // wait for result and update collection view model
+            collectionLiveData.value = deferred.await()
+            LogHelper.v(TAG, "Setting view model - Thread: ${Thread.currentThread().name}")
+        }
     }
-
 
 }
