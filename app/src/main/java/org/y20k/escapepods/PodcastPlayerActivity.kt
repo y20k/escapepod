@@ -94,7 +94,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // todo move somewhere else
+        // initialize background job
         backgroundJob = Job()
 
         // clear temp folder
@@ -484,7 +484,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun downloadPodcastFeed(feedUrl : String) {
         if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
             launch {
+                // detect content type on background thread
                 val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentType(feedUrl) }
+                // wait for result
                 val contentType: NetworkHelper.ContentType = deferred.await()
                 if ((contentType.type in Keys.MIME_TYPES_RSS) or (contentType.type in Keys.MIME_TYPES_ATOM)) {
                     Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
@@ -500,16 +502,18 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Read OPML file */
-    private fun readOpmlFile(opmlUri: Uri) = runBlocking<Unit> {
-        val result = async { OpmlHelper().read(this@PodcastPlayerActivity, opmlUri) }
-        // wait for result and update collection
-        var feedUrlList: ArrayList<String> = result.await()
-        feedUrlList.forEach {
-            LogHelper.v(TAG, it) // todo remove
+    private fun readOpmlFile(opmlUri: Uri) {
+        launch {
+            // read OPML on background thread
+            val deferred: Deferred<ArrayList<String>> = async(Dispatchers.Default) { OpmlHelper().read(this@PodcastPlayerActivity, opmlUri) }
+            // wait for result and update collection
+            var feedUrlList: ArrayList<String> = deferred.await()
+            feedUrlList.forEach {
+                LogHelper.v(TAG, it) // todo remove
+            }
+            feedUrlList = CollectionHelper.removeDuplicates(collection, feedUrlList)
+            OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrlList)
         }
-        feedUrlList = CollectionHelper.removeDuplicates(collection, feedUrlList)
-        OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrlList)
-        LogHelper.v(TAG, "${feedUrlList.size} new podcasts found!") // todo remove
     }
 
 

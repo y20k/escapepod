@@ -45,6 +45,7 @@ class OpmlHelper {
     /* Read OPML feed from given input stream - async using coroutine */
     suspend fun read(context: Context, localFileUri: Uri): ArrayList<String> {
         return suspendCoroutine {cont ->
+           LogHelper.v(TAG, "Reading OPML feed - Thread: ${Thread.currentThread().name}")
             // try parsing
             val stream: InputStream = FileHelper.getTextFileStream(context, localFileUri)
             try {

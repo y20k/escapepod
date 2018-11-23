@@ -28,9 +28,6 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.xml.RssHelper
-import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
 import java.util.*
 
 
@@ -50,69 +47,96 @@ class DownloadHelper(): BroadcastReceiver() {
     private val TAG: String = LogHelper.makeLogTag(DownloadHelper::class.java)
 
 
-    /* Initializes the main class variables of DownloadHelper */
-    private fun initialize(c: Context) {
-        context = c
-        downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
-        activeDownloads =  loadActiveDownloads(context, downloadManager)
-        loadCollection()
+    /* Interface used to notify finished initialization */
+    interface OnInitializedListener {
+        fun onInitialized() { }
     }
 
 
     /* Overrides onReceive - reacts to android.intent.action.DOWNLOAD_COMPLETE */
     override fun onReceive(c: Context, intent: Intent) {
-        // set main class variables - required for all public methods
-        initialize(c)
-        // process the finished download
-        processDownload(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
+        // do main job of onReceive after initialization
+        val onInitializedListener: DownloadHelper.OnInitializedListener = object : DownloadHelper.OnInitializedListener {
+            override fun onInitialized() {
+                super.onInitialized()
+                // process the finished download
+                processDownload(intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
+            }
+        }
+        val initializer = Initializer()
+        initializer.initialize(c, onInitializedListener)
     }
 
 
     /* Download a podcast */
     fun downloadPodcast(c: Context, feedUrl: String) {
-        // set main class variables - required for all public methods
-        initialize(c)
-        // enqueue podcast
-        val uris = Array(1) {feedUrl.toUri()}
-        enqueueDownload(uris, Keys.FILE_TYPE_RSS)
+        // do main job of downloadPodcast after initialization
+        val onInitializedListener: DownloadHelper.OnInitializedListener = object : DownloadHelper.OnInitializedListener {
+            override fun onInitialized() {
+                super.onInitialized()
+                // enqueue podcast
+                val uris = Array(1) {feedUrl.toUri()}
+                enqueueDownload(uris, Keys.FILE_TYPE_RSS)
+            }
+        }
+        val initializer = Initializer()
+        initializer.initialize(c, onInitializedListener)
     }
 
 
     /* Download an episode */
     fun downloadEpisode(c: Context, mediaID: String, ignoreWifiRestriction: Boolean) {
-        // set main class variables - required for all public methods
-        initialize(c)
-        // enqueue episode
-        val episode: Episode = CollectionHelper.setManuallyDownloaded(context, collection, mediaID)
-        val uris = Array(1) {episode.remoteAudioFileLocation.toUri()}
-        enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
+        // do main job of downloadEpisode after initialization
+        val onInitializedListener: DownloadHelper.OnInitializedListener = object : DownloadHelper.OnInitializedListener {
+            override fun onInitialized() {
+                super.onInitialized()
+                // enqueue episode
+                val episode: Episode = CollectionHelper.setManuallyDownloaded(context, collection, mediaID)
+                val uris = Array(1) {episode.remoteAudioFileLocation.toUri()}
+                enqueueDownload(uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
+            }
+        }
+        val initializer = Initializer()
+        initializer.initialize(c, onInitializedListener)
     }
 
 
     /* Refresh cover of given podcast */
     fun refreshCover(c: Context, podcast: Podcast) {
-        // set main class variables - required for all public methods
-        initialize(c)
-        // start to download podcast cover
-        CollectionHelper.clearImagesFolder(context, podcast)
-        val uris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
-        enqueueDownload(uris, Keys.FILE_TYPE_IMAGE, podcast.name)
+        // do main job of refreshCover after initialization
+        val onInitializedListener: DownloadHelper.OnInitializedListener = object : DownloadHelper.OnInitializedListener {
+            override fun onInitialized() {
+                super.onInitialized()
+                // start to download podcast cover
+                CollectionHelper.clearImagesFolder(context, podcast)
+                val uris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
+                enqueueDownload(uris, Keys.FILE_TYPE_IMAGE, podcast.name)
+            }
+        }
+        val initializer = Initializer()
+        initializer.initialize(c, onInitializedListener)
     }
 
 
     /* Updates podcast collection */
     fun updateCollection(c: Context) {
-        // set main class variables - required for all public methods
-        initialize(c)
-        // re-download all podcast xml episode lists
-        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
-            val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
-                collection.podcasts[it].remotePodcastFeedLocation.toUri()
+        // do main job of updateCollection after initialization
+        val onInitializedListener: DownloadHelper.OnInitializedListener = object : DownloadHelper.OnInitializedListener {
+            override fun onInitialized() {
+                super.onInitialized()
+                // re-download all podcast xml episode lists
+                if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
+                    val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
+                        collection.podcasts[it].remotePodcastFeedLocation.toUri()
+                    }
+                    enqueueDownload(uris, Keys.FILE_TYPE_RSS)
+                } else {
+                    LogHelper.v(TAG, "Update not initiated: not enough time has passed since last update.")
+                }
             }
-            enqueueDownload(uris, Keys.FILE_TYPE_RSS)
-        } else {
-            LogHelper.v(TAG, "Update not initiated: not enough time has passed since last update.")
         }
+        val initializer = Initializer()
+        initializer.initialize(c, onInitializedListener)
     }
 
 
@@ -263,12 +287,17 @@ class DownloadHelper(): BroadcastReceiver() {
 
 
     /* Reads podcast collection from storage using GSON */
-    private fun loadCollection() = runBlocking<Unit> {
+    private fun loadCollection() {
         LogHelper.v(TAG, "Loading podcast collection from storage")
-        // get JSON from text file async
-        val result = async { FileHelper.readCollection(context) }
-        // wait for result and update collection
-        collection = result.await()
+        val backgroundJob = Job()
+        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+        uiScope.launch {
+            // load collection on background thread
+            val result = async { FileHelper.readCollection(context) }
+            // wait for result and update collection
+            collection = result.await()
+            backgroundJob.cancel()
+        }
     }
 
 
@@ -348,22 +377,30 @@ class DownloadHelper(): BroadcastReceiver() {
     }
 
 
-    /* Just a test */
-    private fun identifyFileType(feedUrl: String): String {
-        var fileType = "Undetermined"
-        try {
-            val url = URL(feedUrl)
-            val connection = url.openConnection()
-            fileType = connection.contentType
-        } catch (badUrlEx: MalformedURLException) {
-            LogHelper.w("ERROR: Bad URL - $badUrlEx")
-        } catch (ioEx: IOException) {
-            LogHelper.w("Cannot access URLConnection - $ioEx")
-        }
-        if (fileType == "application/rss+xml") {
-            return Keys.MIME_TYPE_XML
-        } else {
-            return Keys.MIME_TYPE_UNSUPPORTED
+    /*
+     * Inner class: Initializes the main class variables of DownloadHelper
+     */
+    inner class Initializer() {
+        fun initialize(c: Context, onInitializedListener: OnInitializedListener) {
+            LogHelper.v(TAG, "Initializing the DownloadHelper")
+            context = c
+            downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+            activeDownloads = loadActiveDownloads(context, downloadManager)
+            val backgroundJob = Job()
+            val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+            uiScope.launch {
+                // load collection on background thread
+                val result = async { FileHelper.readCollection(context) }
+                // wait for result and update collection
+                collection = result.await()
+                backgroundJob.cancel()
+                // set callback - initialization finished
+                onInitializedListener.onInitialized()
+            }
         }
     }
+    /*
+     * End of inner class
+     */
+
 }

@@ -48,6 +48,7 @@ class RssHelper {
     /* Read RSS feed from given input stream - async using coroutine */
     suspend fun read(context: Context, localFileUri: Uri, remotePodcastFeedLocation: String): Podcast {
         return suspendCoroutine {cont ->
+            LogHelper.v(TAG, "Reading RSS feed - Thread: ${Thread.currentThread().name}")
             // store remote feed location
             podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
             // try parsing

@@ -45,12 +45,13 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.*
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
 /*
  * PlayerService class
  */
-class PlayerService(): MediaBrowserServiceCompat() {
+class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
 
     /* Define log tag */
@@ -58,6 +59,7 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
 
     /* Main class variables */
+    private lateinit var backgroundJob: Job
     private var collection: Collection = Collection()
     private var collectionProvider: CollectionProvider = CollectionProvider()
     private var episode: Episode = Episode()
@@ -71,10 +73,16 @@ class PlayerService(): MediaBrowserServiceCompat() {
     private lateinit var mediaController: MediaControllerCompat
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
 
+    /* Overrides coroutineContext variable */
+    override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
+
 
     /* Overrides onCreate */
     override fun onCreate() {
         super.onCreate()
+
+        // initialize background job
+        backgroundJob = Job()
 
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
@@ -147,6 +155,8 @@ class PlayerService(): MediaBrowserServiceCompat() {
             release()
         }
         becomingNoisyReceiver.unregister()
+        // cancel background job
+        backgroundJob.cancel()
     }
 
 
@@ -315,10 +325,11 @@ class PlayerService(): MediaBrowserServiceCompat() {
 
     /* Reads podcast collection from storage using GSON */
     private fun loadCollection(context: Context) {
-        GlobalScope.launch(Dispatchers.Main) {
-            // get JSON from text file async
-            val deferred: Deferred<Collection> = async { FileHelper.readCollection(context) }
-            // wait for result and return collection
+        LogHelper.v(TAG, "Loading podcast collection from storage")
+        launch {
+            // load collection on background thread
+            val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollection(context) }
+            // wait for result and update collection
             collection = deferred.await()
         }
     }
