@@ -42,8 +42,8 @@ class OpmlHelper {
     private var feedUrlList: ArrayList<String> = arrayListOf()
 
 
-    /* Read OPML feed from given input stream - async using coroutine */
-    suspend fun read(context: Context, localFileUri: Uri): ArrayList<String> {
+    /* Suspend function: Read OPML feed from given input stream - async using coroutine */
+    suspend fun readSuspended(context: Context, localFileUri: Uri): Array<String> {
         return suspendCoroutine {cont ->
            LogHelper.v(TAG, "Reading OPML feed - Thread: ${Thread.currentThread().name}")
             // try parsing
@@ -63,7 +63,7 @@ class OpmlHelper {
             }
 
             // return parsing result
-            cont.resume(feedUrlList)
+            cont.resume(feedUrlList.toTypedArray())
         }
     }
 
@@ -77,7 +77,7 @@ class OpmlHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found a podcast
                 Keys.OPML_BODY -> readBody(parser)
@@ -98,7 +98,7 @@ class OpmlHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found a parent outline
                 Keys.OPML_OUTLINE -> {
@@ -122,7 +122,7 @@ class OpmlHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found child outline element - usually containing a podcast url
                 Keys.OPML_OUTLINE_PODCAST -> {

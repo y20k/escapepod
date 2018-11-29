@@ -36,25 +36,68 @@
         android:layout_marginStart="64dp"
         android:layout_marginTop="84dp"
         android:layout_marginEnd="64dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         android:contentDescription="@string/descr_expanded_player_podcast_cover"
-        app:layout_constraintHeight_min="48dp"
-        app:layout_constraintWidth_min="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
+        app:layout_constraintBottom_toTopOf="@+id/episode_current_chapter_name"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_min="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_min="48dp"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
     <!-- android:background="@drawable/shape_cover_large" removed only necessary if used with setClipToOutline(true) -->
     <!-- android:clipToOutline="true" does not work at the moment - use setClipToOutline(true) on code instead-->
 
+    <!-- todo: remove android:text="@string/sample..." here -->
+    <ImageView
+        android:id="@+id/previous_chapter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/descr_expanded_player_previous_chapter_button"
+        app:layout_constraintBottom_toBottomOf="@+id/episode_current_chapter_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/episode_current_chapter_name"
+        app:srcCompat="@drawable/ic_chevron_left_24dp" />
+
+    <ImageView
+        android:id="@+id/next_chapter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/descr_expanded_player_next_chapter_button"
+        app:layout_constraintBottom_toBottomOf="@+id/episode_current_chapter_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/episode_current_chapter_name"
+        app:srcCompat="@drawable/ic_chevron_right_24dp" />
+
+    <TextView
+        android:id="@+id/episode_current_chapter_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/descr_expanded_player_current_chapter_name"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/sample_text_episode_0_chapter"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/player_sheet_text_main"
+        app:layout_constraintBottom_toTopOf="@+id/playback_seek_bar"
+        app:layout_constraintEnd_toStartOf="@+id/next_chapter_button"
+        app:layout_constraintStart_toEndOf="@+id/previous_chapter_button"
+        tools:text="@string/sample_text_episode_0_chapter" />
+
     <SeekBar
         android:id="@+id/playback_seek_bar"
         android:layout_width="0dp"
-        android:layout_height="29dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:contentDescription="@string/descr_expanded_player_seekbar"
         app:layout_constraintBottom_toTopOf="@+id/sheet_episode_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -64,6 +107,7 @@
         android:id="@+id/time_played_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_expanded_player_time_played"
         android:text="@string/sample_text_episode_0_played_time"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -77,6 +121,7 @@
         android:id="@+id/time_remaining_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_expanded_player_time_remaining"
         android:text="@string/sample_text_episode_0_remaining_time"
         android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -91,6 +136,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:contentDescription="@string/descr_expanded_player_episode_name"
         android:text="@string/sample_text_episode_0_name"
         android:textAlignment="center"
@@ -146,15 +193,9 @@
         app:layout_constraintTop_toTopOf="@+id/sheet_play_button"
         app:srcCompat="@drawable/ic_forward_30sek_56dp" />
 
+
     <!-- main player views -->
     <!-- ... down here, because lower views are in a layout are above the higher views -->
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/player_views"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="visible"
-        app:constraint_referenced_ids="player_background,player_podcast_cover,player_podcast_name,player_episode_title,player_play_button" />
 
     <View
         android:id="@+id/player_background"
@@ -236,5 +277,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/player_background"
         app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
+
+
+    <!-- Constraintlayout View Groups -->
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/player_views"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:constraint_referenced_ids="player_background,player_podcast_cover,player_podcast_name,player_episode_title,player_play_button" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/chapter_views"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:constraint_referenced_ids="previous_chapter_button,next_chapter_button,episode_current_chapter_name" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -316,7 +316,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 //    /* Reads podcast collection from storage using GSON */
 //    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
 //        // get JSON from text file async
-//        val result = async { FileHelper.readCollection(context) }
+//        val result = async { FileHelper.readCollectionSuspended(context) }
 //        // wait for result and return collection
 //        return@runBlocking result.await()
 //    }
@@ -328,7 +328,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         LogHelper.v(TAG, "Loading podcast collection from storage")
         launch {
             // load collection on background thread
-            val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollection(context) }
+            val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(context) }
             // wait for result and update collection
             collection = deferred.await()
         }

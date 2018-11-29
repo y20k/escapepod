@@ -24,27 +24,28 @@ import java.util.concurrent.TimeUnit
  */
 object WorkerHelper {
 
-
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(WorkerHelper::class.java)
 
 
-    /* Schedules a DownloadWorker that triggers a one time background download of a podcast */
-    fun startOneTimeAddPodcastWorker(podcastUrl: String): UUID {
+    /* Schedules a DownloadWorker that triggers a one time background download of podcasts */
+    fun startOneTimeAddPodcastsWorker(podcastUrlStrings: Array<String>): UUID {
+        LogHelper.v(TAG, "Starting one-time work: download podcasts")
         val requestData: Data = Data.Builder()
-                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_ADD_PODCAST)
-                .putString(Keys.KEY_PODCAST_URL, podcastUrl)
+                .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_ADD_PODCASTS)
+                .putStringArray(Keys.KEY_PODCAST_URLS, podcastUrlStrings)
                 .build()
-        val addPodcastOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
+        val addPodcastsOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(requestData)
                 .build()
-        WorkManager.getInstance().enqueue(addPodcastOneTimeWork)
-        return addPodcastOneTimeWork.id
+        WorkManager.getInstance().enqueue(addPodcastsOneTimeWork)
+        return addPodcastsOneTimeWork.id
     }
 
 
     /* Schedules a DownloadWorker that triggers a one time background download of an episode */
     fun startOneTimeEpisodeDownloadWorker(mediaId: String, ignoreWifiRestriction: Boolean = false): UUID {
+        LogHelper.v(TAG, "Starting one-time work: download episode")
         val requestData: Data = Data.Builder()
                 .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_DOWNLOAD_EPISODE)
                 .putString(Keys.KEY_EPISODE_MEDIA_ID, mediaId)
@@ -77,6 +78,7 @@ object WorkerHelper {
 
     /* Schedules a DownloadWorker that triggers a one time background update of the collection */
     fun startOneTimeUpdateWorker(lastUpdate: Long): UUID {
+        LogHelper.v(TAG, "Starting one-time work: update collection")
         val requestData: Data = Data.Builder()
                 .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
                 .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
@@ -91,6 +93,7 @@ object WorkerHelper {
 
     /* Schedules a DownloadWorker that triggers background updates of the collection periodically */
     fun schedulePeriodicUpdateWorker(lastUpdate: Long): UUID {
+        LogHelper.v(TAG, "Starting / Updating periodic work: update collection")
         val requestData: Data = Data.Builder()
                 .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
                 .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
@@ -102,7 +105,7 @@ object WorkerHelper {
                 .setInputData(requestData)
                 .setConstraints(unmeteredConstraint)
                 .build()
-        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.KEEP, updateCollectionPeriodicWork)
+        WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.REPLACE, updateCollectionPeriodicWork)
         return updateCollectionPeriodicWork.id
     }
 

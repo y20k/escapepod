@@ -74,8 +74,8 @@ object NetworkHelper {
     }
 
 
-    /* Detects content type (mime type) from given URL string - async using coroutine */
-    suspend fun detectContentType(urlString: String): ContentType {
+    /* Suspend function: Detects content type (mime type) from given URL string - async using coroutine */
+    suspend fun detectContentTypeSuspended(urlString: String): ContentType {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Determining content type - Thread: ${Thread.currentThread().name}")
             val CONTENT_TYPE_PATTERN:  Pattern  = Pattern.compile("([^;]*)(; ?charset=([^;]+))?");

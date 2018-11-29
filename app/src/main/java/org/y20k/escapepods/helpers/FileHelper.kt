@@ -133,25 +133,30 @@ object FileHelper {
         }
     }
 
+    /* Saves podcast collection as JSON text file */
+    fun saveCollection(context: Context, collection: Collection) {
+        LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
+        // set last update
+        collection.lastUpdate = Calendar.getInstance().time
+        PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)}
+        // convert to JSON
+        val gson: Gson = getCustomGson()
+        val json: String = gson.toJson(collection)
+        writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+    }
 
-    /* Suspend function: Saves podcast collection as JSON text file */
-    suspend fun saveCollection(context: Context, collection: Collection) {
+
+    /* Suspend function: Wrapper for saveCollection */
+    suspend fun saveCollectionSuspended(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
-            LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
-            // set last update
-            collection.lastUpdate = Calendar.getInstance().time
-            PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)}
-            // convert to JSON
-            val gson: Gson = getCustomGson()
-            val json: String = gson.toJson(collection)
-            // save JSON as text file
-            cont.resume(writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE))
+            saveCollection(context, collection)
+            cont.resume(Unit)
         }
     }
 
 
     /* Suspend function: Reads podcast collection from storage using GSON */
-    suspend fun readCollection(context: Context): Collection {
+    suspend fun readCollectionSuspended(context: Context): Collection {
         return suspendCoroutine {cont ->
             LogHelper.v(TAG, "Reading collection - Thread: ${Thread.currentThread().name}")
             // get JSON from text file
@@ -168,7 +173,7 @@ object FileHelper {
 
 
     /* Suspend function: Exports podcast collection as OPML file */
-    suspend fun exportCollection(context: Context, collection: Collection) {
+    suspend fun exportCollectionSuspended(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Exporting collection as OPML - Thread: ${Thread.currentThread().name}")
             // create OPML string
@@ -229,7 +234,7 @@ object FileHelper {
 
     /* Reads InputStream from file uri and returns it as String */
     private fun readTextFile(context: Context, folder: String, fileName: String): String {
-        // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
+        // todo readSuspended https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
         // https://developer.android.com/training/secure-file-sharing/retrieve-info
 
         // check if file exists
@@ -237,7 +242,7 @@ object FileHelper {
         if (!file.exists()) {
             return ""
         }
-        // read until last line reached
+        // readSuspended until last line reached
         val stream: InputStream = file.inputStream()
         val reader: BufferedReader = BufferedReader(InputStreamReader(stream))
         val builder: StringBuilder = StringBuilder()

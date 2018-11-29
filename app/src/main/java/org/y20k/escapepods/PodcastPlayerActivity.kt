@@ -214,11 +214,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Overrides onOpmlImportDialog from OpmlImportDialogListener */
-    override fun onOpmlImportDialog(feedUrlList: ArrayList<String>) {
-        super.onOpmlImportDialog(feedUrlList)
-        feedUrlList.forEach {
-            LogHelper.e(TAG, "$it \n")
-        }
+    override fun onOpmlImportDialog(feedUrls: Array<String>) {
+        super.onOpmlImportDialog(feedUrls)
+        downloadPodcastFeedsFromOpml(feedUrls)
     }
 
 
@@ -481,16 +479,16 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Download podcast feed using async co-routine */
-    private fun downloadPodcastFeed(feedUrl : String) {
+    private fun downloadPodcastFeed(feedUrl: String) {
         if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
             launch {
                 // detect content type on background thread
-                val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentType(feedUrl) }
+                val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }
                 // wait for result
                 val contentType: NetworkHelper.ContentType = deferred.await()
                 if ((contentType.type in Keys.MIME_TYPES_RSS) or (contentType.type in Keys.MIME_TYPES_ATOM)) {
                     Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-                    WorkerHelper.startOneTimeAddPodcastWorker(feedUrl)
+                    WorkerHelper.startOneTimeAddPodcastsWorker(arrayOf(feedUrl))
                 } else {
                     ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
                 }
@@ -501,18 +499,28 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+    /* Download podcast feed using async co-routine */
+    private fun downloadPodcastFeedsFromOpml(feedUrls: Array<String>) {
+        if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
+            val urls = CollectionHelper.removeDuplicates(collection, feedUrls)
+            if (urls.isNotEmpty()) {
+                Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+                WorkerHelper.startOneTimeAddPodcastsWorker(CollectionHelper.removeDuplicates(collection, feedUrls))
+            }
+        } else {
+            ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+        }
+    }
+
+
     /* Read OPML file */
     private fun readOpmlFile(opmlUri: Uri) {
         launch {
-            // read OPML on background thread
-            val deferred: Deferred<ArrayList<String>> = async(Dispatchers.Default) { OpmlHelper().read(this@PodcastPlayerActivity, opmlUri) }
+            // readSuspended OPML on background thread
+            val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper().readSuspended(this@PodcastPlayerActivity, opmlUri) }
             // wait for result and update collection
-            var feedUrlList: ArrayList<String> = deferred.await()
-            feedUrlList.forEach {
-                LogHelper.v(TAG, it) // todo remove
-            }
-            feedUrlList = CollectionHelper.removeDuplicates(collection, feedUrlList)
-            OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrlList)
+            val feedUrls: Array<String> = deferred.await()
+            OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrls)
         }
     }
 
@@ -544,8 +552,8 @@ class PodcastPlayerActivity: AppCompatActivity(),
             when {
                 // download new podcast
                 contentUri.scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download + dialog and stuff
-                // read opml from file
-                contentUri.scheme.startsWith("content") -> readOpmlFile(contentUri) // todo implement OPML read + dialog and stuff
+                // readSuspended opml from file
+                contentUri.scheme.startsWith("content") -> readOpmlFile(contentUri) // todo implement OPML readSuspended + dialog and stuff
             }
         }
     }

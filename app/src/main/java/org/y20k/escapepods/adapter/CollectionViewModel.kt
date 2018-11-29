@@ -81,7 +81,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         LogHelper.v(TAG, "Loading podcast collection from storage")
         uiScope.launch {
             // load collection on background thread
-            val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollection(getApplication()) }
+            val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(getApplication()) }
             // wait for result and update collection view model
             collectionLiveData.value = deferred.await()
         }

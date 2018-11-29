@@ -1,6 +1,6 @@
 /*
  * CollectionAdapter.kt
- * Implements the CollectionAdapter object
+ * Implements the CollectionAdapter class
  * A CollectionAdapter is a custom adapter for a RecyclerView
  *
  * This file is part of
@@ -160,7 +160,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     private fun setPodcastImage(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
         podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.cover))
         podcastViewHolder.podcastImageView.setOnLongClickListener {
-            DownloadHelper().refreshCover(activity, podcast)
+            DownloadHelper.refreshCover(activity, podcast)
             Toast.makeText(activity as Context, activity.getText(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
             val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
@@ -267,7 +267,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         // export collection as OPML
         CollectionHelper.exportCollection(context, collection)
         // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, collection)
+        CollectionHelper.saveCollection(context, collection, true)
     }
 
 

@@ -45,10 +45,10 @@ class RssHelper {
     private var podcast: Podcast = Podcast()
 
 
-    /* Read RSS feed from given input stream - async using coroutine */
-    suspend fun read(context: Context, localFileUri: Uri, remotePodcastFeedLocation: String): Podcast {
+    /* Suspend function: Read RSS feed from given input stream - async using coroutine */
+    suspend fun readSuspended(context: Context, localFileUri: Uri, remotePodcastFeedLocation: String): Podcast {
         return suspendCoroutine {cont ->
-            LogHelper.v(TAG, "Reading RSS feed - Thread: ${Thread.currentThread().name}")
+            LogHelper.v(TAG, "Reading RSS feed ($remotePodcastFeedLocation) - Thread: ${Thread.currentThread().name}")
             // store remote feed location
             podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
             // try parsing
@@ -86,7 +86,7 @@ class RssHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found a podcast
                 Keys.RSS_PODCAST -> readPodcast(parser)
@@ -108,7 +108,7 @@ class RssHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found a podcast name
                 Keys.RSS_PODCAST_NAME -> podcast.name = readPodcastName(parser, Keys.XML_NAME_SPACE)
@@ -145,7 +145,7 @@ class RssHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found episode title
                 Keys.RSS_EPISODE_GUID -> episode.guid = readEpisodeGuid(parser, Keys.XML_NAME_SPACE)
@@ -165,7 +165,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: read name */
+    /* PODCAST: readSuspended name */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastName(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_NAME)
@@ -175,7 +175,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: read description */
+    /* PODCAST: readSuspended description */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastDescription(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_DESCRIPTION)
@@ -185,7 +185,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: read GUID */
+    /* EPISODE: readSuspended GUID */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeGuid(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_GUID)
@@ -195,7 +195,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: read title */
+    /* EPISODE: readSuspended title */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeTitle(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_TITLE)
@@ -205,7 +205,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: read description */
+    /* EPISODE: readSuspended description */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeDescription(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION)
@@ -215,7 +215,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: read publication date */
+    /* EPISODE: readSuspended publication date */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodePublicationDate(parser: XmlPullParser, nameSpace: String?): Date {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
@@ -225,7 +225,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: read remoteImageFileLocation - standard tag variant */
+    /* PODCAST: readSuspended remoteImageFileLocation - standard tag variant */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastCover(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
@@ -235,7 +235,7 @@ class RssHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // read only relevant tags
+            // readSuspended only relevant tags
             when (parser.name) {
                 // found episode cover
                 Keys.RSS_PODCAST_COVER_URL -> link = readPodcastCoverUrl(parser, nameSpace)
@@ -248,7 +248,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: read remoteImageFileLocation URL - within remoteImageFileLocation*/
+    /* PODCAST: readSuspended remoteImageFileLocation URL - within remoteImageFileLocation*/
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastCoverUrl(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER_URL)
@@ -258,7 +258,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: read remoteImageFileLocation - itunes tag variant */
+    /* PODCAST: readSuspended remoteImageFileLocation - itunes tag variant */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastCoverItunes(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
@@ -273,7 +273,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: read audio link */
+    /* EPISODE: readSuspended audio link */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeAudioLink(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()

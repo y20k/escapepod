@@ -244,9 +244,9 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
                 eventType = parser.next()
             }
         } catch (xmlException: XmlPullParserException) {
-            Log.e(TAG, "Could not read allowed callers from XML.", xmlException)
+            Log.e(TAG, "Could not readSuspended allowed callers from XML.", xmlException)
         } catch (ioException: IOException) {
-            Log.e(TAG, "Could not read allowed callers from XML.", ioException)
+            Log.e(TAG, "Could not readSuspended allowed callers from XML.", ioException)
         }
 
         return certificateWhitelist

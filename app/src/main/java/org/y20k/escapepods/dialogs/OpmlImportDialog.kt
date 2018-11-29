@@ -12,7 +12,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
 
     /* Interface used to communicate back to activity */
     interface OpmlImportDialogListener {
-        fun onOpmlImportDialog(feedUrlList: ArrayList<String>) {
+        fun onOpmlImportDialog(feedUrls: Array<String>) {
         }
     }
 
@@ -21,7 +21,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
 
 
     /* Construct and show dialog */
-    fun show(context: Context, feedUrlList: ArrayList<String>) {
+    fun show(context: Context, feedUrls: Array<String>) {
         // prepare dialog builder
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val builder: AlertDialog.Builder = AlertDialog.Builder(context)
@@ -38,7 +38,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
 
         // set text views
         opmlImportTitleView.text = context.getString(R.string.dialog_opml_import_title)
-        val numberOfFeeds: Int = feedUrlList.size
+        val numberOfFeeds: Int = feedUrls.size
 
         when (numberOfFeeds) {
 
@@ -68,7 +68,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 // build details string
                 val detailsText: String
                 val detailsBuilder: StringBuilder = StringBuilder()
-                feedUrlList.forEach {
+                feedUrls.forEach {
                     detailsBuilder.append("$it \n")
                 }
                 detailsText = detailsBuilder.toString()
@@ -91,7 +91,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 // add okay ("import") button
                 builder.setPositiveButton(R.string.dialog_opml_import_button_okay) { _, _ ->
                     // listen for click on okay button
-                    opmlImportDialogListener.onOpmlImportDialog(feedUrlList)
+                    opmlImportDialogListener.onOpmlImportDialog(feedUrls)
                 }
                 // add cancel button
                 builder.setNegativeButton(R.string.dialog_generic_button_cancel) { _, _ ->

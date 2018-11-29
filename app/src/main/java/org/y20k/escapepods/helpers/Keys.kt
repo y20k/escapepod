@@ -138,13 +138,15 @@ object Keys {
     const val KEY_IGNORE_WIFI_RESTRICTION: String = "IGNORE_WIFI_RESTRICTION"
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
     const val KEY_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
-    const val KEY_PODCAST_URL: String = "PODCAST_URL"
+    const val KEY_PODCAST_URLS: String = "PODCAST_URLS"
+    const val KEY_EPISODE_PODCAST_NAME: String = "EPISODE_PODCAST_NAME"
+    const val KEY_EPISODE_REMOTE_AUDIO_FILE_LOCATION: String = "EPISODE_REMOTE_AUDIO_FILE_LOCATION"
     const val KEY_EPISODE_MEDIA_ID: String = "EPISODE_MEDIA_ID"
 
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
-    const val REQUEST_ADD_PODCAST: Int = 2
+    const val REQUEST_ADD_PODCASTS: Int = 2
     const val REQUEST_DOWNLOAD_EPISODE: Int = 3
 
     // unique names

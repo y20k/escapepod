@@ -55,7 +55,7 @@ data class Episode (@Expose var guid: String = "",
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")
         stringBuilder.append("Audio URL: ${remoteAudioFileLocation} \n")
-        // stringBuilder.append("Cover URL: ${remoteCoverFileLocation} \n") // is currently not being read by RssHelper
+        // stringBuilder.append("Cover URL: ${remoteCoverFileLocation} \n") // is currently not being readSuspended by RssHelper
         stringBuilder.append("Manually downloaded: $manuallyDownloaded \n")
         return stringBuilder.toString()
     }

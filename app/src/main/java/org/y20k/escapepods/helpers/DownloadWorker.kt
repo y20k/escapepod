@@ -17,6 +17,8 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.*
+import org.y20k.escapepods.core.Collection
 
 /*
  * DownloadWorker class
@@ -32,15 +34,44 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
         // determine what type of download is requested
         when(inputData.getInt(Keys.KEY_DOWNLOAD_WORK_REQUEST,0)) {
             // CASE: update collection
-            Keys.REQUEST_UPDATE_COLLECTION -> DownloadHelper().updateCollection(applicationContext)
+            Keys.REQUEST_UPDATE_COLLECTION -> updateCollection()
             // CASE: add podcast to collection
-            Keys.REQUEST_ADD_PODCAST -> DownloadHelper().downloadPodcast(applicationContext, inputData.getString(Keys.KEY_PODCAST_URL).toString())
+            Keys.REQUEST_ADD_PODCASTS -> addPodcasts()
             // CASE: download episode
-            Keys.REQUEST_DOWNLOAD_EPISODE -> DownloadHelper().downloadEpisode(applicationContext, inputData.getString(Keys.KEY_EPISODE_MEDIA_ID).toString(), inputData.getBoolean(Keys.KEY_IGNORE_WIFI_RESTRICTION, false))
+            Keys.REQUEST_DOWNLOAD_EPISODE -> downloadEpisode()
         }
-        // indicate success or failure
         return Result.SUCCESS
         // (Returning RETRY tells WorkManager to try this task again later; FAILURE says not to try again.)
     }
+
+
+    /* Updates podcast collection */
+    private fun updateCollection() {
+        val backgroundJob = Job()
+        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+        uiScope.launch {
+            // load collection on background thread
+            val deferred: Deferred<Collection> = async { FileHelper.readCollectionSuspended(applicationContext) }
+            // wait for result
+            val collection = deferred.await()
+            // update collection
+            DownloadHelper.updateCollection(applicationContext, collection)
+            // cancel background job
+            backgroundJob.cancel()
+        }
+    }
+
+
+    /* Add podcasts */
+    private fun addPodcasts() {
+        DownloadHelper.downloadPodcasts(applicationContext, inputData.getStringArray(Keys.KEY_PODCAST_URLS)!!)
+    }
+
+    /* Downloads an episode */
+    private fun downloadEpisode() {
+        DownloadHelper.downloadEpisode(applicationContext, inputData.getString(Keys.KEY_EPISODE_PODCAST_NAME)!!, inputData.getString(Keys.KEY_EPISODE_REMOTE_AUDIO_FILE_LOCATION)!!, inputData.getBoolean(Keys.KEY_IGNORE_WIFI_RESTRICTION, false))
+    }
+
+
 
 }

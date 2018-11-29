@@ -18,7 +18,6 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.support.v4.media.MediaMetadataCompat
-import androidx.core.content.edit
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
@@ -191,11 +190,13 @@ object CollectionHelper {
 
 
     /* Removes feeds that are already in the podcast collection */
-    fun removeDuplicates(collection: Collection, feedUrlList: ArrayList<String>): ArrayList<String> {
+    fun removeDuplicates(collection: Collection, feedUrls: Array<String>): Array<String> {
+        val feedUrlList: MutableList<String> = feedUrls.toMutableList()
         collection.podcasts.forEach { podcast ->
+            LogHelper.e(TAG, "Trying to remove: ${podcast.remotePodcastFeedLocation}") // todo remove
             feedUrlList.remove(podcast.remotePodcastFeedLocation)
         }
-        return feedUrlList
+        return feedUrlList.toTypedArray()
     }
 
 
@@ -227,7 +228,7 @@ object CollectionHelper {
             podcast.episodes.forEach { episode ->
                 if (episode.getMediaId() == mediaId) {
                     episode.manuallyDownloaded = true
-                    saveCollection(context, collection)
+                    saveCollection(context, collection, true)
                     return episode
                 }
             }
@@ -248,26 +249,34 @@ object CollectionHelper {
                 }
             }
         }
-        saveCollection(context, collection)
+        saveCollection(context, collection, true)
         return collection
     }
 
 
     /* Saves podcast collection */
-    fun saveCollection (context: Context, collection: Collection) {
-        LogHelper.v(TAG, "Saving podcast collection to storage")
-        // save time of last update
-        PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.PREF_LAST_UPDATE_COLLECTION, Calendar.getInstance().timeInMillis)}
-        val backgroundJob = Job()
-        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
-        uiScope.launch {
-            // save collection on background thread
-            val deferred = async(Dispatchers.Default) { FileHelper.saveCollection(context, collection) }
-            // wait for result
-            deferred.await()
-            // broadcast collection update
-            sendCollectionBroadcast(context)
-            backgroundJob.cancel()
+    fun saveCollection (context: Context, collection: Collection, async: Boolean = true) {
+        LogHelper.v(TAG, "Saving podcast collection to storage. Async = $async")
+        when (async) {
+            true -> {
+                val backgroundJob = Job()
+                val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+                uiScope.launch {
+                    // save collection on background thread
+                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection) }
+                    // wait for result
+                    deferred.await()
+                    // broadcast collection update
+                    sendCollectionBroadcast(context)
+                    backgroundJob.cancel()
+                }
+            }
+            false -> {
+                // save collection
+                FileHelper.saveCollection(context, collection)
+                // broadcast collection update
+                sendCollectionBroadcast(context)
+            }
         }
     }
 
@@ -276,12 +285,13 @@ object CollectionHelper {
     fun exportCollection(context: Context, collection: Collection) {
         LogHelper.v(TAG, "Exporting podcast collection as OPML")
         // export collection as OPML - launch = fire & forget (no return value from save collection)
-        GlobalScope.launch { FileHelper.exportCollection(context, collection) }
+        GlobalScope.launch { FileHelper.exportCollectionSuspended(context, collection) }
     }
 
 
     /* Sends a broadcast containing the collction as parcel */
     fun sendCollectionBroadcast(context: Context) {
+        LogHelper.v(TAG, "Broadcasting that collection has changed.")
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)

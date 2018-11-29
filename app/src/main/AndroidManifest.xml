@@ -95,7 +95,7 @@
 
 
         <!-- handles completed downloads -->
-        <receiver android:name=".helpers.DownloadHelper" >
+        <receiver android:name=".helpers.DownloadFinishedReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
