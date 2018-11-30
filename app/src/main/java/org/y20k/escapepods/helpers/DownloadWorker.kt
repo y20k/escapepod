@@ -17,8 +17,6 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.*
-import org.y20k.escapepods.core.Collection
 
 /*
  * DownloadWorker class
@@ -47,18 +45,7 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
 
     /* Updates podcast collection */
     private fun updateCollection() {
-        val backgroundJob = Job()
-        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
-        uiScope.launch {
-            // load collection on background thread
-            val deferred: Deferred<Collection> = async { FileHelper.readCollectionSuspended(applicationContext) }
-            // wait for result
-            val collection = deferred.await()
-            // update collection
-            DownloadHelper.updateCollection(applicationContext, collection)
-            // cancel background job
-            backgroundJob.cancel()
-        }
+        DownloadHelper.updateCollection(applicationContext)
     }
 
 
@@ -66,6 +53,7 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
     private fun addPodcasts() {
         DownloadHelper.downloadPodcasts(applicationContext, inputData.getStringArray(Keys.KEY_PODCAST_URLS)!!)
     }
+
 
     /* Downloads an episode */
     private fun downloadEpisode() {

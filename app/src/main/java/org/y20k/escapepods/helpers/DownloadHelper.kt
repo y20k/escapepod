@@ -40,10 +40,18 @@ object DownloadHelper {
     private val TAG: String = LogHelper.makeLogTag(DownloadHelper::class.java)
 
 
+    /* Main class variables */
+    private lateinit var collection: Collection
+    private lateinit var downloadManager: DownloadManager
+    private lateinit var activeDownloads: ArrayList<Long>
+
+
     /* Download a podcast */
     fun downloadPodcasts(context: Context, podcastUrlStrings: Array<String>) {
+        // initialize main class variables, if necessary
+        initialize(context)
         // convert array
-        val uris: Array<Uri> =  Array<Uri>(podcastUrlStrings.size, {index -> Uri.parse(podcastUrlStrings[index])})
+        val uris: Array<Uri> =  Array<Uri>(podcastUrlStrings.size) { index -> Uri.parse(podcastUrlStrings[index])}
         // enqueue podcast
         enqueueDownload(context, uris, Keys.FILE_TYPE_RSS)
     }
@@ -51,6 +59,9 @@ object DownloadHelper {
 
     /* Download an episode */
     fun downloadEpisode(context: Context, podcastName: String, remoteImageFileLocation: String, ignoreWifiRestriction: Boolean) {
+        // initialize main class variables, if necessary
+        initialize(context)
+        // enqueue episode
         val uris = Array(1) { remoteImageFileLocation.toUri() }
         enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, podcastName, ignoreWifiRestriction)
     }
@@ -58,6 +69,8 @@ object DownloadHelper {
 
     /* Refresh cover of given podcast */
     fun refreshCover(context: Context, podcast: Podcast) {
+        // initialize main class variables, if necessary
+        initialize(context)
         // start to download podcast cover
         CollectionHelper.clearImagesFolder(context, podcast)
         val uris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
@@ -66,7 +79,9 @@ object DownloadHelper {
 
 
     /* Updates podcast collection */
-    fun updateCollection(context: Context, collection: Collection) {
+    fun updateCollection(context: Context) {
+        // initialize main class variables, if necessary
+        initialize(context)
         // re-download all podcast xml episode lists
         if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
             val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
@@ -80,8 +95,9 @@ object DownloadHelper {
 
 
     /* Processes a given download ID */
-    fun processDownload(context: Context, collection: Collection, downloadID: Long) {
-        val downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+    fun processDownload(context: Context, downloadID: Long) {
+        // initialize main class variables, if necessary
+        initialize(context)
         // get local Uri in content://downloads/all_downloads/ for startDownload ID
         val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
         // get remote URL for startDownload ID
@@ -90,20 +106,32 @@ object DownloadHelper {
         val fileType = FileHelper.getFileType(context, localFileUri)
         // Log completed startDownload // todo remove
         LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
-        if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, collection, localFileUri, remoteFileLocation)
+        if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
         if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
-        if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, collection, localFileUri, remoteFileLocation)
-        if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, collection, localFileUri, remoteFileLocation)
+        if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
+        if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, localFileUri, remoteFileLocation)
         // remove ID from active downloads
         removeFromActiveDownloads(context, downloadID)
+    }
+
+
+    /* Initializes main class variables of DownloadHelper, if necessary */
+    private fun initialize(context: Context) {
+        if (!this::collection.isInitialized) {
+            collection = FileHelper.readCollection(context) // todo make async
+        }
+        if (!this::downloadManager.isInitialized) {
+            downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+        }
+        if (!this::activeDownloads.isInitialized) {
+            activeDownloads = loadActiveDownloads(context, downloadManager)
+        }
     }
 
 
     /* Enqueues an Array of files in DownloadManager */
     private fun enqueueDownload(context: Context, uris: Array<Uri>, type: Int, podcastName: String = String(), ignoreWifiRestriction: Boolean = false) {
         // determine destination folder and allowed network types
-        val downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
-        val activeDownloads = loadActiveDownloads(context, downloadManager)
         val folder: String = FileHelper.determineDestinationFolderPath(type, podcastName)
         val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
         // enqueues downloads
@@ -139,38 +167,39 @@ object DownloadHelper {
 
 
     /* Adds podcast to podcast collection*/
-    private fun addPodcast(context: Context, collection: Collection, podcast: Podcast, isNew: Boolean) {
-        val updatedCollection: Collection
+    private fun addPodcast(context: Context, podcast: Podcast, isNew: Boolean) {
         when (isNew) {
-            true -> updatedCollection = CollectionHelper.addPodcast(context, collection, podcast)
-            false -> updatedCollection = CollectionHelper.replacePodcast(context, collection, podcast)
+            true -> collection = CollectionHelper.addPodcast(context, collection, podcast)
+            false -> collection = CollectionHelper.replacePodcast(context, collection, podcast)
         }
         // sort collection
-        updatedCollection.podcasts.sortBy { it.name }
+        collection.podcasts.sortBy { it.name }
         // export collection as OPML
-        CollectionHelper.exportCollection(context, updatedCollection)
+        CollectionHelper.exportCollection(context, collection)
         // save collection
-        CollectionHelper.saveCollection(context, updatedCollection, false)
+        CollectionHelper.saveCollection(context, collection)
+        // enqueue media files for download
+        enqueuePodcastMediaFiles(context, podcast, isNew)
     }
 
 
     /* Sets podcast cover */
-    private fun setPodcastImage(context: Context, collection: Collection, localFileUri: Uri, remoteFileLocation: String) {
-        for (podcast in collection.podcasts) {
+    private fun setPodcastImage(context: Context, localFileUri: Uri, remoteFileLocation: String) {
+        collection.podcasts.forEach { podcast ->
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
                 podcast.cover = localFileUri.toString()
-                for (episode in podcast.episodes) {
+                podcast.episodes.forEach { episode ->
                     episode.cover = localFileUri.toString()
                 }
             }
         }
         // save collection
-        CollectionHelper.saveCollection(context, collection, true)
+        CollectionHelper.saveCollection(context, collection)
     }
 
 
     /* Sets Media Uri in Episode */
-    private fun setEpisodeMediaUri(context: Context, collection: Collection, localFileUri: Uri, remoteFileLocation: String) {
+    private fun setEpisodeMediaUri(context: Context, localFileUri: Uri, remoteFileLocation: String) {
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
@@ -179,18 +208,16 @@ object DownloadHelper {
             }
         }
         // remove unused audio references from collection
-        val updatedCollection = CollectionHelper.removeUnusedAudioReferences(context, collection)
+        collection = CollectionHelper.removeUnusedAudioReferences(context, collection)
         // clear audio folder
-        CollectionHelper.clearAudioFolder(context, updatedCollection)
+        CollectionHelper.clearAudioFolder(context, collection)
         // save collection
-        CollectionHelper.saveCollection(context, updatedCollection, true)
+        CollectionHelper.saveCollection(context, collection)
     }
 
 
     /* Savely remove given startDownload ID from active downloads */
     private fun removeFromActiveDownloads(context: Context, downloadID: Long): Boolean {
-        val downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
-        val activeDownloads = loadActiveDownloads(context, downloadManager)
         val iterator: MutableIterator<Long> = activeDownloads.iterator()
         while (iterator.hasNext()) {
             val activeDownload = iterator.next()
@@ -205,7 +232,7 @@ object DownloadHelper {
 
 
     /* Async via coroutine: Reads podcast feed */
-    private fun readPodcastFeed(context: Context, collection: Collection,localFileUri: Uri, remoteFileLocation: String) {
+    private fun readPodcastFeed(context: Context, localFileUri: Uri, remoteFileLocation: String) {
         GlobalScope.launch() {
             LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
             // async: readSuspended xml
@@ -218,8 +245,7 @@ object DownloadHelper {
                 val isNew: Boolean = CollectionHelper.isNewPodcast(podcast.remotePodcastFeedLocation, collection)
                 // check if media download is necessary
                 if (isNew || CollectionHelper.podcastHasDownloadableEpisodes(collection, podcast)) {
-                    addPodcast(context, collection, podcast, isNew)
-                    enqueuePodcastMediaFiles(context, podcast, isNew)
+                    addPodcast(context, podcast, isNew)
                 } else {
                     LogHelper.v(TAG, "No new media files to download.")
                 }

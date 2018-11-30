@@ -31,7 +31,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 /*
  * AudioFocusExoPlayerDecorator class
  */
-
 class AudioFocusExoPlayerDecorator(private val audioAttributes: AudioAttributesCompat,
                                    private val audioManager: AudioManager,
                                    private val player: SimpleExoPlayer) : ExoPlayer by player {
@@ -160,7 +159,7 @@ class AudioFocusExoPlayerDecorator(private val audioAttributes: AudioAttributesC
         override fun onTimelineChanged(timeline: Timeline?, manifest: Any?, reason: Int) {
             eventListeners.forEach { it.onTimelineChanged(timeline, manifest, reason) }
         }
-        /**
+        /*
          * Handles the case where the intention is to play (so [Player.getPlayWhenReady] should
          * return `true`), but it's actually paused because the app had a temporary loss
          * of audio focus; i.e.: [AudioManager.AUDIOFOCUS_LOSS_TRANSIENT].

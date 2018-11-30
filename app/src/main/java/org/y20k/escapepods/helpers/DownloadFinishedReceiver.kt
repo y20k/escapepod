@@ -18,7 +18,6 @@ import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
 
 
@@ -38,18 +37,7 @@ class DownloadFinishedReceiver(): BroadcastReceiver() {
 
     /* Overrides onReceive */
     override fun onReceive(context: Context, intent: Intent) {
-        LogHelper.v(TAG, "Loading podcast collection from storage")
-        val backgroundJob = Job()
-        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
-        uiScope.launch {
-            // load collection on background thread
-            val deferred: Deferred<Collection> = async { FileHelper.readCollectionSuspended(context) }
-            // wait for result
-            val collection = deferred.await()
-            // process the finished download
-            DownloadHelper.processDownload(context, collection, intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
-            // cancel background job
-            backgroundJob.cancel()
-        }
+        // process the finished download
+        DownloadHelper.processDownload(context, intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1L))
     }
 }

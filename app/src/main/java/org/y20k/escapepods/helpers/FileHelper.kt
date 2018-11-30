@@ -146,28 +146,32 @@ object FileHelper {
     }
 
 
-    /* Suspend function: Wrapper for saveCollection */
-    suspend fun saveCollectionSuspended(context: Context, collection: Collection) {
-        return suspendCoroutine { cont ->
-            saveCollection(context, collection)
-            cont.resume(Unit)
+    /* Reads podcast collection from storage using GSON */
+    fun readCollection(context: Context): Collection {
+        LogHelper.v(TAG, "Reading collection - Thread: ${Thread.currentThread().name}")
+        // get JSON from text file
+        val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+        when (json.isNotBlank()) {
+            // convert JSON and return as collection
+            true -> return getCustomGson().fromJson(json, Collection::class.java)
+            // return an empty collection
+            false -> return Collection()
         }
     }
 
 
-    /* Suspend function: Reads podcast collection from storage using GSON */
+    /* Suspend function: Wrapper for saveCollection */
+    suspend fun saveCollectionSuspended(context: Context, collection: Collection) {
+        return suspendCoroutine { cont ->
+            cont.resume(saveCollection(context, collection))
+        }
+    }
+
+
+    /* Suspend function: Wrapper for readCollection */
     suspend fun readCollectionSuspended(context: Context): Collection {
         return suspendCoroutine {cont ->
-            LogHelper.v(TAG, "Reading collection - Thread: ${Thread.currentThread().name}")
-            // get JSON from text file
-            val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
-            if (json.isEmpty()) {
-                // return an empty collection
-                cont.resume(Collection())
-            } else {
-                // convert JSON and return as COLLECTION
-                cont.resume(getCustomGson().fromJson(json, Collection::class.java))
-            }
+            cont.resume(readCollection(context))
         }
     }
 
@@ -234,7 +238,7 @@ object FileHelper {
 
     /* Reads InputStream from file uri and returns it as String */
     private fun readTextFile(context: Context, folder: String, fileName: String): String {
-        // todo readSuspended https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
+        // todo read https://commonsware.com/blog/2016/03/15/how-consume-content-uri.html
         // https://developer.android.com/training/secure-file-sharing/retrieve-info
 
         // check if file exists

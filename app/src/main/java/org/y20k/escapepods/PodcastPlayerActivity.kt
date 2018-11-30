@@ -568,7 +568,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             Toast.makeText(this, createCollectionInfoString(), Toast.LENGTH_LONG).show()
 //            // update ui
 //            updateUserInterface()
-            // start worker that updates the podcast collection and observe download work
+            // start worker that periodically updates the podcast collection
             WorkerHelper.schedulePeriodicUpdateWorker(collection.lastUpdate.time)
         })
     }
