@@ -24,14 +24,25 @@ import java.util.*
 object DateHelper {
 
 
+    /* Main class variables */
+    private val pattern: String = "EEE, dd MMM yyyy HH:mm:ss Z"
+    private val dateFormat: SimpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+
+
     /* Converts RFC 2822 string representation of a date to DATE */
-    fun convertRFC2822(dateString: String): Date {
-        val pattern = "EEE, dd MMM yyyy HH:mm:ss Z"
-        val format = SimpleDateFormat(pattern, Locale.ENGLISH)
-        var date = format.parse((dateString))
+    fun convertFromRfc2822(dateString: String): Date {
+        var date = dateFormat.parse((dateString))
         if (date == null) {
             date = Calendar.getInstance().time
         }
         return date
     }
+
+
+    /* Converts a DATE to its RFC 2822 string representation */
+    fun convertToRfc2822(date: Date): String {
+        val dateFormat: SimpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+        return dateFormat.format(date)
+    }
+
 }

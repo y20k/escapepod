@@ -24,9 +24,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.helpers.DateHelper
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
+import java.util.*
 
 
 /*
@@ -40,6 +42,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Main class variables */
     val collectionLiveData: MutableLiveData<Collection>
+    private var lastUpdateViewModel: Date = Calendar.getInstance().time
     private var collectionChangedReceiver: BroadcastReceiver
     private val backgroundJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
@@ -69,8 +72,13 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                // load collection and update collectionLiveData
-                loadCollection()
+                if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION)) {
+                    val lastUpdate: Date = DateHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
+                    // check if reload is necessary
+                    if (lastUpdate.after(lastUpdateViewModel)) {
+                        loadCollection()
+                    }
+                }
             }
         }
     }
@@ -82,8 +90,12 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         uiScope.launch {
             // load collection on background thread
             val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(getApplication()) }
-            // wait for result and update collection view model
-            collectionLiveData.value = deferred.await()
+            // wait for result
+            val collection: Collection = deferred.await()
+            // store last update
+            lastUpdateViewModel = collection.lastUpdate
+            // update collection view model
+            collectionLiveData.value = collection
         }
     }
 

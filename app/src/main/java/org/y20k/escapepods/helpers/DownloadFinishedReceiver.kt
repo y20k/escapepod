@@ -18,7 +18,6 @@ import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import org.y20k.escapepods.core.Collection
 
 
 /*
@@ -29,10 +28,6 @@ class DownloadFinishedReceiver(): BroadcastReceiver() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(DownloadFinishedReceiver::class.java)
-
-
-    /* Main class variables */
-    private lateinit var collection: Collection
 
 
     /* Overrides onReceive */

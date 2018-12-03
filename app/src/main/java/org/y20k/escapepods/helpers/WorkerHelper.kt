@@ -77,11 +77,10 @@ object WorkerHelper {
 
 
     /* Schedules a DownloadWorker that triggers a one time background update of the collection */
-    fun startOneTimeUpdateWorker(lastUpdate: Long): UUID {
+    fun startOneTimeUpdateWorker(): UUID {
         LogHelper.v(TAG, "Starting one-time work: update collection")
         val requestData: Data = Data.Builder()
                 .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
-                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
                 .build()
         val updateCollectionOneTimeWork = OneTimeWorkRequestBuilder<DownloadWorker>()
                 .setInputData(requestData)
@@ -92,11 +91,10 @@ object WorkerHelper {
 
 
     /* Schedules a DownloadWorker that triggers background updates of the collection periodically */
-    fun schedulePeriodicUpdateWorker(lastUpdate: Long): UUID {
+    fun schedulePeriodicUpdateWorker(): UUID {
         LogHelper.v(TAG, "Starting / Updating periodic work: update collection")
         val requestData: Data = Data.Builder()
                 .putInt(Keys.KEY_DOWNLOAD_WORK_REQUEST, Keys.REQUEST_UPDATE_COLLECTION)
-                .putLong(Keys.KEY_LAST_UPDATE_COLLECTION, lastUpdate)
                 .build()
         val unmeteredConstraint = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED)

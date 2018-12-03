@@ -138,7 +138,7 @@ object FileHelper {
         LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
         // set last update
         collection.lastUpdate = Calendar.getInstance().time
-        PreferenceManager.getDefaultSharedPreferences(context).edit {putLong(Keys.KEY_LAST_UPDATE_COLLECTION, collection.lastUpdate.time)}
+        PreferenceManager.getDefaultSharedPreferences(context).edit { putString(Keys.KEY_LAST_UPDATE_COLLECTION, DateHelper.convertToRfc2822(collection.lastUpdate))}
         // convert to JSON
         val gson: Gson = getCustomGson()
         val json: String = gson.toJson(collection)

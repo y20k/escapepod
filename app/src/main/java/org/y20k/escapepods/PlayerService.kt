@@ -306,8 +306,13 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                loadCollection(context)
-//                collection = loadCollection(this@PlayerService) // todo remove
+                if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION)) {
+                    val lastUpdate: Date = DateHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
+                    // check if reload is necessary
+                    if (lastUpdate.after(collection.lastUpdate)) {
+                        loadCollection(context)
+                    }
+                }
             }
         }
     }

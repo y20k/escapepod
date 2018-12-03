@@ -40,6 +40,7 @@ import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 import java.text.DateFormat
+import java.util.*
 
 
 /*
@@ -264,10 +265,12 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         CollectionHelper.deletePodcastFolders(context, collection.podcasts[position])
         // remove podcast from collection
         collection.podcasts.removeAt(position)
+        // set last update
+        collection.lastUpdate = Calendar.getInstance().time
         // export collection as OPML
         CollectionHelper.exportCollection(context, collection)
         // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, collection, true)
+        CollectionHelper.saveCollection(context, collection)
     }
 
 

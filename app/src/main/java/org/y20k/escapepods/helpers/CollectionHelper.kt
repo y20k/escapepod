@@ -50,13 +50,13 @@ object CollectionHelper {
         var isValid: Boolean = true
         // check for cover url
         if (podcast.remoteImageFileLocation.isEmpty())  {
-            LogHelper.e("Validation failed: Missing cover.")
+            LogHelper.w("Validation failed: Missing cover.")
             isValid = false
         }
         // check for audio files
         podcast.episodes.forEach {
             if (it.remoteAudioFileLocation.isEmpty()) {
-                LogHelper.e("Validation failed: Missing audio file.")
+                LogHelper.w("Validation failed: Missing audio file.")
                 isValid = false
             }
         }
@@ -66,10 +66,23 @@ object CollectionHelper {
 
     /* Checks if enough time passed since last update */
     fun hasEnoughTimePassedSinceLastUpdate(context: Context): Boolean {
-        val lastUpdate = PreferenceManager.getDefaultSharedPreferences(context).getLong(Keys.PREF_LAST_UPDATE_COLLECTION, 0L)
+        val lastSavedUpdateString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_LAST_UPDATE_COLLECTION, Keys.DEFAULT_RFC2822_DATE)!!
+        val lastSavedUpdate: Date = DateHelper.convertFromRfc2822(lastSavedUpdateString)
         val currentDate: Date = Calendar.getInstance().time
 //        return currentDate.time - lastUpdate  > Keys.FIVE_MINUTES_IN_MILLISECONDS // todo uncomment for production
-        return currentDate.time - lastUpdate  > Keys.ONE_MINUTE_IN_MILLISECONDS
+        return currentDate.time - lastSavedUpdate.time  > Keys.ONE_MINUTE_IN_MILLISECONDS
+    }
+
+
+    /* Checks if a newer collection is available on storage */
+    fun isNewerCollectionAvailable(context: Context, lastUpdate: Date): Boolean {
+        var newerCollectionAvailable = false
+        val lastSavedUpdateString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_LAST_UPDATE_COLLECTION, Keys.DEFAULT_RFC2822_DATE)!!
+        val lastSavedUpdate: Date = DateHelper.convertFromRfc2822(lastSavedUpdateString)
+        if (lastSavedUpdate.after(lastUpdate) || lastSavedUpdateString.equals(Keys.DEFAULT_RFC2822_DATE)) {
+            newerCollectionAvailable = true
+        }
+        return newerCollectionAvailable
     }
 
 
@@ -87,7 +100,7 @@ object CollectionHelper {
     /* Replaces a podcast within collection and  retains audio references */
     fun replacePodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
-        var newPodcast: Podcast = podcast
+        val newPodcast: Podcast = podcast
         val oldPodcast: Podcast = getPodcastFromCollection(collection, newPodcast)
         // check for existing downloaded audio file references
         for (i in numberOfAudioFilesToKeep -1 downTo 0) {
@@ -107,8 +120,6 @@ object CollectionHelper {
         if (oldPodcast.cover != Keys.LOCATION_DEFAULT_COVER) {
             newPodcast.cover = oldPodcast.cover
         }
-        // trim episode list
-        newPodcast = trimEpisodeList(context, newPodcast)
         // replace podcast
         collection.podcasts.set(getPodcastId(collection, newPodcast), newPodcast)
         return collection
@@ -228,7 +239,7 @@ object CollectionHelper {
             podcast.episodes.forEach { episode ->
                 if (episode.getMediaId() == mediaId) {
                     episode.manuallyDownloaded = true
-                    saveCollection(context, collection, true)
+                    saveCollection(context, collection)
                     return episode
                 }
             }
@@ -249,14 +260,22 @@ object CollectionHelper {
                 }
             }
         }
-        saveCollection(context, collection, true)
+        saveCollection(context, collection)
         return collection
     }
 
 
     /* Saves podcast collection */
-    fun saveCollection (context: Context, collection: Collection, async: Boolean = true) {
+    fun saveCollection (context: Context, collection: Collection, lastUpdate: Date = Calendar.getInstance().time, async: Boolean = true) {
         LogHelper.v(TAG, "Saving podcast collection to storage. Async = $async")
+        // set last update
+        collection.lastUpdate = lastUpdate
+        // save last update to shared preferences
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateHelper.convertToRfc2822(collection.lastUpdate))
+        editor.apply()
+        // save collection to storage
         when (async) {
             true -> {
                 val backgroundJob = Job()
@@ -267,7 +286,7 @@ object CollectionHelper {
                     // wait for result
                     deferred.await()
                     // broadcast collection update
-                    sendCollectionBroadcast(context)
+                    sendCollectionBroadcast(context, collection.lastUpdate)
                     backgroundJob.cancel()
                 }
             }
@@ -275,7 +294,7 @@ object CollectionHelper {
                 // save collection
                 FileHelper.saveCollection(context, collection)
                 // broadcast collection update
-                sendCollectionBroadcast(context)
+                sendCollectionBroadcast(context, collection.lastUpdate)
             }
         }
     }
@@ -290,10 +309,12 @@ object CollectionHelper {
 
 
     /* Sends a broadcast containing the collction as parcel */
-    fun sendCollectionBroadcast(context: Context) {
+    private fun sendCollectionBroadcast(context: Context, lastUpdate: Date) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
+        val lastUpdateString: String = DateHelper.convertToRfc2822(lastUpdate)
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
+        collectionChangedIntent.putExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION, lastUpdateString)
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
     }
 
@@ -315,7 +336,7 @@ object CollectionHelper {
 
 
     /* Deletes unneeded episodes in podcast */
-    private fun trimEpisodeList(context: Context, podcast: Podcast): Podcast {
+    fun trimEpisodeList(context: Context, podcast: Podcast): Podcast {
         val podcastSize: Int = podcast.episodes.size
         var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP);
         if (numberOfEpisodesToKeep > podcastSize) {

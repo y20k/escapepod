@@ -306,7 +306,6 @@ class PodcastPlayerActivity: AppCompatActivity(),
             }
             swipeRefreshLayout.isRefreshing = false
         }
-
     }
 
 
@@ -451,7 +450,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun updateCollection() {
         if (NetworkHelper.isConnectedToNetwork(this)) {
             Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
-            WorkerHelper.startOneTimeUpdateWorker(collection.lastUpdate.time)
+            WorkerHelper.startOneTimeUpdateWorker()
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
@@ -486,7 +485,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }
                 // wait for result
                 val contentType: NetworkHelper.ContentType = deferred.await()
-                if ((contentType.type in Keys.MIME_TYPES_RSS) or (contentType.type in Keys.MIME_TYPES_ATOM)) {
+                if ((contentType.type in Keys.MIME_TYPES_RSS) || (contentType.type in Keys.MIME_TYPES_ATOM)) {
                     Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
                     WorkerHelper.startOneTimeAddPodcastsWorker(arrayOf(feedUrl))
                 } else {
@@ -569,7 +568,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
 //            // update ui
 //            updateUserInterface()
             // start worker that periodically updates the podcast collection
-            WorkerHelper.schedulePeriodicUpdateWorker(collection.lastUpdate.time)
+            WorkerHelper.schedulePeriodicUpdateWorker()
         })
     }
 

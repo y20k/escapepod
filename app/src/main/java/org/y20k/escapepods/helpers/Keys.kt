@@ -100,7 +100,7 @@ object Keys {
     // options
     const val OPTION_REMOVE_FOLDER: Int = -1
 
-    // mime types and charsets
+    // mime types and charsets and file extensions
     const val CHARSET_UNDEFINDED = "undefined"
     const val MIME_TYPE_JPG = "image/jpeg"
     const val MIME_TYPE_PNG = "image/png"
@@ -111,7 +111,8 @@ object Keys {
     val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3")
     val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml")
     val MIME_TYPES_ATOM = arrayOf("application/atom+xml")
-
+    val FILE_EXTENSIONS_AUDIO = arrayOf("mp3")
+    val FILE_EXTENSIONS_IMAGE = arrayOf("png", "jpeg", "jpg")
 
     // media genre
     const val MEDIA_GENRE = "Podcast"
@@ -134,6 +135,9 @@ object Keys {
     const val SIZE_COVER_SMALL: Int = 96
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
+    // default values
+    const val DEFAULT_RFC2822_DATE: String = "Thu, 01 Jan 1970 01:00:00 +0100" // --> Date(0)
+
     // keys
     const val KEY_IGNORE_WIFI_RESTRICTION: String = "IGNORE_WIFI_RESTRICTION"
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
@@ -142,7 +146,6 @@ object Keys {
     const val KEY_EPISODE_PODCAST_NAME: String = "EPISODE_PODCAST_NAME"
     const val KEY_EPISODE_REMOTE_AUDIO_FILE_LOCATION: String = "EPISODE_REMOTE_AUDIO_FILE_LOCATION"
     const val KEY_EPISODE_MEDIA_ID: String = "EPISODE_MEDIA_ID"
-
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1

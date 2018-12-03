@@ -117,7 +117,8 @@ object DownloadHelper {
 
     /* Initializes main class variables of DownloadHelper, if necessary */
     private fun initialize(context: Context) {
-        if (!this::collection.isInitialized) {
+        if (!this::collection.isInitialized || CollectionHelper.isNewerCollectionAvailable(context, collection.lastUpdate)) {
+            LogHelper.v("Initializing / updating collection in DownloadHelper.") // todo remove
             collection = FileHelper.readCollection(context) // todo make async
         }
         if (!this::downloadManager.isInitialized) {
@@ -169,15 +170,14 @@ object DownloadHelper {
     /* Adds podcast to podcast collection*/
     private fun addPodcast(context: Context, podcast: Podcast, isNew: Boolean) {
         when (isNew) {
-            true -> collection = CollectionHelper.addPodcast(context, collection, podcast)
+//            true -> collection = CollectionHelper.addPodcast(context, collection, podcast)
+            true -> collection.podcasts.add(podcast)
             false -> collection = CollectionHelper.replacePodcast(context, collection, podcast)
         }
         // sort collection
         collection.podcasts.sortBy { it.name }
-        // export collection as OPML
-        CollectionHelper.exportCollection(context, collection)
         // save collection
-        CollectionHelper.saveCollection(context, collection)
+        saveCollection(context, true)
         // enqueue media files for download
         enqueuePodcastMediaFiles(context, podcast, isNew)
     }
@@ -194,7 +194,7 @@ object DownloadHelper {
             }
         }
         // save collection
-        CollectionHelper.saveCollection(context, collection)
+        saveCollection(context)
     }
 
 
@@ -212,7 +212,7 @@ object DownloadHelper {
         // clear audio folder
         CollectionHelper.clearAudioFolder(context, collection)
         // save collection
-        CollectionHelper.saveCollection(context, collection)
+        saveCollection(context)
     }
 
 
@@ -231,6 +231,17 @@ object DownloadHelper {
     }
 
 
+    /* Saves podcast collection to storage */
+    private fun saveCollection(context: Context, opmlExport: Boolean = false) {
+        // set last update
+        collection.lastUpdate = Calendar.getInstance().time
+        // save collection
+        CollectionHelper.saveCollection(context, collection, collection.lastUpdate)
+        // export as OPML, if requested
+        if (opmlExport) {CollectionHelper.exportCollection(context, collection)}
+    }
+
+
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeed(context: Context, localFileUri: Uri, remoteFileLocation: String) {
         GlobalScope.launch() {
@@ -239,6 +250,7 @@ object DownloadHelper {
             val deferred: Deferred<Podcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }
             // wait for result and create podcast
             var podcast: Podcast = deferred.await()
+            podcast = CollectionHelper.trimEpisodeList(context, podcast)
             podcast = CollectionHelper.fillEmptyEpisodeCovers(podcast)
             if (CollectionHelper.validatePodcast(podcast)) {
                 // check if new
@@ -318,10 +330,10 @@ object DownloadHelper {
     /* Determine allowed network type */
     private fun determineAllowedNetworkTypes(context: Context, type: Int, ignoreWifiRestriction: Boolean): Int {
         val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
-        var allowedNetworkTypes:Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+        var allowedNetworkTypes: Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         when (type) {
             Keys.FILE_TYPE_AUDIO -> {
-                if (!downloadOverMobile or !ignoreWifiRestriction) {
+                if (!downloadOverMobile || !ignoreWifiRestriction) {
                     allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
                 }
             }

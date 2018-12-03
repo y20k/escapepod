@@ -221,7 +221,7 @@ class RssHelper {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
         val publicationDate = XmlHelper.readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        return DateHelper.convertRFC2822(publicationDate)
+        return DateHelper.convertFromRfc2822(publicationDate)
     }
 
 
@@ -281,10 +281,12 @@ class RssHelper {
         val tag = parser.name
         val type = parser.getAttributeValue(null, Keys.RSS_EPISODE_AUDIO_LINK_TYPE)
         if (tag == Keys.RSS_EPISODE_AUDIO_LINK) {
-            if (type.contains("audio")) {
-                link = parser.getAttributeValue(null, Keys.RSS_EPISODE_AUDIO_LINK_URL)
-                parser.nextTag()
+            val value: String = parser.getAttributeValue(null, Keys.RSS_EPISODE_AUDIO_LINK_URL)
+            val fileExtension: String = value.substring(value.lastIndexOf(".") + 1)
+            if (Keys.MIME_TYPES_AUDIO.contains(type) || Keys.FILE_EXTENSIONS_AUDIO.contains(fileExtension)) {
+                link = value
             }
+            parser.nextTag()
         }
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_AUDIO_LINK)
         return link
