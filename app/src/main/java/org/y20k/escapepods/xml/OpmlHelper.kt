@@ -19,9 +19,9 @@ import android.net.Uri
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.FileHelper
-import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 import java.io.IOException
 import java.io.InputStream

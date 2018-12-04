@@ -53,6 +53,9 @@
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
     <string name="toast_message_downloading_episode">Downloading Episode.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
+    <string name="toast_message_error_refreshing_cover">Unable to refresh cover. Feed does not contain a cover reference.</string>
+    <string name="toast_message_validation_error_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
+    <string name="toast_message_validation_error_audio_references">RSS validation: Feed does not contain any audio references.</string>
 
     <!-- Podcast List -->
     <string name="podcast_list_button_toggle_show_older_episodes">Older Episodes</string>

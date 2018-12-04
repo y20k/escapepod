@@ -23,13 +23,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
@@ -37,7 +37,6 @@ import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.helpers.CollectionHelper
 import org.y20k.escapepods.helpers.DownloadHelper
-import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 import java.text.DateFormat
 import java.util.*
@@ -162,7 +161,6 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.cover))
         podcastViewHolder.podcastImageView.setOnLongClickListener {
             DownloadHelper.refreshCover(activity, podcast)
-            Toast.makeText(activity as Context, activity.getText(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
             val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator

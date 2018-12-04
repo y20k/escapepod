@@ -19,8 +19,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
-import org.y20k.escapepods.helpers.Keys
 import org.y20k.escapepods.helpers.LogHelper
 
 

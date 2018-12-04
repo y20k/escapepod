@@ -17,7 +17,7 @@ package org.y20k.escapepods.core
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
-import org.y20k.escapepods.helpers.Keys
+import org.y20k.escapepods.Keys
 import java.text.DateFormat
 import java.util.*
 

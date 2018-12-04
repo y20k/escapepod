@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepods.helpers
+package org.y20k.escapepods
 
 
 /*
@@ -151,6 +151,16 @@ object Keys {
     const val REQUEST_UPDATE_COLLECTION: Int = 1
     const val REQUEST_ADD_PODCASTS: Int = 2
     const val REQUEST_DOWNLOAD_EPISODE: Int = 3
+
+    // podcast validation states
+    const val PODCAST_VALIDATION_SUCESS: Int = 0
+    const val PODCAST_VALIDATION_MISSING_COVER: Int = 1
+    const val PODCAST_VALIDATION_NO_AUDIO_FILES: Int = 2
+
+    // podcast states
+    const val PODCAST_STATE_NEW_PODCAST: Int = 0
+    const val PODCAST_STATE_HAS_NEW_EPISODES: Int = 1
+    const val PODCAST_STATE_PODCAST_UNCHANGED: Int = 2
 
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"

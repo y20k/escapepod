@@ -20,6 +20,7 @@ import android.preference.PreferenceManager
 import android.support.v4.media.MediaMetadataCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
+import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
@@ -38,7 +39,7 @@ object CollectionHelper {
 
     /* Checks if feed is already in collection */
     fun isNewPodcast(remotePodcastFeedLocation: String, collection: Collection): Boolean {
-        for (podcast in collection.podcasts) {
+        collection.podcasts.forEach { podcast ->
             if (podcast.remotePodcastFeedLocation == remotePodcastFeedLocation) return false
         }
         return true
@@ -46,21 +47,17 @@ object CollectionHelper {
 
 
     /* Check if podcast has cover and audio files */
-    fun validatePodcast(podcast: Podcast): Boolean {
-        var isValid: Boolean = true
+    fun validatePodcast(podcast: Podcast): Int {
+        var result: Int = Keys.PODCAST_VALIDATION_SUCESS
         // check for cover url
         if (podcast.remoteImageFileLocation.isEmpty())  {
-            LogHelper.w("Validation failed: Missing cover.")
-            isValid = false
+            result = Keys.PODCAST_VALIDATION_MISSING_COVER
         }
         // check for audio files
-        podcast.episodes.forEach {
-            if (it.remoteAudioFileLocation.isEmpty()) {
-                LogHelper.w("Validation failed: Missing audio file.")
-                isValid = false
-            }
+        if (podcast.episodes.isEmpty()) {
+            result = Keys.PODCAST_VALIDATION_NO_AUDIO_FILES
         }
-        return isValid
+        return result
     }
 
 
@@ -101,7 +98,7 @@ object CollectionHelper {
     fun replacePodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
         val newPodcast: Podcast = podcast
-        val oldPodcast: Podcast = getPodcastFromCollection(collection, newPodcast)
+        val oldPodcast: Podcast = getPodcast(collection, newPodcast)
         // check for existing downloaded audio file references
         for (i in numberOfAudioFilesToKeep -1 downTo 0) {
             if (i < oldPodcast.episodes.size) {
@@ -127,20 +124,24 @@ object CollectionHelper {
 
 
     /* Checks if podcast has episodes that can be downloaded */
-    fun podcastHasDownloadableEpisodes(collection: Collection, newPodcast: Podcast): Boolean {
-        // Step 1: New episode check -> compare GUIDs
-        val oldPodcast = getPodcastFromCollection(collection, newPodcast)
-        val newPodcastLatestEpisode: String = newPodcast.episodes[0].guid
-        val oldPodcastLatestEpisode: String = oldPodcast.episodes[0].guid
-        if (newPodcastLatestEpisode != oldPodcastLatestEpisode) {
-            return true
+    fun checkPodcastState(collection: Collection, newPodcast: Podcast): Int {
+        // get podcast from sele
+        val oldPodcast = getPodcast(collection, newPodcast)
+
+        // check if podcast is new
+        if (oldPodcast.episodes.isEmpty()) {
+            return Keys.PODCAST_STATE_NEW_PODCAST
+        }
+        // Step 1: New episode check -> compare GUIDs of latest episode
+        if (newPodcast.episodes[0].guid == oldPodcast.episodes[0].guid) {
+            return Keys.PODCAST_STATE_PODCAST_UNCHANGED
         }
         // Step 2: Not yet downloaded episode check -> test if audio field is empty
         if (oldPodcast.episodes[0].audio.isEmpty()) {
-            return true
+            return Keys.PODCAST_STATE_HAS_NEW_EPISODES
         }
-        // Default - no result in step 1 or 2
-        return false
+        // Default return
+        return Keys.PODCAST_STATE_PODCAST_UNCHANGED
     }
 
 
@@ -208,6 +209,15 @@ object CollectionHelper {
             feedUrlList.remove(podcast.remotePodcastFeedLocation)
         }
         return feedUrlList.toTypedArray()
+    }
+
+
+    /* Get the counterpart from collection for given podcast */
+    private fun getPodcast(collection: Collection, podcast: Podcast): Podcast {
+        collection.podcasts.forEach {
+            if (podcast.remotePodcastFeedLocation == it.remotePodcastFeedLocation) return it
+        }
+        return Podcast()
     }
 
 
@@ -337,6 +347,9 @@ object CollectionHelper {
 
     /* Deletes unneeded episodes in podcast */
     fun trimEpisodeList(context: Context, podcast: Podcast): Podcast {
+        // remove episodes without audio
+        podcast.episodes.removeIf { episode -> episode.remoteAudioFileLocation.isEmpty() }
+        // keep only a certain number of episodes
         val podcastSize: Int = podcast.episodes.size
         var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP);
         if (numberOfEpisodesToKeep > podcastSize) {
@@ -345,15 +358,6 @@ object CollectionHelper {
         val episodesTrimmed: MutableList<Episode> = podcast.episodes.subList(0, numberOfEpisodesToKeep)
         podcast.episodes = episodesTrimmed
         return podcast
-    }
-
-
-    /* Get the counterpart from collection for given podcast */
-    private fun getPodcastFromCollection(collection: Collection, podcast: Podcast): Podcast {
-        collection.podcasts.forEach {
-            if (podcast.remotePodcastFeedLocation == it.remotePodcastFeedLocation) return it
-        }
-        return Podcast()
     }
 
 

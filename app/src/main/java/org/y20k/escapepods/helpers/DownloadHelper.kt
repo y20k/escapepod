@@ -19,12 +19,12 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.preference.PreferenceManager
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.core.net.toUri
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import org.y20k.escapepods.Keys
+import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.xml.RssHelper
@@ -51,7 +51,7 @@ object DownloadHelper {
         // initialize main class variables, if necessary
         initialize(context)
         // convert array
-        val uris: Array<Uri> =  Array<Uri>(podcastUrlStrings.size) { index -> Uri.parse(podcastUrlStrings[index])}
+        val uris: Array<Uri> = Array<Uri>(podcastUrlStrings.size) { index -> Uri.parse(podcastUrlStrings[index]) }
         // enqueue podcast
         enqueueDownload(context, uris, Keys.FILE_TYPE_RSS)
     }
@@ -71,10 +71,15 @@ object DownloadHelper {
     fun refreshCover(context: Context, podcast: Podcast) {
         // initialize main class variables, if necessary
         initialize(context)
-        // start to download podcast cover
-        CollectionHelper.clearImagesFolder(context, podcast)
-        val uris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
-        enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE, podcast.name)
+        // check if feed has a cover
+        if (podcast.remoteImageFileLocation.isNotEmpty()) {
+            Toast.makeText(context, context.getString(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
+            CollectionHelper.clearImagesFolder(context, podcast)
+            val uris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
+            enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE, podcast.name)
+        } else {
+            Toast.makeText(context, context.getString(R.string.toast_message_error_refreshing_cover), Toast.LENGTH_LONG).show()
+        }
     }
 
 
@@ -137,7 +142,7 @@ object DownloadHelper {
         val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
         // enqueues downloads
         val newIDs = LongArray(uris.size)
-        for (i in uris.indices)  {
+        for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             if (uris[i].scheme.startsWith("http")) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
@@ -155,31 +160,32 @@ object DownloadHelper {
 
     /*  episode and podcast cover */
     private fun enqueuePodcastMediaFiles(context: Context, podcast: Podcast, isNew: Boolean) {
-        if (isNew) {
+        if (isNew && podcast.remoteImageFileLocation.isNotEmpty()) {
             // start to download podcast cover
             CollectionHelper.clearImagesFolder(context, podcast)
-            val coverUris: Array<Uri>  = Array(1) {podcast.remoteImageFileLocation.toUri()}
+            val coverUris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
         // start to download latest episode audio file
-        val episodeUris: Array<Uri> = Array(1) {podcast.episodes[0].remoteAudioFileLocation.toUri()}
+        val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
         enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
     }
 
 
     /* Adds podcast to podcast collection*/
-    private fun addPodcast(context: Context, podcast: Podcast, isNew: Boolean) {
-        when (isNew) {
-//            true -> collection = CollectionHelper.addPodcast(context, collection, podcast)
-            true -> collection.podcasts.add(podcast)
-            false -> collection = CollectionHelper.replacePodcast(context, collection, podcast)
+    private fun addPodcast(context: Context, podcast: Podcast) {
+        when (CollectionHelper.checkPodcastState(collection, podcast)) {
+            Keys.PODCAST_STATE_NEW_PODCAST -> {
+                collection.podcasts.add(podcast)
+                collection.podcasts.sortBy { it.name }
+                saveCollection(context, true)
+                enqueuePodcastMediaFiles(context, podcast, true)
+            }
+            Keys.PODCAST_STATE_HAS_NEW_EPISODES -> {
+                collection = CollectionHelper.replacePodcast(context, collection, podcast)
+                enqueuePodcastMediaFiles(context, podcast, false)
+            }
         }
-        // sort collection
-        collection.podcasts.sortBy { it.name }
-        // save collection
-        saveCollection(context, true)
-        // enqueue media files for download
-        enqueuePodcastMediaFiles(context, podcast, isNew)
     }
 
 
@@ -244,7 +250,9 @@ object DownloadHelper {
 
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeed(context: Context, localFileUri: Uri, remoteFileLocation: String) {
-        GlobalScope.launch() {
+        val backgroundJob = Job()
+        val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+        uiScope.launch() {
             LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
             // async: readSuspended xml
             val deferred: Deferred<Podcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }
@@ -252,16 +260,19 @@ object DownloadHelper {
             var podcast: Podcast = deferred.await()
             podcast = CollectionHelper.trimEpisodeList(context, podcast)
             podcast = CollectionHelper.fillEmptyEpisodeCovers(podcast)
-            if (CollectionHelper.validatePodcast(podcast)) {
-                // check if new
-                val isNew: Boolean = CollectionHelper.isNewPodcast(podcast.remotePodcastFeedLocation, collection)
-                // check if media download is necessary
-                if (isNew || CollectionHelper.podcastHasDownloadableEpisodes(collection, podcast)) {
-                    addPodcast(context, podcast, isNew)
-                } else {
-                    LogHelper.v(TAG, "No new media files to download.")
+            when (CollectionHelper.validatePodcast(podcast)) {
+                Keys.PODCAST_VALIDATION_SUCESS -> {
+                    addPodcast(context, podcast)
+                }
+                Keys.PODCAST_VALIDATION_MISSING_COVER -> {
+                    addPodcast(context, podcast)
+                    Toast.makeText(context, context.getString(R.string.toast_message_validation_error_missing_cover), Toast.LENGTH_LONG).show()
+                }
+                Keys.PODCAST_VALIDATION_NO_AUDIO_FILES -> {
+                    Toast.makeText(context, context.getString(R.string.toast_message_validation_error_audio_references), Toast.LENGTH_LONG).show()
                 }
             }
+            backgroundJob.cancel()
         }
     }
 
