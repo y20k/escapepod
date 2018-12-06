@@ -9,9 +9,8 @@
     android:clickable="true"
     android:focusable="true"
     android:paddingBottom="16dp"
-    android:visibility="visible"
-    app:behavior_hideable="false"
-    app:behavior_peekHeight="0dp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="72dp"
     app:layout_behavior="@string/bottom_sheet_behavior"
     tools:showIn="@layout/activity_podcast_player">
 

@@ -20,6 +20,8 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.ColorDrawable
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -30,10 +32,24 @@ import org.y20k.escapepods.R
 /*
  * UiHelper object
  */
-abstract class UiHelper {
+object UiHelper {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(UiHelper::class.java)
+
+
+    /* Sets layout margins for given view in DP */
+    fun setViewMargins(context: Context, view: View, left: Int = 0, right: Int = 0, top: Int= 0, bottom: Int = 0) {
+        val l: Int = (left * ImageHelper.getDensityScalingFactor(context)).toInt()
+        val r: Int = (right * ImageHelper.getDensityScalingFactor(context)).toInt()
+        val t: Int = (top * ImageHelper.getDensityScalingFactor(context)).toInt()
+        val b: Int = (bottom * ImageHelper.getDensityScalingFactor(context)).toInt()
+        if (view.layoutParams is ViewGroup.MarginLayoutParams) {
+            val p = view.layoutParams as ViewGroup.MarginLayoutParams
+            p.setMargins(l, t, r, b)
+            view.requestLayout()
+        }
+    }
 
 
     /*

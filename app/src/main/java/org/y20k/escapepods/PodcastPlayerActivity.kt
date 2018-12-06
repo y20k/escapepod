@@ -70,6 +70,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var backgroundJob: Job
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var collectionViewModel: CollectionViewModel
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var bottomSheet: ConstraintLayout
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -268,6 +269,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
         // show / hide the small player
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(view: View, slideOffset: Float) {
                 if (slideOffset < 0.25f) {
@@ -296,7 +298,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         }
 
         // listen for swipe to refresh event
-        val swipeRefreshLayout: SwipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
+        swipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
         swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection and observe download work
             if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
@@ -317,6 +319,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
         // set up the play button - to offer play or pause
         setupPlayButtons(mediaController.playbackState.state)
+
+        // show / hide player
+        setupPlayerVisibility(mediaController.playbackState.state)
 
         // main play/pause button
         playButtonView.setOnClickListener {
@@ -404,13 +409,25 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
-    /* Adjusts peek height of the player - effectively hiding it when playback is stopped (not paused or playing) */
-    private fun changeBottomSheetPeekHeight(playbackState: Int) {
+    /* Sets visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
+    private fun setupPlayerVisibility(playbackState: Int) {
         when (playbackState) {
-            PlaybackStateCompat.STATE_STOPPED -> bottomSheetBehavior.peekHeight = 0
-            PlaybackStateCompat.STATE_NONE ->  bottomSheetBehavior.peekHeight = 0
-            PlaybackStateCompat.STATE_ERROR ->  bottomSheetBehavior.peekHeight = 0
-            else -> bottomSheetBehavior.peekHeight = (ImageHelper.getDensityScalingFactor(this) * Keys.BOTTOM_SHEET_PEEK_HEIGHT).toInt()
+            PlaybackStateCompat.STATE_STOPPED -> {
+                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+            }
+            PlaybackStateCompat.STATE_NONE -> {
+                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+            }
+            PlaybackStateCompat.STATE_ERROR -> {
+                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+            }
+            else -> {
+                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+            }
         }
     }
 
@@ -586,12 +603,11 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 MediaControllerCompat.setMediaController(this@PodcastPlayerActivity, mediaController)
             }
             playerServiceConnected = true
-            // finish building the UI
-            buildPlaybackControls()
 
             mediaBrowser.subscribe(Keys.MEDIA_ID_ROOT, mediaBrowserSubscriptionCallback)
 
-
+            // finish building the UI
+            buildPlaybackControls()
 
             // todo test send command to playerservice
 //            val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
@@ -642,7 +658,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
             LogHelper.d(TAG, "Playback State changed. Update UI.")
             animatePlaybackButtonStateTransition(playbackState.state)
-            changeBottomSheetPeekHeight(playbackState.state)
+            setupPlayerVisibility(playbackState.state)
         }
 
         override fun onSessionDestroyed() {

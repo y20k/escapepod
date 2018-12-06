@@ -104,19 +104,25 @@ object DownloadHelper {
         // initialize main class variables, if necessary
         initialize(context)
         // get local Uri in content://downloads/all_downloads/ for startDownload ID
-        val localFileUri: Uri = downloadManager.getUriForDownloadedFile(downloadID)
-        // get remote URL for startDownload ID
-        val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadID)
-        // determine what to
-        val fileType = FileHelper.getFileType(context, localFileUri)
-        // Log completed startDownload // todo remove
-        LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
-        if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
-        if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
-        if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
-        if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, localFileUri, remoteFileLocation)
-        // remove ID from active downloads
-        removeFromActiveDownloads(context, downloadID)
+        val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadID)
+        if (downloadResult == null) {
+            LogHelper.w(TAG, "Download not succesful. Error code = ${getDownloadError(downloadID)}")
+            return
+        } else {
+            val localFileUri: Uri = downloadResult
+            // get remote URL for startDownload ID
+            val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadID)
+            // determine what to
+            val fileType = FileHelper.getFileType(context, localFileUri)
+            // Log completed startDownload // todo remove
+            LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
+            if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
+            if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
+            if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
+            if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, localFileUri, remoteFileLocation)
+            // remove ID from active downloads
+            removeFromActiveDownloads(context, downloadID)
+        }
     }
 
 
@@ -130,7 +136,7 @@ object DownloadHelper {
             downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         }
         if (!this::activeDownloads.isInitialized) {
-            activeDownloads = loadActiveDownloads(context, downloadManager)
+            activeDownloads = loadActiveDownloads(context)
         }
     }
 
@@ -288,14 +294,14 @@ object DownloadHelper {
 
 
     /* Loads active downloads (IntArray) from shared preferences */
-    private fun loadActiveDownloads(context: Context, downloadManager: DownloadManager): ArrayList<Long> {
+    private fun loadActiveDownloads(context: Context): ArrayList<Long> {
         val activeDownloadsString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_ACTIVE_DOWNLOADS, "")
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
         val activeDownloads: ArrayList<Long> = arrayListOf<Long>()
         repeat(count) {
             val token = tokenizer.nextToken().toLong()
-            if (isDownloadActive(downloadManager, token)) {
+            if (isDownloadActive(token)) {
                 activeDownloads.add(token) }
         }
         return activeDownloads
@@ -315,7 +321,7 @@ object DownloadHelper {
 
 
     /* Checks if a given download ID represents a finished download */
-    private fun isDownloadFinished(downloadManager: DownloadManager, downloadID: Long): Boolean {
+    private fun isDownloadFinished(downloadID: Long): Boolean {
         var downloadStatus: Int = -1
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
@@ -327,7 +333,7 @@ object DownloadHelper {
 
 
     /* Checks if a given download ID represents a finished download */
-    private fun isDownloadActive(downloadManager: DownloadManager, downloadID: Long): Boolean {
+    private fun isDownloadActive(downloadID: Long): Boolean {
         var downloadStatus: Int = -1
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
         if (cursor.count > 0) {
@@ -335,6 +341,21 @@ object DownloadHelper {
             downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
         }
         return (downloadStatus == DownloadManager.STATUS_RUNNING)
+    }
+
+
+    /* Retrieves reason of download error - returns http error codes plus error codes found here check: https://developer.android.com/reference/android/app/DownloadManager */
+    private fun getDownloadError(downloadID: Long): Int {
+        var reason: Int = -1
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            val downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+            if (downloadStatus == DownloadManager.STATUS_FAILED) {
+                reason = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_REASON))
+            }
+        }
+        return reason
     }
 
 
