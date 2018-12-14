@@ -426,7 +426,9 @@ class PodcastPlayerActivity: AppCompatActivity(),
             }
             else -> {
                 UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+                if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+                }
             }
         }
     }

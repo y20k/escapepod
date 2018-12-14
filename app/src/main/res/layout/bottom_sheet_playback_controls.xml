@@ -134,10 +134,12 @@
         android:id="@+id/sheet_episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
+        android:contentDescription="@string/descr_expanded_player_episode_name"
         android:ellipsize="end"
         android:singleLine="true"
-        android:contentDescription="@string/descr_expanded_player_episode_name"
         android:text="@string/sample_text_episode_0_name"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -243,6 +245,21 @@
         tools:text="@string/sample_text_podcast_name" />
 
     <!-- todo: remove android:text="@string/sample..." here -->
+    <ImageView
+        android:id="@+id/player_play_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/ic_circle_play_button_56dp"
+        android:clickable="true"
+        android:contentDescription="@string/descr_player_playback_button"
+        android:focusable="true"
+        android:scaleType="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_background"
+        app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
+
     <TextView
         android:id="@+id/player_episode_title"
         android:layout_width="0dp"
@@ -261,21 +278,6 @@
         app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
         app:layout_constraintTop_toBottomOf="@+id/player_podcast_name"
         tools:text="@string/sample_text_episode_0_name" />
-
-    <ImageView
-        android:id="@+id/player_play_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_circle_play_button_56dp"
-        android:clickable="true"
-        android:contentDescription="@string/descr_player_playback_button"
-        android:focusable="true"
-        android:scaleType="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player_background"
-        app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
 
 
     <!-- Constraintlayout View Groups -->
