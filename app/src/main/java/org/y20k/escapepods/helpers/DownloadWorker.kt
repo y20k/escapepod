@@ -19,6 +19,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import org.y20k.escapepods.Keys
 
+
 /*
  * DownloadWorker class
  */
@@ -33,14 +34,14 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
         // determine what type of download is requested
         when(inputData.getInt(Keys.KEY_DOWNLOAD_WORK_REQUEST,0)) {
             // CASE: update collection
-            Keys.REQUEST_UPDATE_COLLECTION -> updateCollection()
+            Keys.REQUEST_UPDATE_COLLECTION -> { updateCollection() }
             // CASE: add podcast to collection
-            Keys.REQUEST_ADD_PODCASTS -> addPodcasts()
+            Keys.REQUEST_ADD_PODCASTS -> { addPodcasts() }
             // CASE: download episode
-            Keys.REQUEST_DOWNLOAD_EPISODE -> downloadEpisode()
+            Keys.REQUEST_DOWNLOAD_EPISODE -> { downloadEpisode() }
         }
-        return Result.SUCCESS
-        // (Returning RETRY tells WorkManager to try this task again later; FAILURE says not to try again.)
+        return Result.success()
+        // (Returning Result.retry() tells WorkManager to try this task again later; Result.failure() says not to try again.)
     }
 
 
@@ -52,14 +53,16 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
 
     /* Add podcasts */
     private fun addPodcasts() {
-        DownloadHelper.downloadPodcasts(applicationContext, inputData.getStringArray(Keys.KEY_PODCAST_URLS)!!)
+        val podcastUrls: Array<String> = inputData.getStringArray(Keys.KEY_PODCAST_URLS) ?: emptyArray()
+        DownloadHelper.downloadPodcasts(applicationContext, podcastUrls)
     }
 
 
     /* Downloads an episode */
     private fun downloadEpisode() {
-        DownloadHelper.downloadEpisode(applicationContext, inputData.getString(Keys.KEY_EPISODE_PODCAST_NAME)!!, inputData.getString(Keys.KEY_EPISODE_REMOTE_AUDIO_FILE_LOCATION)!!, inputData.getBoolean(Keys.KEY_IGNORE_WIFI_RESTRICTION, false))
+        val mediaId: String = inputData.getString(Keys.KEY_EPISODE_MEDIA_ID) ?: ""
+        val ignoreWifiRestriction: Boolean = inputData.getBoolean(Keys.KEY_IGNORE_WIFI_RESTRICTION, false)
+        DownloadHelper.downloadEpisode(applicationContext, mediaId, ignoreWifiRestriction)
     }
-
 
 }

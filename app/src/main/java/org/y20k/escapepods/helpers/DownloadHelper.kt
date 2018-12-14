@@ -26,6 +26,7 @@ import kotlinx.coroutines.*
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.xml.RssHelper
 import java.util.*
@@ -58,12 +59,13 @@ object DownloadHelper {
 
 
     /* Download an episode */
-    fun downloadEpisode(context: Context, podcastName: String, remoteImageFileLocation: String, ignoreWifiRestriction: Boolean) {
+    fun downloadEpisode(context: Context, mediaId: String, ignoreWifiRestriction: Boolean) {
         // initialize main class variables, if necessary
         initialize(context)
         // enqueue episode
-        val uris = Array(1) { remoteImageFileLocation.toUri() }
-        enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, podcastName, ignoreWifiRestriction)
+        val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
+        val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
+        enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
     }
 
 
@@ -106,7 +108,7 @@ object DownloadHelper {
         // get local Uri in content://downloads/all_downloads/ for startDownload ID
         val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadID)
         if (downloadResult == null) {
-            LogHelper.w(TAG, "Download not succesful. Error code = ${getDownloadError(downloadID)}")
+            LogHelper.w(TAG, "Download not successful. Error code = ${getDownloadError(downloadID)}")
             return
         } else {
             val localFileUri: Uri = downloadResult
@@ -153,7 +155,6 @@ object DownloadHelper {
             if (uris[i].scheme.startsWith("http")) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
-                        .setAllowedOverRoaming(false)
                         .setTitle(uris[i].lastPathSegment)
                         .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
                 newIDs[i] = downloadManager.enqueue(request)
