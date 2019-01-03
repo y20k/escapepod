@@ -2,18 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
-android {
 
-    compileSdkVersion project.ext.compileSdkVersion
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
     // buildToolsVersion is optional because the plugin uses a recommended version by default
 
-
     defaultConfig {
-        applicationId project.ext.applicationId
-        minSdkVersion project.ext.minSdkVersion
-        targetSdkVersion project.ext.targetSdkVersion
-        versionCode project.ext.versionCode
-        versionName project.ext.versionName
+        applicationId rootProject.ext.applicationId
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
     }
 
     buildTypes {
@@ -21,13 +20,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
     }
 }
+
 
 repositories {
     google()
 }
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -51,6 +51,7 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
     implementation "com.google.code.gson:gson:$gsonVersion"
 }
+
 
 androidExtensions {
     experimental = true

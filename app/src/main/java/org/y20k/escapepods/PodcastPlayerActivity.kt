@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
  *
- * Copyright (c) 2018 - Y20K.org
+ * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -208,7 +208,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
         when (dialogType) {
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
                 Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
-                WorkerHelper.startOneTimeEpisodeDownloadWorker(payload, true)
+                DownloadHelper.downloadEpisode(this, payload, true)
             }
         }
     }
@@ -469,7 +469,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun updateCollection() {
         if (NetworkHelper.isConnectedToNetwork(this)) {
             Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
-            WorkerHelper.startOneTimeUpdateWorker()
+            DownloadHelper.updateCollection(this)
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
@@ -487,7 +487,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private fun downloadEpisode(episode: Episode) {
         if (NetworkHelper.isConnectedToWifi(this)) {
             Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
-            WorkerHelper.startOneTimeEpisodeDownloadWorker(episode.getMediaId(), true)
+            DownloadHelper.downloadEpisode(this, episode.getMediaId(), true)
         } else if (NetworkHelper.isConnectedToCellular(this)) {
             MeteredNetworkDialog(this).show(this, Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, R.string.dialog_metered_download_episode_title, R.string.dialog_metered_download_episode_message, R.string.dialog_metered_download_episode_button_okay, episode.getMediaId())
         } else {
@@ -506,7 +506,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
                 val contentType: NetworkHelper.ContentType = deferred.await()
                 if ((contentType.type in Keys.MIME_TYPES_RSS) || (contentType.type in Keys.MIME_TYPES_ATOM)) {
                     Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-                    WorkerHelper.startOneTimeAddPodcastsWorker(arrayOf(feedUrl))
+                    DownloadHelper.downloadPodcasts(this@PodcastPlayerActivity, arrayOf(feedUrl))
                 } else {
                     ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
                 }
@@ -523,7 +523,7 @@ class PodcastPlayerActivity: AppCompatActivity(),
             val urls = CollectionHelper.removeDuplicates(collection, feedUrls)
             if (urls.isNotEmpty()) {
                 Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
-                WorkerHelper.startOneTimeAddPodcastsWorker(CollectionHelper.removeDuplicates(collection, feedUrls))
+                DownloadHelper.downloadPodcasts(this, CollectionHelper.removeDuplicates(collection, feedUrls))
             }
         } else {
             ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)

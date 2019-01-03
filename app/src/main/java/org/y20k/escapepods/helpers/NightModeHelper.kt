@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
  *
- * Copyright (c) 2018 - Y20K.org
+ * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -14,14 +14,15 @@
 
 package org.y20k.escapepods.helpers
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
-import android.os.Build
 import android.preference.PreferenceManager
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import org.y20k.escapepods.Keys
+import org.y20k.escapepods.R
 
 
 /*
@@ -33,23 +34,25 @@ object NightModeHelper {
     private val TAG: String = LogHelper.makeLogTag(NightModeHelper::class.java)
 
 
-    /* Switches to opposite theme */
-    fun switchToOpposite(activity: AppCompatActivity) {
-        when (getCurrentNightModeState(activity)) {
-            Configuration.UI_MODE_NIGHT_NO -> {
-                // night mode is currently not active - turn on night mode
+    /* Switches between modes: day, night, undefined */
+    @SuppressLint("SwitchIntDef")
+    fun switchMode(activity: Activity) {
+        // SWITCH: undefined -> night / night -> day / day - undefined
+        when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO -> {
+                // currently: day mode -> switch to: follow system
                 displayDefaultStatusBar(activity) // necessary hack :-/
-                activateNightMode(activity)
+                activateFollowSystemMode(activity, true)
             }
-            Configuration.UI_MODE_NIGHT_YES -> {
-                // night mode is currently active - turn off night mode
+            AppCompatDelegate.MODE_NIGHT_YES -> {
+                // currently: night mode -> switch to: day mode
                 displayLightStatusBar(activity) // necessary hack :-/
-                deactivateNightMode(activity)
+                activateDayMode(activity, true)
             }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                // don't know what mode is active - turn off night mode
+            else -> {
+                // currently: follow system / undefined -> switch to: day mode
                 displayLightStatusBar(activity) // necessary hack :-/
-                deactivateNightMode(activity)
+                activateNightMode(activity, true)
             }
         }
     }
@@ -58,63 +61,78 @@ object NightModeHelper {
     /* Sets night mode / dark theme */
     fun restoreSavedState(context: Context) {
         val savedNightModeState = loadNightModeState(context)
-        val currentNightModeState = getCurrentNightModeState(context)
-        if (savedNightModeState != -1 && savedNightModeState != currentNightModeState) {
+        val currentNightModeState = AppCompatDelegate.getDefaultNightMode()
+        if (savedNightModeState != currentNightModeState) {
             when (savedNightModeState) {
-                Configuration.UI_MODE_NIGHT_NO ->
-                    // turn off night mode
-                    deactivateNightMode(context)
-                Configuration.UI_MODE_NIGHT_YES ->
+                AppCompatDelegate.MODE_NIGHT_NO ->
+                    // turn on day mode
+                    activateDayMode(context, false)
+                AppCompatDelegate.MODE_NIGHT_YES ->
                     // turn on night mode
-                    activateNightMode(context)
-                Configuration.UI_MODE_NIGHT_UNDEFINED ->
-                    // turn off night mode
-                    deactivateNightMode(context)
+                    activateNightMode(context, false)
+                else ->
+                    // turn on mode "follow system"
+                    activateFollowSystemMode(context, false)
             }
         }
     }
 
 
-    /* Returns state of night mode */
-    private fun getCurrentNightModeState(context: Context): Int {
-        return context.getResources().getConfiguration().uiMode and Configuration.UI_MODE_NIGHT_MASK
-    }
-
-
     /* Activates Night Mode */
-    private fun activateNightMode(context: Context) {
-        saveNightModeState(context, Configuration.UI_MODE_NIGHT_YES)
+    private fun activateNightMode(context: Context, notifyUser: Boolean) {
+        saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_YES)
 
         // switch to Night Mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+
+        // notify user
+        if (notifyUser) {
+            Toast.makeText(context, context.getText(R.string.toast_message_theme_night), Toast.LENGTH_LONG).show()
+        }
     }
 
 
-    /* Deactivates Night Mode */
-    private fun deactivateNightMode(context: Context) {
+    /* Activates Day Mode */
+    private fun activateDayMode(context: Context, notifyUser: Boolean) {
         // save the new state
-        saveNightModeState(context, Configuration.UI_MODE_NIGHT_NO)
+        saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_NO)
 
         // switch to Day Mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        // notify user
+        if (notifyUser) {
+            Toast.makeText(context, context.getText(R.string.toast_message_theme_day), Toast.LENGTH_LONG).show()
+        }
+    }
+
+
+    /* Activate Mode "Follow System" */
+    private fun activateFollowSystemMode(context: Context, notifyUser: Boolean) {
+        // save the new state
+        saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
+        // switch to Undefined Mode / Follow System
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
+        // notify user
+        if (notifyUser) {
+            Toast.makeText(context, context.getText(R.string.toast_message_theme_follow_system), Toast.LENGTH_LONG).show()
+        }
     }
 
 
     /* Displays the default status bar */
-    private fun displayDefaultStatusBar(activity: AppCompatActivity) {
+    private fun displayDefaultStatusBar(activity: Activity) {
         val decorView = activity.window.decorView
         decorView.systemUiVisibility = 0
     }
 
 
-    /* Displays the light (inverted) status bar - if possible */
-    private fun displayLightStatusBar(activity: AppCompatActivity) {
+    /* Displays the light (inverted) status bar */
+    private fun displayLightStatusBar(activity: Activity) {
         val decorView = activity.window.decorView
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        } else {
-            decorView.systemUiVisibility = 0
-        }
+        decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
 
 
@@ -129,8 +147,7 @@ object NightModeHelper {
 
     /* Load state of Night Mode */
     private fun loadNightModeState(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NIGHT_MODE_STATE, -1)
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NIGHT_MODE_STATE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
-
 
 }

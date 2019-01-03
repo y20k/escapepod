@@ -47,6 +47,9 @@
     <string name="dialog_yes_no_negative_button_default">No</string>
 
     <!-- Toasts -->
+    <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
+    <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
+    <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
