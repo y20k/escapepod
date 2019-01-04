@@ -56,7 +56,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
-            app:srcCompat="@color/list_card_episiode_background" />
+            app:srcCompat="@color/list_card_episode_background" />
 
         <TextView
             android:id="@+id/episode_0_date"
@@ -151,7 +151,7 @@
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
             app:layout_constraintStart_toStartOf="@+id/episode_0_background"
             app:layout_constraintTop_toBottomOf="@+id/episode_0_background"
-            app:srcCompat="@color/list_card_episiode_background" />
+            app:srcCompat="@color/list_card_episode_background" />
 
         <TextView
             android:id="@+id/older_episodes_toggle"

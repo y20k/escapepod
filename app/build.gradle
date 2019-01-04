@@ -37,6 +37,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "androidx.cardview:cardview:$cardviewVersion"
     implementation "androidx.media:media:$mediaVersion"
+//    implementation "androidx.media2:media2:$media2Version"
     implementation "androidx.palette:palette:$paletteVersion"
 
     implementation "android.arch.work:work-runtime-ktx:$workVersion"

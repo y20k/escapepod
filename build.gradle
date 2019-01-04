@@ -39,6 +39,7 @@ ext {
     appcompatVersion = '1.0.2'
     cardviewVersion = '1.0.0'
     mediaVersion = '1.0.0'
+    media2Version = '1.0.0-alpha04'
     paletteVersion = '1.0.0'
     constraintlayoutVersion = '1.1.3'
 

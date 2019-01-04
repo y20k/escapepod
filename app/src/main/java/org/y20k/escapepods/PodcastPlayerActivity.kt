@@ -14,11 +14,15 @@
 
 package org.y20k.escapepods
 
+import android.Manifest
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Vibrator
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -32,6 +36,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -54,8 +60,7 @@ import kotlin.coroutines.CoroutineContext
 /*
  * PodcastPlayerActivity class
  */
-class PodcastPlayerActivity: AppCompatActivity(),
-        CoroutineScope,
+class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         AddPodcastDialog.AddPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
         MeteredNetworkDialog.MeteredNetworkDialogListener,
@@ -82,9 +87,11 @@ class PodcastPlayerActivity: AppCompatActivity(),
     private lateinit var sheetCoverView: ImageView
     private lateinit var sheetEpisodeTitleView: TextView
     private lateinit var sheetPlayButtonView: ImageView
+    private lateinit var sheetSleepButtonView: ImageView
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceConnected = false
+    private var tempOpmlUriString: String = ""
 
 
     /* Overrides coroutineContext variable */
@@ -123,9 +130,13 @@ class PodcastPlayerActivity: AppCompatActivity(),
         sheetCoverView = findViewById(R.id.sheet_large_podcast_cover)
         sheetEpisodeTitleView = findViewById(R.id.sheet_episode_title)
         sheetPlayButtonView = findViewById(R.id.sheet_play_button)
+        sheetSleepButtonView = findViewById(R.id.sleep_timer_button)
 
         // set up views
         initializeViews()
+
+        // set up additional buttons
+        setupAdditionalButtons()
     }
 
 
@@ -154,12 +165,32 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+    /* Overrides onStop */
     public override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
         MediaControllerCompat.getMediaController(this)?.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
+    }
+
+
+    /* Overrides onRequestPermissionsResult */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission granted
+                    if (tempOpmlUriString.isNotEmpty()) {
+                        readOpmlFile(Uri.parse(tempOpmlUriString), false)
+                    }
+                } else {
+                    // permission denied
+                    Toast.makeText(this, getString(R.string.toast_message_error_missing_storage_permission), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
 
@@ -348,6 +379,20 @@ class PodcastPlayerActivity: AppCompatActivity(),
     }
 
 
+    /* Set up additions user interface elements */
+    private fun setupAdditionalButtons() {
+        // set up sleep timer button - long press
+        sheetSleepButtonView.setOnLongClickListener {
+            val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+            NightModeHelper.switchMode(this)
+            recreate()
+            true
+        }
+    }
+
+
     /* Initiates the rotation animation of the play button  */
     private fun animatePlaybackButtonStateTransition(playbackState: Int) {
         when (playbackState) {
@@ -532,13 +577,29 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
 
     /* Read OPML file */
-    private fun readOpmlFile(opmlUri: Uri) {
-        launch {
-            // readSuspended OPML on background thread
-            val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper().readSuspended(this@PodcastPlayerActivity, opmlUri) }
-            // wait for result and update collection
-            val feedUrls: Array<String> = deferred.await()
-            OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrls)
+    private fun readOpmlFile(opmlUri: Uri, permissionCheckNeeded: Boolean)  {
+        when (permissionCheckNeeded) {
+            true -> {
+                // permission check
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // permission is not granted - request it
+                    tempOpmlUriString = opmlUri.toString()
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
+                } else {
+                    // permission granted - call readOpmlFile again
+                    readOpmlFile(opmlUri, false)
+                }
+            }
+            false -> {
+                // read opml
+                launch {
+                    // readSuspended OPML on background thread
+                    val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper().readSuspended(this@PodcastPlayerActivity, opmlUri) }
+                    // wait for result and update collection
+                    val feedUrls: Array<String> = deferred.await()
+                    OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrls)
+                }
+            }
         }
     }
 
@@ -565,13 +626,15 @@ class PodcastPlayerActivity: AppCompatActivity(),
 
     /* Handles ACTION_VIEW request to add Podcast or import OPML */
     private fun handleViewIntent() {
-        val contentUri: Uri = intent.data
+        val contentUri: Uri? = intent.data
         if (contentUri != null && contentUri.scheme != null) {
             when {
                 // download new podcast
                 contentUri.scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download + dialog and stuff
-                // readSuspended opml from file
-                contentUri.scheme.startsWith("content") -> readOpmlFile(contentUri) // todo implement OPML readSuspended + dialog and stuff
+                // readSuspended opml from content uri
+                contentUri.scheme.startsWith("content") -> readOpmlFile(contentUri, false) // todo implement OPML readSuspended + dialog and stuff
+                // readSuspended opml from file uri
+                contentUri.scheme.startsWith("file") -> readOpmlFile(contentUri, true) // todo implement OPML readSuspended + dialog and stuff
             }
         }
     }

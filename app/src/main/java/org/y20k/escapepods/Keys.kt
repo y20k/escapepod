@@ -151,6 +151,7 @@ object Keys {
     const val REQUEST_UPDATE_COLLECTION: Int = 1
     const val REQUEST_ADD_PODCASTS: Int = 2
     const val REQUEST_DOWNLOAD_EPISODE: Int = 3
+    const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: Int = 23
 
     // podcast validation states
     const val PODCAST_VALIDATION_SUCESS: Int = 0
