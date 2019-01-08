@@ -90,23 +90,11 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         // get the package validator // todo can be local?
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
 
-        val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
-        val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
-        // Create a new MediaSession.
-        mediaSession = MediaSessionCompat(this, TAG)
-                .apply {
-                    setSessionActivity(sessionActivityPendingIntent)
-                    setCallback(mediaSessionCallback)
-                    setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED, 0))
-                    setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
-                    isActive = true
-                }
-//        session.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED))
-//        session.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        // create a new MediaSession
+        mediaSession = createMediaSession()
         sessionToken = mediaSession.sessionToken
 
-        // Because ExoPlayer will manage the MediaSession, add the service as a callback for
-        // state changes.
+        // because ExoPlayer will manage the MediaSession, add the service as a callback for state changes
         mediaController = MediaControllerCompat(this, mediaSession).also {
             it.registerCallback(MediaControllerCallback())
         }
@@ -126,7 +114,6 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         becomingNoisyReceiver = BecomingNoisyReceiver(this, mediaSession.sessionToken)
 
         // load collection
-        // collection = loadCollection(this) todo remove
         loadCollection(this)
     }
 
@@ -196,11 +183,28 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     }
 
 
+    /* Creates a new MediaSession */
+    private fun createMediaSession(): MediaSessionCompat {
+        val initialPlaybackState: Int = PreferencesHelper.loadPlayerPlayBackState(this)
+        val position: Long = 0
+        val sessionIntent = packageManager?.getLaunchIntentForPackage(packageName)
+        val sessionActivityPendingIntent = PendingIntent.getActivity(this, 0, sessionIntent, 0)
+        return MediaSessionCompat(this, TAG)
+                .apply {
+                    setSessionActivity(sessionActivityPendingIntent)
+                    setCallback(mediaSessionCallback)
+                    setPlaybackState(createPlaybackState(initialPlaybackState, position))
+                    setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+                    isActive = true
+                }
+    }
+
+
     /* Starts playback */
     private fun startPlayback() {
         if (episode.audio.isNotBlank()) {
             LogHelper.d(TAG, "Starting Playback")
-            CollectionHelper.savePlaybackstate(this, collection, episode, true)
+            collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_PLAYING)
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING,0))
             mediaSession.setActive(true)
         }
@@ -211,7 +215,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     private fun pausePlayback() {
         if (episode.audio.isNotEmpty()) {
             LogHelper.d(TAG, "Pausing Playback")
-            CollectionHelper.savePlaybackstate(this, collection, episode, false)
+            collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_PAUSED)
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED, 0))
             mediaSession.setActive(true)
         } else {
@@ -223,7 +227,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     /* Stops playback - remove notification */
     private fun stopPlayback() {
         LogHelper.d(TAG, "Stopping Playback")
-        CollectionHelper.savePlaybackstate(this, collection, episode, false)
+        collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_STOPPED)
         mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED, 0))
         mediaSession.setActive(false)
     }
@@ -318,16 +322,6 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     }
 
 
-//    /* Reads podcast collection from storage using GSON */
-//    private fun loadCollection(context: Context): Collection = runBlocking<Collection> {
-//        // get JSON from text file async
-//        val result = async { FileHelper.readCollectionSuspended(context) }
-//        // wait for result and return collection
-//        return@runBlocking result.await()
-//    }
-
-
-
     /* Reads podcast collection from storage using GSON */
     private fun loadCollection(context: Context) {
         LogHelper.v(TAG, "Loading podcast collection from storage")
@@ -336,6 +330,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(context) }
             // wait for result and update collection
             collection = deferred.await()
+            LogHelper.e(TAG, collection.toString()) // todo remove
         }
     }
 

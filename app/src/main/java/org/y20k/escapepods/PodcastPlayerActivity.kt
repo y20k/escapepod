@@ -53,6 +53,7 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.dialogs.*
 import org.y20k.escapepods.helpers.*
+import org.y20k.escapepods.ui.PlayerState
 import org.y20k.escapepods.xml.OpmlHelper
 import kotlin.coroutines.CoroutineContext
 
@@ -91,7 +92,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceConnected = false
-    private var tempOpmlUriString: String = ""
+    private var playerState: PlayerState = PlayerState()
+    private var tempOpmlUriString: String = String()
 
 
     /* Overrides coroutineContext variable */
@@ -102,6 +104,13 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // try to recreate player state
+        if (savedInstanceState != null) {
+            with(savedInstanceState) {
+                playerState = getParcelable(Keys.SAVED_INSTANCE_PLAYER_STATE) ?: PlayerState()
+            }
+        }
+
         // initialize background job
         backgroundJob = Job()
 
@@ -110,7 +119,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // create view model and observe changes in collection view model
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
-        observeCollectionViewModel()
 
         // create collection adapter
         collectionAdapter = CollectionAdapter(this)
@@ -137,6 +145,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // set up additional buttons
         setupAdditionalButtons()
+
+        // start worker that periodically updates the podcast collection
+        WorkerHelper.schedulePeriodicUpdateWorker()
     }
 
 
@@ -156,6 +167,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         volumeControlStream = AudioManager.STREAM_MUSIC
         // handle start intent
         handleStartIntent()
+        // setup player ui
+        setupPlayerState()
     }
 
 
@@ -172,6 +185,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         MediaControllerCompat.getMediaController(this)?.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
+    }
+
+
+    /* Overrides onSaveInstanceState */
+    override fun onSaveInstanceState(outState: Bundle?) {
+        // try to save player state
+        outState?.run {
+            putParcelable(Keys.SAVED_INSTANCE_PLAYER_STATE, playerState)
+        }
+        super.onSaveInstanceState(outState)
     }
 
 
@@ -207,15 +230,15 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 
     /* Overrides onPlayButtonTapped from CollectionAdapterListener */
-    override fun onPlayButtonTapped(mediaId: String, startPlayback: Boolean) {
-        // get episode
-        val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
+    override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
+        playerState.episodeMediaId = mediaId
+        playerState.playbackState = playbackState
         // setup ui
-        updatePlayerViews(episode)
-        // start / pause playback
-        when (startPlayback) {
-            true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
-            false -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        updatePlayerViews(mediaId)
+        // start / pause playback (playbackState = state BEFORE tapping the button)
+        when (playbackState) {
+            PlaybackStateCompat.STATE_PLAYING -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+            else -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
         }
     }
 
@@ -348,11 +371,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // get reference to media controller
         val mediaController = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
 
-        // set up the play button - to offer play or pause
-        setupPlayButtons(mediaController.playbackState.state)
-
-        // show / hide player
-        setupPlayerVisibility(mediaController.playbackState.state)
+//        // set up the play button - to offer play or pause
+//        setupPlayButtons(mediaController.playbackState.state)
 
         // main play/pause button
         playButtonView.setOnClickListener {
@@ -439,6 +459,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
+    /*  */
+    private fun setupPlayerState() {
+        setupPlayerVisibility(playerState.playbackState)
+        setupPlayButtons(playerState.playbackState)
+        if (playerState.episodeMediaId.isNotEmpty()) {
+            updatePlayerViews(playerState.episodeMediaId)
+        }
+    }
+
+
     /* Set up play/pause buttons */
     private fun setupPlayButtons(playbackState: Int) {
         when (playbackState) {
@@ -457,36 +487,40 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Sets visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
     private fun setupPlayerVisibility(playbackState: Int) {
         when (playbackState) {
-            PlaybackStateCompat.STATE_STOPPED -> {
-                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
-            }
-            PlaybackStateCompat.STATE_NONE -> {
-                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
-            }
-            PlaybackStateCompat.STATE_ERROR -> {
-                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
-            }
-            else -> {
-                UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
-                if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-                }
-            }
+            PlaybackStateCompat.STATE_STOPPED -> hidePlayer()
+            PlaybackStateCompat.STATE_NONE -> hidePlayer()
+            PlaybackStateCompat.STATE_ERROR -> hidePlayer()
+            else -> showPlayer()
         }
     }
 
 
+    /* Shows player */
+    private fun showPlayer() {
+        UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        }
+    }
+
+
+    /* Hides player */
+    private fun hidePlayer() {
+        UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+    }
+
+
     /* Updates player views with Episode */
-    private fun updatePlayerViews(episode: Episode) {
-        coverView.setImageURI(Uri.parse(episode.cover))
+    private fun updatePlayerViews(mediaId: String) {
+        val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
+        val coverUri = Uri.parse(episode.cover)
+        coverView.setImageURI(coverUri)
         coverView.clipToOutline = true // apply rounded corner mask to covers
         coverView.contentDescription = "${getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
         podcastNameView.text = episode.podcastName
         episodeTitleView.text = episode.title
-        sheetCoverView.setImageURI(Uri.parse(episode.cover))
+        sheetCoverView.setImageURI(coverUri)
         sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
         sheetCoverView.contentDescription = "${getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
         sheetEpisodeTitleView.text = episode.title
@@ -647,10 +681,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             collection = it
             // toast podcast count - just a test // todo remove
             Toast.makeText(this, createCollectionInfoString(), Toast.LENGTH_LONG).show()
-//            // update ui
-//            updateUserInterface()
-            // start worker that periodically updates the podcast collection
-            WorkerHelper.schedulePeriodicUpdateWorker()
+
+            // updates current episode in player views
+            updatePlayerViews(playerState.episodeMediaId)
         })
     }
 
@@ -674,9 +707,11 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // finish building the UI
             buildPlaybackControls()
 
-            // todo test send command to playerservice
-//            val mediaController: MediaControllerCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
-//            mediaController.sendCommand("TESTCOMMAND", null, ResultReceiver()) // todo implement a ResultReceiver at PodcastPlayerActivity
+//            // show / hide player
+//            setupPlayerVisibility(MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState.state)
+
+            // begin looking for changes in collection
+            observeCollectionViewModel()
         }
 
         override fun onConnectionSuspended() {
@@ -716,12 +751,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
      */
     private var mediaControllerCallback = object : MediaControllerCompat.Callback() {
 
+        override fun onSessionReady() {
+            super.onSessionReady()
+        }
+
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             LogHelper.d(TAG, "Metadata changed. Update UI.")
         }
 
         override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
             LogHelper.d(TAG, "Playback State changed. Update UI.")
+            playerState.playbackState = playbackState.state
             animatePlaybackButtonStateTransition(playbackState.state)
             setupPlayerVisibility(playbackState.state)
         }

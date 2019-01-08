@@ -18,6 +18,7 @@ import android.content.Context
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 import org.y20k.escapepods.Keys
@@ -259,32 +260,33 @@ object CollectionHelper {
 
 
     /* Saves the playpack state of a given episode */
-    fun savePlaybackstate(context: Context, collection: Collection, episode: Episode = Episode(), isPlaying: Boolean): Collection {
-        collection.podcasts.forEach {
-            it.episodes.forEach {
+    fun savePlaybackState(context: Context, collection: Collection, episode: Episode = Episode(), playbackState: Int): Collection {
+        // set playback state of given episode
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach {
                 // reset playback state everywhere
-                it.isPlaying = false
+                it.playbackState = PlaybackStateCompat.STATE_STOPPED
                 // set playback true state at this episode
                 if (it.getMediaId() == episode.getMediaId()) {
-                    it.isPlaying = isPlaying
+                    it.playbackState = playbackState
                 }
             }
         }
+        // save collection
         saveCollection(context, collection)
+        // save playback state of PlayerService
+        PreferencesHelper.savePlayerPlayBackState(context, playbackState)
         return collection
     }
 
 
     /* Saves podcast collection */
     fun saveCollection (context: Context, collection: Collection, lastUpdate: Date = Calendar.getInstance().time, async: Boolean = true) {
-        LogHelper.v(TAG, "Saving podcast collection to storage. Async = $async")
-        // set last update
+        LogHelper.v(TAG, "Saving podcast collection to storage. Async = ${async}. Size = ${collection.podcasts.size}")
+        // set last update in collection
         collection.lastUpdate = lastUpdate
         // save last update to shared preferences
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateHelper.convertToRfc2822(collection.lastUpdate))
-        editor.apply()
+        PreferencesHelper.saveLastUpdateCollection(context, lastUpdate)
         // save collection to storage
         when (async) {
             true -> {
@@ -296,7 +298,7 @@ object CollectionHelper {
                     // wait for result
                     deferred.await()
                     // broadcast collection update
-                    sendCollectionBroadcast(context, collection.lastUpdate)
+                    sendCollectionBroadcast(context, lastUpdate)
                     backgroundJob.cancel()
                 }
             }
@@ -304,7 +306,7 @@ object CollectionHelper {
                 // save collection
                 FileHelper.saveCollection(context, collection)
                 // broadcast collection update
-                sendCollectionBroadcast(context, collection.lastUpdate)
+                sendCollectionBroadcast(context, lastUpdate)
             }
         }
     }

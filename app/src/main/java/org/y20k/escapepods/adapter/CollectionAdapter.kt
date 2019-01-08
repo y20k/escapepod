@@ -18,6 +18,7 @@ import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Vibrator
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,8 +39,8 @@ import org.y20k.escapepods.dialogs.AddPodcastDialog
 import org.y20k.escapepods.helpers.CollectionHelper
 import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.LogHelper
+import org.y20k.escapepods.helpers.PreferencesHelper
 import java.text.DateFormat
-import java.util.*
 
 
 /*
@@ -60,7 +61,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /* Listener Interface */
     interface CollectionAdapterListener {
 //        fun onItemSelected (mediaId: String, isLongPress: Boolean)
-        fun onPlayButtonTapped(mediaId: String, startPlayback: Boolean)
+        fun onPlayButtonTapped(mediaId: String, playbackState: Int)
         fun onDownloadButtonTapped(episode: Episode)
         fun onDeleteButtonTapped(episode: Episode)
 //        fun onJumpToPosition (position: Int)
@@ -175,14 +176,14 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
         // episode 0
         if (podcast.episodes[0].audio.isNotEmpty()) {
-            val isPlaying: Boolean = podcast.episodes[0].isPlaying
-            when (isPlaying) {
-                true -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
-                false -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_24dp)
+            val playbackState: Int = podcast.episodes[0].playbackState
+            when (playbackState) {
+                PlaybackStateCompat.STATE_PLAYING -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
+                else -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_24dp)
             }
             podcastViewHolder.episode0PlayButtonView.contentDescription = activity.getString(R.string.descr_card_small_playback_button)
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
-                collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), startPlayback = !isPlaying)
+                collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), playbackState)
             }
             podcastViewHolder.episode0DeleteButtonView.visibility = View.VISIBLE
             podcastViewHolder.episode0DeleteButtonView.setOnClickListener {
@@ -263,8 +264,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         CollectionHelper.deletePodcastFolders(context, collection.podcasts[position])
         // remove podcast from collection
         collection.podcasts.removeAt(position)
-        // set last update
-        collection.lastUpdate = Calendar.getInstance().time
+        // save last update
+        PreferencesHelper.saveLastUpdateCollection(context)
         // export collection as OPML
         CollectionHelper.exportCollection(context, collection)
         // save collection and broadcast changes

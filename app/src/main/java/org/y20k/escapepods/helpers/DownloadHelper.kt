@@ -20,7 +20,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.preference.PreferenceManager
 import android.widget.Toast
-import androidx.core.content.edit
 import androidx.core.net.toUri
 import kotlinx.coroutines.*
 import org.y20k.escapepods.Keys
@@ -131,14 +130,13 @@ object DownloadHelper {
     /* Initializes main class variables of DownloadHelper, if necessary */
     private fun initialize(context: Context) {
         if (!this::collection.isInitialized || CollectionHelper.isNewerCollectionAvailable(context, collection.lastUpdate)) {
-            LogHelper.v("Initializing / updating collection in DownloadHelper.") // todo remove
             collection = FileHelper.readCollection(context) // todo make async
         }
         if (!this::downloadManager.isInitialized) {
             downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
         }
         if (!this::activeDownloads.isInitialized) {
-            activeDownloads = loadActiveDownloads(context)
+            activeDownloads = getActiveDownloads(context)
         }
     }
 
@@ -161,7 +159,7 @@ object DownloadHelper {
                 activeDownloads.add(newIDs[i])
             }
         }
-        saveActiveDownloads(context, activeDownloads)
+        setActiveDownloads(context, activeDownloads)
     }
 
 
@@ -236,7 +234,7 @@ object DownloadHelper {
             val activeDownload = iterator.next()
             if (activeDownload.equals(downloadID)) {
                 iterator.remove()
-                saveActiveDownloads(context, activeDownloads)
+                setActiveDownloads(context, activeDownloads)
                 return true
             }
         }
@@ -246,10 +244,8 @@ object DownloadHelper {
 
     /* Saves podcast collection to storage */
     private fun saveCollection(context: Context, opmlExport: Boolean = false) {
-        // set last update
-        collection.lastUpdate = Calendar.getInstance().time
         // save collection
-        CollectionHelper.saveCollection(context, collection, collection.lastUpdate)
+        CollectionHelper.saveCollection(context, collection)
         // export as OPML, if requested
         if (opmlExport) {CollectionHelper.exportCollection(context, collection)}
     }
@@ -285,18 +281,18 @@ object DownloadHelper {
 
 
     /* Saves active downloads (IntArray) to shared preferences */
-    private fun saveActiveDownloads(context: Context, activeDownloads: ArrayList<Long>) {
+    private fun setActiveDownloads(context: Context, activeDownloads: ArrayList<Long>) {
         val builder = StringBuilder()
         for (i in activeDownloads.indices) {
             builder.append(activeDownloads[i]).append(",")
         }
-        PreferenceManager.getDefaultSharedPreferences(context).edit {putString(Keys.PREF_ACTIVE_DOWNLOADS, builder.toString())}
+        PreferencesHelper.saveActiveDownloads(context, builder.toString())
     }
 
 
     /* Loads active downloads (IntArray) from shared preferences */
-    private fun loadActiveDownloads(context: Context): ArrayList<Long> {
-        val activeDownloadsString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_ACTIVE_DOWNLOADS, "")
+    private fun getActiveDownloads(context: Context): ArrayList<Long> {
+        val activeDownloadsString: String = PreferencesHelper.loadActiveDownloads(context)
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
         val activeDownloads: ArrayList<Long> = arrayListOf<Long>()

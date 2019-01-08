@@ -31,11 +31,11 @@ object DateHelper {
 
     /* Converts RFC 2822 string representation of a date to DATE */
     fun convertFromRfc2822(dateString: String): Date {
-        var date = dateFormat.parse((dateString))
-        if (date == null) {
-            date = Calendar.getInstance().time
+        if (dateString.isEmpty()) {
+            return Calendar.getInstance().time
+        } else {
+            return dateFormat.parse((dateString)) ?: Calendar.getInstance().time
         }
-        return date
     }
 
 

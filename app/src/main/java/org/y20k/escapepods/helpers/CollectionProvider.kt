@@ -119,7 +119,7 @@ class CollectionProvider {
 
 
     /* Gets list of episodes and caches track information in TreeMap */
-    fun retrieveMedia(context: Context, collection: Collection,episodeListProviderCallback: CollectionProviderCallback) {
+    fun retrieveMedia(context: Context, collection: Collection, episodeListProviderCallback: CollectionProviderCallback) {
         if (currentState == State.INITIALIZED) {
             // already initialized, set callback immediately
             episodeListProviderCallback.onEpisodeListReady(true)

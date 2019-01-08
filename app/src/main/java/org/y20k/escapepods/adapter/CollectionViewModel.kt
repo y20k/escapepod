@@ -53,7 +53,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         // create empty view model
         collectionLiveData = MutableLiveData<Collection>()
         // load collection
-        loadCollection()
+        loadCollection(application)
         // create and register collection changed receiver
         collectionChangedReceiver = createCollectionChangedReceiver()
         LocalBroadcastManager.getInstance(application).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
@@ -76,7 +76,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
                     val lastUpdate: Date = DateHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
                     // check if reload is necessary
                     if (lastUpdate.after(lastUpdateViewModel)) {
-                        loadCollection()
+                        loadCollection(context)
                     }
                 }
             }
@@ -85,14 +85,14 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
 
     /* Reads podcast collection from storage using GSON */
-    private fun loadCollection() {
+    private fun loadCollection(context: Context) {
         LogHelper.v(TAG, "Loading podcast collection from storage")
         uiScope.launch {
             // load collection on background thread
             val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(getApplication()) }
             // wait for result
             val collection: Collection = deferred.await()
-            // store last update
+            // get last update
             lastUpdateViewModel = collection.lastUpdate
             // update collection view model
             collectionLiveData.value = collection

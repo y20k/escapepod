@@ -21,6 +21,7 @@
     <color name="player_sheet_icon">@color/escapepods_white</color>
 
     <color name="list_card_background">@color/escapepods_white</color>
+    <color name="list_card_cover_background">@color/escapepods_grey_very_light</color>
     <color name="list_card_divider">@color/escapepods_grey_very_light</color>
     <color name="list_card_delete_background">@color/escapepods_red</color>
     <color name="list_card_episode_background">@color/escapepods_grey_very_light</color>

@@ -15,6 +15,7 @@
 package org.y20k.escapepods.core
 
 import android.os.Parcelable
+import android.support.v4.media.session.PlaybackStateCompat
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.Keys
@@ -33,7 +34,7 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
                     @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
                     @Expose var publicationDate: Date = Calendar.getInstance().time,
-                    @Expose var isPlaying: Boolean = false,
+                    @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
                     @Expose var playbackPosition: Long = 0L,
                     @Expose var listened: Boolean = false,
                     @Expose var manuallyDownloaded: Boolean = false,
@@ -49,15 +50,14 @@ data class Episode (@Expose var guid: String = "",
         val episodeShortDescriptionLength: Int = if (description.length <= descriptionMaxLength) description.length -1 else descriptionMaxLength
 //        val episodeShortDescription: String = description.trim().substring(0, episodeShortDescriptionLength)
         val episodeShortDescription: String = description
-        stringBuilder.append("\nGUID: ${guid}\n")
+        stringBuilder.append("\nGUID: ${guid} (playback = ${playbackState})\n")
         stringBuilder.append("Title: ${title}\n")
         //stringBuilder.append("$episodeShortDescription ...\n")
         stringBuilder.append("${publicationDate}\n")
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")
         stringBuilder.append("Audio URL: ${remoteAudioFileLocation} \n")
-        // stringBuilder.append("Cover URL: ${remoteCoverFileLocation} \n") // is currently not being readSuspended by RssHelper
-        stringBuilder.append("Manually downloaded: $manuallyDownloaded \n")
+        // stringBuilder.append("Manually downloaded: $manuallyDownloaded \n")
         return stringBuilder.toString()
     }
 

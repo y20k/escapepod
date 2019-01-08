@@ -17,9 +17,7 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.preference.PreferenceManager
 import android.provider.OpenableColumns
-import androidx.core.content.edit
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.y20k.escapepods.Keys
@@ -28,7 +26,6 @@ import org.y20k.escapepods.xml.OpmlHelper
 import java.io.*
 import java.net.URL
 import java.text.NumberFormat
-import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -137,9 +134,8 @@ object FileHelper {
     /* Saves podcast collection as JSON text file */
     fun saveCollection(context: Context, collection: Collection) {
         LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
-        // set last update
-        collection.lastUpdate = Calendar.getInstance().time
-        PreferenceManager.getDefaultSharedPreferences(context).edit { putString(Keys.KEY_LAST_UPDATE_COLLECTION, DateHelper.convertToRfc2822(collection.lastUpdate))}
+        // save last update
+        PreferencesHelper.saveLastUpdateCollection(context)
         // convert to JSON
         val gson: Gson = getCustomGson()
         val json: String = gson.toJson(collection)

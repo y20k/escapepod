@@ -56,11 +56,20 @@ object Keys {
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
+    const val PREF_CURRENT_MEDIA_ID: String = "CURRENT_MEDIA_ID"
+    const val PREF_CURRENT_PLAYBACK_STATE: String = "CURRENT_PLAYBACK_STATE"
     const val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"
     const val PREF_DOWNLOAD_OVER_MOBILE: String = "DOWNLOAD_OVER_MOBILE"
     const val PREF_NUMBER_OF_EPISODES_TO_KEEP: String = "NUMBER_OF_EPISODES_TO_KEEP"
     const val PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP: String = "NUMBER_OF_AUDIO_FILES_TO_KEEP"
     const val PREF_NIGHT_MODE_STATE: String = "NIGHT_MODE_STATE"
+
+    // saved instance states
+    const val SAVED_INSTANCE_PLAYER_STATE: String = "INSTANCE_PLAYER_STATE"
+
+    // states
+    const val STATE_SLEEP_TIMER_STOPPED: Int = 0
+    const val STATE_SLEEP_TIMER_RUNNING: Int = 1
 
     // default const values
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
