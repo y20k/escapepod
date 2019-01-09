@@ -135,7 +135,10 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
     /* Overrides onDestroy */
     override fun onDestroy() {
-        stopPlayback()
+        // stop playback if necessary - todo remove when playback is actually working
+//        if (mediaSession.controller.playbackState.state != PlaybackStateCompat.STATE_STOPPED) {
+//            stopPlayback()
+//        }
         // release media session
         mediaSession.run {
             isActive = false

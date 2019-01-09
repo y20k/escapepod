@@ -1,7 +1,7 @@
 /*
  * PreferencesHelper.kt
  * Implements the PreferencesHelper object
- * A PreferencesHelper provides helper methods for the saving and loading
+ * A PreferencesHelper provides helper methods for the saving and loading values from shared preferences
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
@@ -17,12 +17,14 @@ package org.y20k.escapepods.helpers
 import android.content.Context
 import android.preference.PreferenceManager
 import android.support.v4.media.session.PlaybackStateCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepods.Keys
+import org.y20k.escapepods.ui.PlayerState
 import java.util.*
 
 
 /*
- * PreferencesHelper class
+ * PreferencesHelper object
  */
 object PreferencesHelper {
 
@@ -93,5 +95,33 @@ object PreferencesHelper {
         editor.putString(Keys.PREF_ACTIVE_DOWNLOADS, activeDownloadsString)
         editor.apply()
     }
+
+
+
+    /* Loads state of player user interface from shared preferences */
+    fun loadPlayerState(context: Context): PlayerState {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val playerState: PlayerState = PlayerState()
+        playerState.episodeMediaId = settings.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
+        playerState.playbackState = settings.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+        playerState.playbackPosition = settings.getLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, 0)
+        playerState.bottomSheetState = settings.getInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
+        playerState.sleepTimerState = settings.getInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, Keys.STATE_SLEEP_TIMER_STOPPED)
+        return playerState
+    }
+
+
+    /* Saves state of player user interface to shared preferences */
+    fun savePlayerState(context: Context, playerState: PlayerState) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
+        editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
+        editor.putLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, playerState.playbackPosition)
+        editor.putInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, playerState.bottomSheetState)
+        editor.putInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, playerState.sleepTimerState)
+        editor.apply()
+    }
+
 
 }

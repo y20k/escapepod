@@ -27,25 +27,14 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.*
 import org.y20k.escapepods.adapter.CollectionAdapter
 import org.y20k.escapepods.adapter.CollectionViewModel
@@ -53,6 +42,7 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.dialogs.*
 import org.y20k.escapepods.helpers.*
+import org.y20k.escapepods.ui.LayoutHolder
 import org.y20k.escapepods.ui.PlayerState
 import org.y20k.escapepods.xml.OpmlHelper
 import kotlin.coroutines.CoroutineContext
@@ -76,19 +66,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private lateinit var backgroundJob: Job
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var collectionViewModel: CollectionViewModel
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var bottomSheet: ConstraintLayout
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
-    private lateinit var playerViews: Group
-    private lateinit var coverView: ImageView
-    private lateinit var podcastNameView: TextView
-    private lateinit var episodeTitleView: TextView
-    private lateinit var playButtonView: ImageView
-    private lateinit var sheetCoverView: ImageView
-    private lateinit var sheetEpisodeTitleView: TextView
-    private lateinit var sheetPlayButtonView: ImageView
-    private lateinit var sheetSleepButtonView: ImageView
+    private lateinit var layout: LayoutHolder
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceConnected = false
@@ -103,13 +81,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Overrides onCreate */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // try to recreate player state
-        if (savedInstanceState != null) {
-            with(savedInstanceState) {
-                playerState = getParcelable(Keys.SAVED_INSTANCE_PLAYER_STATE) ?: PlayerState()
-            }
-        }
 
         // initialize background job
         backgroundJob = Job()
@@ -127,24 +98,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallback, null)
 
         // find views
-        setContentView(R.layout.activity_podcast_player)
-        recyclerView = findViewById(R.id.recyclerview_list)
-        bottomSheet = findViewById(R.id.bottom_sheet)
-        playerViews = findViewById(R.id.player_views)
-        coverView = findViewById(R.id.player_podcast_cover)
-        podcastNameView = findViewById(R.id.player_podcast_name)
-        episodeTitleView = findViewById(R.id.player_episode_title)
-        playButtonView = findViewById(R.id.player_play_button)
-        sheetCoverView = findViewById(R.id.sheet_large_podcast_cover)
-        sheetEpisodeTitleView = findViewById(R.id.sheet_episode_title)
-        sheetPlayButtonView = findViewById(R.id.sheet_play_button)
-        sheetSleepButtonView = findViewById(R.id.sleep_timer_button)
+        layout = LayoutHolder(this)
 
         // set up views
         initializeViews()
-
-        // set up additional buttons
-        setupAdditionalButtons()
 
         // start worker that periodically updates the podcast collection
         WorkerHelper.schedulePeriodicUpdateWorker()
@@ -159,7 +116,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-
     /* Overrides onResume */
     override fun onResume() {
         super.onResume()
@@ -167,14 +123,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         volumeControlStream = AudioManager.STREAM_MUSIC
         // handle start intent
         handleStartIntent()
+        // try to recreate player state
+        playerState = PreferencesHelper.loadPlayerState(this)
         // setup player ui
-        setupPlayerState()
+        setupPlayer()
     }
 
 
     /* Overrides onPause */
     override fun onPause() {
         super.onPause()
+        PreferencesHelper.savePlayerState(this, playerState)
     }
 
 
@@ -185,16 +144,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         MediaControllerCompat.getMediaController(this)?.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
-    }
-
-
-    /* Overrides onSaveInstanceState */
-    override fun onSaveInstanceState(outState: Bundle?) {
-        // try to save player state
-        outState?.run {
-            putParcelable(Keys.SAVED_INSTANCE_PLAYER_STATE, playerState)
-        }
-        super.onSaveInstanceState(outState)
     }
 
 
@@ -234,7 +183,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         playerState.episodeMediaId = mediaId
         playerState.playbackState = playbackState
         // setup ui
-        updatePlayerViews(mediaId)
+        val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+        layout.updatePlayerViews(this, episode)
         // start / pause playback (playbackState = state BEFORE tapping the button)
         when (playbackState) {
             PlaybackStateCompat.STATE_PLAYING -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
@@ -300,16 +250,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Sets up views and connects tap listeners - first run */
     private fun initializeViews() {
-        // set up recycler view
-        val layoutManager: LinearLayoutManager = object: LinearLayoutManager(this) {
-            override fun supportsPredictiveItemAnimations(): Boolean {
-                return true
-            }
-        }
-        recyclerView.setLayoutManager(layoutManager)
-        recyclerView.setItemAnimator(DefaultItemAnimator())
-        recyclerView.setAdapter(collectionAdapter)
-        // enable swipe to delete in recycler view
+        // set adapter data source
+        layout.recyclerView.setAdapter(collectionAdapter)
+
+        // enable swipe to delete
         val swipeHandler = object : UiHelper.SwipeToDeleteCallback(this) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // ask user
@@ -319,49 +263,29 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
+        itemTouchHelper.attachToRecyclerView(layout.recyclerView)
 
-        // show / hide the small player
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(view: View, slideOffset: Float) {
-                if (slideOffset < 0.25f) {
-                    playerViews.setVisibility(View.VISIBLE);
-                } else {
-                    playerViews.setVisibility(View.GONE);
-                }
-            }
-            override fun onStateChanged(view: View, state: Int) {
-                when (state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playerViews.setVisibility(View.VISIBLE)
-                    BottomSheetBehavior.STATE_DRAGGING -> Unit // do nothing
-                    BottomSheetBehavior.STATE_EXPANDED -> playerViews.setVisibility(View.GONE)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  Unit // do nothing
-                    BottomSheetBehavior.STATE_SETTLING -> Unit // do nothing
-                    BottomSheetBehavior.STATE_HIDDEN -> playerViews.setVisibility(View.VISIBLE)
-                }
-            }
-        })
-        // toggle collapsed state on tap
-        bottomSheet.setOnClickListener {
-            when (bottomSheetBehavior.state) {
-                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }
-
-        // listen for swipe to refresh event
-        swipeRefreshLayout = findViewById(R.id.layout_swipe_refresh)
-        swipeRefreshLayout.setOnRefreshListener {
+        // enable for swipe to refresh
+        layout.swipeRefreshLayout.setOnRefreshListener {
             // update podcast collection and observe download work
             if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
                 updateCollection()
             } else {
                 Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
             }
-            swipeRefreshLayout.isRefreshing = false
+            layout.swipeRefreshLayout.isRefreshing = false
         }
+
+        // set up sleep timer button - long press
+        layout.sheetSleepButtonView.setOnLongClickListener {
+            val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+            NightModeHelper.switchMode(this)
+            recreate()
+            true
+        }
+
     }
 
 
@@ -375,156 +299,37 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 //        setupPlayButtons(mediaController.playbackState.state)
 
         // main play/pause button
-        playButtonView.setOnClickListener {
+        layout.playButtonView.setOnClickListener {
             when (mediaController.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
-                else -> mediaController.transportControls.play()
+                else -> mediaController.transportControls.playFromMediaId(playerState.episodeMediaId, null)
             }
         }
 
         // bottom sheet play/pause button
-        sheetPlayButtonView.setOnClickListener {
+        layout.sheetPlayButtonView.setOnClickListener {
             when (mediaController.playbackState.state) {
                 PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
-                else -> mediaController.transportControls.play()
+                else -> mediaController.transportControls.playFromMediaId(playerState.episodeMediaId, null)
             }
         }
-
-        // display the initial state
-        val metadata = mediaController.metadata
-        val pbState = mediaController.playbackState
 
         // register a callback to stay in sync
         mediaController.registerCallback(mediaControllerCallback)
     }
 
 
-    /* Set up additions user interface elements */
-    private fun setupAdditionalButtons() {
-        // set up sleep timer button - long press
-        sheetSleepButtonView.setOnLongClickListener {
-            val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            v.vibrate(50)
-            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-            NightModeHelper.switchMode(this)
-            recreate()
-            true
-        }
-    }
 
-
-    /* Initiates the rotation animation of the play button  */
-    private fun animatePlaybackButtonStateTransition(playbackState: Int) {
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                val rotateClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_clockwise_slow)
-                rotateClockwise.setAnimationListener(createAnimationListener(playbackState))
-                when (bottomSheetBehavior.state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateClockwise)
-                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateClockwise)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons(playbackState)
-                }
-            }
-
-            else -> {
-                val rotateCounterClockwise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise_fast)
-                rotateCounterClockwise.setAnimationListener(createAnimationListener(playbackState))
-                when (bottomSheetBehavior.state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateCounterClockwise)
-                    BottomSheetBehavior.STATE_DRAGGING -> setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateCounterClockwise)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_SETTLING -> setupPlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_HIDDEN -> setupPlayButtons(playbackState)
-                }
-            }
-
-        }
-    }
-
-
-    /* Creates AnimationListener for play button */
-    private fun createAnimationListener(playbackState: Int): Animation.AnimationListener {
-        return object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {}
-            override fun onAnimationEnd(animation: Animation) {
-                // set up button symbol and playback indicator afterwards
-                setupPlayButtons(playbackState)
-            }
-            override fun onAnimationRepeat(animation: Animation) {}
-        }
-    }
-
-
-    /*  */
-    private fun setupPlayerState() {
-        setupPlayerVisibility(playerState.playbackState)
-        setupPlayButtons(playerState.playbackState)
+    /* Sets up the player */
+    private fun setupPlayer() {
+        layout.togglePlayerVisibility(this, playerState.playbackState)
+        layout.togglePlayButtons(playerState.playbackState)
         if (playerState.episodeMediaId.isNotEmpty()) {
-            updatePlayerViews(playerState.episodeMediaId)
+            val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+            layout.updatePlayerViews(this, episode)
         }
     }
 
-
-    /* Set up play/pause buttons */
-    private fun setupPlayButtons(playbackState: Int) {
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
-            }
-            else -> {
-                playButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
-            }
-        }
-    }
-
-
-    /* Sets visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
-    private fun setupPlayerVisibility(playbackState: Int) {
-        when (playbackState) {
-            PlaybackStateCompat.STATE_STOPPED -> hidePlayer()
-            PlaybackStateCompat.STATE_NONE -> hidePlayer()
-            PlaybackStateCompat.STATE_ERROR -> hidePlayer()
-            else -> showPlayer()
-        }
-    }
-
-
-    /* Shows player */
-    private fun showPlayer() {
-        UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
-        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
-        }
-    }
-
-
-    /* Hides player */
-    private fun hidePlayer() {
-        UiHelper.setViewMargins(this, swipeRefreshLayout, 0,0,0, 0)
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
-    }
-
-
-    /* Updates player views with Episode */
-    private fun updatePlayerViews(mediaId: String) {
-        val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
-        val coverUri = Uri.parse(episode.cover)
-        coverView.setImageURI(coverUri)
-        coverView.clipToOutline = true // apply rounded corner mask to covers
-        coverView.contentDescription = "${getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
-        podcastNameView.text = episode.podcastName
-        episodeTitleView.text = episode.title
-        sheetCoverView.setImageURI(coverUri)
-        sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
-        sheetCoverView.contentDescription = "${getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
-        sheetEpisodeTitleView.text = episode.title
-    }
 
 
     /* For debug purposes: create a string containing collection info */ // todo remove
@@ -683,7 +488,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Toast.makeText(this, createCollectionInfoString(), Toast.LENGTH_LONG).show()
 
             // updates current episode in player views
-            updatePlayerViews(playerState.episodeMediaId)
+            val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+            layout.updatePlayerViews(this,episode)
         })
     }
 
@@ -762,8 +568,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
             LogHelper.d(TAG, "Playback State changed. Update UI.")
             playerState.playbackState = playbackState.state
-            animatePlaybackButtonStateTransition(playbackState.state)
-            setupPlayerVisibility(playbackState.state)
+            layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
+            layout.togglePlayerVisibility(this@PodcastPlayerActivity, playbackState.state)
         }
 
         override fun onSessionDestroyed() {
