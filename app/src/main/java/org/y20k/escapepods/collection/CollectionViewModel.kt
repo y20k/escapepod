@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepods.adapter
+package org.y20k.escapepods.collection
 
 import android.app.Application
 import android.content.BroadcastReceiver

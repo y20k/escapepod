@@ -64,8 +64,7 @@ object CollectionHelper {
 
     /* Checks if enough time passed since last update */
     fun hasEnoughTimePassedSinceLastUpdate(context: Context): Boolean {
-        val lastSavedUpdateString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_LAST_UPDATE_COLLECTION, Keys.DEFAULT_RFC2822_DATE)!!
-        val lastSavedUpdate: Date = DateHelper.convertFromRfc2822(lastSavedUpdateString)
+        val lastSavedUpdate: Date = PreferencesHelper.loadLastUpdateCollection(context)
         val currentDate: Date = Calendar.getInstance().time
 //        return currentDate.time - lastUpdate  > Keys.FIVE_MINUTES_IN_MILLISECONDS // todo uncomment for production
         return currentDate.time - lastSavedUpdate.time  > Keys.ONE_MINUTE_IN_MILLISECONDS
@@ -128,7 +127,6 @@ object CollectionHelper {
     fun checkPodcastState(collection: Collection, newPodcast: Podcast): Int {
         // get podcast from sele
         val oldPodcast = getPodcast(collection, newPodcast)
-
         // check if podcast is new
         if (oldPodcast.episodes.isEmpty()) {
             return Keys.PODCAST_STATE_NEW_PODCAST
@@ -138,7 +136,7 @@ object CollectionHelper {
             return Keys.PODCAST_STATE_PODCAST_UNCHANGED
         }
         // Step 2: Not yet downloaded episode check -> test if audio field is empty
-        if (oldPodcast.episodes[0].audio.isEmpty()) {
+        if (getEpisode(collection, newPodcast.episodes[0].getMediaId()).audio.isEmpty()) {
             return Keys.PODCAST_STATE_HAS_NEW_EPISODES
         }
         // Default return

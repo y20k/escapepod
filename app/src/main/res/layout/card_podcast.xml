@@ -133,15 +133,21 @@
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
             app:srcCompat="@drawable/ic_play_circle_outline_24dp" />
 
-        <ImageView
-            android:id="@+id/playback_process"
+        <ProgressBar
+            android:id="@+id/episode_0_playback_progress"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="4dp"
             android:layout_height="0dp"
             android:contentDescription="@string/descr_card_playback_indicator"
+            android:max="100"
+            android:progress="50"
+            android:progressBackgroundTint="@color/list_card_episode_progress_background"
+            android:progressTint="@color/list_card_episode_progress"
+            android:rotation="270"
+            android:scaleX="12.5"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
-            app:srcCompat="@color/icon_lightweight" />
+            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button" />
 
         <ImageView
             android:id="@+id/divider"

@@ -32,7 +32,8 @@ object DateHelper {
     /* Converts RFC 2822 string representation of a date to DATE */
     fun convertFromRfc2822(dateString: String): Date {
         if (dateString.isEmpty()) {
-            return Calendar.getInstance().time
+            // return Calendar.getInstance().time
+            return Date()
         } else {
             return dateFormat.parse((dateString)) ?: Calendar.getInstance().time
         }

@@ -36,8 +36,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
-import org.y20k.escapepods.adapter.CollectionAdapter
-import org.y20k.escapepods.adapter.CollectionViewModel
+import org.y20k.escapepods.collection.CollectionAdapter
+import org.y20k.escapepods.collection.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.dialogs.*

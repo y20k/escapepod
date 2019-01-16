@@ -13,11 +13,12 @@
  */
 
 
-package org.y20k.escapepods.helpers
+package org.y20k.escapepods.collection
 
 import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.helpers.CollectionHelper
 import java.util.*
 
 

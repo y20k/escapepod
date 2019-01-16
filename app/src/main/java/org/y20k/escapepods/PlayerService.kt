@@ -41,6 +41,7 @@ import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
+import org.y20k.escapepods.collection.CollectionProvider
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.*
@@ -317,6 +318,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
                     val lastUpdate: Date = DateHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
                     // check if reload is necessary
                     if (lastUpdate.after(collection.lastUpdate)) {
+                        LogHelper.w(TAG, "PlayerService - reload collection after broadcast received.") // todo remove
                         loadCollection(context)
                     }
                 }
@@ -333,7 +335,6 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(context) }
             // wait for result and update collection
             collection = deferred.await()
-            LogHelper.e(TAG, collection.toString()) // todo remove
         }
     }
 

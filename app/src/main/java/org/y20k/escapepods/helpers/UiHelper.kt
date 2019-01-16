@@ -52,6 +52,16 @@ object UiHelper {
     }
 
 
+    /* Sets layout margins for given view in percent */
+    fun setViewMarginsPercentage(context: Context, view: View, height: Int, width: Int, left: Int = 0, right: Int = 0, top: Int= 0, bottom: Int = 0) {
+        val l: Int = ((width / 100.0f) * left).toInt()
+        val r: Int = ((width / 100.0f) * right).toInt()
+        val t: Int = ((height / 100.0f) * top).toInt()
+        val b: Int = ((height / 100.0f) * bottom).toInt()
+        setViewMargins(context, view, l, r, t, b)
+    }
+
+
     /*
      * Inner class: Callback that detects a left swipe
      * Credit: https://github.com/kitek/android-rv-swipe-delete/blob/master/app/src/main/java/pl/kitek/rvswipetodelete/SwipeToDeleteCallback.kt

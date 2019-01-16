@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepods.adapter
+package org.y20k.escapepods.collection
 
 import android.app.Activity
 import android.content.Context
@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -178,8 +179,17 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         if (podcast.episodes[0].audio.isNotEmpty()) {
             val playbackState: Int = podcast.episodes[0].playbackState
             when (playbackState) {
-                PlaybackStateCompat.STATE_PLAYING -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
-                else -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_24dp)
+                PlaybackStateCompat.STATE_PLAYING -> {
+                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
+                    podcastViewHolder.episode0PlaybackProgressView.progress = 50 // todo remove - just a test
+                }
+                else -> {
+                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_24dp)
+                    podcastViewHolder.episode0PlaybackProgressView.progress = 100 // todo remove - just a test
+//                    val height: Int = podcastViewHolder.episode0PlaybackProgressView.height
+//                    LogHelper.w(TAG, "Pausing -> Height = $height")
+//                    UiHelper.setViewMarginsPercentage(activity, podcastViewHolder.episode0PlaybackProgressView, 34, 4, 0, 0, 0, 0)
+                }
             }
             podcastViewHolder.episode0PlayButtonView.contentDescription = activity.getString(R.string.descr_card_small_playback_button)
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
@@ -324,6 +334,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         val episode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)
         val episode0DeleteButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_delete_button)
         val episode0PlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_play_button)
+        val episode0PlaybackProgressView: ProgressBar = podcastCardLayout.findViewById(R.id.episode_0_playback_progress)
 
     }
     /**
