@@ -101,11 +101,11 @@ data class LayoutHolder(var activity: Activity) {
         when (playbackState) {
             PlaybackStateCompat.STATE_PLAYING -> {
                 playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
             }
             else -> {
                 playButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_54dp)
             }
         }
     }

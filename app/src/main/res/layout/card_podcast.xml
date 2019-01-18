@@ -23,7 +23,7 @@
             android:contentDescription="@string/descr_card_podcast_cover"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
 
         <TextView
             android:id="@+id/podcast_name"
@@ -47,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
@@ -63,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="4dp"
             android:contentDescription="@string/descr_card_episode_date"
             android:elevation="2dp"
@@ -72,7 +72,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_delete_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_background"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_background"
             tools:text="@string/sample_text_episode_0_date" />
 
         <TextView
@@ -80,7 +80,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="6dp"
             android:contentDescription="@string/descr_card_episode_name"
             android:elevation="2dp"
             android:ellipsize="end"
@@ -88,7 +88,7 @@
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_default"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_background"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_delete_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_date"
             tools:text="@string/sample_text_episode_0_name" />
@@ -113,11 +113,29 @@
             app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
             app:srcCompat="@drawable/ic_delete_24dp" />
 
+        <ProgressBar
+            android:id="@+id/episode_0_playback_progress"
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            android:background="@drawable/circular_progressbar_background"
+            android:contentDescription="@string/descr_card_playback_indicator"
+            android:indeterminateOnly="false"
+            android:max="12"
+            android:progress="9"
+            android:progressDrawable="@drawable/circular_progressbar"
+            android:rotation="270"
+            android:scaleY="-1"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
+            app:layout_constraintEnd_toEndOf="@+id/episode_0_play_button"
+            app:layout_constraintStart_toStartOf="@+id/episode_0_play_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
+            app:layout_constraintVertical_bias="0.0"
+            tools:visibility="visible" />
+
         <ImageView
             android:id="@+id/episode_0_play_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:backgroundTint="@color/escapepods_transparent"
@@ -129,25 +147,10 @@
             android:paddingTop="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_background"
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
-            app:layout_constraintTop_toBottomOf="@+id/podcast_name"
-            app:srcCompat="@drawable/ic_play_circle_outline_24dp" />
-
-        <ProgressBar
-            android:id="@+id/episode_0_playback_progress"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="4dp"
-            android:layout_height="0dp"
-            android:contentDescription="@string/descr_card_playback_indicator"
-            android:max="100"
-            android:progress="50"
-            android:progressBackgroundTint="@color/list_card_episode_progress_background"
-            android:progressTint="@color/list_card_episode_progress"
-            android:rotation="270"
-            android:scaleX="12.5"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
-            app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button" />
+            app:layout_constraintTop_toTopOf="@+id/episode_0_background"
+            app:srcCompat="@drawable/ic_play_symbol_24dp" />
 
         <ImageView
             android:id="@+id/divider"

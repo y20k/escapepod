@@ -180,12 +180,12 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             val playbackState: Int = podcast.episodes[0].playbackState
             when (playbackState) {
                 PlaybackStateCompat.STATE_PLAYING -> {
-                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_circle_outline_24dp)
-                    podcastViewHolder.episode0PlaybackProgressView.progress = 50 // todo remove - just a test
+                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
+                    podcastViewHolder.episode0PlaybackProgressView.progress = 9 // todo remove - just a test
                 }
                 else -> {
-                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_circle_outline_24dp)
-                    podcastViewHolder.episode0PlaybackProgressView.progress = 100 // todo remove - just a test
+                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
+                    podcastViewHolder.episode0PlaybackProgressView.progress = 12 // todo remove - just a test
 //                    val height: Int = podcastViewHolder.episode0PlaybackProgressView.height
 //                    LogHelper.w(TAG, "Pausing -> Height = $height")
 //                    UiHelper.setViewMarginsPercentage(activity, podcastViewHolder.episode0PlaybackProgressView, 34, 4, 0, 0, 0, 0)
@@ -195,6 +195,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
                 collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), playbackState)
             }
+            podcastViewHolder.episode0PlaybackProgressView.visibility = View.VISIBLE
             podcastViewHolder.episode0DeleteButtonView.visibility = View.VISIBLE
             podcastViewHolder.episode0DeleteButtonView.setOnClickListener {
                 collectionAdapterListener.onDeleteButtonTapped(podcast.episodes[0])
@@ -205,7 +206,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             podcastViewHolder.episode0PlayButtonView.setOnClickListener {
                 collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
             }
-            podcastViewHolder.episode0DeleteButtonView.visibility = View.INVISIBLE
+            podcastViewHolder.episode0PlaybackProgressView.visibility = View.INVISIBLE
+            podcastViewHolder.episode0DeleteButtonView.visibility = View.GONE
         }
 
         // episode 1
