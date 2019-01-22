@@ -9,8 +9,8 @@
 
         <gradient
             android:angle="0"
-            android:endColor="@color/list_card_episode_progress"
-            android:startColor="@color/list_card_episode_progress"
+            android:endColor="@color/icon_default"
+            android:startColor="@color/icon_default"
             android:type="sweep"
             android:useLevel="false" />
     </shape>

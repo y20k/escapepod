@@ -45,14 +45,13 @@
         <ImageView
             android:id="@+id/episode_0_background"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="48dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name"
@@ -70,7 +69,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            app:layout_constraintEnd_toStartOf="@+id/episode_0_delete_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_download_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_background"
             app:layout_constraintTop_toTopOf="@+id/episode_0_background"
             tools:text="@string/sample_text_episode_0_date" />
@@ -89,15 +88,34 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_default"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_background"
-            app:layout_constraintEnd_toStartOf="@+id/episode_0_delete_button"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_download_button"
             app:layout_constraintStart_toStartOf="@+id/episode_0_date"
             tools:text="@string/sample_text_episode_0_name" />
+
+        <ImageView
+            android:id="@+id/episode_0_download_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/descr_card_small_download_button"
+            android:paddingStart="2dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="2dp"
+            android:paddingBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_background"
+            app:layout_constraintEnd_toStartOf="@+id/episode_0_delete_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_background"
+            app:srcCompat="@drawable/ic_cloud_download_36dp" />
 
         <ImageView
             android:id="@+id/episode_0_delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:backgroundTint="@color/escapepods_transparent"
             android:clickable="true"
@@ -108,9 +126,9 @@
             android:paddingTop="12dp"
             android:paddingEnd="4dp"
             android:paddingBottom="12dp"
-            app:layout_constraintBottom_toBottomOf="@+id/episode_0_play_button"
+            app:layout_constraintBottom_toBottomOf="@+id/episode_0_background"
             app:layout_constraintEnd_toStartOf="@+id/episode_0_play_button"
-            app:layout_constraintTop_toTopOf="@+id/episode_0_play_button"
+            app:layout_constraintTop_toTopOf="@+id/episode_0_background"
             app:srcCompat="@drawable/ic_delete_24dp" />
 
         <ProgressBar
@@ -147,10 +165,18 @@
             android:paddingTop="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/episode_0_background"
             app:layout_constraintEnd_toEndOf="@+id/episode_0_background"
             app:layout_constraintTop_toTopOf="@+id/episode_0_background"
             app:srcCompat="@drawable/ic_play_symbol_24dp" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/episode_0_playback_views"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:constraint_referenced_ids="episode_0_delete_button, episode_0_play_button, episode_0_playback_progress" />
 
         <ImageView
             android:id="@+id/divider"
@@ -181,6 +207,8 @@
             app:layout_constraintEnd_toEndOf="@+id/divider"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
 
+
+        <!-- Constraintlayout View Groups -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

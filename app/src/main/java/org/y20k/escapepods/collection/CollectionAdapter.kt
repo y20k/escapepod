@@ -27,6 +27,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -176,38 +177,26 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         val episodeListSize = podcast.episodes.size
 
         // episode 0
+        val playbackState: Int = podcast.episodes[0].playbackState
+        when (playbackState) {
+            PlaybackStateCompat.STATE_PLAYING -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
+            else -> podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
+        }
+        podcastViewHolder.episode0DownloadButtonView.setOnClickListener {
+            collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
+        }
+        podcastViewHolder.episode0PlayButtonView.setOnClickListener {
+            collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), playbackState)
+        }
+        podcastViewHolder.episode0DeleteButtonView.setOnClickListener {
+            collectionAdapterListener.onDeleteButtonTapped(podcast.episodes[0])
+        }
         if (podcast.episodes[0].audio.isNotEmpty()) {
-            val playbackState: Int = podcast.episodes[0].playbackState
-            when (playbackState) {
-                PlaybackStateCompat.STATE_PLAYING -> {
-                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
-                    podcastViewHolder.episode0PlaybackProgressView.progress = 9 // todo remove - just a test
-                }
-                else -> {
-                    podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
-                    podcastViewHolder.episode0PlaybackProgressView.progress = 12 // todo remove - just a test
-//                    val height: Int = podcastViewHolder.episode0PlaybackProgressView.height
-//                    LogHelper.w(TAG, "Pausing -> Height = $height")
-//                    UiHelper.setViewMarginsPercentage(activity, podcastViewHolder.episode0PlaybackProgressView, 34, 4, 0, 0, 0, 0)
-                }
-            }
-            podcastViewHolder.episode0PlayButtonView.contentDescription = activity.getString(R.string.descr_card_small_playback_button)
-            podcastViewHolder.episode0PlayButtonView.setOnClickListener {
-                collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), playbackState)
-            }
-            podcastViewHolder.episode0PlaybackProgressView.visibility = View.VISIBLE
-            podcastViewHolder.episode0DeleteButtonView.visibility = View.VISIBLE
-            podcastViewHolder.episode0DeleteButtonView.setOnClickListener {
-                collectionAdapterListener.onDeleteButtonTapped(podcast.episodes[0])
-            }
+            podcastViewHolder.episode0DownloadButtonView.visibility = View.GONE
+            podcastViewHolder.episode0PlaybackViews.visibility = View.VISIBLE
         } else {
-            podcastViewHolder.episode0PlayButtonView.setImageResource(R.drawable.ic_cloud_download_24dp)
-            podcastViewHolder.episode0PlayButtonView.contentDescription = activity.getString(R.string.descr_card_small_download_button)
-            podcastViewHolder.episode0PlayButtonView.setOnClickListener {
-                collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
-            }
-            podcastViewHolder.episode0PlaybackProgressView.visibility = View.INVISIBLE
-            podcastViewHolder.episode0DeleteButtonView.visibility = View.GONE
+            podcastViewHolder.episode0DownloadButtonView.visibility = View.VISIBLE
+            podcastViewHolder.episode0PlaybackViews.visibility = View.GONE
         }
 
         // episode 1
@@ -271,7 +260,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
 
     /* Removes a podcast from collection */
-    fun remove(context: Context, position: Int) {
+    fun removePodcast(context: Context, position: Int) {
         // delete folders and assets
         CollectionHelper.deletePodcastFolders(context, collection.podcasts[position])
         // remove podcast from collection
@@ -282,6 +271,14 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         CollectionHelper.exportCollection(context, collection)
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, collection)
+    }
+
+
+    /* Deletes an episode download from collection */
+    fun deleteEpisode(context: Context, mediaID: String) {
+        LogHelper.v(TAG, "Deleting episode: $mediaID")
+        // todo implement
+        // 1. delete reference, 2. delete file, 3. reset manually downloaded state
     }
 
 
@@ -334,10 +331,11 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         val pocastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val episode0DateView: TextView = podcastCardLayout.findViewById(R.id.episode_0_date)
         val episode0NameView: TextView = podcastCardLayout.findViewById(R.id.episode_0_name)
+        val episode0DownloadButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_download_button)
         val episode0DeleteButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_delete_button)
         val episode0PlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_0_play_button)
         val episode0PlaybackProgressView: ProgressBar = podcastCardLayout.findViewById(R.id.episode_0_playback_progress)
-
+        val episode0PlaybackViews: Group = podcastCardLayout.findViewById(R.id.episode_0_playback_views)
     }
     /**
      * End of inner class

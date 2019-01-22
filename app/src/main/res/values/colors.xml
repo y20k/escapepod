@@ -25,7 +25,6 @@
     <color name="list_card_divider">@color/escapepods_grey_very_light</color>
     <color name="list_card_delete_background">@color/escapepods_red</color>
     <color name="list_card_episode_background">@color/escapepods_grey_very_light</color>
-    <color name="list_card_episode_progress">@color/escapepods_grey</color>
     <color name="list_card_episode_progress_background">@color/escapepods_grey_lighter</color>
 
     <!-- COLOR NAMES -->

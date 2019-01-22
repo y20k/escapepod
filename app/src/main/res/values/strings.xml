@@ -80,7 +80,7 @@
     <string name="descr_card_podcast_name">Name of podcast</string>
     <string name="descr_card_episode_name">Name of episode</string>
     <string name="descr_card_episode_date">Publishing date of episode</string>
-    <string name="descr_card_delete_episode_button">Small button deleting a downloaded episode</string>
+    <string name="descr_card_delete_episode_button">Small button deleting an episode download file</string>
     <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
     <string name="descr_card_playback_indicator">Indicator for playback progress</string>

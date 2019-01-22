@@ -232,16 +232,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // handle result of remove dialog
             Keys.DIALOG_REMOVE_PODCAST -> {
                 when (dialogResult) {
-                    // user tapped remove
-                    true -> collectionAdapter.remove(this@PodcastPlayerActivity, dialogPayloadInt)
+                    // user tapped remove podcast
+                    true -> collectionAdapter.removePodcast(this@PodcastPlayerActivity, dialogPayloadInt)
                     // user tapped cancel
                     false -> collectionAdapter.notifyItemChanged(dialogPayloadInt)
                 }
             }
             Keys.DIALOG_DELETE_EPISODE -> {
                 when (dialogResult) {
-                    // user tapped delete
-                    true -> deleteEpisode(dialogPayloadString)
+                    // user tapped delete episode
+                    true -> collectionAdapter.deleteEpisode(this@PodcastPlayerActivity, dialogPayloadString)
                 }
             }
         }
@@ -357,13 +357,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
-    }
-
-
-    /* Deletes an episode */
-    private fun deleteEpisode(mediaId: String) {
-        // todo implement
-        LogHelper.v(TAG, "Deleting: $mediaId") // todo remove
     }
 
 

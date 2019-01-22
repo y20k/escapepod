@@ -242,6 +242,19 @@ object CollectionHelper {
     }
 
 
+    /* Get the Id from collection for given media ID String */
+    fun getEpisodeId(collection: Collection, mediaId: String): Int {
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEachIndexed { episodeId, episode ->
+                if (episode.getMediaId() == mediaId) {
+                    return episodeId
+                }
+            }
+        }
+        return -1
+    }
+
+
     /* Sets the flag "manually downloaded" in Episode for given media ID String */
     fun setManuallyDownloaded(context: Context, collection: Collection, mediaId: String): Episode {
         collection.podcasts.forEach { podcast ->
