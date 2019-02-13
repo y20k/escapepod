@@ -58,6 +58,7 @@ object Keys {
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val PREF_CURRENT_MEDIA_ID: String = "CURRENT_MEDIA_ID"
     const val PREF_CURRENT_PLAYBACK_STATE: String = "CURRENT_PLAYBACK_STATE"
+    const val PREF_UP_NEXT_MEDIA_ID: String = "UP_NEXT_MEDIA_ID"
     const val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"
     const val PREF_DOWNLOAD_OVER_MOBILE: String = "DOWNLOAD_OVER_MOBILE"
     const val PREF_NUMBER_OF_EPISODES_TO_KEEP: String = "NUMBER_OF_EPISODES_TO_KEEP"
@@ -101,6 +102,7 @@ object Keys {
     const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2
     const val DIALOG_REMOVE_PODCAST: Int = 3
     const val DIALOG_DELETE_EPISODE: Int = 4
+    const val DIALOG_ADD_UP_NEXT: Int = 5
 
     // dialog results
     const val DIALOG_RESULT_DEFAULT: Int = -1

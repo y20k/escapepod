@@ -17,8 +17,9 @@
     <color name="player_background">@color/escapepods_grey_darker</color>
     <color name="player_sheet_text_main">@color/escapepods_white</color>
     <color name="player_sheet_background">@color/escapepods_grey_dark</color>
-    <color name="player_sheet_background_border">@color/escapepods_grey_darker</color>
+    <color name="player_sheet_background_border">@color/escapepods_grey_very_light</color>
     <color name="player_sheet_text_details">@color/escapepods_white</color>
+    <color name="player_sheet_up_next_background">@color/escapepods_grey</color>
     <color name="player_sheet_icon">@color/escapepods_white</color>
 
     <color name="list_card_background">@color/escapepods_white</color>

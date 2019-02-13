@@ -180,16 +180,37 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Overrides onPlayButtonTapped from CollectionAdapterListener */
     override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
-        playerState.episodeMediaId = mediaId
-        playerState.playbackState = playbackState
-        // setup ui
-        val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-        layout.updatePlayerViews(this, episode)
-        // start / pause playback (playbackState = state BEFORE tapping the button)
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
-            else -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
+        when (playerState.playbackState) {
+            // PLAYER STATE: PLAYING
+            PlaybackStateCompat.STATE_PLAYING -> {
+                when (mediaId) {
+                    // tapped episode currently in player
+                    playerState.episodeMediaId -> {
+                        // stop playback
+                        togglePlayback(false, mediaId, playbackState)
+                    }
+                    // tapped on episode already in the up next queue
+                    playerState.upNextEpisodeMediaId -> {
+                        // start playback
+                        togglePlayback(true, mediaId, playbackState)
+                        // clear up next
+                        updateUpNext()
+                    }
+                    else -> {
+                        // ask user: playback or add to Up Next
+                        val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
+                        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_ADD_UP_NEXT, R.string.dialog_yes_no_title_add_up_next, dialogMessage, R.string.dialog_yes_no_positive_button_add_up_next, R.string.dialog_yes_no_negative_button_add_up_next, mediaId)
+                    }
+                }
+            }
+            // PLAYER STATE: NOT PLAYING
+            else -> {
+                // start playback
+                togglePlayback(true, mediaId, playbackState)
+            }
+
         }
+
     }
 
 
@@ -244,6 +265,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     true -> collectionAdapter.deleteEpisode(this@PodcastPlayerActivity, dialogPayloadString)
                 }
             }
+            Keys.DIALOG_ADD_UP_NEXT -> {
+                val episode = CollectionHelper.getEpisode(collection, dialogPayloadString)
+                when (dialogResult) {
+                    // user tapped: start playback"
+                    true -> togglePlayback(true, episode.getMediaId(), episode.playbackState)
+                    // user tapped: add to up next
+                    false -> updateUpNext(episode)
+                }
+            }
+
         }
     }
 
@@ -314,8 +345,18 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         }
 
+        // bottom sheet clear button for Up Next queue
+        layout.sheetUpNextClearButton.setOnClickListener {
+            // clear up next
+            updateUpNext()
+            Toast.makeText(this, getString(R.string.toast_message_up_next_removed_episode), Toast.LENGTH_LONG).show()
+        }
+
+
         // register a callback to stay in sync
         mediaController.registerCallback(mediaControllerCallback)
+
+
     }
 
 
@@ -330,6 +371,30 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         }
     }
 
+
+    /* Starts / pauses playback */
+    private fun togglePlayback(startPlayback: Boolean, mediaId: String, playbackState: Int) {
+        playerState.episodeMediaId = mediaId
+        playerState.playbackState = playbackState // = current state BEFORE desired startPlayback action
+        // setup ui
+        val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+        layout.updatePlayerViews(this, episode)
+        // start / pause playback
+        when (startPlayback) {
+            true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
+            false -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        }
+    }
+
+
+    /* Updates the Up Next queue */
+    private fun updateUpNext(episode: Episode = Episode()) {
+        playerState.upNextEpisodeMediaId = episode.getMediaId()
+        layout.updateUpNextViews(episode)
+        if (episode.getMediaId().isNotEmpty()) {
+            Toast.makeText(this, getString(R.string.toast_message_up_next_added_episode), Toast.LENGTH_LONG).show()
+        }
+    }
 
 
     /* For debug purposes: create a string containing collection info */ // todo remove
@@ -483,6 +548,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // updates current episode in player views
             val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
             layout.updatePlayerViews(this,episode)
+
+            // updates the up next queue in player views
+            val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
+            layout.updateUpNextViews(upNextEpisode)
         })
     }
 

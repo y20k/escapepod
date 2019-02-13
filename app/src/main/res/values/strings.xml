@@ -41,15 +41,24 @@
     <string name="dialog_yes_no_title_delete_episode">Delete episode</string>
     <string name="dialog_yes_no_message_delete_episode">Do you want to delete this episode?</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
+    <string name="dialog_yes_no_title_add_up_next">Start Listening</string>
+    <string name="dialog_yes_no_message_add_up_next">Do you want to start listening to this episode right away?</string>
+    <string name="dialog_yes_no_positive_button_add_up_next">Start Now</string>
+    <string name="dialog_yes_no_negative_button_add_up_next">Add to Up Next</string>
     <string name="dialog_yes_no_title_default">Decide</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_positive_button_default">Yes</string>
     <string name="dialog_yes_no_negative_button_default">No</string>
 
+    <!-- Player -->
+    <string name="player_up_next_headline">Up Next:</string>
+
     <!-- Toasts -->
     <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
     <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
     <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
+    <string name="toast_message_up_next_added_episode">Added episode to Up Next.</string>
+    <string name="toast_message_up_next_removed_episode">Removed episode from Up Next.</string>
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
@@ -101,6 +110,8 @@
     <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
     <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
     <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
+    <string name="descr_expanded_player_up_next_clear_button">Clear the up next queue</string>
+    <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the up next queue</string>
 
     <!-- Sample Text -->
     <string name="sample_text_podcast_name" translatable="false">Security Now</string>
@@ -109,6 +120,7 @@
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
     <string name="sample_text_episode_0_remaining_time" translatable="false">-18:00</string>
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
+    <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
 
     <!-- Allowed caller template -->
     <string name="allowed_caller_log" translatable="false">

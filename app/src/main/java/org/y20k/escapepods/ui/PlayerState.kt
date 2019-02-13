@@ -29,6 +29,7 @@ import org.y20k.escapepods.Keys
 data class PlayerState (@Expose var episodeMediaId: String = String(),
                         @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
                         @Expose var playbackPosition: Long = 0,
+                        @Expose var upNextEpisodeMediaId: String = String(),
                         @Expose var bottomSheetState: Int = BottomSheetBehavior.STATE_HIDDEN,
                         @Expose var sleepTimerState: Int = Keys.STATE_SLEEP_TIMER_STOPPED): Parcelable {
 }

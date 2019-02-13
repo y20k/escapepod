@@ -33,6 +33,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Episode
+import org.y20k.escapepods.helpers.LogHelper
 import org.y20k.escapepods.helpers.UiHelper
 
 
@@ -41,10 +42,16 @@ import org.y20k.escapepods.helpers.UiHelper
  */
 data class LayoutHolder(var activity: Activity) {
 
+    /* Define log tag */
+    private val TAG: String = LogHelper.makeLogTag(LayoutHolder::class.java)
+
+
+    /* Main class variables */
     var swipeRefreshLayout: SwipeRefreshLayout
     var recyclerView: RecyclerView
     var bottomSheet: ConstraintLayout
     var playerViews: Group
+    var upNextViews: Group
     var coverView: ImageView
     var podcastNameView: TextView
     var episodeTitleView: TextView
@@ -53,9 +60,12 @@ data class LayoutHolder(var activity: Activity) {
     var sheetEpisodeTitleView: TextView
     var sheetPlayButtonView: ImageView
     var sheetSleepButtonView: ImageView
+    var sheetUpNextName: TextView
+    var sheetUpNextClearButton: ImageView
     var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
 
+    /* Init block */
     init {
         // find views
         activity.setContentView(R.layout.activity_podcast_player)
@@ -63,6 +73,7 @@ data class LayoutHolder(var activity: Activity) {
         recyclerView = activity.findViewById(R.id.recyclerview_list)
         bottomSheet = activity.findViewById(R.id.bottom_sheet)
         playerViews = activity.findViewById(R.id.player_views)
+        upNextViews = activity.findViewById(R.id.up_next_views)
         coverView = activity.findViewById(R.id.player_podcast_cover)
         podcastNameView = activity.findViewById(R.id.player_podcast_name)
         episodeTitleView = activity.findViewById(R.id.player_episode_title)
@@ -71,6 +82,8 @@ data class LayoutHolder(var activity: Activity) {
         sheetEpisodeTitleView = activity.findViewById(R.id.sheet_episode_title)
         sheetPlayButtonView = activity.findViewById(R.id.sheet_play_button)
         sheetSleepButtonView = activity.findViewById(R.id.sleep_timer_button)
+        sheetUpNextName = activity.findViewById(R.id.player_sheet_up_next_name)
+        sheetUpNextClearButton = activity.findViewById(R.id.player_sheet_up_next_clear_button)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
 
@@ -94,6 +107,26 @@ data class LayoutHolder(var activity: Activity) {
         sheetEpisodeTitleView.text = episode.title
     }
 
+
+    /* Updates the Up Next views */
+    fun updateUpNextViews(upNextEpisode: Episode) {
+        when (upNextEpisode.getMediaId().isNotEmpty()) {
+            true -> {
+                // show the up next queue if queue is not empty
+                upNextViews.visibility = View.GONE // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
+                upNextViews.visibility = View.VISIBLE
+                // update up next view
+                val upNextName = "${upNextEpisode.podcastName} - ${upNextEpisode.title}"
+                sheetUpNextName.text = upNextName
+            }
+            false -> {
+                // hide the up next queue if queue is empty
+                upNextViews.visibility = View.GONE // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
+                upNextViews.visibility = View.INVISIBLE
+
+            }
+        }
+    }
 
 
     /* Toggles play/pause buttons */

@@ -54,11 +54,11 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
 //    }
 //
 //
-//    /* Construct and show dialog */
-//    fun show(context: Context, dialogType: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel) {
-//        // variant of "show" that only accepts a string payload
-//        show(context, dialogType, yesNoTitleRessouce, yesNoMessageString, yesButtonRessouce, noButtonRessouce, Keys.DIALOG_EMPTY_PAYLOAD_INT, dialogPayloadString)
-//    }
+    /* Construct and show dialog */
+    fun show(context: Context, dialogType: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel, dialogPayloadString: String) {
+        // variant of "show" that only accepts a string payload
+        show(context, dialogType, yesNoTitleRessouce, yesNoMessageString, yesButtonRessouce, noButtonRessouce, Keys.DIALOG_EMPTY_PAYLOAD_INT, dialogPayloadString)
+    }
 
 
     /* Construct and show dialog */
