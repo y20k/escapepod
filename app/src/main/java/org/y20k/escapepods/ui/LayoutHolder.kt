@@ -69,8 +69,8 @@ data class LayoutHolder(var activity: Activity) {
     init {
         // find views
         activity.setContentView(R.layout.activity_podcast_player)
-        swipeRefreshLayout = activity.findViewById(R.id.layout_swipe_refresh)
-        recyclerView = activity.findViewById(R.id.recyclerview_list)
+        swipeRefreshLayout = activity.findViewById(R.id.swipe_refresh_layout)
+        recyclerView = activity.findViewById(R.id.podcast_list)
         bottomSheet = activity.findViewById(R.id.bottom_sheet)
         playerViews = activity.findViewById(R.id.player_views)
         upNextViews = activity.findViewById(R.id.up_next_views)

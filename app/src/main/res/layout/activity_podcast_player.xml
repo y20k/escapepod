@@ -10,14 +10,14 @@
 
     <!-- PODCAST LIST -->
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/layout_swipe_refresh"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="0dp">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_list"
+            android:id="@+id/podcast_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="visible" />
