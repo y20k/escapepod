@@ -181,8 +181,7 @@ object DownloadHelper {
     private fun addPodcast(context: Context, podcast: Podcast) {
         when (CollectionHelper.checkPodcastState(collection, podcast)) {
             Keys.PODCAST_STATE_NEW_PODCAST -> {
-                collection.podcasts.add(podcast)
-                collection.podcasts.sortBy { it.name }
+                collection = CollectionHelper.addPodcast(collection, podcast)
                 saveCollection(context, true)
                 enqueuePodcastMediaFiles(context, podcast, true)
             }

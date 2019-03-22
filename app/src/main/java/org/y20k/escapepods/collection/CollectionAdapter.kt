@@ -127,17 +127,16 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 // get reference to StationViewHolder
                 val podcastViewHolder: PodcastViewHolder = holder as PodcastViewHolder
 
-                // set up views
+                // set up podcast
                 setPodcastName(podcastViewHolder, podcast)
                 setPodcastImage(podcastViewHolder, podcast)
-                setEpisodeTitles(podcastViewHolder, podcast)
-                setEpisodeButtons(podcastViewHolder, podcast)
 
-                // set up episode list
-                val episodeListAdapter = EpisodeListAdapter(activity, podcast)
-                podcastViewHolder.olderEpisodesList.adapter = episodeListAdapter
-                podcastViewHolder.olderEpisodesList.setLayoutManager(LinearLayoutManager(activity))
-                podcastViewHolder.olderEpisodesList.setItemAnimator(DefaultItemAnimator())
+                // set up current episode
+                setEpisodeTitle(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
+                setEpisodeButtons(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
+
+                // set up older episodes list
+                setOlderEpisodesList(podcastViewHolder, podcast)
             }
         }
     }
@@ -145,25 +144,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Sets the podcast name view */
     private fun setPodcastName(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
-        podcastViewHolder.pocastNameView.setText(podcast.name)
-    }
-
-
-    /* Sets the episode title views */
-    private fun setEpisodeTitles(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
-        val episodeListSize = podcast.episodes.size
-
-        // episode 0
-        podcastViewHolder.currentEpisodeDateView.setText(podcast.episodes[0].getDateString(DateFormat.MEDIUM))
-        podcastViewHolder.currentEpisodeNameView.setText(podcast.episodes[0].title)
-
-        // episode 1
-        if (episodeListSize > 1) {
-//            podcastViewHolder.episode1DateView.setText(podcast.episodes[1].getDateString(DateFormat.MEDIUM))
-//            podcastViewHolder.episode1NameView.setText(podcast.episodes[1].title)
-        } else {
-            // todo hide episode 1 views
-        }
+        podcastViewHolder.podcastNameView.setText(podcast.name)
     }
 
 
@@ -180,31 +161,84 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     }
 
 
-    /* Sets the episode play, download and delete button views */
-    private fun setEpisodeButtons(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
-        val episodeListSize = podcast.episodes.size
+    /* Sets up an episode's title views */
+    private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
+        episodeViewHolder.episodeDateView.setText(episode.getDateString(DateFormat.MEDIUM))
+        episodeViewHolder.episodeTitleView.setText(episode.title)
+    }
 
-        // episode 0
-        val playbackState: Int = podcast.episodes[0].playbackState
+
+    /* Sets up an episode's play, download and delete button views */
+    private fun setEpisodeButtons(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
+        val playbackState: Int = episode.playbackState
         when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> podcastViewHolder.currentEpisodePlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
-            else -> podcastViewHolder.currentEpisodePlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
+            PlaybackStateCompat.STATE_PLAYING -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
+            else -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
         }
-        podcastViewHolder.currentEpisodeDownloadButtonView.setOnClickListener {
-            collectionAdapterListener.onDownloadButtonTapped(podcast.episodes[0])
+        episodeViewHolder.episodeDownloadButtonView.setOnClickListener {
+            collectionAdapterListener.onDownloadButtonTapped(episode)
         }
-        podcastViewHolder.currentEpisodePlayButtonView.setOnClickListener {
-            collectionAdapterListener.onPlayButtonTapped(podcast.episodes[0].getMediaId(), playbackState)
+        episodeViewHolder.episodePlayButtonView.setOnClickListener {
+            collectionAdapterListener.onPlayButtonTapped(episode.getMediaId(), playbackState)
         }
-        podcastViewHolder.currentEpisodeDeleteButtonView.setOnClickListener {
-            collectionAdapterListener.onDeleteButtonTapped(podcast.episodes[0])
+        episodeViewHolder.episodeDeleteButtonView.setOnClickListener {
+            collectionAdapterListener.onDeleteButtonTapped(episode)
         }
-        if (podcast.episodes[0].audio.isNotEmpty()) {
-            podcastViewHolder.currentEpisodeDownloadButtonView.visibility = View.GONE
-            podcastViewHolder.currentEpisodePlaybackViews.visibility = View.VISIBLE
+        if (episode.audio.isNotEmpty()) {
+            episodeViewHolder.episodeDownloadButtonView.visibility = View.GONE
+            episodeViewHolder.episodePlaybackViews.visibility = View.VISIBLE
         } else {
-            podcastViewHolder.currentEpisodeDownloadButtonView.visibility = View.VISIBLE
-            podcastViewHolder.currentEpisodePlaybackViews.visibility = View.GONE
+            episodeViewHolder.episodeDownloadButtonView.visibility = View.VISIBLE
+            episodeViewHolder.episodePlaybackViews.visibility = View.GONE
+        }
+    }
+
+
+    /* Fills the list of older episodes */
+    private fun setOlderEpisodesList(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+        if (podcast.episodes.size > 1) {
+            // set up episode list
+            val episodeListAdapter = EpisodeListAdapter(activity, podcast)
+            podcastViewHolder.olderEpisodesList.adapter = episodeListAdapter
+            podcastViewHolder.olderEpisodesList.setLayoutManager(LinearLayoutManager(activity))
+            podcastViewHolder.olderEpisodesList.setItemAnimator(DefaultItemAnimator())
+            // set up Older Episodes button
+            setOlderEpisodesButton(podcastViewHolder)
+            podcastViewHolder.olderEpisodesButtonView.setOnClickListener {
+                toggleEpisodeList(podcastViewHolder)
+            }
+        }
+    }
+
+
+    /* Shows / hides the episode list */
+    private fun toggleEpisodeList(podcastViewHolder: PodcastViewHolder) {
+        when (podcastViewHolder.olderEpisodesList.visibility) {
+            // CASE: older episode list is hidden -> show episode list
+            View.GONE -> {
+                podcastViewHolder.olderEpisodesList.visibility = View.VISIBLE
+            }
+            // CASE: older episode list is visible -> hide episode list
+            View.VISIBLE -> {
+                podcastViewHolder.olderEpisodesList.visibility = View.GONE
+            }
+        }
+        // update older episodes button text
+        setOlderEpisodesButton(podcastViewHolder)
+    }
+
+
+    /* Sets / updates the older episodes button text */
+    private fun setOlderEpisodesButton(podcastViewHolder: PodcastViewHolder) {
+        when (podcastViewHolder.olderEpisodesList.visibility) {
+            // CASE: older episode list is hidden -> set button to "show"
+            View.GONE -> {
+                podcastViewHolder.olderEpisodesButtonView.text = activity.getString(R.string.podcast_list_button_toggle_show_older_episodes)
+            }
+            // CASE: older episode list is visible -> set button to "hide"
+            View.VISIBLE -> {
+                podcastViewHolder.olderEpisodesButtonView.text = activity.getString(R.string.podcast_list_button_toggle_hide_older_episodes)
+            }
         }
     }
 
@@ -288,12 +322,6 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     }
 
 
-    /* Manipulates state of playback button */
-    private fun togglePlaybackButtonState(holder: PodcastViewHolder, podcast: Podcast) {
-        // todo implement
-    }
-
-
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
         collectionViewModel.collectionLiveData.observe(owner, Observer<Collection> { it ->
@@ -315,7 +343,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /*
      * Inner class: ViewHolder for the Add New Podcast action
      */
-    private inner class AddNewViewHolder (val listItemAddNewLayout: View) : RecyclerView.ViewHolder(listItemAddNewLayout) {
+    private inner class AddNewViewHolder (listItemAddNewLayout: View) : RecyclerView.ViewHolder(listItemAddNewLayout) {
         val addNewPodcastView: ConstraintLayout = listItemAddNewLayout.findViewById(R.id.card_add_new_podcast)
     }
     /*
@@ -326,17 +354,12 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /*
      * Inner class: ViewHolder for a podcast
      */
-    private inner class PodcastViewHolder (val podcastCardLayout: View) : RecyclerView.ViewHolder(podcastCardLayout) {
+    private inner class PodcastViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
         val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.player_podcast_cover)
-        val pocastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
-        val currentEpisodeDateView: TextView = podcastCardLayout.findViewById(R.id.episode_date)
-        val currentEpisodeNameView: TextView = podcastCardLayout.findViewById(R.id.episode_name)
-        val currentEpisodeDownloadButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_download_button)
-        val currentEpisodeDeleteButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_delete_button)
-        val currentEpisodePlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_play_button)
-        val currentEpisodePlaybackProgressView: ProgressBar = podcastCardLayout.findViewById(R.id.episode_playback_progress)
-        val currentEpisodePlaybackViews: Group = podcastCardLayout.findViewById(R.id.episode_playback_views)
-        val olderEpisodesList: RecyclerView = podcastCardLayout.findViewById(R.id.episode_list)
+        val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
+        val currentEpisodeViews: EpisodeViewHolder = EpisodeViewHolder(podcastCardLayout)
+        val olderEpisodesButtonView: TextView = podcastCardLayout.findViewById(R.id.older_episodes_toggle)
+        val olderEpisodesList: RecyclerView = podcastCardLayout.findViewById(R.id.older_episode_list)
     }
     /*
      * End of inner class
@@ -346,9 +369,9 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /*
      * Inner class: ViewHolder for an episode
      */
-    private inner class EpisodeViewHolder (val podcastCardLayout: View) : RecyclerView.ViewHolder(podcastCardLayout) {
+    private inner class EpisodeViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
         val episodeDateView: TextView = podcastCardLayout.findViewById(R.id.episode_date)
-        val episodeNameView: TextView = podcastCardLayout.findViewById(R.id.episode_name)
+        val episodeTitleView: TextView = podcastCardLayout.findViewById(R.id.episode_title)
         val episodeDownloadButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_download_button)
         val episodeDeleteButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_delete_button)
         val episodePlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_play_button)
@@ -360,7 +383,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
      */
 
     /*
-     * Inner class: ViewHolder for an episode
+     * Inner class: Adapter for an episode list
      */
     private inner class EpisodeListAdapter(val activity: Activity, val podcast: Podcast) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -380,12 +403,9 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val episode = podcast.episodes[position + 1] // only older episodes - leave out the current one
             val episodeViewHolder: EpisodeViewHolder = holder as EpisodeViewHolder
-            // todo implememt
-
-            // todo remove - just a test
-            episodeViewHolder.episodeDateView.text = episode.getDateString(DateFormat.MEDIUM)
-            episodeViewHolder.episodeNameView.text = episode.title
-
+            // set up episode
+            setEpisodeTitle(episodeViewHolder, episode)
+            setEpisodeButtons(episodeViewHolder, episode)
         }
     }
     /*

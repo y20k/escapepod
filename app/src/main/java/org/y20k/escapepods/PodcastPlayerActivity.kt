@@ -397,23 +397,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* For debug purposes: create a string containing collection info */ // todo remove
-    private fun createCollectionInfoString(): String {
-        var episodesTotal: Int = 0
-        collection.podcasts.forEach{
-            it.episodes.forEach{
-                if (it.audio.length > 0) {
-                    episodesTotal++
-                }
-            }
-        }
-        val stringBuilder: StringBuilder = StringBuilder()
-        stringBuilder.append("${collection.podcasts.size} podcasts & ")
-        stringBuilder.append("$episodesTotal episodes")
-        return stringBuilder.toString()
-    }
-
-
     /* Updates podcast collection */
     private fun updateCollection() {
         if (NetworkHelper.isConnectedToNetwork(this)) {
@@ -542,8 +525,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         collectionViewModel.collectionLiveData.observe(this, Observer<Collection> { it ->
             // update collection
             collection = it
-            // toast podcast count - just a test // todo remove
-            Toast.makeText(this, createCollectionInfoString(), Toast.LENGTH_LONG).show()
 
             // updates current episode in player views
             val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)

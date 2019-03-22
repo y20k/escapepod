@@ -84,13 +84,16 @@ object CollectionHelper {
 
 
     /* Adds new podcast to collection */
-    fun addPodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
-        var newPodcast: Podcast = podcast
-        // trim episode list
-        newPodcast = trimEpisodeList(context, newPodcast)
-        // add podcast
-        collection.podcasts.add(newPodcast)
-        return collection
+    fun addPodcast(collection: Collection, podcast: Podcast): Collection {
+        if (podcast.episodes.isNotEmpty()) {
+            // add podcast
+            collection.podcasts.add(podcast)
+            // return sorted collection
+            return sortCollectionByDate(collection)
+        } else {
+            // nothing to do: return collection
+            return collection
+        }
     }
 
 
@@ -119,7 +122,8 @@ object CollectionHelper {
         }
         // replace podcast
         collection.podcasts.set(getPodcastId(collection, newPodcast), newPodcast)
-        return collection
+        // return sorted collection
+        return sortCollectionByDate(collection)
     }
 
 
@@ -371,6 +375,14 @@ object CollectionHelper {
         val episodesTrimmed: MutableList<Episode> = podcast.episodes.subList(0, numberOfEpisodesToKeep)
         podcast.episodes = episodesTrimmed
         return podcast
+    }
+
+
+    /* Sorts the collection: The podcast with the freshest episode first */
+    private fun sortCollectionByDate(collection: Collection): Collection {
+        // episode[0] is always the newest - episodes get sorted in RssHelper.readSuspended
+        collection.podcasts.sortByDescending { it.episodes[0].publicationDate }
+        return collection
     }
 
 

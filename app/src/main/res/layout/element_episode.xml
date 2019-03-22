@@ -38,7 +38,7 @@
         tools:text="@string/sample_text_episode_0_date" />
 
     <TextView
-        android:id="@+id/episode_name"
+        android:id="@+id/episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"

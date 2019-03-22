@@ -57,8 +57,8 @@
     <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
     <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
     <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
-    <string name="toast_message_up_next_added_episode">Added episode to Up Next.</string>
-    <string name="toast_message_up_next_removed_episode">Removed episode from Up Next.</string>
+    <string name="toast_message_up_next_added_episode">Added episode to Up Next queue.</string>
+    <string name="toast_message_up_next_removed_episode">Removed episode from Up Next queue.</string>
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
@@ -71,7 +71,8 @@
     <string name="toast_message_error_missing_storage_permission">Permission "Storage" is needed in order to open this file.</string>
 
     <!-- Podcast List -->
-    <string name="podcast_list_button_toggle_show_older_episodes">Older Episodes</string>
+    <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
+    <string name="podcast_list_button_toggle_hide_older_episodes">Hide older episodes</string>
     <string name="podcast_list_button_add_new_podcast">Add new podcast</string>
 
     <!-- Notification -->
@@ -110,8 +111,8 @@
     <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
     <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
     <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
-    <string name="descr_expanded_player_up_next_clear_button">Clear the up next queue</string>
-    <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the up next queue</string>
+    <string name="descr_expanded_player_up_next_clear_button">Clear the Up Next queue</string>
+    <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the Up Next queue</string>
 
     <!-- Sample Text -->
     <string name="sample_text_podcast_name" translatable="false">Security Now</string>
