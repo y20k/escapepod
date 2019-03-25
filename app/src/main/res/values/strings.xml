@@ -35,6 +35,9 @@
     <string name="dialog_error_message_no_network">Your device has no network connection.</string>
     <string name="dialog_error_title_default">Error</string>
     <string name="dialog_error_message_default">An error occurred</string>
+    <string name="dialog_yes_no_title_update_collection">Update podcasts</string>
+    <string name="dialog_yes_no_message_update_collection">Do you want to check, if there are new episodes available?</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Update</string>
     <string name="dialog_yes_no_title_remove_podcast">Remove podcast</string>
     <string name="dialog_yes_no_message_remove_podcast">Do you want to remove this podcast?</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
@@ -123,7 +126,7 @@
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
     <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
 
-    <!-- Allowed caller template -->
+    <!-- Allowed Caller Template -->
     <string name="allowed_caller_log" translatable="false">
         Caller has a valid certificate, but its package doesn\'t match any expected package for the
         given certificate. To allow this caller, add the following to the allowed callers list:\n

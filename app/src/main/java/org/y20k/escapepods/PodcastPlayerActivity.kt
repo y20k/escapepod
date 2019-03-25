@@ -250,6 +250,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayloadInt: Int, dialogPayloadString: String) {
         super.onYesNoDialog(dialogType, dialogResult, dialogPayloadInt, dialogPayloadString)
         when (dialogType) {
+            Keys.DIALOG_UPDATE_COLLECTION -> {
+                when (dialogResult) {
+                    true -> {
+                        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
+                            updateCollection()
+                        } else {
+                            Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
             // handle result of remove dialog
             Keys.DIALOG_REMOVE_PODCAST -> {
                 when (dialogResult) {
@@ -298,12 +309,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // enable for swipe to refresh
         layout.swipeRefreshLayout.setOnRefreshListener {
-            // update podcast collection and observe download work
-            if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
-                updateCollection()
-            } else {
-                Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
-            }
+            // ask user to confirm update
+            YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_UPDATE_COLLECTION, R.string.dialog_yes_no_title_update_collection, R.string.dialog_yes_no_message_update_collection, R.string.dialog_yes_no_positive_button_update_collection)
             layout.swipeRefreshLayout.isRefreshing = false
         }
 

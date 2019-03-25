@@ -98,7 +98,7 @@ object Keys {
     const val HOLDER_UPDATE_DOWNLOAD_STATE: Int = 3
 
     // dialog types
-    const val DIALOG_UPDATE_WITHOUT_WIFI: Int = 1
+    const val DIALOG_UPDATE_COLLECTION: Int = 1
     const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2
     const val DIALOG_REMOVE_PODCAST: Int = 3
     const val DIALOG_DELETE_EPISODE: Int = 4
