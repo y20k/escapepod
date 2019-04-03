@@ -233,7 +233,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         when (dialogType) {
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
                 Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
-                DownloadHelper.downloadEpisode(this, payload, true)
+                DownloadHelper.downloadEpisode(this, payload, true, true)
             }
         }
     }
@@ -419,7 +419,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private fun downloadEpisode(episode: Episode) {
         if (NetworkHelper.isConnectedToWifi(this)) {
             Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
-            DownloadHelper.downloadEpisode(this, episode.getMediaId(), true)
+            DownloadHelper.downloadEpisode(this, episode.getMediaId(), true, true)
         } else if (NetworkHelper.isConnectedToCellular(this)) {
             MeteredNetworkDialog(this).show(this, Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, R.string.dialog_metered_download_episode_title, R.string.dialog_metered_download_episode_message, R.string.dialog_metered_download_episode_button_okay, episode.getMediaId())
         } else {

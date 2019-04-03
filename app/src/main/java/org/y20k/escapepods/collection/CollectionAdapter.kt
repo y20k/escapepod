@@ -311,8 +311,10 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /* Deletes an episode download from collection */
     fun deleteEpisode(context: Context, mediaID: String) {
         LogHelper.v(TAG, "Deleting episode: $mediaID")
-        // todo implement
-        // 1. delete reference, 2. delete file, 3. reset manually downloaded state
+        // delete episode and update collection
+        collection = CollectionHelper.deleteEpisodeFile(context, collection, mediaID)
+        // save collection and broadcast changes
+        CollectionHelper.saveCollection(context, collection)
     }
 
 

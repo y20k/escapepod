@@ -58,9 +58,13 @@ object DownloadHelper {
 
 
     /* Download an episode */
-    fun downloadEpisode(context: Context, mediaId: String, ignoreWifiRestriction: Boolean) {
+    fun downloadEpisode(context: Context, mediaId: String, ignoreWifiRestriction: Boolean, manuallyDownloaded: Boolean = false) {
         // initialize main class variables, if necessary
         initialize(context)
+        // set manually downloaded state, if necessary
+        if (manuallyDownloaded) {
+            CollectionHelper.setManuallyDownloaded(context, collection, mediaId, true)
+        }
         // enqueue episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
         val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
@@ -219,9 +223,7 @@ object DownloadHelper {
             }
         }
         // remove unused audio references from collection
-        collection = CollectionHelper.removeUnusedAudioReferences(context, collection)
-        // clear audio folder
-        CollectionHelper.clearAudioFolder(context, collection)
+        collection = CollectionHelper.cleanup(context, collection)
         // save collection
         saveCollection(context)
     }
