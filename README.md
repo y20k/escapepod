@@ -1,5 +1,5 @@
 # Escapepods
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/escapepods-app-icon-current.png" width="300" />
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/escapepods-app-icon-current.png" width="192" />
 
 Free and Open Podcast Player #experiment #learningkotlin
 
@@ -16,8 +16,8 @@ Free and Open Podcast Player #experiment #learningkotlin
 * OPML import and auto-export
 * that's all folks
 
-## Blueprint
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/escapepod-drawing-01.png" width="300" />
 
-## Early User Interface Ideas (October 2018)
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/early-ui-screenshot-2018-10-18.png" width="300" />
+
+## User Interface (May 2019)
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-001-2019-05.png" width="300" />
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-002-2019-05.png" width="300" />

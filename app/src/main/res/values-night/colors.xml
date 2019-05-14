@@ -13,7 +13,7 @@
     <color name="icon_lightweight">@color/escapepods_grey_very_light</color>
     <color name="icon_very_lightweight">@color/escapepods_grey_lighter</color>
 
-    <color name="player_button_background">@color/escapepods_blue</color>
+    <color name="player_button_background">@color/escapepods_red</color>
     <color name="player_background">@color/escapepods_grey_dark</color>
     <color name="player_sheet_text_main">@color/escapepods_white</color>
     <color name="player_sheet_background">@color/escapepods_grey_darker</color>
