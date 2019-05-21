@@ -5,7 +5,7 @@
     xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="108pt" height="108pt"
     viewBox="0 0 38.100001 38.1" version="1.1" id="svg8" inkscape:version="0.92.2 5c3e80d, 2017-08-06"
-    sodipodi:docname="escapepods-app-icon-variant.svg" inkscape:export-filename="/Users/solaris/Desktop/escapepods/assets/escapepods-app-icon-current-background.png"
+    sodipodi:docname="escapepods-app-icon-current.svg" inkscape:export-filename="/Users/solaris/Desktop/escapepods/assets/escapepods-app-icon-current-foreground.png"
     inkscape:export-xdpi="600" inkscape:export-ydpi="600">
   <defs
      id="defs2">
@@ -275,18 +275,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3"
-     inkscape:cx="52.3809"
-     inkscape:cy="72.467213"
+     inkscape:zoom="4"
+     inkscape:cx="-52.253348"
+     inkscape:cy="106.04746"
      inkscape:document-units="pt"
-     inkscape:current-layer="g916"
+     inkscape:current-layer="g907"
      showgrid="false"
      units="pt"
      inkscape:snap-object-midpoints="true"
      inkscape:window-width="2408"
      inkscape:window-height="1260"
-     inkscape:window-x="209"
-     inkscape:window-y="124"
+     inkscape:window-x="113"
+     inkscape:window-y="62"
      inkscape:window-maximized="0"
      inkscape:snap-global="false"
      showguides="true"
@@ -334,12 +334,51 @@
        style="display:inline;opacity:0.12999998;fill:#3c4043;fill-opacity:1;stroke:none;stroke-width:0.28937912;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.07843137" />
   </g>
   <g
+     style="display:none"
+     inkscape:label="Background copy"
+     id="g891"
+     inkscape:groupmode="layer">
+    <rect
+       inkscape:label="Red Square Main"
+       y="-8.944092e-07"
+       x="-1.7888184e-06"
+       height="38.100002"
+       width="38.100002"
+       id="rect887"
+       style="display:inline;opacity:1;fill:#dc3d33;fill-opacity:1;stroke:none;stroke-width:0.40924388;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.07843137" />
+    <rect
+       inkscape:label="-1"
+       y="-1.7888184e-06"
+       x="28.575001"
+       height="38.100002"
+       width="9.5250006"
+       id="rect897"
+       style="display:inline;opacity:1;fill:#d93025;fill-opacity:1;stroke-width:0.35429981" />
+    <rect
+       style="display:inline;opacity:1;fill:#de4b41;fill-opacity:1;stroke-width:0.35429981"
+       id="rect893"
+       width="9.5250006"
+       height="38.100002"
+       x="9.5250006"
+       y="-1.7888184e-06"
+       inkscape:label="+1" />
+    <rect
+       inkscape:label="+2"
+       y="-2.2595295e-14"
+       x="-9.5250006"
+       height="38.100002"
+       width="9.5250006"
+       id="rect895"
+       style="display:inline;opacity:1;fill:#e15950;fill-opacity:1;stroke-width:0.35429981"
+       transform="scale(-1,1)" />
+  </g>
+  <g
      inkscape:groupmode="layer"
      id="g907"
-     inkscape:label="Background Red Stripes"
-     style="display:none">
+     inkscape:label="Background copy copy"
+     style="display:inline">
     <rect
-       style="display:none;opacity:1;fill:#dc3d33;fill-opacity:1;stroke:none;stroke-width:0.40924388;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.07843137"
+       style="display:inline;opacity:1;fill:#dc3d33;fill-opacity:1;stroke:none;stroke-width:0.40924388;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.07843137"
        id="rect899"
        width="38.100002"
        height="38.100002"
@@ -347,119 +386,30 @@
        y="-8.944092e-07"
        inkscape:label="Red Square Main" />
     <rect
-       transform="scale(-1,1)"
-       style="display:inline;opacity:1;fill:#ad261e;fill-opacity:1;stroke-width:0.39758363"
-       id="rect905"
-       width="11.994445"
-       height="38.100002"
-       x="-38.100002"
-       y="1.7888184e-06"
-       inkscape:label="-4" />
-    <rect
-       style="display:inline;opacity:1;fill:#ca2d23;fill-opacity:1;stroke-width:0.30493271"
+       style="display:inline;opacity:1;fill:#d93025;fill-opacity:1;stroke-width:0.35429981"
        id="rect901"
-       width="7.0555558"
+       width="9.5250006"
        height="38.100002"
-       x="19.050001"
+       x="28.575001"
        y="-1.7888184e-06"
-       inkscape:label="-2" />
-    <rect
-       inkscape:label="0"
-       y="-2.2595295e-14"
-       x="11.994445"
-       height="38.100002"
-       width="7.0555558"
-       id="rect928"
-       style="display:inline;opacity:1;fill:#dc3d33;fill-opacity:1;stroke-width:0.30493271" />
+       inkscape:label="-1" />
     <rect
        inkscape:label="+2"
        y="-1.7888184e-06"
-       x="0"
+       x="9.5250006"
        height="38.100002"
-       width="11.994445"
+       width="9.5250006"
        id="rect903"
-       style="display:inline;opacity:1;fill:#e15950;fill-opacity:1;stroke-width:0.39758363" />
-  </g>
-  <g
-     style="display:none"
-     inkscape:label="Background Red Stripes large"
-     id="g906"
-     inkscape:groupmode="layer">
+       style="display:inline;opacity:1;fill:#e15950;fill-opacity:1;stroke-width:0.35429981" />
     <rect
-       inkscape:label="-4"
-       y="-11.288891"
-       x="-48.683334"
-       height="60.67778"
-       width="22.577778"
-       id="rect898"
-       style="display:inline;opacity:1;fill:#ad261e;fill-opacity:1;stroke-width:0.68838489"
-       transform="scale(-1,1)" />
-    <rect
-       inkscape:label="-2"
-       y="-11.288891"
-       x="19.050001"
-       height="60.67778"
-       width="7.0555558"
-       id="rect900"
-       style="display:inline;opacity:1;fill:#ca2d23;fill-opacity:1;stroke-width:0.38481885" />
-    <rect
-       style="display:inline;opacity:1;fill:#dc3d33;fill-opacity:1;stroke-width:0.38481885"
-       id="rect902"
-       width="7.0555558"
-       height="60.67778"
-       x="11.994445"
-       y="-11.288891"
-       inkscape:label="0" />
-    <rect
-       style="display:inline;opacity:1;fill:#e15950;fill-opacity:1;stroke-width:0.68838489"
-       id="rect904"
-       width="22.577778"
-       height="60.67778"
-       x="-10.583333"
-       y="-11.288891"
-       inkscape:label="+2" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="g916"
-     inkscape:label="Background Red Stripes 45"
-     style="display:inline">
-    <rect
-       inkscape:label="-4"
-       y="-3.3981218"
-       x="-29.633333"
-       height="60.67778"
-       width="22.577778"
-       id="rect914"
-       style="display:inline;opacity:1;fill:#ad261e;fill-opacity:1;stroke-width:0.68838489"
-       transform="rotate(-45)" />
-    <rect
-       inkscape:label="-2"
-       y="-3.3981218"
-       x="-7.0555549"
-       height="60.67778"
-       width="7.0555558"
-       id="rect912"
-       style="display:inline;opacity:1;fill:#ca2d23;fill-opacity:1;stroke-width:0.38481885"
-       transform="rotate(-45)" />
-    <rect
-       style="display:inline;opacity:1;fill:#dc3d33;fill-opacity:1;stroke-width:0.38481885"
-       id="rect910"
-       width="7.0555558"
-       height="60.67778"
-       x="1.4883615e-06"
-       y="-3.3981218"
-       inkscape:label="0"
-       transform="rotate(-45)" />
-    <rect
-       transform="matrix(-0.70710678,0.70710678,0.70710678,0.70710678,0,0)"
-       style="display:inline;opacity:1;fill:#e15950;fill-opacity:1;stroke-width:0.68838489"
-       id="rect908"
-       width="22.577778"
-       height="60.67778"
-       x="-29.633335"
-       y="-3.3981218"
-       inkscape:label="+2" />
+       transform="scale(-1,1)"
+       style="display:inline;opacity:1;fill:#e6746d;fill-opacity:1;stroke-width:0.35429981"
+       id="rect905"
+       width="9.5250006"
+       height="38.100002"
+       x="-9.5250006"
+       y="-2.2595295e-14"
+       inkscape:label="+4" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -479,9 +429,9 @@
      inkscape:label="Drop Shaddow"
      style="display:none">
     <path
-       style="display:inline;opacity:1;fill:#5f6368;fill-opacity:0.33333333;stroke-width:2.65401578;filter:url(#filter5414)"
+       style="display:none;opacity:1;fill:#5f6368;fill-opacity:0.33333333;stroke-width:2.65401578;filter:url(#filter5414)"
        d="m 64.037109,38.714844 v 7.511718 7.509766 7.511719 0.09766 l -6.25,13.269531 0.01563,0.05273 c -0.0017,-0.0033 -0.03125,-0.06055 -0.03125,-0.06055 l -19.105473,9.00391 21.673828,21.673832 9.003906,-19.103519 c 0,0 -0.177429,-0.0931 -0.220703,-0.115235 l 0.21875,0.06445 L 82.800781,80 c 3e-6,0.0039 0,0.0078 0,0.01172 H 90.3125 c 0,-0.0026 10e-7,-0.0052 0,-0.0078 l 7.509766,0.0039 c 0,0.0013 0,0.0026 0,0.0039 h 7.511714 c 0,-0.712441 -0.019,-1.421391 -0.0547,-2.125 -0.46403,-9.146377 -3.90794,-17.509637 -9.378909,-24.138672 0,0 0,-0.002 0,-0.002 C 88.324414,44.56717 76.860987,38.714844 64.037109,38.714844 Z"
-       transform="matrix(0.21862149,0,0,0.2145655,3.3092531,3.6012846)"
+       transform="scale(0.26458334)"
        id="path845"
        inkscape:connector-curvature="0"
        inkscape:label="Drop Shaddow" />
@@ -490,35 +440,35 @@
      inkscape:label="RSS with thruster"
      id="g5089"
      inkscape:groupmode="layer"
-     style="display:none">
+     style="display:inline">
     <path
        inkscape:label="Background"
        inkscape:connector-curvature="0"
-       d="m 17.309083,11.908268 v 4.855481 l -1.366416,2.847367 0.591672,1.907823 1.934626,0.562842 2.942497,-1.315472 4.925921,0.0027 c 0,-4.891686 -4.044166,-8.86078 -9.0283,-8.86078 z"
+       d="m 16.943082,10.243458 v 5.987352 l -1.653684,3.511123 0.716062,2.35256 2.341351,0.694047 3.561112,-1.622124 5.961522,0.0033 c 0,-6.031998 -4.894391,-10.926336 -10.926363,-10.926336 z"
        id="path5081"
-       style="display:none;opacity:0.33500001;fill:#5f6368;fill-opacity:1;stroke:none;stroke-width:0.17638889;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.40687681"
+       style="display:none;opacity:0.33500001;fill:#5f6368;fill-opacity:1;stroke-width:0.70220834"
        sodipodi:nodetypes="ccccccccc" />
     <path
        sodipodi:nodetypes="cscccc"
        inkscape:connector-curvature="0"
        id="path5083"
-       d="m 15.93919,19.609461 c 0,0 0.563547,1.090946 0.997296,1.515841 0.429964,0.421174 1.53287,0.967386 1.53287,0.967386 l -1.968425,4.099083 -4.738313,-4.650403 z"
-       style="fill:#ffffff;stroke:none;stroke-width:0.17638889;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.40687681"
+       d="m 15.285189,19.739892 c 0,0 0.682025,1.345259 1.206963,1.869203 0.520357,0.519354 1.855132,1.192895 1.855132,1.192895 l -2.382256,5.05463 -5.734472,-5.734469 z"
+       style="fill:#ffffff;stroke-width:0.21188779"
        inkscape:label="Thruster" />
     <path
-       style="display:inline;fill:#ffffff;stroke:none;stroke-width:0.17638889;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.40687681"
+       style="display:inline;fill:#ffffff;stroke-width:0.70220834"
        id="path5085"
-       d="m 17.309083,11.908268 v 1.611556 c 4.07898,0 7.386265,3.245935 7.386265,7.249225 h 1.642035 c 0,-4.891688 -4.044166,-8.860781 -9.0283,-8.860781 z m 0,3.223115 v 1.611556 c 2.262877,0 4.10219,1.805208 4.10219,4.02611 h 1.642038 c 0,-3.114933 -2.570397,-5.637666 -5.744228,-5.637666 z"
+       d="m 16.943082,10.243458 v 1.987229 c 4.936523,0 8.939115,4.002602 8.939115,8.939108 h 1.987248 c 0,-6.032 -4.894391,-10.926337 -10.926363,-10.926337 z m 0,3.974462 v 1.987229 c 2.738612,0 4.964613,2.226024 4.964613,4.964646 h 1.987251 c 0,-3.841062 -3.110783,-6.951875 -6.951864,-6.951875 z"
        inkscape:connector-curvature="0"
        inkscape:label="RSS symbol upper" />
     <ellipse
        inkscape:label="RSS symbol dot"
-       style="display:inline;fill:#ffffff;stroke:none;stroke-width:0.17638889;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.40687681"
+       style="display:inline;fill:#ffffff;stroke-width:0.70220834"
        id="ellipse5087"
-       cy="19.527649"
-       cx="18.57399"
-       rx="1.2648908"
-       ry="1.2414227" />
+       cy="19.639008"
+       cx="18.473917"
+       rx="1.5308149"
+       ry="1.5308135" />
   </g>
   <g
      inkscape:groupmode="layer"

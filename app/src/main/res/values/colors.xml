@@ -38,7 +38,9 @@
     <color name="escapepods_grey_darker">#FF17181A</color>
 
     <color name="escapepods_red">#FFDC3D33</color>              <!-- Slightly muted variant of -> Material Design 2: Red 600 -->
-    <color name="escapepods_red_dark">#FFC83D35</color>
+    <color name="escapepods_red_light">#FFE15950</color>
+    <color name="escapepods_red_dark">#FFCA2D23</color>
+    <color name="escapepods_red_darker">#FFAD261E</color>
 
     <color name="escapepods_black">#FF000000</color>
     <color name="escapepods_white">#FFFFFFFF</color>
