@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
@@ -38,7 +39,11 @@ import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
 import org.y20k.escapepods.collection.CollectionProvider
@@ -205,6 +210,18 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     }
 
 
+    /* prepares player with given media source */
+    private fun preparePlayer() { // todo make accept media source
+        // create DataSource.Factory - produces DataSource instances through which media data is loaded
+        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(this, userAgent)
+        // create MediaSource
+        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(Uri.parse(episode.audio))
+        // prepare player with source.
+        player.prepare(mediaSource);
+    }
+
+
+
     /* Starts playback */
     private fun startPlayback() {
         if (episode.audio.isNotBlank()) {
@@ -212,6 +229,9 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_PLAYING)
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING,0))
             mediaSession.setActive(true)
+
+            preparePlayer();
+            player.setPlayWhenReady(true)
         }
     }
 
@@ -295,7 +315,8 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             Keys.MEDIA_ID_ROOT -> {
                 // mediaItems
                 for (track in collectionProvider.getAllEpisodes()) {
-                    val item = MediaBrowserCompat.MediaItem(track.getDescription(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+                    LogHelper.e(TAG, "${track.description.description} // ${track.description.mediaId}")
+                    val item = MediaBrowserCompat.MediaItem(track.description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
                     mediaItems.add(item)
                 }
             }
@@ -343,7 +364,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     /*
      * Wrap a SimpleExoPlayer with a decorator to handle audio focus
      */
-    private val exoPlayer: ExoPlayer by lazy {
+    private val player: ExoPlayer by lazy {
         val audioAttributes = AudioAttributesCompat.Builder()
                 .setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributesCompat.USAGE_MEDIA)
@@ -351,7 +372,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         AudioFocusExoPlayerDecorator(audioAttributes,
                 audioManager,
-                ExoPlayerFactory.newSimpleInstance(
+                ExoPlayerFactory.newSimpleInstance(this,
                         DefaultRenderersFactory(this),
                         DefaultTrackSelector(),
                         DefaultLoadControl()))
