@@ -121,6 +121,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
     /* Overrides onStartCommand */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
         MediaButtonReceiver.handleIntent(mediaSession, intent)
         return Service.START_STICKY
 //        return super.onStartCommand(intent, flags, startId)
@@ -152,7 +153,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
 
     /* Overrides onGetRoot */
-    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): MediaBrowserServiceCompat.BrowserRoot {
+    override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
         // Credit: https://github.com/googlesamples/android-UniversalMusicPlayer (->  MusicService)
         // LogHelper.d(TAG, "OnGetRoot: clientPackageName=$clientPackageName; clientUid=$clientUid ; rootHints=$rootHints")
         // to ensure you are not allowing any arbitrary app to browse your app's contents, you need to check the origin:
@@ -161,9 +162,9 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             LogHelper.i(TAG, "OnGetRoot: Browsing NOT ALLOWED for unknown caller. "
                     + "Returning empty browser root so all apps can use MediaController."
                     + clientPackageName)
-            return MediaBrowserServiceCompat.BrowserRoot(Keys.MEDIA_ID_EMPTY_ROOT, null)
+            return BrowserRoot(Keys.MEDIA_ID_EMPTY_ROOT, null)
         } else {
-            return MediaBrowserServiceCompat.BrowserRoot(Keys.MEDIA_ID_ROOT, null)
+            return BrowserRoot(Keys.MEDIA_ID_ROOT, null)
         }
     }
 
