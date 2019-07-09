@@ -102,7 +102,7 @@
         android:contentDescription="@string/descr_card_playback_indicator"
         android:indeterminateOnly="false"
         android:max="12"
-        android:progress="9"
+        android:progress="12"
         android:progressDrawable="@drawable/circular_progressbar"
         android:rotation="270"
         android:scaleY="-1"

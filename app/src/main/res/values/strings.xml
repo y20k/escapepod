@@ -109,7 +109,7 @@
     <string name="descr_expanded_player_previous_chapter_button">Previous chapter button</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter button</string>
     <string name="descr_expanded_player_time_played">Time played in current episode</string>
-    <string name="descr_expanded_player_time_remaining">Time remaining in current episode</string>
+    <string name="descr_expanded_episode_length">Time remaining in current episode</string>
     <string name="descr_expanded_player_seekbar">Episode playback progress bar with drag handle</string>
     <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
     <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
@@ -122,7 +122,7 @@
     <string name="sample_text_episode_0_name" translatable="false">As the Worm Turns</string>
     <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
-    <string name="sample_text_episode_0_remaining_time" translatable="false">-18:00</string>
+    <string name="sample_text_episode_0_length" translatable="false">-18:00</string>
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
     <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
 

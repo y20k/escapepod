@@ -76,7 +76,7 @@ object CollectionHelper {
     fun isNewerCollectionAvailable(context: Context, lastUpdate: Date): Boolean {
         var newerCollectionAvailable = false
         val lastSavedUpdateString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_LAST_UPDATE_COLLECTION, Keys.DEFAULT_RFC2822_DATE)!!
-        val lastSavedUpdate: Date = DateHelper.convertFromRfc2822(lastSavedUpdateString)
+        val lastSavedUpdate: Date = DateTimeHelper.convertFromRfc2822(lastSavedUpdateString)
         if (lastSavedUpdate.after(lastUpdate) || lastSavedUpdateString.equals(Keys.DEFAULT_RFC2822_DATE)) {
             newerCollectionAvailable = true
         }
@@ -373,7 +373,7 @@ object CollectionHelper {
     /* Sends a broadcast containing the collction as parcel */
     private fun sendCollectionBroadcast(context: Context, lastUpdate: Date) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
-        val lastUpdateString: String = DateHelper.convertToRfc2822(lastUpdate)
+        val lastUpdateString: String = DateTimeHelper.convertToRfc2822(lastUpdate)
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
         collectionChangedIntent.putExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION, lastUpdateString)

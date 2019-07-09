@@ -54,6 +54,10 @@ object Keys {
     const val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"
     const val EXTRA_DOWNLOAD_PROGRESS: String  = "DOWNLOAD_PROGRESS"
 
+    // custom MediaController commands
+    const val CMD_REQUEST_CURRENT_MEDIA_ID: String = "REQUEST_CURRENT_MEDIA_ID"
+
+
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val PREF_CURRENT_MEDIA_ID: String = "CURRENT_MEDIA_ID"

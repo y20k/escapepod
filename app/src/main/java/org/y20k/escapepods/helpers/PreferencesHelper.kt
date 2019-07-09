@@ -81,7 +81,7 @@ object PreferencesHelper {
     fun loadLastUpdateCollection(context: Context): Date {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val lastUpdateString: String = settings.getString(Keys.PREF_LAST_UPDATE_COLLECTION, "") ?: String()
-        return DateHelper.convertFromRfc2822(lastUpdateString)
+        return DateTimeHelper.convertFromRfc2822(lastUpdateString)
     }
 
 
@@ -89,7 +89,7 @@ object PreferencesHelper {
     fun saveLastUpdateCollection(context: Context, lastUpdate: Date = Calendar.getInstance().time) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
-        editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateHelper.convertToRfc2822(lastUpdate))
+        editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateTimeHelper.convertToRfc2822(lastUpdate))
         editor.apply()
     }
 

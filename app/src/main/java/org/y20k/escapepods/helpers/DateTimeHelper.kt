@@ -1,7 +1,7 @@
 /*
- * DateHelper.kt
- * Implements the DateHelper object
- * A DateHelper provides helper methods for converting Date and Time objects
+ * DateTimeHelper.kt
+ * Implements the DateTimeHelper object
+ * A DateTimeHelper provides helper methods for converting Date and Time objects
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
@@ -19,9 +19,9 @@ import java.util.*
 
 
 /*
- * DateHelper object
+ * DateTimeHelper object
  */
-object DateHelper {
+object DateTimeHelper {
 
 
     /* Main class variables */
@@ -44,6 +44,14 @@ object DateHelper {
     fun convertToRfc2822(date: Date): String {
         val dateFormat: SimpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
         return dateFormat.format(date)
+    }
+
+
+    /* Converts a milliseconds in to a readable format */
+    fun convertToMinutesAndSeconds(milliseconds: Long): String {
+        val minutes: Long = milliseconds / 1000 / 60
+        val seconds: Long = milliseconds / 1000 % 60
+        return ("$minutes : $seconds")
     }
 
 }

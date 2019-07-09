@@ -22,6 +22,8 @@ import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.ResultReceiver
 import android.os.Vibrator
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -608,7 +610,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private var mediaControllerCallback = object : MediaControllerCompat.Callback() {
 
         override fun onSessionReady() {
-            super.onSessionReady()
+            LogHelper.d(TAG, "Session ready. Update UI.")
         }
 
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -620,6 +622,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             playerState.playbackState = playbackState.state
             layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
             layout.togglePlayerVisibility(this@PodcastPlayerActivity, playbackState.state)
+            layout.toggleProgressListener(this@PodcastPlayerActivity, playbackState.state)
+
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_CURRENT_MEDIA_ID, null, resultReceiver)
+            // layout.updateProgressbar(this@PodcastPlayerActivity, episode)
         }
 
         override fun onSessionDestroyed() {
@@ -630,5 +636,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /*
      * End of callback
      */
+
+
+
+    var resultReceiver: ResultReceiver = object: ResultReceiver(Handler()) {
+        override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+            super.onReceiveResult(resultCode, resultData)
+        }
+    }
+
 
 }

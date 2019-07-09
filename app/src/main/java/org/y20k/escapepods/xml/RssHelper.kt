@@ -22,7 +22,7 @@ import org.xmlpull.v1.XmlPullParserException
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
-import org.y20k.escapepods.helpers.DateHelper
+import org.y20k.escapepods.helpers.DateTimeHelper
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.LogHelper
 import java.io.IOException
@@ -221,7 +221,7 @@ class RssHelper {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
         val publicationDate = XmlHelper.readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        return DateHelper.convertFromRfc2822(publicationDate)
+        return DateTimeHelper.convertFromRfc2822(publicationDate)
     }
 
 

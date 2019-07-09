@@ -25,7 +25,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Collection
-import org.y20k.escapepods.helpers.DateHelper
+import org.y20k.escapepods.helpers.DateTimeHelper
 import org.y20k.escapepods.helpers.FileHelper
 import org.y20k.escapepods.helpers.LogHelper
 import java.util.*
@@ -73,7 +73,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION)) {
-                    val lastUpdate: Date = DateHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
+                    val lastUpdate: Date = DateTimeHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
                     // check if reload is necessary
                     if (lastUpdate.after(lastUpdateViewModel)) {
                         loadCollection(context)
