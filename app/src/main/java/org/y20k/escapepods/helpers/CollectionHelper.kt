@@ -370,7 +370,7 @@ object CollectionHelper {
     }
 
 
-    /* Sends a broadcast containing the collction as parcel */
+    /* Sends a broadcast containing the collection as parcel */
     private fun sendCollectionBroadcast(context: Context, lastUpdate: Date) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
         val lastUpdateString: String = DateTimeHelper.convertToRfc2822(lastUpdate)

@@ -61,9 +61,11 @@ data class LayoutHolder(var activity: Activity) {
     var sheetCoverView: ImageView
     var sheetProgressBarView: SeekBar
     var sheetTimePlayedView: TextView
-    var sheetEpisodeLengthView: TextView
+    var sheetDurationView: TextView
     var sheetEpisodeTitleView: TextView
     var sheetPlayButtonView: ImageView
+    var sheetSkipBackButtonView: ImageView
+    var sheetSkipForwardButtonView: ImageView
     var sheetSleepButtonView: ImageView
     var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
@@ -86,14 +88,15 @@ data class LayoutHolder(var activity: Activity) {
         sheetCoverView = activity.findViewById(R.id.sheet_large_podcast_cover)
         sheetProgressBarView = activity.findViewById(R.id.sheet_playback_seek_bar)
         sheetTimePlayedView = activity.findViewById(R.id.sheet_time_played_view)
-        sheetEpisodeLengthView = activity.findViewById(R.id.sheet_episode_length_view)
+        sheetDurationView = activity.findViewById(R.id.sheet_duration_view)
         sheetEpisodeTitleView = activity.findViewById(R.id.sheet_episode_title)
         sheetPlayButtonView = activity.findViewById(R.id.sheet_play_button)
+        sheetSkipBackButtonView = activity.findViewById(R.id.sheet_skip_back_button)
+        sheetSkipForwardButtonView = activity.findViewById(R.id.sheet_skip_forward_button)
         sheetSleepButtonView = activity.findViewById(R.id.sleep_timer_button)
         sheetUpNextName = activity.findViewById(R.id.player_sheet_up_next_name)
         sheetUpNextClearButton = activity.findViewById(R.id.player_sheet_up_next_clear_button)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-
 
         // set layouts for list and player
         setupRecyclerView()
@@ -113,15 +116,15 @@ data class LayoutHolder(var activity: Activity) {
         sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
         sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
         sheetEpisodeTitleView.text = episode.title
+        sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+        sheetProgressBarView.max = episode.duration.toInt()
     }
 
 
     /* Updates the progress bar */
-    fun updateProgressbar(context: Context, episode: Episode) {
-        sheetTimePlayedView.text = DateTimeHelper.convertToMinutesAndSeconds(episode.playbackPosition)
-        sheetEpisodeLengthView.text = DateTimeHelper.convertToMinutesAndSeconds(episode.length)
-        sheetProgressBarView.max = episode.length.toInt()
-        sheetProgressBarView.progress = episode.playbackPosition.toInt()
+    fun updateProgressbar(position: Long) {
+        sheetTimePlayedView.text = DateTimeHelper.convertToMinutesAndSeconds(position)
+        sheetProgressBarView.progress = position.toInt()
     }
 
 
@@ -204,27 +207,6 @@ data class LayoutHolder(var activity: Activity) {
             }
 
         }
-    }
-
-
-    /* Starts / stops requesting updates pn playback progress */
-    fun toggleProgressListener(context: Context, playbackState: Int) {
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> startProgressListener()
-            else -> stopProgressListener()
-        }
-    }
-
-
-    /* Start requesting updates on playback progress and update UI */
-    private fun startProgressListener() {
-
-    }
-
-
-    /* Stop requesting updates on playback progress */
-    private fun stopProgressListener() {
-
     }
 
 

@@ -219,6 +219,8 @@ object DownloadHelper {
             podcast.episodes.forEach { episode ->
                 if (episode.remoteAudioFileLocation == remoteFileLocation) {
                     episode.audio = localFileUri.toString()
+                    episode.duration = AudioHelper.getDuration(context, localFileUri)
+                    LogHelper.e(TAG, "!!!!! extracted duration: ${episode.duration}")
                 }
             }
         }
@@ -227,6 +229,10 @@ object DownloadHelper {
         // save collection
         saveCollection(context)
     }
+
+
+
+
 
 
     /* Savely remove given startDownload ID from active downloads */

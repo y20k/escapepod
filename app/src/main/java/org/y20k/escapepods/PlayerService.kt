@@ -214,8 +214,6 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         player.prepare(mediaSource);
         // set player position
         player.seekTo(episode.playbackPosition)
-        // store episode length
-        episode.length = player.contentDuration
     }
 
 
@@ -229,6 +227,9 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             mediaSession.setActive(true)
             preparePlayer();
             player.setPlayWhenReady(true)
+
+            // todo implement periodic broadcast of playbacl progress
+            // --> https://medium.com/androiddevelopers/building-a-simple-audio-app-in-android-part-3-3-ead4a0e10673
         }
     }
 
@@ -262,12 +263,24 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     /* Skips playback forward */
     private fun skipForwardPlayback() {
         LogHelper.d(TAG, "Skipping forward")
+        var position: Long = player.currentPosition + Keys.THIRTY_SECONDS_IN_MILLISECONDS
+        if (position > episode.duration) {
+            position =  episode.duration
+        }
+        player.seekTo(position)
+        sendPlaybackPositionBroadcast(position)
     }
 
 
     /* Skips playback back */
     private fun skipBackPlayback() {
         LogHelper.d(TAG, "Skipping back")
+        var position: Long = player.currentPosition - Keys.TEN_SECONDS_IN_MILLISECONDS
+        if (position < 0L) {
+            position = 0L
+        }
+        player.seekTo(position)
+        sendPlaybackPositionBroadcast(position)
     }
 
 
@@ -348,6 +361,17 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             collection = deferred.await()
         }
     }
+
+
+    /* Sends a broadcast containing the current playback position as parcel */
+    private fun sendPlaybackPositionBroadcast(position: Long) {
+        LogHelper.v(TAG, "Broadcasting playback position.")
+        val playbackPositionIntent = Intent()
+        playbackPositionIntent.action = Keys.ACTION_PLAYBACK_POSITION_CHANGED
+        playbackPositionIntent.putExtra(Keys.EXTRA_CURRENT_PLAYBACK_POSITION, position)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(playbackPositionIntent)
+    }
+
 
 
     /*
@@ -432,6 +456,10 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             super.onRewind()
             LogHelper.e(TAG, "MediaSessionCallback onRewind") // todo remove
             skipBackPlayback()
+        }
+
+        override fun onSeekTo(posistion: Long) {
+            player.seekTo(posistion)
         }
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {

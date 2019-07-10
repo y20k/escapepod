@@ -51,7 +51,7 @@ object DateTimeHelper {
     fun convertToMinutesAndSeconds(milliseconds: Long): String {
         val minutes: Long = milliseconds / 1000 / 60
         val seconds: Long = milliseconds / 1000 % 60
-        return ("$minutes : $seconds")
+        return ("${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}")
     }
 
 }

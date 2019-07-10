@@ -43,6 +43,7 @@ object Keys {
     const val ACTION_TIMER_START = "org.y20k.escapepods.action.TIMER_START"
     const val ACTION_TIMER_STOP = "org.y20k.escapepods.action.TIMER_STOP"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepods.action.COLLECTION_CHANGED"
+    const val ACTION_PLAYBACK_POSITION_CHANGED: String = "org.y20k.escapepods.action.PLAYBACK_POSITION_CHANGED"
     const val ACTION_UPDATE_COLLECTION: String = "org.y20k.escapepods.action.UPDATE_COLLECTION"
     const val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "org.y20k.escapepods.action.DOWNLOAD_PROGRESS_UPDATE"
 
@@ -51,6 +52,7 @@ object Keys {
     const val EXTRA_PODCAST: String = "PODCAST"
     const val EXTRA_EPISODE: String = "EPISODE"
     const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
+    const val EXTRA_CURRENT_PLAYBACK_POSITION: String = "LAST_UPDATE_COLLECTION"
     const val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"
     const val EXTRA_DOWNLOAD_PROGRESS: String  = "DOWNLOAD_PROGRESS"
 
@@ -192,6 +194,8 @@ object Keys {
     const val ONE_SECOND_IN_MILLISECONDS: Long = 1000L
     const val FIVE_MINUTES_IN_MILLISECONDS: Long = 300000L
     const val ONE_MINUTE_IN_MILLISECONDS: Long = 60000L
+    const val TEN_SECONDS_IN_MILLISECONDS: Long = 10000L
+    const val THIRTY_SECONDS_IN_MILLISECONDS: Long = 30000L
 
     // rss tags
     val XML_NAME_SPACE: String? = null

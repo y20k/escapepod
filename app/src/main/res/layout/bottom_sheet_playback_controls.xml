@@ -116,7 +116,7 @@
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
-        android:id="@+id/sheet_episode_length_view"
+        android:id="@+id/sheet_duration_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/descr_expanded_episode_length"
@@ -166,7 +166,7 @@
         app:srcCompat="@drawable/ic_play_symbol_white_54dp" />
 
     <ImageView
-        android:id="@+id/sheet_replay_button"
+        android:id="@+id/sheet_skip_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
@@ -180,7 +180,7 @@
         app:srcCompat="@drawable/ic_replay_10sek_56dp" />
 
     <ImageView
-        android:id="@+id/sheet_forward_button"
+        android:id="@+id/sheet_skip_forward_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
