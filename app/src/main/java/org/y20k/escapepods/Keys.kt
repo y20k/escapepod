@@ -102,6 +102,7 @@ object Keys {
     const val HOLDER_UPDATE_NAME: Int = 1
     const val HOLDER_UPDATE_PLAYBACK_STATE: Int = 2
     const val HOLDER_UPDATE_DOWNLOAD_STATE: Int = 3
+    const val HOLDER_UPDATE_PLAYBACK_PROGRESS: Int = 4
 
     // dialog types
     const val DIALOG_UPDATE_COLLECTION: Int = 1

@@ -51,6 +51,7 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.*
 import java.util.*
+import kotlin.concurrent.scheduleAtFixedRate
 import kotlin.coroutines.CoroutineContext
 
 
@@ -75,6 +76,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
+    private lateinit var periodicPlaybackPositionBroadcast: Timer
     private lateinit var collectionChangedReceiver: BroadcastReceiver
     private lateinit var mediaController: MediaControllerCompat
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
@@ -228,8 +230,10 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             preparePlayer();
             player.setPlayWhenReady(true)
 
-            // todo implement periodic broadcast of playbacl progress
-            // --> https://medium.com/androiddevelopers/building-a-simple-audio-app-in-android-part-3-3-ead4a0e10673
+            periodicPlaybackPositionBroadcast = Timer()
+            periodicPlaybackPositionBroadcast.scheduleAtFixedRate(0L, 500L) {
+                sendPlaybackPositionBroadcast(player.currentPosition)
+            }
         }
     }
 
@@ -243,6 +247,10 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED, episode.playbackPosition))
             mediaSession.setActive(true)
             player.setPlayWhenReady(false)
+            if (::periodicPlaybackPositionBroadcast.isInitialized) {
+                periodicPlaybackPositionBroadcast.cancel()
+            }
+
         } else {
             stopPlayback()
         }
@@ -257,6 +265,9 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED, episode.playbackPosition))
         mediaSession.setActive(false)
         player.setPlayWhenReady(false)
+        if (::periodicPlaybackPositionBroadcast.isInitialized) {
+            periodicPlaybackPositionBroadcast.cancel()
+        }
     }
 
 
@@ -459,6 +470,7 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
         }
 
         override fun onSeekTo(posistion: Long) {
+            episode.playbackPosition = posistion
             player.seekTo(posistion)
         }
 

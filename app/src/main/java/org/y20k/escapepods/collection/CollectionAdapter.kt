@@ -134,6 +134,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 // set up current episode
                 setEpisodeTitle(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
                 setEpisodeButtons(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
+                setEpisodePlaybackProgress(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
 
                 // set up older episodes list
                 setOlderEpisodesList(podcastViewHolder, podcast)
@@ -165,6 +166,14 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
         episodeViewHolder.episodeDateView.setText(episode.getDateString(DateFormat.MEDIUM))
         episodeViewHolder.episodeTitleView.setText(episode.title)
+    }
+
+    /* Sets up the circular progress bar */
+    private fun setEpisodePlaybackProgress(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
+        // start => 12 => playbackPosition = 0
+        // finish => 0 => playbackPosition = duration
+        val progress: Double = (episode.duration.toDouble() - episode.playbackPosition.toDouble()) / episode.duration.toDouble() * 12
+        episodeViewHolder.episodePlaybackProgressView.progress = progress.toInt()
     }
 
 
@@ -266,6 +275,9 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                         // todo implement
                     }
                     Keys.HOLDER_UPDATE_PLAYBACK_STATE -> {
+                        // todo implement
+                    }
+                    Keys.HOLDER_UPDATE_PLAYBACK_PROGRESS -> {
                         // todo implement
                     }
                     Keys.HOLDER_UPDATE_DOWNLOAD_STATE -> {
@@ -408,6 +420,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             // set up episode
             setEpisodeTitle(episodeViewHolder, episode)
             setEpisodeButtons(episodeViewHolder, episode)
+            setEpisodePlaybackProgress(episodeViewHolder, episode)
         }
     }
     /*
