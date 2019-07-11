@@ -437,6 +437,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         if (episode.getMediaId().isNotEmpty()) {
             Toast.makeText(this, getString(R.string.toast_message_up_next_added_episode), Toast.LENGTH_LONG).show()
         }
+        PreferencesHelper.savePlayerState(this, playerState)
+        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_RELOAD_PLAYER_STATE, null, null)
     }
 
 
@@ -570,6 +572,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             collection = it
 
             // updates current episode in player views
+            playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
             val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
             layout.updatePlayerViews(this,episode)
 

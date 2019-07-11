@@ -201,7 +201,7 @@ object CollectionHelper {
 
     /* Determines if an episode can be deleted */
     private fun canBeDeleted(context: Context, episode: Episode): Boolean {
-        if (episode.getMediaId() == PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_UP_NEXT_MEDIA_ID, String()) ?: String()) {
+        if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
             // episode is in Up Next queue
             return false
         } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED) {

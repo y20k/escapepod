@@ -23,6 +23,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -36,10 +37,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.AudioAttributesCompat
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.DefaultRenderersFactory
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -50,15 +48,15 @@ import org.y20k.escapepods.collection.CollectionProvider
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.*
+import org.y20k.escapepods.ui.PlayerState
 import java.util.*
-import kotlin.concurrent.scheduleAtFixedRate
 import kotlin.coroutines.CoroutineContext
 
 
 /*
  * PlayerService class
  */
-class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
+class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, CoroutineScope {
 
 
     /* Define log tag */
@@ -66,17 +64,18 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
 
     /* Main class variables */
-    private lateinit var backgroundJob: Job
     private var collection: Collection = Collection()
     private var collectionProvider: CollectionProvider = CollectionProvider()
     private var episode: Episode = Episode()
-    private var isForegroundService = false
+    private var isForegroundService: Boolean = false
+    private val handler: Handler = Handler()
+    private lateinit var playerState: PlayerState
+    private lateinit var backgroundJob: Job
     private lateinit var packageValidator: PackageValidator
     private lateinit var mediaSession: MediaSessionCompat
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
-    private lateinit var periodicPlaybackPositionBroadcast: Timer
     private lateinit var collectionChangedReceiver: BroadcastReceiver
     private lateinit var mediaController: MediaControllerCompat
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
@@ -97,6 +96,9 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
         // get the package validator // todo can be local?
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
+
+        // fetch the player state
+        playerState = PreferencesHelper.loadPlayerState(this)
 
         // create a new MediaSession
         mediaSession = createMediaSession()
@@ -191,6 +193,28 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     }
 
 
+    /* Overrides onPlayerStateChanged (Player.EventListener) */
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        when (playbackState) {
+            Player.STATE_ENDED -> {
+                if (playerState.upNextEpisodeMediaId.isEmpty() || playerState.upNextEpisodeMediaId == episode.getMediaId()) {
+                    // clear up-next id in shared preferences
+                    playerState.upNextEpisodeMediaId = String()
+                    // stop playback
+                    stopPlayback()
+                } else {
+                    // get up next episode
+                    episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
+                    // clear up next media id
+                    playerState.upNextEpisodeMediaId = String()
+                    // start playback
+                    startPlayback()
+                }
+            }
+        }
+    }
+
+
     /* Creates a new MediaSession */
     private fun createMediaSession(): MediaSessionCompat {
         val initialPlaybackState: Int = PreferencesHelper.loadPlayerPlayBackState(this)
@@ -219,37 +243,46 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     }
 
 
-
     /* Starts playback */
     private fun startPlayback() {
         if (episode.audio.isNotBlank()) {
-            LogHelper.d(TAG, "Starting Playback")
-            collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_PLAYING)
-            mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING, episode.playbackPosition))
-            mediaSession.setActive(true)
-            preparePlayer();
-            player.setPlayWhenReady(true)
-
-            periodicPlaybackPositionBroadcast = Timer()
-            periodicPlaybackPositionBroadcast.scheduleAtFixedRate(0L, 500L) {
-                sendPlaybackPositionBroadcast(player.currentPosition)
+            LogHelper.d(TAG, "Starting Playback. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
+            // reset playback position if necessary
+            if (episode.isFinished()) {
+                episode.playbackPosition = 0L
             }
+            // save collection state and player state
+            collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_PLAYING)
+            updatePlayerState(episode, PlaybackStateCompat.STATE_PLAYING)
+            // update media session
+            mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PLAYING, episode.playbackPosition))
+            mediaSession.isActive = true
+            // prepare player and start playback
+            preparePlayer();
+            player.playWhenReady = true
+            // start broadcasting playback progress
+            handler.postDelayed(periodicPlaybackPositionBroadcastRunnable, 0)
         }
     }
+
 
 
     /* Pauses playback - make notification swipeable */
     private fun pausePlayback() {
         if (episode.audio.isNotEmpty()) {
             LogHelper.d(TAG, "Pausing Playback")
+            // update playback position
             episode.playbackPosition = player.contentPosition
+            // save collection state and player state
             collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_PAUSED)
+            updatePlayerState(episode, PlaybackStateCompat.STATE_PAUSED)
+            // update media session
             mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_PAUSED, episode.playbackPosition))
-            mediaSession.setActive(true)
-            player.setPlayWhenReady(false)
-            if (::periodicPlaybackPositionBroadcast.isInitialized) {
-                periodicPlaybackPositionBroadcast.cancel()
-            }
+            mediaSession.isActive = true
+            // stop playback
+            player.playWhenReady = false
+            // stop broadcasting playback progress
+            handler.removeCallbacks(periodicPlaybackPositionBroadcastRunnable)
 
         } else {
             stopPlayback()
@@ -260,14 +293,18 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     /* Stops playback - remove notification */
     private fun stopPlayback() {
         LogHelper.d(TAG, "Stopping Playback")
+        // update playback position
         episode.playbackPosition = player.contentPosition
+        // save collection state and player state
         collection = CollectionHelper.savePlaybackState(this, collection, episode, PlaybackStateCompat.STATE_STOPPED)
+        updatePlayerState(episode, PlaybackStateCompat.STATE_STOPPED)
+        // update media session
         mediaSession.setPlaybackState(createPlaybackState(PlaybackStateCompat.STATE_STOPPED, episode.playbackPosition))
-        mediaSession.setActive(false)
-        player.setPlayWhenReady(false)
-        if (::periodicPlaybackPositionBroadcast.isInitialized) {
-            periodicPlaybackPositionBroadcast.cancel()
-        }
+        mediaSession.isActive = false
+        // stop playback
+        player.playWhenReady = false
+        // stop broadcasting playback progress
+        handler.removeCallbacks(periodicPlaybackPositionBroadcastRunnable)
     }
 
 
@@ -328,7 +365,6 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
             Keys.MEDIA_ID_ROOT -> {
                 // mediaItems
                 for (track in collectionProvider.getAllEpisodes()) {
-                    LogHelper.e(TAG, "${track.description.description} // ${track.description.mediaId}")
                     val item = MediaBrowserCompat.MediaItem(track.description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
                     mediaItems.add(item)
                 }
@@ -374,15 +410,22 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
     }
 
 
+    /* Updates and saves the state of the player ui */
+    private fun updatePlayerState (episode: Episode, playbackState: Int) {
+        playerState.episodeMediaId = episode.getMediaId()
+        playerState.playbackPosition = episode.playbackPosition
+        playerState.playbackState = playbackState
+        PreferencesHelper.savePlayerState(this, playerState)
+    }
+
+
     /* Sends a broadcast containing the current playback position as parcel */
     private fun sendPlaybackPositionBroadcast(position: Long) {
-        LogHelper.v(TAG, "Broadcasting playback position.")
         val playbackPositionIntent = Intent()
         playbackPositionIntent.action = Keys.ACTION_PLAYBACK_POSITION_CHANGED
         playbackPositionIntent.putExtra(Keys.EXTRA_CURRENT_PLAYBACK_POSITION, position)
         LocalBroadcastManager.getInstance(this).sendBroadcast(playbackPositionIntent)
     }
-
 
 
     /*
@@ -399,39 +442,49 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
                 ExoPlayerFactory.newSimpleInstance(this,
                         DefaultRenderersFactory(this),
                         DefaultTrackSelector(),
-                        DefaultLoadControl()))
+                        DefaultLoadControl()).apply { addListener(this@PlayerService) })
     }
     /*
      * End of declaration
      */
 
 
+    /*
+     * Runnable: Periodically broadcasts playback position
+     */
+    private val periodicPlaybackPositionBroadcastRunnable: Runnable = object : Runnable {
+        override fun run() {
+            sendPlaybackPositionBroadcast(player.currentPosition)
+            // use the handler to start runnable again after specified delay
+            handler.postDelayed(this, 500)
+        }
+    }
+    /*
+     * End of declaration
+     */
+
 
     /*
-     * Defines callbacks for active media session
+     * Callback: Defines callbacks for active media session
      */
     private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
         override fun onPlay() {
             // start playback
-            LogHelper.e(TAG, "MediaSessionCallback onPlay") // todo remove
             startPlayback()
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            LogHelper.e(TAG, "MediaSessionCallback onPlayFromMediaId") // todo remove
             episode = CollectionHelper.getEpisode(collection, mediaId ?: "")
             startPlayback()
         }
 
         override fun onPause() {
             // pause playback - make notification swipeable
-            LogHelper.e(TAG, "MediaSessionCallback onPause") // todo remove
             pausePlayback()
         }
 
         override fun onStop() {
             // stop playback - remove notification
-            LogHelper.e(TAG, "MediaSessionCallback onStop") // todo remove
             stopPlayback()
         }
 
@@ -459,13 +512,11 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
         override fun onFastForward() {
             super.onFastForward()
-            LogHelper.e(TAG, "MediaSessionCallback onFastForward") // todo remove
             skipForwardPlayback()
         }
 
         override fun onRewind() {
             super.onRewind()
-            LogHelper.e(TAG, "MediaSessionCallback onRewind") // todo remove
             skipBackPlayback()
         }
 
@@ -476,8 +527,10 @@ class PlayerService(): MediaBrowserServiceCompat(), CoroutineScope {
 
         override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
             when (command) {
+                Keys.CMD_RELOAD_PLAYER_STATE -> {
+                    playerState = PreferencesHelper.loadPlayerState(this@PlayerService)
+                }
                 Keys.CMD_REQUEST_CURRENT_MEDIA_ID -> {
-                    LogHelper.e(TAG, "Command received. Episode: ${episode.title}")// todo remove
                     if (cb != null) {
                         cb.send(1, Bundle()) // todo implement
                     }

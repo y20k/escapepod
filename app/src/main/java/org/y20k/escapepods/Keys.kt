@@ -58,7 +58,7 @@ object Keys {
 
     // custom MediaController commands
     const val CMD_REQUEST_CURRENT_MEDIA_ID: String = "REQUEST_CURRENT_MEDIA_ID"
-
+    const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"

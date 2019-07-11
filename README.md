@@ -9,11 +9,13 @@ Free and Open Podcast Player
 * you can update your podcast collection
 * auto updating podcast at night
 * OPML import and auto-export
-* you can already actually listen to episode
+* you can already actually listen to episodes
+* the app has a simple up-next queue
 * headphone buttons work
 
 ## But
 * there are still A LOT OF BUGS
+* especially with the auto cleanup
 
 ## User Interface (May 2019)
 <img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-001-2019-05.png" width="300" />

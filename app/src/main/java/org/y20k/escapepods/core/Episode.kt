@@ -37,7 +37,6 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
                     @Expose var playbackPosition: Long = 0L,
                     @Expose var duration: Long = 0L,
-                    @Expose var listened: Boolean = false,
                     @Expose var manuallyDownloaded: Boolean = false,
                     @Expose var remoteCoverFileLocation: String = "",
                     @Expose var remoteAudioFileLocation: String = "",
@@ -73,6 +72,12 @@ data class Episode (@Expose var guid: String = "",
     fun getMediaId(): String {
         return remoteAudioFileLocation
         // return (remoteAudioFileLocation + guid).hashCode().toString() // hash value of remoteAudioFileLocation and guid
+    }
+
+
+    /* Return if an eposided has been listened to end */
+    fun isFinished(): Boolean {
+        return playbackPosition >= duration
     }
 
 }
