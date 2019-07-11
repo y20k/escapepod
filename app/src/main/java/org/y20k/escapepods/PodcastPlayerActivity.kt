@@ -15,7 +15,9 @@
 package org.y20k.escapepods
 
 import android.Manifest
-import android.content.*
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
@@ -34,9 +36,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import isActive
 import kotlinx.coroutines.*
 import org.y20k.escapepods.collection.CollectionAdapter
 import org.y20k.escapepods.collection.CollectionViewModel
@@ -68,13 +70,13 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private lateinit var backgroundJob: Job
     private lateinit var mediaBrowser: MediaBrowserCompat
     private lateinit var collectionViewModel: CollectionViewModel
-    private lateinit var collectionChangedReceiver: BroadcastReceiver
     private lateinit var layout: LayoutHolder
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
     private var playerServiceConnected = false
     private var playerState: PlayerState = PlayerState()
     private var tempOpmlUriString: String = String()
+    private val handler: Handler = Handler()
 
 
     /* Overrides coroutineContext variable */
@@ -93,9 +95,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // create view model and observe changes in collection view model
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
-
-        // create receiver for playback position updates
-        collectionChangedReceiver = createPlaybackPositionChangedReceiver()
 
         // create collection adapter
         collectionAdapter = CollectionAdapter(this)
@@ -131,8 +130,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         handleStartIntent()
         // try to recreate player state
         playerState = PreferencesHelper.loadPlayerState(this)
-        // start receiving playback progress updates
-        LocalBroadcastManager.getInstance(this).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_PLAYBACK_POSITION_CHANGED))
         // setup player ui
         setupPlayer()
     }
@@ -144,7 +141,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // save player state
         PreferencesHelper.savePlayerState(this, playerState)
         // stop receiving playback progress updates
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(collectionChangedReceiver)
+        handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
     }
 
 
@@ -344,9 +341,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // get reference to media controller
         val mediaController = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
 
-//        // set up the play button - to offer play or pause
-//        setupPlayButtons(mediaController.playbackState.state)
-
         // main play/pause button
         layout.playButtonView.setOnClickListener {
             when (mediaController.playbackState.state) {
@@ -363,18 +357,15 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         }
 
-
         // bottom sheet skip back button
         layout.sheetSkipBackButtonView.setOnClickListener {
             mediaController.transportControls.rewind()
         }
 
-
         // bottom sheet skip forward button
         layout.sheetSkipForwardButtonView.setOnClickListener {
             mediaController.transportControls.fastForward()
         }
-
 
         // bottom sheet playback progress bar
         layout.sheetProgressBarView.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -388,14 +379,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         })
 
-
         // bottom sheet clear button for Up Next queue
         layout.sheetUpNextClearButton.setOnClickListener {
             // clear up next
             updateUpNext()
             Toast.makeText(this, getString(R.string.toast_message_up_next_removed_episode), Toast.LENGTH_LONG).show()
         }
-
 
         // register a callback to stay in sync
         mediaController.registerCallback(mediaControllerCallback)
@@ -565,34 +554,33 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
+    /* Toggle periodic request of playback position from player service */
+    private fun togglePeriodicPlaybackPositionRequest(playbackState: PlaybackStateCompat) {
+        when (playbackState.isActive) {
+            true -> {
+                handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
+                handler.postDelayed(periodicPlaybackPositionRequestRunnable, 0)
+            }
+            false -> {
+                handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
+            }
+        }
+    }
+
+
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel() {
         collectionViewModel.collectionLiveData.observe(this, Observer<Collection> { it ->
             // update collection
             collection = it
-
             // updates current episode in player views
             playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
             val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
             layout.updatePlayerViews(this,episode)
-
             // updates the up next queue in player views
             val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
             layout.updateUpNextViews(upNextEpisode)
         })
-    }
-
-
-
-    /* Creates a receiver for playback position upated */
-    private fun createPlaybackPositionChangedReceiver(): BroadcastReceiver {
-        return object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                if (intent.hasExtra(Keys.EXTRA_CURRENT_PLAYBACK_POSITION)) {
-                    layout.updateProgressbar(intent.getLongExtra(Keys.EXTRA_CURRENT_PLAYBACK_POSITION, 0L))
-                }
-            }
-        }
     }
 
 
@@ -617,6 +605,13 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 //            // show / hide player
 //            setupPlayerVisibility(MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState.state)
+
+            // start requesting position updates if playback is running
+            if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
+                handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
+                handler.postDelayed(periodicPlaybackPositionRequestRunnable, 0)
+            }
+
 
             // begin looking for changes in collection
             observeCollectionViewModel()
@@ -672,6 +667,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             playerState.playbackState = playbackState.state
             layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
             layout.togglePlayerVisibility(this@PodcastPlayerActivity, playbackState.state)
+            togglePeriodicPlaybackPositionRequest(playbackState)
         }
 
         override fun onSessionDestroyed() {
@@ -684,14 +680,34 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
      */
 
 
+    /*
+     * Runnable: Periodically broadcasts playback position
+     */
+    private val periodicPlaybackPositionRequestRunnable: Runnable = object : Runnable {
+        override fun run() {
+            // request current playback position
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PLAYBACK_POSITION, null, resultReceiver)
+            // use the handler to start runnable again after specified delay
+            handler.postDelayed(this, 500)
+        }
+    }
+    /*
+     * End of declaration
+     */
+
 
     /*
      * ResultReceiver: Handles results from commands send to player
-     * eg. MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_CURRENT_MEDIA_ID, null, resultReceiver)
+     * eg. MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PLAYBACK_POSITION, null, resultReceiver)
      */
     var resultReceiver: ResultReceiver = object: ResultReceiver(Handler()) {
         override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
-            super.onReceiveResult(resultCode, resultData)
+            when (resultCode) {
+                Keys.RESULT_CODE_PLAYBACK_PROGRESS -> {
+                    val position: Long = resultData?.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS) ?: 0L
+                    layout.updateProgressbar(position)
+                }
+            }
         }
     }
     /*

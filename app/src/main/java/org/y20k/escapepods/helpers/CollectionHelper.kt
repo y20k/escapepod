@@ -68,7 +68,7 @@ object CollectionHelper {
         val lastSavedUpdate: Date = PreferencesHelper.loadLastUpdateCollection(context)
         val currentDate: Date = Calendar.getInstance().time
 //        return currentDate.time - lastUpdate  > Keys.FIVE_MINUTES_IN_MILLISECONDS // todo uncomment for production
-        return currentDate.time - lastSavedUpdate.time  > Keys.ONE_MINUTE_IN_MILLISECONDS
+        return currentDate.time - lastSavedUpdate.time  > Keys.MINIMUM_TIME_BETWEEN_UPDATES
     }
 
 

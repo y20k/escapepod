@@ -1,6 +1,6 @@
 # Assets
 
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/escapepods-app-icon-current.png" width="96" />
+<img src="https://raw.githubusercontent.com/y20k/escapepods/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="96" />
 
 ## Adaptive Icon
 

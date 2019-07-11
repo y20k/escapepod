@@ -31,21 +31,9 @@ object Keys {
     const val NOTIFICATION_NOW_PLAYING_CHANNEL = "notificationChannelIdPlaybackChannel"
 
     // intent actions
-    const val ACTION_PLAY = "org.y20k.escapepods.action.PLAY"
-    const val ACTION_PAUSE = "org.y20k.escapepods.action.PAUSE"
-    const val ACTION_FORWARD = "org.y20k.escapepods.action.FORWARD"
-    const val ACTION_REPLAY = "org.y20k.escapepods.action.REPLAY"
-    const val ACTION_DISMISS = "org.y20k.escapepods.action.DISMISS"
-    const val ACTION_PLAYBACK_STATE_CHANGED = "org.y20k.escapepods.action.PLAYBACK_STATE_CHANGED"
-    const val ACTION_METADATA_CHANGED = "org.y20k.escapepods.action.METADATA_CHANGED"
     const val ACTION_SHOW_PLAYER = "org.y20k.escapepods.action.HOW_PLAYER"
-    const val ACTION_TIMER_RUNNING = "org.y20k.escapepods.action.TIMER_RUNNING"
-    const val ACTION_TIMER_START = "org.y20k.escapepods.action.TIMER_START"
-    const val ACTION_TIMER_STOP = "org.y20k.escapepods.action.TIMER_STOP"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepods.action.COLLECTION_CHANGED"
     const val ACTION_PLAYBACK_POSITION_CHANGED: String = "org.y20k.escapepods.action.PLAYBACK_POSITION_CHANGED"
-    const val ACTION_UPDATE_COLLECTION: String = "org.y20k.escapepods.action.UPDATE_COLLECTION"
-    const val ACTION_DOWNLOAD_PROGRESS_UPDATE: String  = "org.y20k.escapepods.action.DOWNLOAD_PROGRESS_UPDATE"
 
     // intent extras
     const val EXTRA_COLLECTION: String = "COLLECTION"
@@ -59,6 +47,7 @@ object Keys {
     // custom MediaController commands
     const val CMD_REQUEST_CURRENT_MEDIA_ID: String = "REQUEST_CURRENT_MEDIA_ID"
     const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"
+    const val CMD_REQUEST_PLAYBACK_POSITION: String = "REQUEST_PLAYBACK_POSITION"
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
@@ -76,9 +65,6 @@ object Keys {
     const val PREF_PLAYER_STATE_PLAYBACK_POSITION: String = "PLAYER_STATE_PLAYBACK_POSITION"
     const val PREF_PLAYER_STATE_BOTTOM_SHEET_STATE: String = "PLAYER_STATE_BOTTOM_SHEET_STATE"
     const val PREF_PLAYER_STATE_SLEEP_TIMER_STATE: String = "PLAYER_STATE_SLEEP_TIMER_STATE"
-
-    // saved instance states
-    const val SAVED_INSTANCE_PLAYER_STATE: String = "INSTANCE_PLAYER_STATE"
 
     // states
     const val STATE_SLEEP_TIMER_STOPPED: Int = 0
@@ -146,7 +132,6 @@ object Keys {
     const val FOLDER_AUDIO: String = "audio"
     const val FOLDER_IMAGES: String  = "images"
     const val FOLDER_TEMP: String  = "temp"
-    const val NO_SUB_DIRECTORY: String = ""
 
     // file names
     const val COLLECTION_FILE: String = "collection.json"
@@ -173,9 +158,12 @@ object Keys {
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
-    const val REQUEST_ADD_PODCASTS: Int = 2
-    const val REQUEST_DOWNLOAD_EPISODE: Int = 3
     const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: Int = 23
+
+    // results
+    const val RESULT_CODE_PLAYBACK_PROGRESS: Int = 1
+    const val RESULT_DATA_PLAYBACK_PROGRESS: String = "PLAYBACK_PROGRESS"
+
 
     // podcast validation states
     const val PODCAST_VALIDATION_SUCESS: Int = 0
@@ -189,14 +177,11 @@ object Keys {
 
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"
-    const val NAME_ONE_TIME_COLLECTION_UPDATE_WORK: String = "ONE_TIME_COLLECTION_UPDATE_WORK"
 
     // const values
-    const val ONE_SECOND_IN_MILLISECONDS: Long = 1000L
-    const val FIVE_MINUTES_IN_MILLISECONDS: Long = 300000L
-    const val ONE_MINUTE_IN_MILLISECONDS: Long = 60000L
-    const val TEN_SECONDS_IN_MILLISECONDS: Long = 10000L
-    const val THIRTY_SECONDS_IN_MILLISECONDS: Long = 30000L
+    const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 60000L   // 1 minute in milliseconds
+    const val SKIP_BACK_TIME_SPAN: Long = 10000L            // 10 seconds in milliseconds
+    const val SKIP_FORWARD_TIME_SPAN: Long = 30000L         // 30 seconds in milliseconds
 
     // rss tags
     val XML_NAME_SPACE: String? = null
@@ -224,10 +209,4 @@ object Keys {
     const val OPML_OUTLINE_PODCAST_TYPE_RSS = "rss"
     const val OPML_OUTLINE_PODCAST_URL = "xmlUrl"
 
-    // custom MediaMetadata keys for episodes
-    const val METADATA_CUSTOM_KEY_DESCRIPTION = "CUSTOM_KEY_DESCRIPTION"
-    const val METADATA_CUSTOM_KEY_PUBLICATION_DATE = "CUSTOM_KEY_PUBLICATION_DATE"
-    const val METADATA_CUSTOM_KEY_AUDIO_LINK_URL = "CUSTOM_KEY_PUBLICATION_DATE_URL"
-    const val METADATA_CUSTOM_KEY_IMAGE_LINK_URL = "CUSTOM_KEY_IMAGE_LINK_URL"
-    const val METADATA_CUSTOM_KEY_PLAYBACK_PROGRESS = "CUSTOM_KEY_PLAYBACK_PROGRESS"
 }
