@@ -45,6 +45,7 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
+import isActive
 import kotlinx.coroutines.*
 import org.y20k.escapepods.collection.CollectionProvider
 import org.y20k.escapepods.core.Collection
@@ -104,6 +105,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         // create player
         player = createPlayer()
+        player.seekTo(playerState.playbackPosition)
 
         // create a new MediaSession
         mediaSession = createMediaSession()
@@ -147,8 +149,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides onDestroy */
     override fun onDestroy() {
-        // stop playback if necessary
-        pausePlayback()
+        // stop playback
+        player.playWhenReady = false
 
         // release media session
         mediaSession.run {
@@ -199,45 +201,26 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides onPlayerStateChanged (Player.EventListener) */
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-        // handle up-next queue
-        when (playbackState) {
-            Player.STATE_ENDED -> {
-                if (playerState.upNextEpisodeMediaId.isEmpty() || playerState.upNextEpisodeMediaId == episode.getMediaId()) {
-                    // clear up-next id in shared preferences
-                    playerState.upNextEpisodeMediaId = String()
-                    // stop playback
-                    pausePlayback()
+        when (playWhenReady) {
+            // CASE: playWhenReady = true
+            true -> {
+                if (playbackState == Player.STATE_READY) {
+                    // active playback: update media session and save state
+                    handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
+                } else if (playbackState == Player.STATE_ENDED) {
+                    // playback reached end
+                    handlePlaybackEnded()
                 } else {
-                    // get up next episode
-                    episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
-                    // clear up next media id
-                    playerState.upNextEpisodeMediaId = String()
-                    // start playback
-                    startPlayback()
+                    // not playing because the player is buffering, stopped or failed - check playbackState and player.getPlaybackError for details)
                 }
             }
-        }
-        if (playWhenReady && playbackState == Player.STATE_READY) {
-            LogHelper.e(TAG, "onPlayerStateChanged: Active playback.") // todo remove
-            // Active playback.
-            // update media session and save state
-            handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
-        } else if (playWhenReady) {
-            LogHelper.e(TAG, "onPlayerStateChanged: Not playing because playback ended, the player is buffering, stopped or failed. Check playbackState and player.getPlaybackError for details.") // todo remove
-            // Not playing because playback ended, the player is buffering, stopped or
-            // failed. Check playbackState and player.getPlaybackError for details.
-        } else if (!playWhenReady && playbackState == Player.STATE_READY) {
-            LogHelper.e(TAG, "onPlayerStateChanged: Paused by app.") // todo remove
-            // Paused by app.
-            // update media session and save state
-            handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
-        } else if (!playWhenReady && playbackState == Player.STATE_IDLE) {
-            LogHelper.e(TAG, "onPlayerStateChanged:  STATE_IDLE.") // todo remove
-            // update media session and save state
-            handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
-
-            // todo check if eposide.isfinshed - remove notification
-
+            // CASE: playWhenReady = false
+            false -> {
+                if (playbackState == Player.STATE_READY || playbackState == Player.STATE_ENDED) {
+                    // paused by app: update media session and save state
+                    handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+                }
+            }
         }
     }
 
@@ -282,59 +265,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Starts playback */
-    private fun startPlayback() {
-        if (episode.audio.isNotBlank()) {
-            LogHelper.d(TAG, "Starting Playback. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
-            // reset playback position if necessary
-            if (episode.isFinished()) {
-                episode.playbackPosition = 0L
-            }
-//            // update media session and save state
-//            handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
-            // prepare player and start playback
-            preparePlayer();
-            player.playWhenReady = true
-        }
-    }
-
-
-    /* Pauses playback - make notification swipeable */
-    private fun pausePlayback() {
-        if (episode.audio.isNotEmpty()) {
-            LogHelper.d(TAG, "Pausing Playback")
-            // update playback position
-            episode.playbackPosition = player.contentPosition
-            // stop playback
-            player.playWhenReady = false
-        }
-    }
-
-
-    /* Skips playback forward */
-    private fun skipForwardPlayback() {
-        LogHelper.d(TAG, "Skipping forward")
-        var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
-        if (position > episode.duration) {
-            position =  episode.duration
-        }
-        player.seekTo(position)
-        sendPlaybackPositionBroadcast(position)
-    }
-
-
-    /* Skips playback back */
-    private fun skipBackPlayback() {
-        LogHelper.d(TAG, "Skipping back")
-        var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
-        if (position < 0L) {
-            position = 0L
-        }
-        player.seekTo(position)
-        sendPlaybackPositionBroadcast(position)
-    }
-
-
     /* Updates media session and save state */
     private fun handlePlaybackChange(playbackState: Int) {
         // save collection state and player state
@@ -343,6 +273,31 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // update media session
         mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
         mediaSession.isActive = playbackState != PlaybackStateCompat.STATE_STOPPED
+    }
+
+
+    /* End of episode: stop playback or start episode from up-next queue */
+    private fun handlePlaybackEnded() {
+        if (playerState.upNextEpisodeMediaId.isEmpty() || playerState.upNextEpisodeMediaId == episode.getMediaId()) {
+            LogHelper.e(TAG, "no-up-next") // todo remove
+            // clear up-next id in shared preferences
+            playerState.upNextEpisodeMediaId = String()
+            // update playback position
+            episode.playbackPosition = player.contentPosition
+            // stop playback
+            player.playWhenReady = false
+        } else {
+            // get up next episode
+            episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
+            // clear up next media id and set position
+            playerState.upNextEpisodeMediaId = String()
+            playerState.playbackPosition = episode.playbackPosition
+            // start playback
+            preparePlayer()
+            player.playWhenReady = true
+//            // update media session and save state
+//            handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
+        }
     }
 
 
@@ -433,35 +388,40 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Sends a broadcast containing the current playback position as parcel */
-    private fun sendPlaybackPositionBroadcast(position: Long) {
-        val playbackPositionIntent = Intent()
-        playbackPositionIntent.action = Keys.ACTION_PLAYBACK_POSITION_CHANGED
-        playbackPositionIntent.putExtra(Keys.EXTRA_CURRENT_PLAYBACK_POSITION, position)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(playbackPositionIntent)
-    }
-
-
     /*
      * Callback: Defines callbacks for active media session
      */
     private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
         override fun onPlay() {
+            LogHelper.d(TAG, "Starting Playback. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
+            // reset playback position if necessary
+            if (episode.isFinished()) {
+                episode.playbackPosition = 0L
+            }
+            // prepare player
+            preparePlayer();
             // start playback
-            startPlayback()
+            player.playWhenReady = true
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+            // get episode
             episode = CollectionHelper.getEpisode(collection, mediaId ?: "")
-            startPlayback()
+            // start playback
+            onPlay()
         }
 
         override fun onPause() {
-            pausePlayback()
+            LogHelper.d(TAG, "Pausing Playback")
+            // update playback position
+            episode.playbackPosition = player.contentPosition
+            // pause playback
+            player.playWhenReady = false
         }
 
         override fun onStop() {
-            pausePlayback()
+            // note: pause is the new stop ^o^
+            onStop()
         }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
@@ -483,17 +443,26 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 //                }
             }
             // start playback
-            startPlayback()
+            onPlay()
         }
 
         override fun onFastForward() {
-            super.onFastForward()
-            skipForwardPlayback()
+            LogHelper.d(TAG, "Skipping forward")
+            // update position
+            var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
+            if (position > episode.duration) {
+                position =  episode.duration
+            }
+            player.seekTo(position)
         }
 
         override fun onRewind() {
-            super.onRewind()
-            skipBackPlayback()
+            LogHelper.d(TAG, "Skipping back")
+            var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
+            if (position < 0L) {
+                position = 0L
+            }
+            player.seekTo(position)
         }
 
         override fun onSeekTo(posistion: Long) {
@@ -538,19 +507,18 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         private fun updateNotification(state: PlaybackStateCompat) {
             LogHelper.d(TAG, "updateNotification called") // todo remove
-            val updatedState = state.state
 
             // skip building a notification when state is "none" and metadata is null
-            // val notification = if (mediaController.metadata != null && updatedState != PlaybackStateCompat.STATE_NONE) {
-            val notification = if (updatedState != PlaybackStateCompat.STATE_NONE) {
+            // val notification = if (mediaController.metadata != null && state.state != PlaybackStateCompat.STATE_NONE) {
+            val notification = if (state.state != PlaybackStateCompat.STATE_NONE) {
                 notificationHelper.buildNotification(mediaSession.sessionToken, episode)
             } else {
                 null
             }
 
-            when (updatedState) {
+            when (state.isActive) {
                 // CASE: Playback has started
-                PlaybackStateCompat.STATE_BUFFERING, PlaybackStateCompat.STATE_PLAYING -> {
+                true -> {
                     // start listening for unplugging of headphone
                     becomingNoisyReceiver.register()
 
@@ -569,7 +537,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     }
                 }
                 // CASE: Playback has stopped
-                else -> {
+                false -> {
                     // stop listening for unplugging of headphone
                     becomingNoisyReceiver.unregister()
 
@@ -578,7 +546,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                         isForegroundService = false
 
                         // If playback has ended, also stop the service.
-                        if (updatedState == PlaybackStateCompat.STATE_NONE) {
+                        if (state.state == PlaybackStateCompat.STATE_NONE) {
                             stopSelf()
                         }
 

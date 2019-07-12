@@ -359,12 +359,18 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // bottom sheet skip back button
         layout.sheetSkipBackButtonView.setOnClickListener {
-            mediaController.transportControls.rewind()
+            when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
+                true -> mediaController.transportControls.rewind()
+                false -> Toast.makeText(this, getString(R.string.toast_message_skipping_disabled), Toast.LENGTH_LONG).show()
+            }
         }
 
         // bottom sheet skip forward button
         layout.sheetSkipForwardButtonView.setOnClickListener {
-            mediaController.transportControls.fastForward()
+            when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
+                true -> mediaController.transportControls.fastForward()
+                false -> Toast.makeText(this, getString(R.string.toast_message_skipping_disabled), Toast.LENGTH_LONG).show()
+            }
         }
 
         // bottom sheet playback progress bar
@@ -602,6 +608,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
             // finish building the UI
             buildPlaybackControls()
+
+            // request current playback position
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PLAYBACK_POSITION, null, resultReceiver)
 
 //            // show / hide player
 //            setupPlayerVisibility(MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState.state)
