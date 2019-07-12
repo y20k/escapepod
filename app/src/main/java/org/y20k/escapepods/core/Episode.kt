@@ -75,7 +75,7 @@ data class Episode (@Expose var guid: String = "",
     }
 
 
-    /* Return if an eposided has been listened to end */
+    /* Return if an eposide has been listened to end */
     fun isFinished(): Boolean {
         return playbackPosition >= duration
     }

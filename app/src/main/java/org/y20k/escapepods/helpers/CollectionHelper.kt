@@ -87,6 +87,8 @@ object CollectionHelper {
     /* Adds new podcast to collection */
     fun addPodcast(collection: Collection, podcast: Podcast): Collection {
         if (podcast.episodes.isNotEmpty()) {
+            // update last update
+            podcast.lastUpdate = podcast.episodes[0].publicationDate
             // add podcast
             collection.podcasts.add(podcast)
             // return sorted collection
@@ -98,39 +100,72 @@ object CollectionHelper {
     }
 
 
-    /* Replaces a podcast within collection and  retains audio references */
-    fun replacePodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
+    /* Updates the episodes of a podcast in a given collection */
+    fun updatePodcast(context: Context, collection: Collection, newPodcast: Podcast): Collection {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
-        val newPodcast: Podcast = podcast
-        val oldPodcast: Podcast = getPodcast(collection, newPodcast)
-        // check for existing downloaded audio file references
-        for (i in numberOfAudioFilesToKeep -1 downTo 0) {
-            if (i < oldPodcast.episodes.size) {
-                val oldAudio: String = oldPodcast.episodes[i].audio
-                if (oldAudio.isEmpty()) {
-                    // found an existing downloaded audio file reference
-                    val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i])
-                    // set audio file reference, if episode id was found
-                    if (newEpisodeId > -1) {
-                        newPodcast.episodes[newEpisodeId].audio = oldAudio
+        newPodcast.episodes[0].publicationDate
+        val newEpisodes: MutableList<Episode> = mutableListOf<Episode>()
+        collection.podcasts.forEach { podcast ->
+            // found the matching podcast
+            if (podcast.getPodcastId() == newPodcast.getPodcastId()) {
+                //  update cover
+                if (podcast.cover != Keys.LOCATION_DEFAULT_COVER) {
+                    podcast.cover = newPodcast.cover
+                }
+                // update last update
+                podcast.lastUpdate = newPodcast.episodes[0].publicationDate
+                // look for new episodes
+                podcast.episodes.forEach { episode ->
+                    newPodcast.episodes.forEach { newEpisode ->
+                        // found a new episode within podcast
+                        if (episode.getMediaId() != newEpisode.getMediaId()) {
+                            newEpisodes.add(newEpisode)
+                        }
                     }
                 }
+                // sort new episodes by publication date
+                newEpisodes.sortByDescending { it.publicationDate }
+                // add all new episodes
+                podcast.episodes.addAll(newEpisodes)
             }
         }
-        // check for existing cover
-        if (oldPodcast.cover != Keys.LOCATION_DEFAULT_COVER) {
-            newPodcast.cover = oldPodcast.cover
-        }
-        // replace podcast
-        collection.podcasts.set(getPodcastId(collection, newPodcast), newPodcast)
-        // return sorted collection
         return sortCollectionByDate(collection)
     }
 
 
+//    /* Replaces a podcast within collection and  retains audio references */
+//    fun replacePodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
+//        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
+//        val newPodcast: Podcast = podcast
+//        val oldPodcast: Podcast = getPodcast(collection, newPodcast)
+//        // check for existing downloaded audio file references
+//        for (i in numberOfAudioFilesToKeep -1 downTo 0) {
+//            if (i < oldPodcast.episodes.size) {
+//                val oldAudio: String = oldPodcast.episodes[i].audio
+//                if (oldAudio.isNotEmpty()) {
+//                    // found an existing downloaded audio file reference
+//                    val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i])
+//                    // set audio file reference, if episode id was found
+//                    if (newEpisodeId > -1) {
+//                        newPodcast.episodes[newEpisodeId].audio = oldAudio
+//                    }
+//                }
+//            }
+//        }
+//        // check for existing cover
+//        if (oldPodcast.cover != Keys.LOCATION_DEFAULT_COVER) {
+//            newPodcast.cover = oldPodcast.cover
+//        }
+//        // replace podcast
+//        collection.podcasts.set(getPodcastId(collection, newPodcast), newPodcast)
+//        // return sorted collection
+//        return sortCollectionByDate(collection)
+//    }
+
+
     /* Checks if podcast has episodes that can be downloaded */
     fun checkPodcastState(collection: Collection, newPodcast: Podcast): Int {
-        // get podcast from sele
+        // get podcast from collection
         val oldPodcast = getPodcast(collection, newPodcast)
         // check if podcast is new
         if (oldPodcast.episodes.isEmpty()) {
@@ -425,11 +460,22 @@ object CollectionHelper {
     }
 
 
-    /* Sorts the collection: The podcast with the freshest episode first */
+    /* Sorts podcasts - the one with freshest episode first */
     private fun sortCollectionByDate(collection: Collection): Collection {
-        // episode[0] is always the newest - episodes get sorted in RssHelper.readSuspended
-        collection.podcasts.sortByDescending { it.episodes[0].publicationDate }
+        // sort episodes by publication date
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.sortByDescending { it.publicationDate }
+        }
+        // sort podcasts in collection by last update
+        collection.podcasts.sortByDescending { it.lastUpdate }
         return collection
+    }
+
+
+    /* Sorts episodes by date of publication */
+    private fun sortEpisodeByDate(podcast: Podcast): Podcast {
+        podcast.episodes.sortByDescending { it.publicationDate}
+        return podcast
     }
 
 
