@@ -279,7 +279,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* End of episode: stop playback or start episode from up-next queue */
     private fun handlePlaybackEnded() {
         if (playerState.upNextEpisodeMediaId.isEmpty() || playerState.upNextEpisodeMediaId == episode.getMediaId()) {
-            LogHelper.e(TAG, "no-up-next") // todo remove
             // clear up-next id in shared preferences
             playerState.upNextEpisodeMediaId = String()
             // update playback position
@@ -303,7 +302,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Creates playback state - actions for playback state to be used in media session callback */
     private fun createPlaybackState(state: Int, position: Long): PlaybackStateCompat {
-        val skipActions: Long = PlaybackStateCompat.ACTION_FAST_FORWARD or PlaybackStateCompat.ACTION_REWIND
+        val skipActions: Long = PlaybackStateCompat.ACTION_FAST_FORWARD or PlaybackStateCompat.ACTION_REWIND or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or  PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
         when(state) {
             PlaybackStateCompat.STATE_PLAYING -> {
                 return PlaybackStateCompat.Builder()
@@ -419,10 +418,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             player.playWhenReady = false
         }
 
-        override fun onStop() {
-            // note: pause is the new stop ^o^
-            onStop()
-        }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             // handle requests to begin playback from a search query (eg. Assistant, Android Auto, etc.)
@@ -463,6 +458,21 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 position = 0L
             }
             player.seekTo(position)
+        }
+
+        override fun onStop() {
+            // note: pause is the new stop ^o^
+            onStop()
+        }
+
+        override fun onSkipToPrevious() {
+            // note: rewind is the new skip to previous ^o^
+            onRewind()
+        }
+
+        override fun onSkipToNext() {
+            // note: fast forward is the new skip to next ^o^
+            onFastForward()
         }
 
         override fun onSeekTo(posistion: Long) {

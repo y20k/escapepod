@@ -338,6 +338,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Builds playback controls - used after connected to player service */
     private fun buildPlaybackControls() {
 
+        // get player state
+        playerState = PreferencesHelper.loadPlayerState(this)
+
         // get reference to media controller
         val mediaController = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
 

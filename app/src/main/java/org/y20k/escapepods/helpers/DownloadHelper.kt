@@ -224,7 +224,7 @@ object DownloadHelper {
             }
         }
         // remove unused audio references from collection
-        collection = CollectionHelper.cleanup(context, collection)
+        collection = CollectionHelper.deleteOldAudioFiles(context, collection)
         // save collection
         saveCollection(context)
     }
@@ -265,7 +265,6 @@ object DownloadHelper {
             val deferred: Deferred<Podcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }
             // wait for result and create podcast
             var podcast: Podcast = deferred.await()
-            podcast = CollectionHelper.trimEpisodeList(context, podcast)
             podcast = CollectionHelper.fillEmptyEpisodeCovers(podcast)
             when (CollectionHelper.validatePodcast(podcast)) {
                 Keys.PODCAST_VALIDATION_SUCESS -> {
@@ -279,6 +278,7 @@ object DownloadHelper {
                     Toast.makeText(context, context.getString(R.string.toast_message_validation_error_audio_references), Toast.LENGTH_LONG).show()
                 }
             }
+            CollectionHelper.trimPodcastEpisodeLists(context, collection)
             backgroundJob.cancel()
         }
     }

@@ -102,65 +102,31 @@ object CollectionHelper {
 
     /* Updates the episodes of a podcast in a given collection */
     fun updatePodcast(context: Context, collection: Collection, newPodcast: Podcast): Collection {
-        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
         newPodcast.episodes[0].publicationDate
         val newEpisodes: MutableList<Episode> = mutableListOf<Episode>()
         collection.podcasts.forEach { podcast ->
-            // found the matching podcast
+            // look for the matching podcast
             if (podcast.getPodcastId() == newPodcast.getPodcastId()) {
-                //  update cover
-                if (podcast.cover != Keys.LOCATION_DEFAULT_COVER) {
-                    podcast.cover = newPodcast.cover
-                }
-                // update last update
-                podcast.lastUpdate = newPodcast.episodes[0].publicationDate
-                // look for new episodes
-                podcast.episodes.forEach { episode ->
-                    newPodcast.episodes.forEach { newEpisode ->
-                        // found a new episode within podcast
-                        if (episode.getMediaId() != newEpisode.getMediaId()) {
-                            newEpisodes.add(newEpisode)
-                        }
+                val lastUpdate = podcast.lastUpdate
+                // look for episodes newer than last update
+                newPodcast.episodes.forEach { episode ->
+                    // found a new episode within podcast
+                    if (lastUpdate < episode.publicationDate) {
+                        newEpisodes.add(episode)
                     }
                 }
                 // sort new episodes by publication date
                 newEpisodes.sortByDescending { it.publicationDate }
+                // update last update
+                if (newEpisodes.isNotEmpty()) {
+                    podcast.lastUpdate = newEpisodes[0].publicationDate
+                }
                 // add all new episodes
                 podcast.episodes.addAll(newEpisodes)
             }
         }
         return sortCollectionByDate(collection)
     }
-
-
-//    /* Replaces a podcast within collection and  retains audio references */
-//    fun replacePodcast(context: Context, collection: Collection, podcast: Podcast): Collection {
-//        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
-//        val newPodcast: Podcast = podcast
-//        val oldPodcast: Podcast = getPodcast(collection, newPodcast)
-//        // check for existing downloaded audio file references
-//        for (i in numberOfAudioFilesToKeep -1 downTo 0) {
-//            if (i < oldPodcast.episodes.size) {
-//                val oldAudio: String = oldPodcast.episodes[i].audio
-//                if (oldAudio.isNotEmpty()) {
-//                    // found an existing downloaded audio file reference
-//                    val newEpisodeId: Int = getEpisodeIdFromPodcast(newPodcast, oldPodcast.episodes[i])
-//                    // set audio file reference, if episode id was found
-//                    if (newEpisodeId > -1) {
-//                        newPodcast.episodes[newEpisodeId].audio = oldAudio
-//                    }
-//                }
-//            }
-//        }
-//        // check for existing cover
-//        if (oldPodcast.cover != Keys.LOCATION_DEFAULT_COVER) {
-//            newPodcast.cover = oldPodcast.cover
-//        }
-//        // replace podcast
-//        collection.podcasts.set(getPodcastId(collection, newPodcast), newPodcast)
-//        // return sorted collection
-//        return sortCollectionByDate(collection)
-//    }
 
 
     /* Checks if podcast has episodes that can be downloaded */
@@ -192,66 +158,6 @@ object CollectionHelper {
             }
         }
         return podcast
-    }
-
-
-    /* Cleans up the collection */
-    fun cleanup(context: Context, collection: Collection): Collection {
-        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP);
-        for (podcast: Podcast in collection.podcasts) {
-            val podcastSize = podcast.episodes.size
-            for (i in podcastSize - 1 downTo numberOfAudioFilesToKeep) {
-                // check if episode can be deleted
-                if (canBeDeleted(context, podcast.episodes[i])) {
-                    // delete audio file
-                    context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
-                    // remove audio reference
-                    podcast.episodes[i].audio = String()
-                    // reset manually downloaded state
-                    podcast.episodes[i].manuallyDownloaded = false
-                }
-            }
-        }
-        return collection
-    }
-
-
-    /* Deletes an episode - used when user presses the delete button */
-    fun deleteEpisodeFile(context: Context, collection: Collection, mediaId: String): Collection {
-        collection.podcasts.forEach { podcast ->
-            podcast.episodes.forEach { episode ->
-                if (episode.getMediaId() == mediaId) {
-                    // delete audio file
-                    context.getContentResolver().delete(Uri.parse(episode.audio), null, null)
-                    // remove audio reference
-                    episode.audio = String()
-                    // reset manually downloaded state
-                    episode.manuallyDownloaded = false
-                }
-            }
-        }
-        return collection
-    }
-
-
-    /* Determines if an episode can be deleted */
-    private fun canBeDeleted(context: Context, episode: Episode): Boolean {
-        if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
-            // episode is in Up Next queue
-            return false
-        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED) {
-            // episode is paused or playing
-            return false
-        } else if (episode.audio.isEmpty()) {
-            // episode has no audio reference
-            return false
-        } else if (episode.manuallyDownloaded) {
-            // episode was manually downloaded
-            return false
-        } else {
-            // episode may be deleted
-            return true
-        }
     }
 
 
@@ -432,31 +338,106 @@ object CollectionHelper {
     }
 
 
-    /* Deletes unneeded episodes in podcast */
-    fun trimEpisodeList(context: Context, podcast: Podcast): Podcast {
-        // remove episodes without audio
-        podcast.episodes.removeIf {
-            episode -> episode.remoteAudioFileLocation.isEmpty()
+    /* Deletes unneeded episodes in collection */
+    fun trimPodcastEpisodeLists(context: Context, collection: Collection): Collection {
+        collection.podcasts.forEach { podcast ->
+            // remove episodes without audio
+            podcast.episodes.removeIf {
+                episode -> episode.remoteAudioFileLocation.isEmpty()
+            }
+            // determine number of episodes to keep
+            val podcastSize: Int = podcast.episodes.size
+            var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP)
+            // delete audio files, if necessary
+            when (numberOfEpisodesToKeep <= podcastSize) {
+                true -> {
+                    // from the last episode down to default number of episode that the app keeps
+                    for (i in podcastSize -1 downTo numberOfEpisodesToKeep +1) {
+                        context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
+                    }
+                }
+                false -> numberOfEpisodesToKeep = podcastSize
+            }
+            // create a trimmed version of the episode list
+            val episodesTrimmed: MutableList<Episode> = podcast.episodes.subList(0, numberOfEpisodesToKeep)
+            podcast.episodes = episodesTrimmed
+            // update player state to reflect collection chages
+            updatePlayerStateAfterCollectionChange(context, collection)
         }
-        // determine number of episodes to keep
-        val podcastSize: Int = podcast.episodes.size
-        var numberOfEpisodesToKeep = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_EPISODES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP);
-        if (numberOfEpisodesToKeep <= podcastSize) {
-            // size of podcast larger/equal -> delete unneeded audio files
-            podcast.episodes.forEachIndexed { index, episode ->
-                if (index >= numberOfEpisodesToKeep && episode.audio.isNotEmpty()) {
-                    context.contentResolver.delete(Uri.parse(episode.audio), null, null)
+        return collection
+    }
+
+
+    /* Deletes audio files that are no longer needed */
+    fun deleteOldAudioFiles(context: Context, collection: Collection): Collection {
+        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP)
+        for (podcast: Podcast in collection.podcasts) {
+            val podcastSize = podcast.episodes.size
+            // from the last episode down to default number of audio files that the app keeps
+            for (i in podcastSize - 1 downTo numberOfAudioFilesToKeep + 1) {
+                // check if episode can be deleted
+                if (canBeDeleted(context, podcast.episodes[i])) {
+                    // delete audio file
+                    context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
+                    // remove audio reference
+                    podcast.episodes[i].audio = String()
+                    // reset manually downloaded state
+                    podcast.episodes[i].manuallyDownloaded = false
                 }
             }
-        } else {
-            // size of podcast smaller -> use size for numberOfEpisodesToKeep
-            numberOfEpisodesToKeep = podcastSize
         }
-        // create a trimmed version of the episode list
-        val episodesTrimmed: MutableList<Episode> = podcast.episodes.subList(0, numberOfEpisodesToKeep)
-        podcast.episodes = episodesTrimmed
+        updatePlayerStateAfterCollectionChange(context, collection)
+        return collection
+    }
 
-        return podcast
+
+    /* Deletes an episode - used when user presses the delete button */
+    fun deleteEpisodeFile(context: Context, collection: Collection, mediaId: String): Collection {
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                if (episode.getMediaId() == mediaId) {
+                    // delete audio file
+                    context.getContentResolver().delete(Uri.parse(episode.audio), null, null)
+                    // remove audio reference
+                    episode.audio = String()
+                    // reset manually downloaded state
+                    episode.manuallyDownloaded = false
+                }
+            }
+        }
+        updatePlayerStateAfterCollectionChange(context, collection)
+        return collection
+    }
+
+
+    /* Clears media id in player if audio is empty (of if episode is not available) */
+    private fun updatePlayerStateAfterCollectionChange(context: Context, collection: Collection) {
+        val playerMediaId: String = PreferencesHelper.loadCurrentMediaId(context)
+        if (getEpisode(collection, playerMediaId).audio.isEmpty()) {
+            PreferencesHelper.savePlayerPlayBackState(context, PlaybackStateCompat.STATE_STOPPED)
+            PreferencesHelper.saveCurrentMediaId(context)
+        }
+    }
+
+
+    /* Determines if an episode can be deleted */
+    private fun canBeDeleted(context: Context, episode: Episode): Boolean {
+        if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
+            // episode is in Up Next queue
+            return false
+        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED || episode.isFinished()) {
+            // episode is paused or playing
+            return false
+        } else if (episode.audio.isEmpty()) {
+            // episode has no audio reference
+            return false
+        } else if (episode.manuallyDownloaded) {
+            // episode was manually downloaded
+            return false
+        } else {
+            // episode may be deleted
+            return true
+        }
     }
 
 
