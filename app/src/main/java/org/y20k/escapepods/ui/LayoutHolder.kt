@@ -166,12 +166,12 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Toggles visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
-    fun togglePlayerVisibility(context: Context, playbackState: Int) {
+    fun togglePlayerVisibility(context: Context, playbackState: Int): Boolean {
         when (playbackState) {
-            PlaybackStateCompat.STATE_STOPPED -> hidePlayer(context)
-            PlaybackStateCompat.STATE_NONE -> hidePlayer(context)
-            PlaybackStateCompat.STATE_ERROR -> hidePlayer(context)
-            else -> showPlayer(context)
+            PlaybackStateCompat.STATE_STOPPED -> return hidePlayer(context)
+            PlaybackStateCompat.STATE_NONE -> return hidePlayer(context)
+            PlaybackStateCompat.STATE_ERROR -> return hidePlayer(context)
+            else -> return showPlayer(context)
         }
     }
 
@@ -212,18 +212,20 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Shows player */
-    private fun showPlayer(context: Context) {
+    private fun showPlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
         if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
         }
+        return true
     }
 
 
     /* Hides player */
-    private fun hidePlayer(context: Context) {
+    private fun hidePlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, 0)
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+        return true
     }
 
 

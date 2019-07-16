@@ -4,15 +4,15 @@ apply plugin: 'kotlin-android-extensions'
 
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 28
     // buildToolsVersion is optional because the plugin uses a recommended version by default
 
     defaultConfig {
-        applicationId rootProject.ext.applicationId
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
+        applicationId 'org.y20k.escapepods'
+        minSdkVersion 25
+        targetSdkVersion 28
+        versionCode 1
+        versionName '0.4.0'
     }
 
     compileOptions {
@@ -28,34 +28,27 @@ android {
     }
 }
 
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinxCoroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.2"
 
-    implementation "com.google.android.material:material:$materialVersion"
+    implementation "com.google.android.material:material:1.0.0"
 
-    implementation "androidx.core:core-ktx:$ktxVersion"
-    implementation "androidx.appcompat:appcompat:$appcompatVersion"
-    implementation "androidx.cardview:cardview:$cardviewVersion"
-    implementation "androidx.media2:media2-common:$media2Version"
-//    implementation "androidx.media2:media2-player:$media2Version"
-    implementation "androidx.media2:media2-session:$media2Version"
-    implementation "androidx.recyclerview:recyclerview:$recyclerviewVersion"
-    implementation "androidx.palette:palette:$paletteVersion"
+    implementation "androidx.appcompat:appcompat:1.1.0-rc01"
+    implementation "androidx.constraintlayout:constraintlayout:1.1.3"
+    implementation "androidx.core:core-ktx:1.0.2"
+    implementation "androidx.palette:palette:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.1.0-beta01"
 
-    implementation "android.arch.work:work-runtime-ktx:$workVersion"
+    implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
-    implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
-
-    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoPlayerVersion"
-    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.google.android.exoplayer:exoplayer:2.10.2"
+    implementation "com.google.android.exoplayer:extension-mediasession:2.10.2"
+    implementation "com.google.code.gson:gson:2.8.5"
 }
-
 
 androidExtensions {
     experimental = true

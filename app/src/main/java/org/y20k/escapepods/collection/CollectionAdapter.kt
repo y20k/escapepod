@@ -40,6 +40,7 @@ import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.dialogs.AddPodcastDialog
+import org.y20k.escapepods.dialogs.YesNoDialog
 import org.y20k.escapepods.helpers.CollectionHelper
 import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.LogHelper
@@ -116,6 +117,13 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 addNewViewHolder.addNewPodcastView.setOnClickListener {
                     // show the add podcast dialog
                     AddPodcastDialog(activity as AddPodcastDialog.AddPodcastDialogListener).show(activity)
+                }
+                addNewViewHolder.addNewPodcastView.setOnLongClickListener {
+                    val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                    v.vibrate(50)
+                    // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+                    YesNoDialog(activity as YesNoDialog.YesNoDialogListener).show(activity, Keys.DIALOG_DELETE_DOWNLOADS, R.string.dialog_yes_no_title_delete_downloads, R.string.dialog_yes_no_message_delete_downloads, R.string.dialog_yes_no_positive_button_delete_downloads)
+                    return@setOnLongClickListener true
                 }
             }
 
@@ -325,6 +333,19 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
         LogHelper.v(TAG, "Deleting episode: $mediaID")
         // delete episode and update collection
         collection = CollectionHelper.deleteEpisodeFile(context, collection, mediaID)
+        // update player state if necessary
+        PreferencesHelper.updatePlayerState(context, collection)
+        // save collection and broadcast changes
+        CollectionHelper.saveCollection(context, collection)
+    }
+
+
+    /* Deletes all episode audio files - deep clean */
+    fun deleteAllEpisodes(context: Context) {
+        // delete all episodes
+        collection = CollectionHelper.deleteAllAudioFile(context, collection)
+        // update player state if necessary
+        PreferencesHelper.updatePlayerState(context, collection)
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, collection)
     }

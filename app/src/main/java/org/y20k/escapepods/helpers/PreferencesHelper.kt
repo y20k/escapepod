@@ -19,6 +19,7 @@ import android.preference.PreferenceManager
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepods.Keys
+import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.ui.PlayerState
 import java.util.*
 
@@ -140,4 +141,10 @@ object PreferencesHelper {
     }
 
 
+    /* Reset and save player state if audio file is no longer available */
+    fun updatePlayerState(context: Context, collection: Collection, playerState: PlayerState = loadPlayerState(context)) {
+        if (CollectionHelper.getEpisode(collection, playerState.episodeMediaId).audio.isEmpty()) {
+            savePlayerState(context, PlayerState())
+        }
+    }
 }

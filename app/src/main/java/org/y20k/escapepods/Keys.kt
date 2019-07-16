@@ -96,6 +96,7 @@ object Keys {
     const val DIALOG_REMOVE_PODCAST: Int = 3
     const val DIALOG_DELETE_EPISODE: Int = 4
     const val DIALOG_ADD_UP_NEXT: Int = 5
+    const val DIALOG_DELETE_DOWNLOADS: Int = 6
 
     // dialog results
     const val DIALOG_RESULT_DEFAULT: Int = -1

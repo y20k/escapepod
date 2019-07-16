@@ -287,13 +287,18 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_ADD_UP_NEXT -> {
                 val episode = CollectionHelper.getEpisode(collection, dialogPayloadString)
                 when (dialogResult) {
-                    // user tapped: start playback"
+                    // user tapped: start playback
                     true -> togglePlayback(true, episode.getMediaId(), episode.playbackState)
                     // user tapped: add to up next
                     false -> updateUpNext(episode)
                 }
             }
-
+            Keys.DIALOG_DELETE_DOWNLOADS -> {
+                when (dialogResult) {
+                    // user tapped: delete all downloads
+                    true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
+                }
+            }
         }
     }
 
@@ -400,15 +405,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-
     /* Sets up the player */
     private fun setupPlayer() {
-        layout.togglePlayerVisibility(this, playerState.playbackState)
-        layout.togglePlayButtons(playerState.playbackState)
-        if (playerState.episodeMediaId.isNotEmpty()) {
-            val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-            layout.updatePlayerViews(this, episode)
-            layout.updateProgressbar(episode.playbackPosition)
+        // toggle player visibility
+        if (layout.togglePlayerVisibility(this, playerState.playbackState)) {
+            // CASE: player is visible
+            layout.togglePlayButtons(playerState.playbackState)
+            if (playerState.episodeMediaId.isNotEmpty()) {
+                val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+                layout.updatePlayerViews(this, episode)
+                layout.updateProgressbar(episode.playbackPosition)
+            }
         }
     }
 
@@ -577,19 +584,23 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Observe view model of podcast collection*/
+    /* Observe view model of podcast collection */
     private fun observeCollectionViewModel() {
         collectionViewModel.collectionLiveData.observe(this, Observer<Collection> { it ->
             // update collection
             collection = it
             // updates current episode in player views
             playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
-            val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-            layout.updatePlayerViews(this,episode)
+            // toggle visibility of player
+            if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playerState.playbackState)) {
+                // update player view, if player is visible
+                val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+                layout.updatePlayerViews(this,episode)
+            }
             // updates the up next queue in player views
             val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
             layout.updateUpNextViews(upNextEpisode)
-        })
+       })
     }
 
 
@@ -677,8 +688,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
             LogHelper.d(TAG, "Playback State changed. Update UI.")
             playerState.playbackState = playbackState.state
-            layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
-            layout.togglePlayerVisibility(this@PodcastPlayerActivity, playbackState.state)
+            if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playbackState.state)) {
+                // CASE: Player is visible
+                layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
+            }
             togglePeriodicPlaybackPositionRequest(playbackState)
         }
 

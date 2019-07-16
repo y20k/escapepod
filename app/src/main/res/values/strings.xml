@@ -11,7 +11,7 @@
     <string name="dialog_add_podcast_button">Add</string>
     <string name="dialog_add_podcast_input_hint">Paste podcast link</string>
     <string name="dialog_add_podcast_message">Add new podcast</string>
-    <string name="dialog_add_podcast_howto">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</string>
+    <string name="dialog_add_podcast_howto">You can add podcast XML adresses. Those can usually be found on the respective podcast\'s homepage. You may also tap on a podcast XML link and open it using Escapepods. Please note: Escapepods does not feature a podcast search</string>
     <string name="dialog_metered_network_message_default">Your device is connected to a metered network.</string>
     <string name="dialog_metered_network_button_okay_default">Proceed anyway</string>
     <string name="dialog_metered_network_title_default">Metered Network</string>
@@ -35,19 +35,23 @@
     <string name="dialog_error_message_no_network">Your device has no network connection.</string>
     <string name="dialog_error_title_default">Error</string>
     <string name="dialog_error_message_default">An error occurred</string>
-    <string name="dialog_yes_no_title_update_collection">Update podcasts</string>
+    <string name="dialog_yes_no_title_update_collection">Update Podcasts</string>
     <string name="dialog_yes_no_message_update_collection">Do you want to check, if there are new episodes available?</string>
     <string name="dialog_yes_no_positive_button_update_collection">Update</string>
-    <string name="dialog_yes_no_title_remove_podcast">Remove podcast</string>
+    <string name="dialog_yes_no_title_remove_podcast">Remove Podcast</string>
     <string name="dialog_yes_no_message_remove_podcast">Do you want to remove this podcast?</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
-    <string name="dialog_yes_no_title_delete_episode">Delete episode</string>
+    <string name="dialog_yes_no_title_delete_episode">Delete Episode</string>
     <string name="dialog_yes_no_message_delete_episode">Do you want to delete this episode?</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
     <string name="dialog_yes_no_title_add_up_next">Start Listening</string>
     <string name="dialog_yes_no_message_add_up_next">Do you want to start listening to this episode right away?</string>
     <string name="dialog_yes_no_positive_button_add_up_next">Start Now</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Add to Up Next</string>
+    <string name="dialog_yes_no_title_delete_downloads">Delete Downloads</string>
+    <string name="dialog_yes_no_message_delete_downloads">Do you want to delete all downloaded episodes? You can re-download them afterwards.</string>
+    <string name="dialog_yes_no_positive_button_delete_downloads">Delete All</string>
+    <string name="dialog_yes_no_negative_button_delete_downloads">Cancel</string>
     <string name="dialog_yes_no_title_default">Decide</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_positive_button_default">Yes</string>
@@ -73,7 +77,6 @@
     <string name="toast_message_validation_error_audio_references">RSS validation: Feed does not contain any audio references.</string>
     <string name="toast_message_error_missing_storage_permission">Permission "Storage" is needed in order to open this file.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is disabled.</string>
-
 
     <!-- Podcast List -->
     <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
@@ -136,7 +139,5 @@
         <signature name=\"%1$s\" package=\"%2$s\">\n\t<key>%3$s</key>\n</signature>\n
         ]]>
     </string>
-
-
 
 </resources>
