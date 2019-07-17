@@ -114,11 +114,17 @@ object CollectionHelper {
                         newEpisodes.add(episode)
                     }
                 }
-                // sort new episodes by publication date
-                newEpisodes.sortByDescending { it.publicationDate }
-                // update last update
                 if (newEpisodes.isNotEmpty()) {
+                    // sort new episodes by publication date
+                    newEpisodes.sortByDescending { it.publicationDate }
+                    // update last update
                     podcast.lastUpdate = newEpisodes[0].publicationDate
+                    // add covers
+                    newEpisodes.forEach { episode ->
+                        if (episode.cover == Keys.LOCATION_DEFAULT_COVER) {
+                            episode.cover = podcast.cover
+                        }
+                    }
                 }
                 // add all new episodes
                 podcast.episodes.addAll(newEpisodes)
@@ -146,17 +152,6 @@ object CollectionHelper {
         }
         // Default return
         return Keys.PODCAST_STATE_PODCAST_UNCHANGED
-    }
-
-
-    /* Puts the podcast cover in episodes with no cover  */
-    fun fillEmptyEpisodeCovers(podcast: Podcast): Podcast {
-        podcast.episodes.forEach {episode ->
-            if (episode.cover == Keys.LOCATION_DEFAULT_COVER) {
-                episode.cover = podcast.cover
-            }
-        }
-        return podcast
     }
 
 
@@ -425,7 +420,12 @@ object CollectionHelper {
             podcast.episodes.forEach { episode ->
                 if (episode.getMediaId() == mediaId) {
                     // delete audio file
-                    context.getContentResolver().delete(Uri.parse(episode.audio), null, null)
+                    LogHelper.d(TAG, "Deleting audio file for episode: ${episode.title}")
+                    try {
+                        context.getContentResolver().delete(Uri.parse(episode.audio), null, null)
+                    } catch (e: Exception) {
+                        LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
+                    }
                     // remove audio reference
                     episode.audio = String()
                     // reset manually downloaded state

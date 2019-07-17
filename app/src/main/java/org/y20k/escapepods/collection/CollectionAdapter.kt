@@ -39,8 +39,6 @@ import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
-import org.y20k.escapepods.dialogs.AddPodcastDialog
-import org.y20k.escapepods.dialogs.YesNoDialog
 import org.y20k.escapepods.helpers.CollectionHelper
 import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.LogHelper
@@ -65,11 +63,11 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Listener Interface */
     interface CollectionAdapterListener {
-//        fun onItemSelected (mediaId: String, isLongPress: Boolean)
         fun onPlayButtonTapped(mediaId: String, playbackState: Int)
         fun onDownloadButtonTapped(episode: Episode)
         fun onDeleteButtonTapped(episode: Episode)
-//        fun onJumpToPosition (position: Int)
+        fun onDeleteAllButtonTapped()
+        fun onAddNewButtonTapped()
     }
 
 
@@ -116,13 +114,10 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 val addNewViewHolder: AddNewViewHolder = holder as AddNewViewHolder
                 addNewViewHolder.addNewPodcastView.setOnClickListener {
                     // show the add podcast dialog
-                    AddPodcastDialog(activity as AddPodcastDialog.AddPodcastDialogListener).show(activity)
+                    collectionAdapterListener.onAddNewButtonTapped()
                 }
                 addNewViewHolder.addNewPodcastView.setOnLongClickListener {
-                    val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    v.vibrate(50)
-                    // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-                    YesNoDialog(activity as YesNoDialog.YesNoDialogListener).show(activity, Keys.DIALOG_DELETE_DOWNLOADS, R.string.dialog_yes_no_title_delete_downloads, R.string.dialog_yes_no_message_delete_downloads, R.string.dialog_yes_no_positive_button_delete_downloads)
+                    collectionAdapterListener.onDeleteAllButtonTapped()
                     return@setOnLongClickListener true
                 }
             }

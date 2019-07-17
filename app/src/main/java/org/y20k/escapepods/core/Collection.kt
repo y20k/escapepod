@@ -15,6 +15,7 @@
 package org.y20k.escapepods.core
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.Keys
@@ -24,6 +25,7 @@ import java.util.*
 /*
  * Collection class
  */
+@Keep
 @Parcelize
 data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
                       @Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),

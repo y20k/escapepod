@@ -16,6 +16,7 @@ package org.y20k.escapepods.core
 
 import android.os.Parcelable
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.Keys
@@ -26,6 +27,7 @@ import java.util.*
 /*
  * Episode class
  */
+@Keep
 @Parcelize
 data class Episode (@Expose var guid: String = "",
                     @Expose var title: String = "",

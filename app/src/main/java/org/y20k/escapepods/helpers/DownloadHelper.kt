@@ -267,8 +267,7 @@ object DownloadHelper {
             // async: readSuspended xml
             val deferred: Deferred<Podcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }
             // wait for result and create podcast
-            var podcast: Podcast = deferred.await()
-            podcast = CollectionHelper.fillEmptyEpisodeCovers(podcast)
+            val podcast: Podcast = deferred.await()
             when (CollectionHelper.validatePodcast(podcast)) {
                 Keys.PODCAST_VALIDATION_SUCESS -> {
                     addPodcast(context, podcast)

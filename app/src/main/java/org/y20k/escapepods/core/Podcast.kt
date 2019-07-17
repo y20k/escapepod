@@ -15,6 +15,7 @@
 package org.y20k.escapepods.core
 
 import android.os.Parcelable
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepods.Keys
@@ -24,6 +25,7 @@ import java.util.*
 /*
  * Podcast class
  */
+@Keep
 @Parcelize
 data class Podcast(@Expose var name: String = "",
                    @Expose var description: String = "",

@@ -230,8 +230,26 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Overrides onDeleteButtonTapped from CollectionAdapterListener */
     override fun onDeleteButtonTapped(episode: Episode) {
+        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_delete_episode)}\n\n- ${episode.title}"
         YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_DELETE_EPISODE, R.string.dialog_yes_no_title_delete_episode, dialogMessage, R.string.dialog_yes_no_positive_button_delete_episode, dialogPayloadString = episode.getMediaId())
+    }
+
+
+    /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
+    override fun onAddNewButtonTapped() {
+        AddPodcastDialog(this).show(this)
+    }
+
+
+    /* Overrides onDeleteAllButtonTapped from CollectionAdapterListener */
+    override fun onDeleteAllButtonTapped() {
+        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        v.vibrate(50)
+        // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+        YesNoDialog(this).show(this, Keys.DIALOG_DELETE_DOWNLOADS, R.string.dialog_yes_no_title_delete_downloads, R.string.dialog_yes_no_message_delete_downloads, R.string.dialog_yes_no_positive_button_delete_downloads)
+
     }
 
 
@@ -284,6 +302,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     true -> collectionAdapter.deleteEpisode(this@PodcastPlayerActivity, dialogPayloadString)
                 }
             }
+            Keys.DIALOG_DELETE_DOWNLOADS -> {
+                when (dialogResult) {
+                    // user tapped: delete all downloads
+                    true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
+                }
+            }
             Keys.DIALOG_ADD_UP_NEXT -> {
                 val episode = CollectionHelper.getEpisode(collection, dialogPayloadString)
                 when (dialogResult) {
@@ -291,12 +315,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     true -> togglePlayback(true, episode.getMediaId(), episode.playbackState)
                     // user tapped: add to up next
                     false -> updateUpNext(episode)
-                }
-            }
-            Keys.DIALOG_DELETE_DOWNLOADS -> {
-                when (dialogResult) {
-                    // user tapped: delete all downloads
-                    true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
                 }
             }
         }
