@@ -278,12 +278,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         when (dialogType) {
             Keys.DIALOG_UPDATE_COLLECTION -> {
                 when (dialogResult) {
+                    // user tapped update collection
                     true -> {
                         if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
                             updateCollection()
                         } else {
                             Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
                         }
+                    }
+                    // user tapped cancel - for dev purposes: refresh the podcast list view // todo check if that can be helpful
+                    false -> {
+                        collectionAdapter.notifyDataSetChanged()
                     }
                 }
             }
@@ -345,14 +350,20 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             layout.swipeRefreshLayout.isRefreshing = false
         }
 
-        // set up sleep timer button - long press
+
+        // set up sleep timer button
+        layout.sheetSleepButtonView.setOnClickListener {
+            Toast.makeText(this, getString(R.string.toast_message_sleep_not_yet_available), Toast.LENGTH_LONG).show()
+        }
+
+        // set up sleep timer button - long press (night mode switch)
         layout.sheetSleepButtonView.setOnLongClickListener {
             val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             NightModeHelper.switchMode(this)
             recreate()
-            true
+            return@setOnLongClickListener true
         }
 
     }

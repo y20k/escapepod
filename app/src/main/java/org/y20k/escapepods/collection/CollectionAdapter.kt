@@ -160,7 +160,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-            true
+            return@setOnLongClickListener true
         }
     }
 

@@ -230,17 +230,15 @@ object CollectionHelper {
 
 
     /* Sets the flag "manually downloaded" in Episode for given media ID String */
-    fun setManuallyDownloaded(context: Context, collection: Collection, mediaId: String, manuallyDownloaded: Boolean): Episode {
+    fun setManuallyDownloaded(collection: Collection, mediaId: String, manuallyDownloaded: Boolean): Collection {
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
                 if (episode.getMediaId() == mediaId) {
                     episode.manuallyDownloaded = manuallyDownloaded
-                    saveCollection(context, collection)
-                    return episode
                 }
             }
         }
-        return Episode()
+        return collection
     }
 
 

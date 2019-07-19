@@ -63,7 +63,8 @@ object DownloadHelper {
         initialize(context)
         // set manually downloaded state, if necessary
         if (manuallyDownloaded) {
-            CollectionHelper.setManuallyDownloaded(context, collection, mediaId, true)
+            collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
+            saveCollection(context)
         }
         // enqueue episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
@@ -251,8 +252,8 @@ object DownloadHelper {
 
     /* Saves podcast collection to storage */
     private fun saveCollection(context: Context, opmlExport: Boolean = false) {
-        // save collection
-        CollectionHelper.saveCollection(context, collection)
+        // save collection - not async
+        CollectionHelper.saveCollection(context, collection, Calendar.getInstance().time, false)
         // export as OPML, if requested
         if (opmlExport) {CollectionHelper.exportCollection(context, collection)}
     }
@@ -274,10 +275,10 @@ object DownloadHelper {
                 }
                 Keys.PODCAST_VALIDATION_MISSING_COVER -> {
                     addPodcast(context, podcast)
-                    Toast.makeText(context, context.getString(R.string.toast_message_validation_error_missing_cover), Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, context.getString(R.string.toast_message_error_validation_missing_cover), Toast.LENGTH_LONG).show()
                 }
                 Keys.PODCAST_VALIDATION_NO_AUDIO_FILES -> {
-                    Toast.makeText(context, context.getString(R.string.toast_message_validation_error_audio_references), Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, context.getString(R.string.toast_message_error_validation_audio_references), Toast.LENGTH_LONG).show()
                 }
             }
             CollectionHelper.trimPodcastEpisodeLists(context, collection)

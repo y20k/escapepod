@@ -4,131 +4,136 @@
     <string name="app_name">Escapepods</string>
 
     <!-- Dialogs -->
-    <string name="dialog_generic_button_okay">Okay</string>
-    <string name="dialog_generic_button_cancel">Cancel</string>
-    <string name="dialog_generic_details_button">Show details</string>
-    <string name="dialog_generic_details_default">No details available</string>
     <string name="dialog_add_podcast_button">Add</string>
+    <string name="dialog_add_podcast_howto">You can add podcast XML adresses. Those can usually be found on the respective podcast\'s homepage. You may also tap on a podcast XML link and open it using Escapepods. Please note: Escapepods does not feature a podcast search</string>
     <string name="dialog_add_podcast_input_hint">Paste podcast link</string>
     <string name="dialog_add_podcast_message">Add new podcast</string>
-    <string name="dialog_add_podcast_howto">You can add podcast XML adresses. Those can usually be found on the respective podcast\'s homepage. You may also tap on a podcast XML link and open it using Escapepods. Please note: Escapepods does not feature a podcast search</string>
-    <string name="dialog_metered_network_message_default">Your device is connected to a metered network.</string>
-    <string name="dialog_metered_network_button_okay_default">Proceed anyway</string>
-    <string name="dialog_metered_network_title_default">Metered Network</string>
-    <string name="dialog_metered_update_collection_title">Update without Wifi</string>
-    <string name="dialog_metered_update_collection_message">Your device is not connected to a Wifi network. Do you want to update your podcasts anyway?</string>
-    <string name="dialog_metered_update_collection_button_okay">Update anyway</string>
-    <string name="dialog_metered_download_episode_title">Download without Wifi</string>
-    <string name="dialog_metered_download_episode_message">Your device is not connected to a Wifi network. Do you want to download this episode anyway?</string>
+    <string name="dialog_error_message_default">An error occurred</string>
+    <string name="dialog_error_message_no_network">Your device has no network connection.</string>
+    <string name="dialog_error_message_podcast_duplicate">This podcast is already part of your collection.</string>
+    <string name="dialog_error_message_podcast_invalid_feed">This address is not an RSS feed.</string>
+    <string name="dialog_error_title_default">Error</string>
+    <string name="dialog_error_title_no_network">Offline</string>
+    <string name="dialog_error_title_podcast_duplicate">Duplicate Podcast</string>
+    <string name="dialog_error_title_podcast_invalid_feed">Invalid Podcast Feed</string>
+    <string name="dialog_generic_button_cancel">Cancel</string>
+    <string name="dialog_generic_button_okay">Okay</string>
+    <string name="dialog_generic_details_button">Show details</string>
+    <string name="dialog_generic_details_default">No details available</string>
     <string name="dialog_metered_download_episode_button_okay">Download anyway</string>
-    <string name="dialog_opml_import_title">OMPL Import</string>
-    <string name="dialog_opml_import_message">Do you want to add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
-    <string name="dialog_opml_import_message_error">Unable to import OPML file. No podcasts found.</string>
+    <string name="dialog_metered_download_episode_message">Your device is not connected to a Wifi network. Do you want to download this episode anyway?</string>
+    <string name="dialog_metered_download_episode_title">Download without Wifi</string>
+    <string name="dialog_metered_network_button_okay_default">Proceed anyway</string>
+    <string name="dialog_metered_network_message_default">Your device is connected to a metered network.</string>
+    <string name="dialog_metered_network_title_default">Metered Network</string>
+    <string name="dialog_metered_update_collection_button_okay">Update anyway</string>
+    <string name="dialog_metered_update_collection_message">Your device is not connected to a Wifi network. Do you want to update your podcasts anyway?</string>
+    <string name="dialog_metered_update_collection_title">Update without Wifi</string>
     <string name="dialog_opml_import_button_okay">Import</string>
     <string name="dialog_opml_import_details_button">Show details</string>
     <string name="dialog_opml_import_details_default">No details available</string>
-    <string name="dialog_error_title_podcast_invalid_feed">Invalid Podcast Feed</string>
-    <string name="dialog_error_message_podcast_invalid_feed">This address is not an RSS feed.</string>
-    <string name="dialog_error_title_podcast_duplicate">Duplicate Podcast</string>
-    <string name="dialog_error_message_podcast_duplicate">This podcast is already part of your collection.</string>
-    <string name="dialog_error_title_no_network">Offline</string>
-    <string name="dialog_error_message_no_network">Your device has no network connection.</string>
-    <string name="dialog_error_title_default">Error</string>
-    <string name="dialog_error_message_default">An error occurred</string>
-    <string name="dialog_yes_no_title_update_collection">Update Podcasts</string>
-    <string name="dialog_yes_no_message_update_collection">Do you want to check, if there are new episodes available?</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Update</string>
-    <string name="dialog_yes_no_title_remove_podcast">Remove Podcast</string>
-    <string name="dialog_yes_no_message_remove_podcast">Do you want to remove this podcast?</string>
-    <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
-    <string name="dialog_yes_no_title_delete_episode">Delete Episode</string>
-    <string name="dialog_yes_no_message_delete_episode">Do you want to delete this episode?</string>
-    <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
-    <string name="dialog_yes_no_title_add_up_next">Start Listening</string>
+    <string name="dialog_opml_import_message_error">Unable to import OPML file. No podcasts found.</string>
+    <string name="dialog_opml_import_message">Do you want to add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
+    <string name="dialog_opml_import_title">OMPL Import</string>
     <string name="dialog_yes_no_message_add_up_next">Do you want to start listening to this episode right away?</string>
-    <string name="dialog_yes_no_positive_button_add_up_next">Start Now</string>
-    <string name="dialog_yes_no_negative_button_add_up_next">Add to Up Next</string>
-    <string name="dialog_yes_no_title_delete_downloads">Delete Downloads</string>
-    <string name="dialog_yes_no_message_delete_downloads">Do you want to delete all downloaded episodes? You can re-download them afterwards.</string>
-    <string name="dialog_yes_no_positive_button_delete_downloads">Delete All</string>
-    <string name="dialog_yes_no_negative_button_delete_downloads">Cancel</string>
-    <string name="dialog_yes_no_title_default">Decide</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
-    <string name="dialog_yes_no_positive_button_default">Yes</string>
+    <string name="dialog_yes_no_message_delete_downloads">Do you want to delete all downloaded episodes? You can re-download them afterwards.</string>
+    <string name="dialog_yes_no_message_delete_episode">Do you want to delete this episode?</string>
+    <string name="dialog_yes_no_message_remove_podcast">Do you want to remove this podcast?</string>
+    <string name="dialog_yes_no_message_update_collection">Do you want to check, if there are new episodes available?</string>
+    <string name="dialog_yes_no_negative_button_add_up_next">Add to Up Next</string>
     <string name="dialog_yes_no_negative_button_default">No</string>
+    <string name="dialog_yes_no_negative_button_delete_downloads">Cancel</string>
+    <string name="dialog_yes_no_positive_button_add_up_next">Start Now</string>
+    <string name="dialog_yes_no_positive_button_default">Yes</string>
+    <string name="dialog_yes_no_positive_button_delete_downloads">Delete All</string>
+    <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
+    <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Update</string>
+    <string name="dialog_yes_no_title_add_up_next">Start Listening</string>
+    <string name="dialog_yes_no_title_default">Decide</string>
+    <string name="dialog_yes_no_title_delete_downloads">Delete Downloads</string>
+    <string name="dialog_yes_no_title_delete_episode">Delete Episode</string>
+    <string name="dialog_yes_no_title_remove_podcast">Remove Podcast</string>
+    <string name="dialog_yes_no_title_update_collection">Update Podcasts</string>
 
     <!-- Player -->
     <string name="player_up_next_headline">Up Next:</string>
 
     <!-- Toasts -->
-    <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
-    <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
-    <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
-    <string name="toast_message_up_next_added_episode">Added episode to Up Next queue.</string>
-    <string name="toast_message_up_next_removed_episode">Removed episode from Up Next queue.</string>
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection is up to date.</string>
-    <string name="toast_message_updating_collection">Updating podcast collection.</string>
     <string name="toast_message_downloading_episode">Downloading Episode.</string>
-    <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
-    <string name="toast_message_error_refreshing_cover">Unable to refresh cover. Feed does not contain a cover reference.</string>
-    <string name="toast_message_validation_error_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
-    <string name="toast_message_validation_error_audio_references">RSS validation: Feed does not contain any audio references.</string>
     <string name="toast_message_error_missing_storage_permission">Permission "Storage" is needed in order to open this file.</string>
+    <string name="toast_message_error_refreshing_cover">Unable to refresh cover. Feed does not contain a cover reference.</string>
+    <string name="toast_message_error_validation_audio_references">RSS validation: Feed does not contain any audio references.</string>
+    <string name="toast_message_error_validation_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
+    <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is disabled.</string>
+    <string name="toast_message_sleep_not_yet_available">Sleep timer not yet available.</string>
+    <string name="toast_message_sleep_timer_started">Sleep timer started.</string>
+    <string name="toast_message_sleep_timer_stopped">Sleep timer stopped.</string>
+
+
+    <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
+    <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
+    <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
+    <string name="toast_message_up_next_added_episode">Added episode to Up Next queue.</string>
+    <string name="toast_message_up_next_removed_episode">Removed episode from Up Next queue.</string>
+    <string name="toast_message_updating_collection">Updating podcast collection.</string>
 
     <!-- Podcast List -->
-    <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
-    <string name="podcast_list_button_toggle_hide_older_episodes">Hide older episodes</string>
     <string name="podcast_list_button_add_new_podcast">Add new podcast</string>
+    <string name="podcast_list_button_toggle_hide_older_episodes">Hide older episodes</string>
+    <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
 
     <!-- Notification -->
-    <string name="notification_play">Play</string>
-    <string name="notification_pause">Pause</string>
-    <string name="notification_skip_forward">Skip forward</string>
-    <string name="notification_skip_back">Skip back</string>
-    <string name="notification_playing">Playing</string>
-    <string name="notification_now_playing_channel_name">Playback Controls</string>
     <string name="notification_now_playing_channel_description">Playback controls, episode name and logo.</string>
+    <string name="notification_now_playing_channel_name">Playback Controls</string>
+    <string name="notification_pause">Pause</string>
+    <string name="notification_play">Play</string>
+    <string name="notification_playing">Playing</string>
+    <string name="notification_skip_back">Skip back</string>
+    <string name="notification_skip_forward">Skip forward</string>
 
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an escapepod in space</string>
+    <string name="descr_card_add_new_button">Button for adding new podcast feed</string>
+    <string name="descr_card_delete_episode_button">Small button deleting an episode download file</string>
+    <string name="descr_card_episode_date">Publishing date of episode</string>
+    <string name="descr_card_episode_name">Name of episode</string>
+    <string name="descr_card_playback_indicator">Indicator for playback progress</string>
     <string name="descr_card_podcast_cover">Podcast cover image</string>
     <string name="descr_card_podcast_name">Name of podcast</string>
-    <string name="descr_card_episode_name">Name of episode</string>
-    <string name="descr_card_episode_date">Publishing date of episode</string>
-    <string name="descr_card_delete_episode_button">Small button deleting an episode download file</string>
     <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
-    <string name="descr_card_playback_indicator">Indicator for playback progress</string>
-    <string name="descr_card_add_new_button">Button for adding new podcast feed</string>
+    <string name="descr_expanded_episode_length">Time remaining in current episode</string>
+    <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
+    <string name="descr_expanded_player_episode_name">Name of current episode</string>
+    <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
+    <string name="descr_expanded_player_next_chapter_button">Next chapter button</string>
+    <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
+    <string name="descr_expanded_player_podcast_cover">Large podcast cover image</string>
+    <string name="descr_expanded_player_previous_chapter_button">Previous chapter button</string>
+    <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
+    <string name="descr_expanded_player_seekbar">Episode playback progress bar with drag handle</string>
+    <string name="descr_expanded_player_sleep_timer_button">Sleep timer button</string>
+    <string name="descr_expanded_player_time_played">Time played in current episode</string>
+    <string name="descr_expanded_player_up_next_clear_button">Clear the Up Next queue</string>
+    <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the Up Next queue</string>
+    <string name="descr_player_episode_name">Name of current episode</string>
     <string name="descr_player_playback_button">Main button for starting and pausing playback</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
     <string name="descr_player_podcast_name">Name of current podcast</string>
-    <string name="descr_player_episode_name">Name of current episode</string>
-    <string name="descr_expanded_player_sleep_timer_button">Sleep timer button</string>
-    <string name="descr_expanded_player_podcast_cover">Large podcast cover image</string>
-    <string name="descr_expanded_player_episode_name">Name of current episode</string>
-    <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
-    <string name="descr_expanded_player_previous_chapter_button">Previous chapter button</string>
-    <string name="descr_expanded_player_next_chapter_button">Next chapter button</string>
-    <string name="descr_expanded_player_time_played">Time played in current episode</string>
-    <string name="descr_expanded_episode_length">Time remaining in current episode</string>
-    <string name="descr_expanded_player_seekbar">Episode playback progress bar with drag handle</string>
-    <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
-    <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
-    <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
-    <string name="descr_expanded_player_up_next_clear_button">Clear the Up Next queue</string>
-    <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the Up Next queue</string>
 
     <!-- Sample Text -->
-    <string name="sample_text_podcast_name" translatable="false">Security Now</string>
-    <string name="sample_text_episode_0_name" translatable="false">As the Worm Turns</string>
-    <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
-    <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
-    <string name="sample_text_episode_0_length" translatable="false">-18:00</string>
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
+    <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
+    <string name="sample_text_episode_0_length" translatable="false">-18:00</string>
+    <string name="sample_text_episode_0_name" translatable="false">As the Worm Turns</string>
+    <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
+    <string name="sample_text_podcast_name" translatable="false">Security Now</string>
     <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
 
     <!-- Allowed Caller Template -->
