@@ -19,7 +19,7 @@ Escapepods is published under the [MIT open source license](https://opensource.o
 As long as Escapepods is still in pre-release state you can get it only here on GitHub (head over to [releases](https://github.com/y20k/escapepods/releases)). A future release on F-Droid is planned.
 
 ### I cannot add my favorite podcast
-The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected at the current stage of development. Please head over to the [wiki](https://github.com/y20k/escapepods/wiki) and add the podcast that failed to import.
+The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected at the current stage of development. Please head over to the [wiki](https://github.com/y20k/escapepods/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
 
 ### Where are the settings?
 Escapepods has no settings. The app is designed to be very simple. It tries to rely on sensible defaults.
