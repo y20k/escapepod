@@ -61,15 +61,19 @@ object DownloadHelper {
     fun downloadEpisode(context: Context, mediaId: String, ignoreWifiRestriction: Boolean, manuallyDownloaded: Boolean = false) {
         // initialize main class variables, if necessary
         initialize(context)
-        // set manually downloaded state, if necessary
-        if (manuallyDownloaded) {
-            collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
-            saveCollection(context)
-        }
-        // enqueue episode
+        // get episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
-        val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
-        enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
+        // prevent double download
+        if (isAlreadyActive(episode.remoteAudioFileLocation)) {
+            // set manually downloaded state, if necessary
+            if (manuallyDownloaded) {
+                collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
+                saveCollection(context)
+            }
+            // enqueue episode
+            val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
+            enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
+        }
     }
 
 
@@ -106,18 +110,18 @@ object DownloadHelper {
 
 
     /* Processes a given download ID */
-    fun processDownload(context: Context, downloadID: Long) {
+    fun processDownload(context: Context, downloadId: Long) {
         // initialize main class variables, if necessary
         initialize(context)
         // get local Uri in content://downloads/all_downloads/ for startDownload ID
-        val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadID)
+        val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadId)
         if (downloadResult == null) {
-            LogHelper.w(TAG, "Download not successful. Error code = ${getDownloadError(downloadID)}")
+            LogHelper.w(TAG, "Download not successful. Error code = ${getDownloadError(downloadId)}")
             return
         } else {
             val localFileUri: Uri = downloadResult
             // get remote URL for startDownload ID
-            val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadID)
+            val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadId)
             // determine what to
             val fileType = FileHelper.getFileType(context, localFileUri)
             // Log completed startDownload // todo remove
@@ -127,7 +131,7 @@ object DownloadHelper {
             if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
             if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, localFileUri, remoteFileLocation)
             // remove ID from active downloads
-            removeFromActiveDownloads(context, downloadID)
+            removeFromActiveDownloads(context, downloadId)
         }
     }
 
@@ -152,7 +156,7 @@ object DownloadHelper {
         val folder: String = FileHelper.determineDestinationFolderPath(type, podcastName)
         val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
         // enqueues downloads
-        val newIDs = LongArray(uris.size)
+        val newIds = LongArray(uris.size)
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             if (uris[i].scheme.startsWith("http")) {
@@ -160,8 +164,8 @@ object DownloadHelper {
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(uris[i].lastPathSegment)
                         .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
-                newIDs[i] = downloadManager.enqueue(request)
-                activeDownloads.add(newIDs[i])
+                newIds[i] = downloadManager.enqueue(request)
+                activeDownloads.add(newIds[i])
             }
         }
         setActiveDownloads(context, activeDownloads)
@@ -215,12 +219,29 @@ object DownloadHelper {
 
 
     /* Sets Media Uri in Episode */
-    private fun setEpisodeMediaUri(context: Context, localFileUri: Uri, remoteFileLocation: String) {
+    private fun setEpisodeMediaUri(context: Context, localFileUri: Uri, remoteAudioFileLocation: String) {
+        var matchingEpisodeFound = false
+        // compare remoteFileLocations
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
-                if (episode.remoteAudioFileLocation == remoteFileLocation) {
+                if (episode.remoteAudioFileLocation == remoteAudioFileLocation) {
+                    matchingEpisodeFound = true
                     episode.audio = localFileUri.toString()
                     episode.duration = AudioHelper.getDuration(context, localFileUri)
+                }
+            }
+        }
+        // no matching episode found - try matching filename only (second run) - a hack that should prevent a ton of network requests for potential redirects (e.g. feedburner links)
+        if (!matchingEpisodeFound) {
+            val localFileName: String = FileHelper.getFileName(context, localFileUri)
+            collection.podcasts.forEach { podcast ->
+                podcast.episodes.forEach { episode ->
+                    // compare file names
+                    val url: String = episode.remoteAudioFileLocation
+                     if (localFileName == url.substring(url.lastIndexOf('/')+1, url.length)) {
+                        episode.audio = localFileUri.toString()
+                        episode.duration = AudioHelper.getDuration(context, localFileUri)
+                    }
                 }
             }
         }
@@ -234,13 +255,24 @@ object DownloadHelper {
     }
 
 
+    /* Checks if a file is already being downloaded */
+    private fun isAlreadyActive(remoteFileLocation: String): Boolean {
+        activeDownloads.forEach { downloadId ->
+            if (getRemoteFileLocation(downloadManager, downloadId) == remoteFileLocation) {
+                LogHelper.d(TAG, "File is already in download queue: $remoteFileLocation")
+                return true
+            }
+        }
+        return false
+    }
+
 
     /* Savely remove given startDownload ID from active downloads */
-    private fun removeFromActiveDownloads(context: Context, downloadID: Long): Boolean {
+    private fun removeFromActiveDownloads(context: Context, downloadId: Long): Boolean {
         val iterator: MutableIterator<Long> = activeDownloads.iterator()
         while (iterator.hasNext()) {
             val activeDownload = iterator.next()
-            if (activeDownload.equals(downloadID)) {
+            if (activeDownload.equals(downloadId)) {
                 iterator.remove()
                 setActiveDownloads(context, activeDownloads)
                 return true
@@ -313,9 +345,9 @@ object DownloadHelper {
 
 
     /* Determines the remote file location (the original URL) */
-    private fun getRemoteFileLocation(downloadManager: DownloadManager, downloadID: Long): String {
+    private fun getRemoteFileLocation(downloadManager: DownloadManager, downloadId: Long): String {
         var remoteFileLocation: String = ""
-        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             remoteFileLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
@@ -325,9 +357,9 @@ object DownloadHelper {
 
 
     /* Checks if a given download ID represents a finished download */
-    private fun isDownloadFinished(downloadID: Long): Boolean {
+    private fun isDownloadFinished(downloadId: Long): Boolean {
         var downloadStatus: Int = -1
-        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
@@ -337,9 +369,9 @@ object DownloadHelper {
 
 
     /* Checks if a given download ID represents a finished download */
-    private fun isDownloadActive(downloadID: Long): Boolean {
+    private fun isDownloadActive(downloadId: Long): Boolean {
         var downloadStatus: Int = -1
-        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
@@ -349,9 +381,9 @@ object DownloadHelper {
 
 
     /* Retrieves reason of download error - returns http error codes plus error codes found here check: https://developer.android.com/reference/android/app/DownloadManager */
-    private fun getDownloadError(downloadID: Long): Int {
+    private fun getDownloadError(downloadId: Long): Int {
         var reason: Int = -1
-        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadID))
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
         if (cursor.count > 0) {
             cursor.moveToFirst()
             val downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))

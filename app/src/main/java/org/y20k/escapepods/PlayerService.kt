@@ -357,7 +357,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     val lastUpdate: Date = DateTimeHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
                     // check if reload is necessary
                     if (lastUpdate.after(collection.lastUpdate)) {
-                        LogHelper.w(TAG, "PlayerService - reload collection after broadcast received.") // todo remove
+                        LogHelper.i(TAG, "PlayerService - reload collection after broadcast received.") // todo remove
                         loadCollection(context)
                     }
                 }

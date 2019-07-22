@@ -120,7 +120,7 @@ class RssHelper {
                 // found an episode
                 Keys.RSS_EPISODE -> {
                     val episode: Episode = readEpisode(parser, podcast)
-                    podcast.episodes.add(episode)
+                    if (episode.isValid()) { podcast.episodes.add(episode) }
                 }
                 // skip to next tag
                 else -> XmlHelper.skip(parser)

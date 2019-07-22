@@ -43,7 +43,6 @@ import org.y20k.escapepods.helpers.CollectionHelper
 import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.LogHelper
 import org.y20k.escapepods.helpers.PreferencesHelper
-import java.text.DateFormat
 
 
 /*
@@ -167,7 +166,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Sets up an episode's title views */
     private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        episodeViewHolder.episodeDateView.setText(episode.getDateString(DateFormat.MEDIUM))
+        episodeViewHolder.episodeDateView.setText(episode.getDateString())
         episodeViewHolder.episodeTitleView.setText(episode.title)
     }
 

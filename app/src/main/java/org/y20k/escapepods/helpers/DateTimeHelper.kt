@@ -14,6 +14,7 @@
 
 package org.y20k.escapepods.helpers
 
+import org.y20k.escapepods.Keys
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,10 +33,9 @@ object DateTimeHelper {
     /* Converts RFC 2822 string representation of a date to DATE */
     fun convertFromRfc2822(dateString: String): Date {
         if (dateString.isEmpty()) {
-            // return Calendar.getInstance().time
-            return Date()
+            return Keys.DEFAULT_DATE
         } else {
-            return dateFormat.parse((dateString)) ?: Calendar.getInstance().time
+            return dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
         }
     }
 

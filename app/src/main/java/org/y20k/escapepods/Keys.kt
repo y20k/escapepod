@@ -14,6 +14,8 @@
 
 package org.y20k.escapepods
 
+import java.util.*
+
 
 /*
  * Keys object
@@ -146,6 +148,7 @@ object Keys {
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // default values
+    val DEFAULT_DATE: Date = Date(0L)
     const val DEFAULT_RFC2822_DATE: String = "Thu, 01 Jan 1970 01:00:00 +0100" // --> Date(0)
 
     // keys

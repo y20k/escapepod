@@ -35,7 +35,7 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var audio: String = "",
                     @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
                     @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
-                    @Expose var publicationDate: Date = Calendar.getInstance().time,
+                    @Expose var publicationDate: Date = Keys.DEFAULT_DATE,
                     @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
                     @Expose var playbackPosition: Long = 0L,
                     @Expose var duration: Long = 0L,
@@ -65,7 +65,7 @@ data class Episode (@Expose var guid: String = "",
 
 
     /* Creates a readable date string */
-    fun getDateString(dateStyle: Int): String {
+    fun getDateString(dateStyle: Int = DateFormat.MEDIUM): String {
         return DateFormat.getDateInstance(dateStyle, Locale.getDefault()).format(publicationDate)
     }
 
@@ -74,6 +74,12 @@ data class Episode (@Expose var guid: String = "",
     fun getMediaId(): String {
         return remoteAudioFileLocation
         // return (remoteAudioFileLocation + guid).hashCode().toString() // hash value of remoteAudioFileLocation and guid
+    }
+
+
+    /* Checks if episode has the minimum required elements / data */
+    fun isValid(): Boolean {
+        return title.isNotEmpty() && remoteAudioFileLocation.isNotEmpty() && publicationDate != Keys.DEFAULT_DATE
     }
 
 
