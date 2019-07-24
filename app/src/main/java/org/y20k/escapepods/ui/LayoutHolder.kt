@@ -35,6 +35,7 @@ import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.DateTimeHelper
+import org.y20k.escapepods.helpers.ImageHelper
 import org.y20k.escapepods.helpers.LogHelper
 import org.y20k.escapepods.helpers.UiHelper
 
@@ -107,7 +108,7 @@ data class LayoutHolder(var activity: Activity) {
     /* Updates the player views */
     fun updatePlayerViews(context: Context, episode: Episode) {
         val coverUri = Uri.parse(episode.cover)
-        coverView.setImageURI(coverUri)
+        coverView.setImageBitmap(ImageHelper.getPodcastCover(context,coverUri, Keys.SIZE_COVER_PLAYER))
         coverView.clipToOutline = true // apply rounded corner mask to covers
         coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
         podcastNameView.text = episode.podcastName

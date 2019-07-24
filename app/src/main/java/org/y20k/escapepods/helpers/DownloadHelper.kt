@@ -126,6 +126,7 @@ object DownloadHelper {
             val fileType = FileHelper.getFileType(context, localFileUri)
             // Log completed startDownload // todo remove
             LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
+            LogHelper.save(context, TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
             if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
             if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
             if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
@@ -159,6 +160,7 @@ object DownloadHelper {
         val newIds = LongArray(uris.size)
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
+            LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
             if (uris[i].scheme.startsWith("http")) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
@@ -208,6 +210,7 @@ object DownloadHelper {
         collection.podcasts.forEach { podcast ->
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
                 podcast.cover = localFileUri.toString()
+                podcast.smallCover = FileHelper.saveSmallCover(context, podcast).toString()
                 podcast.episodes.forEach { episode ->
                     episode.cover = localFileUri.toString()
                 }
@@ -297,6 +300,7 @@ object DownloadHelper {
         val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
         uiScope.launch() {
             LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
+            LogHelper.save(context, TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}") // todo remove
             // async: readSuspended xml
             val deferred: Deferred<Podcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }
             // wait for result and create podcast

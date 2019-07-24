@@ -14,8 +14,10 @@
 
 package org.y20k.escapepods.helpers
 
+import android.content.Context
 import android.util.Log
 import org.y20k.escapepods.BuildConfig
+import java.util.*
 
 
 /*
@@ -73,7 +75,31 @@ object LogHelper {
         log(tag, Log.ERROR, t, *messages)
     }
 
-    fun log(tag: String, level: Int, t: Throwable?, vararg messages: Any) {
+    // todo remove debug log feature
+    fun save(context: Context, tag: String, vararg messages: Any) {
+        save(context, tag, null, *messages)
+    }
+
+    // todo remove debug log feature
+    fun save(context: Context, tag: String, t: Throwable?, vararg messages: Any) {
+        val sb = StringBuilder()
+        sb.append(DateTimeHelper.convertToRfc2822(Calendar.getInstance().time))
+        sb.append(" | ")
+        sb.append(tag)
+        sb.append(" | ")
+        for (m in messages) {
+            sb.append(m)
+        }
+        if (t != null) {
+            sb.append("\n")
+            sb.append(Log.getStackTraceString(t))
+        }
+        sb.append("\n")
+        val message = sb.toString()
+        FileHelper.saveLog(context, message)
+    }
+
+    private fun log(tag: String, level: Int, t: Throwable?, vararg messages: Any) {
         val message: String
         if (t == null && messages.size == 1) {
             // handle this common case without the extra cost of creating a stringbuffer:

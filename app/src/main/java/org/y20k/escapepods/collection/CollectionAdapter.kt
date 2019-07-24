@@ -153,7 +153,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Sets the podcast image view */
     private fun setPodcastImage(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
-        podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.cover))
+        podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.smallCover))
         podcastViewHolder.podcastImageView.setOnLongClickListener {
             DownloadHelper.refreshCover(activity, podcast)
             val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

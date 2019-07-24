@@ -106,9 +106,11 @@ object Keys {
     const val DIALOG_EMPTY_PAYLOAD_INT: Int = -1
 
     // file types
+    const val FILE_TYPE_DEFAULT: Int = 0
     const val FILE_TYPE_RSS: Int = 1
     const val FILE_TYPE_AUDIO: Int  = 2
     const val FILE_TYPE_IMAGE: Int  = 3
+
 
     // options
     const val OPTION_REMOVE_FOLDER: Int = -1
@@ -139,12 +141,16 @@ object Keys {
     // file names
     const val COLLECTION_FILE: String = "collection.json"
     const val COLLECTION_OPML_FILE: String = "collection_opml.xml"
+    const val PODCAST_SMALL_COVER_FILE: String = "cover-small.jpg"
+    const val DEBUG_LOG_FILE: String = "log-can-be-deleted.txt"
 
     // locations
     const val LOCATION_DEFAULT_COVER: String = "android.resource://org.y20k.escapepods/drawable/ic_default_cover_rss_icon_24dp"
 
     // sizes (in dp)
-    const val SIZE_COVER_SMALL: Int = 96
+    const val SIZE_COVER_PLAYER: Int = 56
+    const val SIZE_COVER_PODCAST_CARD: Int = 96
+    const val SIZE_COVER_NOTIFICATION_LARGE_ICON: Int = 256
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // default values

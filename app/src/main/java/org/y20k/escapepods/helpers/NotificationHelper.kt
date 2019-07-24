@@ -18,7 +18,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
@@ -35,7 +34,6 @@ import org.y20k.escapepods.Keys
 import org.y20k.escapepods.PlayerService
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Episode
-import org.y20k.escapepods.core.Podcast
 
 
 /*
@@ -87,18 +85,12 @@ class NotificationHelper(private val playerService: PlayerService) {
                 .setContentTitle(episode.podcastName)
                 .setContentText(episode.title)
                 .setDeleteIntent(stopPendingIntent)
-                .setLargeIcon(ImageHelper.getPodcastCover(playerService, Uri.parse(episode.cover), 256))
+                .setLargeIcon(ImageHelper.getPodcastCover(playerService, Uri.parse(episode.cover), Keys.SIZE_COVER_NOTIFICATION_LARGE_ICON))
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
                 .setStyle(mediaStyle)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .build()
-    }
-
-
-    /* Get episode cover for notification's large icon */
-    private fun getEpisodeIcon(context: Context, podcast: Podcast): Bitmap {
-        return ImageHelper.getPodcastCover(context, Uri.parse(podcast.cover), 192)
     }
 
 

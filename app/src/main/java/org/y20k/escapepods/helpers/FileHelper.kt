@@ -16,12 +16,15 @@ package org.y20k.escapepods.helpers
 
 import android.content.Context
 import android.database.Cursor
+import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Collection
+import org.y20k.escapepods.core.Podcast
 import org.y20k.escapepods.xml.OpmlHelper
 import java.io.*
 import java.net.URL
@@ -131,6 +134,17 @@ object FileHelper {
         }
     }
 
+
+    /* Creates and save a smaller version of the podcast cover - used by the list of podcasts view */
+    fun saveSmallCover(context: Context, podcast: Podcast): Uri {
+        val smallCoverBitmap: Bitmap = ImageHelper.getPodcastCover(context, Uri.parse(podcast.cover), Keys.SIZE_COVER_PODCAST_CARD)
+        val file: File = File(context.getExternalFilesDir(FileHelper.determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name)), Keys.PODCAST_SMALL_COVER_FILE)
+        writeImageFile(context, smallCoverBitmap, file, Bitmap.CompressFormat.JPEG, 75)
+        return file.toUri()
+    }
+
+
+
     /* Saves podcast collection as JSON text file */
     fun saveCollection(context: Context, collection: Collection) {
         LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
@@ -154,6 +168,14 @@ object FileHelper {
             // return an empty collection
             false -> return Collection()
         }
+    }
+
+
+    /* Appends a message to an existing log - and saves it */
+    fun saveLog(context: Context, logMessage: String) {
+        var log: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.DEBUG_LOG_FILE)
+        log = "${log} {$logMessage}"
+        writeTextFile(context, log, Keys.FOLDER_COLLECTION, Keys.DEBUG_LOG_FILE)
     }
 
 
@@ -258,6 +280,20 @@ object FileHelper {
     /* Writes given text to file on storage */
     private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
         File(context.getExternalFilesDir(folder), fileName).writeText(text)
+    }
+
+
+    /* Writes given bitmap as image file to storage */
+    private fun writeImageFile(context: Context, bitmap: Bitmap, file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 75) {
+        if (file.exists()) file.delete ()
+        try {
+            val out = FileOutputStream(file)
+            bitmap.compress(format, quality, out)
+            out.flush()
+            out.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
 

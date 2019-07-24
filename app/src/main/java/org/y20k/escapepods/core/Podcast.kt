@@ -30,6 +30,7 @@ import java.util.*
 data class Podcast(@Expose var name: String = "",
                    @Expose var description: String = "",
                    @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
+                   @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
                    @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
                    @Expose var lastUpdate: Date = Calendar.getInstance().time,
                    @Expose var remoteImageFileLocation: String = "",
