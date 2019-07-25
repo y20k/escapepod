@@ -69,13 +69,13 @@
     <string name="toast_message_error_refreshing_cover">Unable to refresh cover. Feed does not contain a cover reference.</string>
     <string name="toast_message_error_validation_audio_references">RSS validation: Feed does not contain any audio references.</string>
     <string name="toast_message_error_validation_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
+    <string name="toast_message_debug_logging_to_file_started">Debug: Start writing to a local log file.</string>
+    <string name="toast_message_debug_logging_to_file_stopped">Debug: Stop writing to a local log file.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is disabled.</string>
     <string name="toast_message_sleep_not_yet_available">Sleep timer not yet available.</string>
     <string name="toast_message_sleep_timer_started">Sleep timer started.</string>
     <string name="toast_message_sleep_timer_stopped">Sleep timer stopped.</string>
-
-
     <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
     <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
     <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
@@ -110,6 +110,7 @@
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
     <string name="descr_expanded_episode_length">Time remaining in current episode</string>
     <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
+    <string name="descr_expanded_player_debug_log_toggle_button">Debug log file toggle button</string>
     <string name="descr_expanded_player_episode_name">Name of current episode</string>
     <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter button</string>

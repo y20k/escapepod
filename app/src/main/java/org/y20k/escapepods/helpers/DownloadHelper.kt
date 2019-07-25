@@ -249,7 +249,7 @@ object DownloadHelper {
             }
         }
         // remove unused audio references from collection
-        collection = CollectionHelper.deleteOldAudioFiles(context, collection)
+        collection = CollectionHelper.deleteUnneededAudioFiles(context, collection)
         // update player state if necessary
         PreferencesHelper.updatePlayerState(context, collection)
         // save collection

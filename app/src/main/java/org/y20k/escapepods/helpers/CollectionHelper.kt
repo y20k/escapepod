@@ -347,7 +347,8 @@ object CollectionHelper {
                     for (i in podcastSize -1 downTo numberOfEpisodesToKeep) {
                         val audioUri: String = podcast.episodes[i].audio
                         if (audioUri.isNotEmpty()) {
-                            LogHelper.d(TAG, "Deleting audio file for episode no. ${i+1}")
+                            LogHelper.d(TAG, "Trim list of episodes (delete if > 5): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}")
+                            LogHelper.save(context, TAG, "Trim list of episodes (delete if > 5): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}") // todo remove
                             try {
                                 context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
                             } catch (e: Exception) {
@@ -367,7 +368,7 @@ object CollectionHelper {
 
 
     /* Deletes audio files that are no longer needed */
-    fun deleteOldAudioFiles(context: Context, collection: Collection): Collection {
+    fun deleteUnneededAudioFiles(context: Context, collection: Collection): Collection {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP)
         for (podcast: Podcast in collection.podcasts) {
             val podcastSize = podcast.episodes.size
@@ -376,7 +377,8 @@ object CollectionHelper {
                 for (i in podcastSize -1 downTo numberOfAudioFilesToKeep) {
                     // check if episode can be deleted
                     if (canBeDeleted(context, podcast.episodes[i])) {
-                        LogHelper.d(TAG, "Deleting audio file for episode no. ${i+1}")
+                        LogHelper.d(TAG, "Deleting unneeded audio files (delete if > 2): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title} ")
+                        LogHelper.save(context, TAG, "Deleting unneeded audio files (delete if > 2):: Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}") // todo remove
                         // delete audio file
                         try {
                             context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)

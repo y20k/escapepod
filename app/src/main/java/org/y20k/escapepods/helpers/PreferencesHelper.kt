@@ -62,6 +62,22 @@ object PreferencesHelper {
     }
 
 
+    /* Loads keepDebugLog true or false */
+    fun loadKeepDebugLog(context: Context): Boolean {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getBoolean(Keys.PREF_KEEP_DEBUG_LOG, false)
+    }
+
+
+    /* Saves keepDebugLog true or false */
+    fun saveKeepDebugLog(context: Context, keepDebugLog: Boolean = false) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putBoolean(Keys.PREF_KEEP_DEBUG_LOG, keepDebugLog)
+        editor.apply()
+    }
+
+
     /* Loads state of playback for player / PlayerService from shared preferences */
     fun loadPlayerPlayBackState(context: Context): Int {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)

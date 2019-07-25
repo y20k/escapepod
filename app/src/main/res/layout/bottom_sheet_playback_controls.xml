@@ -28,6 +28,20 @@
         app:srcCompat="@drawable/ic_sleep_timer_24dp" />
 
     <ImageView
+        android:id="@+id/debug_toggle_bottle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_debug_log_toggle_button"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_developer_mode_24dp" />
+
+    <ImageView
         android:id="@+id/sheet_large_podcast_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"

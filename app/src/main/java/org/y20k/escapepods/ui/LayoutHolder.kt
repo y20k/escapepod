@@ -67,7 +67,8 @@ data class LayoutHolder(var activity: Activity) {
     var sheetPlayButtonView: ImageView
     var sheetSkipBackButtonView: ImageView
     var sheetSkipForwardButtonView: ImageView
-    var sheetSleepButtonView: ImageView
+    var sheetSleepTimerButtonView: ImageView
+    var sheetDebugToggleButtonView: ImageView
     var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
     var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -94,7 +95,8 @@ data class LayoutHolder(var activity: Activity) {
         sheetPlayButtonView = activity.findViewById(R.id.sheet_play_button)
         sheetSkipBackButtonView = activity.findViewById(R.id.sheet_skip_back_button)
         sheetSkipForwardButtonView = activity.findViewById(R.id.sheet_skip_forward_button)
-        sheetSleepButtonView = activity.findViewById(R.id.sleep_timer_button)
+        sheetSleepTimerButtonView = activity.findViewById(R.id.sleep_timer_button)
+        sheetDebugToggleButtonView = activity.findViewById(R.id.debug_toggle_bottle)
         sheetUpNextName = activity.findViewById(R.id.player_sheet_up_next_name)
         sheetUpNextClearButton = activity.findViewById(R.id.player_sheet_up_next_clear_button)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)

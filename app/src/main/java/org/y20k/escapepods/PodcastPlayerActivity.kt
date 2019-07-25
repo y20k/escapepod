@@ -167,7 +167,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     }
                 } else {
                     // permission denied
-                    Toast.makeText(this, getString(R.string.toast_message_error_missing_storage_permission), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, R.string.toast_message_error_missing_storage_permission, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -258,7 +258,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         super.onMeteredNetworkDialog(dialogType, payload)
         when (dialogType) {
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
-                Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
                 DownloadHelper.downloadEpisode(this, payload, true, true)
             }
         }
@@ -283,7 +283,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                         if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
                             updateCollection()
                         } else {
-                            Toast.makeText(this, getString(R.string.toast_message_collection_update_not_necessary), Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, R.string.toast_message_collection_update_not_necessary, Toast.LENGTH_LONG).show()
                         }
                     }
                     // user tapped cancel - for dev purposes: refresh the podcast list view // todo check if that can be helpful
@@ -350,20 +350,24 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             layout.swipeRefreshLayout.isRefreshing = false
         }
 
-
         // set up sleep timer button
-        layout.sheetSleepButtonView.setOnClickListener {
-            Toast.makeText(this, getString(R.string.toast_message_sleep_not_yet_available), Toast.LENGTH_LONG).show()
+        layout.sheetSleepTimerButtonView.setOnClickListener {
+            Toast.makeText(this, R.string.toast_message_sleep_not_yet_available, Toast.LENGTH_LONG).show()
         }
 
         // set up sleep timer button - long press (night mode switch)
-        layout.sheetSleepButtonView.setOnLongClickListener {
+        layout.sheetSleepTimerButtonView.setOnLongClickListener {
             val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             NightModeHelper.switchMode(this)
             recreate()
             return@setOnLongClickListener true
+        }
+
+        // set up the degug log toogle switch
+        layout.sheetDebugToggleButtonView.setOnClickListener {
+            LogHelper.toggleDebugLogFileCreation(this@PodcastPlayerActivity)
         }
 
     }
@@ -398,7 +402,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         layout.sheetSkipBackButtonView.setOnClickListener {
             when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
                 true -> mediaController.transportControls.rewind()
-                false -> Toast.makeText(this, getString(R.string.toast_message_skipping_disabled), Toast.LENGTH_LONG).show()
+                false -> Toast.makeText(this, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -406,7 +410,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         layout.sheetSkipForwardButtonView.setOnClickListener {
             when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
                 true -> mediaController.transportControls.fastForward()
-                false -> Toast.makeText(this, getString(R.string.toast_message_skipping_disabled), Toast.LENGTH_LONG).show()
+                false -> Toast.makeText(this, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -426,7 +430,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         layout.sheetUpNextClearButton.setOnClickListener {
             // clear up next
             updateUpNext()
-            Toast.makeText(this, getString(R.string.toast_message_up_next_removed_episode), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_message_up_next_removed_episode, Toast.LENGTH_LONG).show()
         }
 
         // register a callback to stay in sync
@@ -469,7 +473,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         playerState.upNextEpisodeMediaId = episode.getMediaId()
         layout.updateUpNextViews(episode)
         if (episode.getMediaId().isNotEmpty()) {
-            Toast.makeText(this, getString(R.string.toast_message_up_next_added_episode), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
         }
         PreferencesHelper.savePlayerState(this, playerState)
         MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_RELOAD_PLAYER_STATE, null, null)
@@ -479,7 +483,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Updates podcast collection */
     private fun updateCollection() {
         if (NetworkHelper.isConnectedToNetwork(this)) {
-            Toast.makeText(this, getString(R.string.toast_message_updating_collection), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_message_updating_collection, Toast.LENGTH_LONG).show()
             DownloadHelper.updateCollection(this)
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
@@ -490,7 +494,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Updates podcast collection */
     private fun downloadEpisode(episode: Episode) {
         if (NetworkHelper.isConnectedToWifi(this)) {
-            Toast.makeText(this, getString(R.string.toast_message_downloading_episode), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
             DownloadHelper.downloadEpisode(this, episode.getMediaId(), true, true)
         } else if (NetworkHelper.isConnectedToCellular(this)) {
             MeteredNetworkDialog(this).show(this, Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, R.string.dialog_metered_download_episode_title, R.string.dialog_metered_download_episode_message, R.string.dialog_metered_download_episode_button_okay, episode.getMediaId())
@@ -509,7 +513,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 // wait for result
                 val contentType: NetworkHelper.ContentType = deferred.await()
                 if ((contentType.type in Keys.MIME_TYPES_RSS) || (contentType.type in Keys.MIME_TYPES_ATOM)) {
-                    Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@PodcastPlayerActivity, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
                     DownloadHelper.downloadPodcasts(this@PodcastPlayerActivity, arrayOf(feedUrl))
                 } else {
                     ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
@@ -526,7 +530,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
             val urls = CollectionHelper.removeDuplicates(collection, feedUrls)
             if (urls.isNotEmpty()) {
-                Toast.makeText(this@PodcastPlayerActivity, getString(R.string.toast_message_adding_podcast), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@PodcastPlayerActivity, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
                 DownloadHelper.downloadPodcasts(this, CollectionHelper.removeDuplicates(collection, feedUrls))
             }
         } else {

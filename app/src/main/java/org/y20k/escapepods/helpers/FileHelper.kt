@@ -179,6 +179,15 @@ object FileHelper {
     }
 
 
+    /* Deletes the debug log file */
+    fun deleteLog(context: Context) {
+        val logFile: File = File(context.getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.DEBUG_LOG_FILE)
+        if (logFile.exists()) {
+            logFile.delete()
+        }
+    }
+
+
     /* Suspend function: Wrapper for saveCollection */
     suspend fun saveCollectionSuspended(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
@@ -263,7 +272,7 @@ object FileHelper {
         // check if file exists
         val file: File = File(context.getExternalFilesDir(folder), fileName)
         if (!file.exists()) {
-            return ""
+            return String()
         }
         // readSuspended until last line reached
         val stream: InputStream = file.inputStream()

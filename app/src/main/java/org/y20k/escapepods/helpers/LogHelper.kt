@@ -16,7 +16,9 @@ package org.y20k.escapepods.helpers
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import org.y20k.escapepods.BuildConfig
+import org.y20k.escapepods.R
 import java.util.*
 
 
@@ -75,28 +77,44 @@ object LogHelper {
         log(tag, Log.ERROR, t, *messages)
     }
 
-    // todo remove debug log feature
     fun save(context: Context, tag: String, vararg messages: Any) {
         save(context, tag, null, *messages)
     }
 
-    // todo remove debug log feature
     fun save(context: Context, tag: String, t: Throwable?, vararg messages: Any) {
-        val sb = StringBuilder()
-        sb.append(DateTimeHelper.convertToRfc2822(Calendar.getInstance().time))
-        sb.append(" | ")
-        sb.append(tag)
-        sb.append(" | ")
-        for (m in messages) {
-            sb.append(m)
-        }
-        if (t != null) {
+        if (PreferencesHelper.loadKeepDebugLog(context)) {
+            val sb = StringBuilder()
+            sb.append(DateTimeHelper.convertToRfc2822(Calendar.getInstance().time))
+            sb.append(" | ")
+            sb.append(tag)
+            sb.append(" | ")
+            for (m in messages) {
+                sb.append(m)
+            }
+            if (t != null) {
+                sb.append("\n")
+                sb.append(Log.getStackTraceString(t))
+            }
             sb.append("\n")
-            sb.append(Log.getStackTraceString(t))
+            val message = sb.toString()
+            FileHelper.saveLog(context, message)
         }
-        sb.append("\n")
-        val message = sb.toString()
-        FileHelper.saveLog(context, message)
+    }
+
+    fun toggleDebugLogFileCreation(context: Context) {
+        when (PreferencesHelper.loadKeepDebugLog(context)) {
+            true -> {
+                // turn off log
+                PreferencesHelper.saveKeepDebugLog(context, false)
+                FileHelper.deleteLog(context)
+                Toast.makeText(context, R.string.toast_message_debug_logging_to_file_stopped, Toast.LENGTH_LONG).show()
+            }
+            false -> {
+                // turn on log
+                PreferencesHelper.saveKeepDebugLog(context, true)
+                Toast.makeText(context, R.string.toast_message_debug_logging_to_file_started, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun log(tag: String, level: Int, t: Throwable?, vararg messages: Any) {
