@@ -23,6 +23,7 @@ import android.content.IntentFilter
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -82,6 +83,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private lateinit var collectionChangedReceiver: BroadcastReceiver
     private lateinit var mediaController: MediaControllerCompat
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
+    private lateinit var sleepTimer: CountDownTimer
+    private var sleepTimerTimeRemaining: Long = 0L
+
 
     /* Overrides coroutineContext variable */
     override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
@@ -216,10 +220,15 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             }
             // CASE: playWhenReady = false
             false -> {
-                if (playbackState == Player.STATE_READY || playbackState == Player.STATE_ENDED) {
+                if (playbackState == Player.STATE_READY) {
                     // paused by app: update media session and save state
                     handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+                } else if (playbackState == Player.STATE_ENDED) {
+                    // paused by app: update media session and save state
+                    handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
                 }
+                // stop sleep timer - if running
+                cancelSleepTimer()
             }
         }
     }
@@ -278,13 +287,15 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* End of episode: stop playback or start episode from up-next queue */
     private fun handlePlaybackEnded() {
+        // CASE: Up next episode NOT available
         if (playerState.upNextEpisodeMediaId.isEmpty() || playerState.upNextEpisodeMediaId == episode.getMediaId()) {
             // clear up-next id in shared preferences
             playerState.upNextEpisodeMediaId = String()
             // update playback position
-            episode.playbackPosition = player.contentPosition
+            episode.playbackPosition = episode.duration
             // stop playback
             player.playWhenReady = false
+        // CASE: Up next episode available
         } else {
             // get up next episode
             episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
@@ -322,6 +333,41 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                         .setActions(PlaybackStateCompat.ACTION_PLAY)
                         .build()
             }
+        }
+    }
+
+
+    /* Starts sleep timer / adds default duration to running sleeptimer */
+    private fun startSleepTimer() {
+        // stop running timer
+        if (sleepTimerTimeRemaining > 0L && this::sleepTimer.isInitialized) {
+            sleepTimer.cancel()
+        }
+        // initialize timer
+        sleepTimer = object:CountDownTimer (Keys.SLEEP_TIMER_DURATION + sleepTimerTimeRemaining, Keys.SLEEP_TIMER_INTERVAL) {
+            override fun onFinish() {
+                // reset time remaining
+                sleepTimerTimeRemaining = 0L
+                // update playback position
+                episode.playbackPosition = player.contentPosition
+                // stop playback
+                player.playWhenReady = false
+                LogHelper.v(TAG, "Sleep timer finished. Sweet dreams.")
+            }
+            override fun onTick(millisUntilFinished: Long) {
+                sleepTimerTimeRemaining = millisUntilFinished
+            }
+        }
+        // start timer
+        sleepTimer.start()
+    }
+
+
+    /* Cancels sleep timer */
+    private fun cancelSleepTimer() {
+        if (this::sleepTimer.isInitialized) {
+            sleepTimerTimeRemaining = 0L
+            sleepTimer.cancel()
         }
     }
 
@@ -462,7 +508,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         override fun onStop() {
             // note: pause is the new stop ^o^
-            onStop()
+            onPause()
         }
 
         override fun onSkipToPrevious() {
@@ -485,11 +531,20 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 Keys.CMD_RELOAD_PLAYER_STATE -> {
                     playerState = PreferencesHelper.loadPlayerState(this@PlayerService)
                 }
-                Keys.CMD_REQUEST_PLAYBACK_POSITION -> {
+                Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE -> {
                     if (cb != null) {
-                        val bundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_PROGRESS to player.currentPosition)
-                        cb.send(Keys.RESULT_CODE_PLAYBACK_PROGRESS, bundle)
+                        val playbackProgressBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_PROGRESS to player.currentPosition)
+                        if (sleepTimerTimeRemaining > 0L) {
+                            playbackProgressBundle.putLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, sleepTimerTimeRemaining)
+                        }
+                        cb.send(Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE, playbackProgressBundle)
                     }
+                }
+                Keys.CMD_START_SLEEP_TIMER -> {
+                    startSleepTimer()
+                }
+                Keys.CMD_CANCEL_SLEEP_TIMER -> {
+                    cancelSleepTimer()
                 }
             }
         }
@@ -600,7 +655,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                controller.transportControls.pause()
+                // update playback position
+                episode.playbackPosition = player.contentPosition
+                // stop playback
+                player.playWhenReady = false
             }
         }
     }

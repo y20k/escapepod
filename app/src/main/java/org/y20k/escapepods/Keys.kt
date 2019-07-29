@@ -49,7 +49,9 @@ object Keys {
     // custom MediaController commands
     const val CMD_REQUEST_CURRENT_MEDIA_ID: String = "REQUEST_CURRENT_MEDIA_ID"
     const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"
-    const val CMD_REQUEST_PLAYBACK_POSITION: String = "REQUEST_PLAYBACK_POSITION"
+    const val CMD_REQUEST_PERIODIC_PROGRESS_UPDATE: String = "REQUEST_PERIODIC_PROGRESS_UPDATE"
+    const val CMD_START_SLEEP_TIMER: String = "START_SLEEP_TIMER"
+    const val CMD_CANCEL_SLEEP_TIMER: String = "CANCEL_SLEEP_TIMER"
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
@@ -171,8 +173,9 @@ object Keys {
     const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: Int = 23
 
     // results
-    const val RESULT_CODE_PLAYBACK_PROGRESS: Int = 1
-    const val RESULT_DATA_PLAYBACK_PROGRESS: String = "PLAYBACK_PROGRESS"
+    const val RESULT_CODE_PERIODIC_PROGRESS_UPDATE: Int = 1
+    const val RESULT_DATA_PLAYBACK_PROGRESS: String = "DATA_PLAYBACK_PROGRESS"
+    const val RESULT_DATA_SLEEP_TIMER_REMAINING: String = "DATA_SLEEP_TIMER_REMAINING"
 
 
     // podcast validation states
@@ -192,6 +195,8 @@ object Keys {
     const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 60000L   // 1 minute in milliseconds
     const val SKIP_BACK_TIME_SPAN: Long = 10000L            // 10 seconds in milliseconds
     const val SKIP_FORWARD_TIME_SPAN: Long = 30000L         // 30 seconds in milliseconds
+    const val SLEEP_TIMER_DURATION: Long = 900000L          // 15 minutes in  milliseconds
+    const val SLEEP_TIMER_INTERVAL: Long = 1000L            // 1 second in milliseconds
 
     // rss tags
     val XML_NAME_SPACE: String? = null

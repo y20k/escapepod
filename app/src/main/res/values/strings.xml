@@ -73,9 +73,7 @@
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Stop writing to a local log file.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is disabled.</string>
-    <string name="toast_message_sleep_not_yet_available">Sleep timer not yet available.</string>
-    <string name="toast_message_sleep_timer_started">Sleep timer started.</string>
-    <string name="toast_message_sleep_timer_stopped">Sleep timer stopped.</string>
+    <string name="toast_message_sleep_timer_unable_to_start">Please start listening to an episode first.</string>
     <string name="toast_message_theme_day">Switching to Day mode (long press detected)</string>
     <string name="toast_message_theme_follow_system">Switching to Follow System Setting mode (long press detected)</string>
     <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
@@ -119,7 +117,9 @@
     <string name="descr_expanded_player_previous_chapter_button">Previous chapter button</string>
     <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
     <string name="descr_expanded_player_seekbar">Episode playback progress bar with drag handle</string>
-    <string name="descr_expanded_player_sleep_timer_button">Sleep timer button</string>
+    <string name="descr_expanded_player_sleep_timer_cancel_button">Sleep timer cancel button</string>
+    <string name="descr_expanded_player_sleep_timer_remaining_time">Time remaining on sleep timer</string>
+    <string name="descr_expanded_player_sleep_timer_start_button">Sleep timer start button</string>
     <string name="descr_expanded_player_time_played">Time played in current episode</string>
     <string name="descr_expanded_player_up_next_clear_button">Clear the Up Next queue</string>
     <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the Up Next queue</string>
@@ -135,6 +135,7 @@
     <string name="sample_text_episode_0_name" translatable="false">As the Worm Turns</string>
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
     <string name="sample_text_podcast_name" translatable="false">Security Now</string>
+    <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
     <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
 
     <!-- Allowed Caller Template -->

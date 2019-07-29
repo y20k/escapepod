@@ -55,6 +55,8 @@ data class LayoutHolder(var activity: Activity) {
     var bottomSheet: ConstraintLayout
     var playerViews: Group
     var upNextViews: Group
+    var topButtonViews: Group
+    var sleepTimerRunningViews: Group
     var coverView: ImageView
     var podcastNameView: TextView
     var episodeTitleView: TextView
@@ -67,7 +69,9 @@ data class LayoutHolder(var activity: Activity) {
     var sheetPlayButtonView: ImageView
     var sheetSkipBackButtonView: ImageView
     var sheetSkipForwardButtonView: ImageView
-    var sheetSleepTimerButtonView: ImageView
+    var sheetSleepTimerStartButtonView: ImageView
+    var sheetSleepTimerCancelButtonView: ImageView
+    var sheetSleepTimerRemainingTimeView: TextView
     var sheetDebugToggleButtonView: ImageView
     var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
@@ -83,6 +87,8 @@ data class LayoutHolder(var activity: Activity) {
         bottomSheet = activity.findViewById(R.id.bottom_sheet)
         playerViews = activity.findViewById(R.id.player_views)
         upNextViews = activity.findViewById(R.id.up_next_views)
+        topButtonViews = activity.findViewById(R.id.top_button_views)
+        sleepTimerRunningViews = activity.findViewById(R.id.sleep_timer_running_views)
         coverView = activity.findViewById(R.id.player_podcast_cover)
         podcastNameView = activity.findViewById(R.id.player_podcast_name)
         episodeTitleView = activity.findViewById(R.id.player_episode_title)
@@ -95,8 +101,10 @@ data class LayoutHolder(var activity: Activity) {
         sheetPlayButtonView = activity.findViewById(R.id.sheet_play_button)
         sheetSkipBackButtonView = activity.findViewById(R.id.sheet_skip_back_button)
         sheetSkipForwardButtonView = activity.findViewById(R.id.sheet_skip_forward_button)
-        sheetSleepTimerButtonView = activity.findViewById(R.id.sleep_timer_button)
-        sheetDebugToggleButtonView = activity.findViewById(R.id.debug_toggle_bottle)
+        sheetSleepTimerStartButtonView = activity.findViewById(R.id.sleep_timer_start_button)
+        sheetSleepTimerCancelButtonView = activity.findViewById(R.id.sleep_timer_cancel_button)
+        sheetSleepTimerRemainingTimeView = activity.findViewById(R.id.sleep_timer_remaining_time)
+        sheetDebugToggleButtonView = activity.findViewById(R.id.debug_log_toggle_button)
         sheetUpNextName = activity.findViewById(R.id.player_sheet_up_next_name)
         sheetUpNextClearButton = activity.findViewById(R.id.player_sheet_up_next_clear_button)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -147,6 +155,22 @@ data class LayoutHolder(var activity: Activity) {
                 upNextViews.visibility = View.GONE // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
                 upNextViews.visibility = View.INVISIBLE
 
+            }
+        }
+    }
+
+
+    /* Updates sleep timer views */
+    fun updateSleepTimer(timeRemaining: Long = 0L) {
+        when (timeRemaining) {
+            0L -> {
+                sleepTimerRunningViews.visibility = View.GONE
+            }
+            else -> {
+                if (topButtonViews.visibility == View.VISIBLE) {
+                    sleepTimerRunningViews.visibility = View.VISIBLE
+                    sheetSleepTimerRemainingTimeView.text = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
+                }
             }
         }
     }
@@ -265,19 +289,19 @@ data class LayoutHolder(var activity: Activity) {
         bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(view: View, slideOffset: Float) {
                 if (slideOffset < 0.25f) {
-                    playerViews.setVisibility(View.VISIBLE);
+                    showPlayerViews()
                 } else {
-                    playerViews.setVisibility(View.GONE);
+                    hidePlayerViews()
                 }
             }
             override fun onStateChanged(view: View, state: Int) {
                 when (state) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> playerViews.setVisibility(View.VISIBLE)
+                    BottomSheetBehavior.STATE_COLLAPSED -> showPlayerViews()
                     BottomSheetBehavior.STATE_DRAGGING -> Unit // do nothing
-                    BottomSheetBehavior.STATE_EXPANDED -> playerViews.setVisibility(View.GONE)
+                    BottomSheetBehavior.STATE_EXPANDED -> hidePlayerViews()
                     BottomSheetBehavior.STATE_HALF_EXPANDED ->  Unit // do nothing
                     BottomSheetBehavior.STATE_SETTLING -> Unit // do nothing
-                    BottomSheetBehavior.STATE_HIDDEN -> playerViews.setVisibility(View.VISIBLE)
+                    BottomSheetBehavior.STATE_HIDDEN -> showPlayerViews()
                 }
             }
         })
@@ -290,5 +314,18 @@ data class LayoutHolder(var activity: Activity) {
         }
     }
 
+
+    /* Shows player views and hides of the top button views */
+    private fun showPlayerViews() {
+        playerViews.visibility = View.VISIBLE;
+        topButtonViews.visibility = View.GONE
+    }
+
+
+    /* Hides player views in favor of the top button views */
+    private fun hidePlayerViews() {
+        playerViews.visibility = View.GONE;
+        topButtonViews.visibility = View.VISIBLE
+    }
 
 }

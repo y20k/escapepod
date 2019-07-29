@@ -29,6 +29,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -141,7 +142,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // save player state
         PreferencesHelper.savePlayerState(this, playerState)
         // stop receiving playback progress updates
-        handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
+        handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
     }
 
 
@@ -350,19 +351,29 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             layout.swipeRefreshLayout.isRefreshing = false
         }
 
-        // set up sleep timer button
-        layout.sheetSleepTimerButtonView.setOnClickListener {
-            Toast.makeText(this, R.string.toast_message_sleep_not_yet_available, Toast.LENGTH_LONG).show()
+        // set up sleep timer start button
+        layout.sheetSleepTimerStartButtonView.setOnClickListener {
+            val playbackState: PlaybackStateCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState
+            when (playbackState.isActive) {
+                true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_START_SLEEP_TIMER, null, null)
+                false -> Toast.makeText(this, getString(R.string.toast_message_sleep_timer_unable_to_start), Toast.LENGTH_LONG).show()
+            }
         }
 
-        // set up sleep timer button - long press (night mode switch)
-        layout.sheetSleepTimerButtonView.setOnLongClickListener {
+        // set up sleep timer start button - long press (night mode switch)
+        layout.sheetSleepTimerStartButtonView.setOnLongClickListener {
             val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             NightModeHelper.switchMode(this)
             recreate()
             return@setOnLongClickListener true
+        }
+
+        // set up sleep timer cancel button
+        layout.sheetSleepTimerCancelButtonView.setOnClickListener {
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_CANCEL_SLEEP_TIMER, null, null)
+            layout.sleepTimerRunningViews.visibility = View.GONE
         }
 
         // set up the degug log toogle switch
@@ -604,14 +615,15 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 
     /* Toggle periodic request of playback position from player service */
-    private fun togglePeriodicPlaybackPositionRequest(playbackState: PlaybackStateCompat) {
+    private fun togglePeriodicProgressUpdateRequest(playbackState: PlaybackStateCompat) {
         when (playbackState.isActive) {
             true -> {
-                handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
-                handler.postDelayed(periodicPlaybackPositionRequestRunnable, 0)
+                handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
+                handler.postDelayed(periodicProgressUpdateRequestRunnable, 0)
             }
             false -> {
-                handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
+                handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
+                layout.sleepTimerRunningViews.visibility = View.GONE
             }
         }
     }
@@ -657,15 +669,15 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             buildPlaybackControls()
 
             // request current playback position
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PLAYBACK_POSITION, null, resultReceiver)
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
 
 //            // show / hide player
 //            setupPlayerVisibility(MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState.state)
 
             // start requesting position updates if playback is running
             if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
-                handler.removeCallbacks(periodicPlaybackPositionRequestRunnable)
-                handler.postDelayed(periodicPlaybackPositionRequestRunnable, 0)
+                handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
+                handler.postDelayed(periodicProgressUpdateRequestRunnable, 0)
             }
 
 
@@ -725,7 +737,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 // CASE: Player is visible
                 layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
             }
-            togglePeriodicPlaybackPositionRequest(playbackState)
+            togglePeriodicProgressUpdateRequest(playbackState)
         }
 
         override fun onSessionDestroyed() {
@@ -739,12 +751,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 
     /*
-     * Runnable: Periodically broadcasts playback position
+     * Runnable: Periodically requests playback position (and sleep timer if running)
      */
-    private val periodicPlaybackPositionRequestRunnable: Runnable = object : Runnable {
+    private val periodicProgressUpdateRequestRunnable: Runnable = object : Runnable {
         override fun run() {
             // request current playback position
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PLAYBACK_POSITION, null, resultReceiver)
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
             // use the handler to start runnable again after specified delay
             handler.postDelayed(this, 500)
         }
@@ -756,14 +768,18 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /*
      * ResultReceiver: Handles results from commands send to player
-     * eg. MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PLAYBACK_POSITION, null, resultReceiver)
+     * eg. MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
      */
     var resultReceiver: ResultReceiver = object: ResultReceiver(Handler()) {
         override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
             when (resultCode) {
-                Keys.RESULT_CODE_PLAYBACK_PROGRESS -> {
-                    val position: Long = resultData?.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS) ?: 0L
-                    layout.updateProgressbar(position)
+                Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE -> {
+                    if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_PROGRESS)) {
+                        layout.updateProgressbar(resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L))
+                    }
+                    if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
+                        layout.updateSleepTimer(resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
+                    }
                 }
             }
         }
