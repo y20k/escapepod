@@ -6,49 +6,45 @@ README
 
 **Version 0.5.x (Beta)**
 
-Escapepods is a bare bones app for listening to podcasts. The Android platform has several high quality podcast players. Escapepods probably cannot compete with those apps. Escapepods is a one-person fun project. But still it may set itself somewhat apart, because Escapepods is very simple and lightweight. The app consists of only a single screen. Also it is free and open source.
+Escapepods is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepods is an app of type BYOP ("bring your own podcast"). It does not feature any kind of built-in search option. You will have to manually add podcasts.
 
-Important note: This is an app of type BYOP ("bring your own podcast"). It does not feature any kind of built-in search option. You will have to manually add podcasts.
-
-Escapepods is published under the [MIT open source license](https://opensource.org/licenses/MIT). Want to help? Please check out the notes in [CONTRIBUTING.md](https://github.com/y20k/escapepods/blob/master/CONTRIBUTE.md) first.
+Escapepods is free and open source. It is published under the [MIT open source license](https://opensource.org/licenses/MIT). Want to help? Please check out the notes in [CONTRIBUTING.md](https://github.com/y20k/escapepods/blob/master/CONTRIBUTE.md) first.
 
 
 ## Frequent Questions
 
 ### Where can I download Escapepods?
-As long as Escapepods is still in beta state you can get it only here on GitHub (head over to [releases](https://github.com/y20k/escapepods/releases)). A future release on F-Droid is planned.
+As long as Escapepods is in beta you can only get it on [GitHub](https://github.com/y20k/escapepods/releases). A future release on F-Droid is planned.
 
-### I cannot add my favorite podcast
-The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected at the current stage of development. Please head over to the [wiki](https://github.com/y20k/escapepods/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
+### I can not add podcast X.
+The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected. Please head over to the [wiki](https://github.com/y20k/escapepods/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
 
 ### Where are the settings?
-Escapepods has no settings. The app is designed to be very simple. It tries to rely on sensible defaults.
+Escapepods has no settings screen. It tries to rely on sensible defaults.
 
-### Okay. And what are the default settings?
+### What are the default settings?
 - Auto-update does not download files over cellular network
 - Dark mode is handled by the Android system
-- Escapepods by default only keeps the recent two episodes of an podcast
+- Escapepods by default only keeps two episodes
 
-### The behavior of the app in regard to which episode it keeps is confusing.
-Okay. That may seem so. Escapepods has a policy that tries to reduce the number of episodes it keeps to a minimum. Here are the rules for that:
+### Escapepods keeps more than two episodes.
+Escapepods tries to reduce the number of episodes it keeps. Here are the rules for that:
+
 - Escapepods keeps the latest two episodes
-- Escapepods also keeps episodes that have been started, or that have been downloaded manually
-- The maximum number of episodes available (end kept) is five.
+- Episodes, that have been started, or that have been downloaded manually, are kept, too
+- the maximum number of episodes available (and kept) is five
 
-### Why on earth make simplicity such a high priority?
-Escapepods is a one-person fun project. Simplicity helps maintaining the app. And as it happens I personally like minimalistic apps, too.
+### Why make simplicity a high priority?
+Escapepods is a one-person fun project. Simplicity helps maintaining the app.
 
-### I really miss a playback queue.
-Escapepods has a simple up-next queue. You can determine the episode you would like to listen to next. Just press play on that episode while listening to the current one.
+### Does Escapepod have playback queue?
+Escapepods has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
 
 ### I really miss feature X.
-For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon.
-
-### And there is no exception?
-Well. The only feature planned (!= promised) but still missing a show notes viewer.
+For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon. The only feature planned, but not yet implemented is a show notes viewer.
 
 ### Does Escapepods support OMPL?
-You can import an OPML formatted podcast list by choosing Escapepods when trying opening the list. Instead of an explicit export feature Escapepods always keeps an up-to-date OPML file in the following folder on your device `/Android/data/org.y20k.escapepods/files/collection/`.
+You can import an [OPML](https://en.wikipedia.org/wiki/OPML) formatted podcast list. Open the list in a file browser and choose Escapepods as a handler. Escapepods does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device `/Android/data/org.y20k.escapepods/files/collection/`.
 
 ## User Interface (May 2019)
 <img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-001-2019-05.png" width="280" /><img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-002-2019-05.png" width="280" />

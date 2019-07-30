@@ -64,7 +64,7 @@ object DownloadHelper {
         // get episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
         // prevent double download
-        if (isAlreadyActive(episode.remoteAudioFileLocation)) {
+        if (!isAlreadyActive(episode.remoteAudioFileLocation)) {
             // set manually downloaded state, if necessary
             if (manuallyDownloaded) {
                 collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
@@ -401,13 +401,12 @@ object DownloadHelper {
 
     /* Determine allowed network type */
     private fun determineAllowedNetworkTypes(context: Context, type: Int, ignoreWifiRestriction: Boolean): Int {
-        val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
         var allowedNetworkTypes: Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-        when (type) {
-            Keys.FILE_TYPE_AUDIO -> {
-                if (!downloadOverMobile || !ignoreWifiRestriction) {
-                    allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
-                }
+        // restrict download of audio files to WiFi if necessary
+        if (type == Keys.FILE_TYPE_AUDIO) {
+            val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
+            if (!ignoreWifiRestriction && !downloadOverMobile) {
+                allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
             }
         }
         return allowedNetworkTypes
