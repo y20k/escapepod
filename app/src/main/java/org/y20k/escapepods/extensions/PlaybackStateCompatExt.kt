@@ -1,8 +1,8 @@
 /*
- * PlaybackStateCompatExt.kt
- * Implements the PlaybackStateCompatExt extension methods
- * Useful extension methods for PlaybackStateCompat
- * Source: https://github.com/googlesamples/android-UniversalMusicPlayer/blob/master/common/src/main/java/com/example/android/uamp/media/extensions/PlaybackStateCompatExt.kt
+ * MediaMetadataCompatExt.kt
+ * Implements the MediaMetadataCompatExt extension methods
+ * Useful extension methods for MediaMetadataCompatExt
+ * Source: https://raw.githubusercontent.com/googlesamples/android-UniversalMusicPlayer/master/common/src/main/java/com/example/android/uamp/media/extensions/MediaMetadataCompatExt.kt
  *
  * This file is part of
  * ESCAPEPODS - Free and Open Podcast App
@@ -12,6 +12,8 @@
  * http://opensource.org/licenses/MIT
  */
 
+
+package org.y20k.escapepods.extensions
 
 import android.os.SystemClock
 import android.support.v4.media.session.PlaybackStateCompat

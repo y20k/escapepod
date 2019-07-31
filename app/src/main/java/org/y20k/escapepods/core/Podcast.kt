@@ -60,7 +60,7 @@ data class Podcast(@Expose var name: String = "",
     }
 
 
-    /* Returns a unique postcast id - currently just the remotePodcastFeedLocation */
+    /* Returns a unique podcast id - currently just the remotePodcastFeedLocation */
     fun getPodcastId(): String {
         return remotePodcastFeedLocation
     }

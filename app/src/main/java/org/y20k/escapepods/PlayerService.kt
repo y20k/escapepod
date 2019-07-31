@@ -46,11 +46,11 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import isActive
 import kotlinx.coroutines.*
 import org.y20k.escapepods.collection.CollectionProvider
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
+import org.y20k.escapepods.extensions.isActive
 import org.y20k.escapepods.helpers.*
 import org.y20k.escapepods.ui.PlayerState
 import java.util.*
@@ -167,11 +167,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Overrides onGetRoot */
+    /* Overrides onGetRoot */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
         // Credit: https://github.com/googlesamples/android-UniversalMusicPlayer (->  MusicService)
         // LogHelper.d(TAG, "OnGetRoot: clientPackageName=$clientPackageName; clientUid=$clientUid ; rootHints=$rootHints")
-        // to ensure you are not allowing any arbitrary app to browse your app's contents, you need to check the origin:
+        // to ensure you are not allowing any arbitrary app to browse your app's contents, you need to check the origin
         if (!packageValidator.isKnownCaller(clientPackageName, clientUid)) {
             // request comes from an untrusted package
             LogHelper.i(TAG, "OnGetRoot: Browsing NOT ALLOWED for unknown caller. "
@@ -179,6 +179,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     + clientPackageName)
             return BrowserRoot(Keys.MEDIA_ID_EMPTY_ROOT, null)
         } else {
+            // todo implement BrowserRoot Extras
+            // https://developer.android.com/training/cars/media
+            // https://developer.android.com/reference/androidx/media/MediaBrowserServiceCompat.BrowserRoot
             return BrowserRoot(Keys.MEDIA_ID_ROOT, null)
         }
     }
@@ -281,6 +284,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         updatePlayerState(episode, playbackState)
         // update media session
         mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
+        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode, true))
         mediaSession.isActive = playbackState != PlaybackStateCompat.STATE_STOPPED
     }
 

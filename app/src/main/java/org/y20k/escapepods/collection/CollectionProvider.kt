@@ -34,6 +34,10 @@ class CollectionProvider {
     /* Main class variables */
     private enum class State { NON_INITIALIZED, INITIALIZING, INITIALIZED }
     private val episodeListById: TreeMap<String, MediaMetadataCompat> = TreeMap()
+    private val podcastListById: TreeMap<String, MediaMetadataCompat> = TreeMap()
+
+    private val podcastCollection = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
+
     private var currentState = State.NON_INITIALIZED
 
 
@@ -125,16 +129,24 @@ class CollectionProvider {
             // already initialized, set callback immediately
             episodeListProviderCallback.onEpisodeListReady(true)
         } else {
-            // fill episode list
+            // fill podcast list
             for (podcast in collection.podcasts) {
+                var podcastHasDownloadedEpisodes: Boolean = false
+                // fill episode list
                 for (episodeId: Int in podcast.episodes.indices) {
                     val episode = podcast.episodes[episodeId]
                     // add only episodes with downloaded audio
                     if (episode.audio.isNotEmpty()) {
-                        val item: MediaMetadataCompat = CollectionHelper.buildMediaMetadata(podcast, episodeId)
+                        val item: MediaMetadataCompat = CollectionHelper.buildEpisodeMediaMetadata(context, episode)
                         val mediaId: String = episode.getMediaId()
                         episodeListById.put(mediaId, item)
+                        podcastHasDownloadedEpisodes = true
                     }
+                }
+                if (podcastHasDownloadedEpisodes) {
+                    val item: MediaMetadataCompat = CollectionHelper.buildPodcastMediaMetadata(context, podcast)
+                    val mediaId: String = podcast.getPodcastId()
+                    podcastListById.put(mediaId, item)
                 }
             }
             // afterwards: update state and set callback

@@ -26,14 +26,14 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.media.session.MediaButtonReceiver
-import isFastForwardEnabled
-import isPlayEnabled
-import isPlaying
-import isRewindEnabled
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.PlayerService
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Episode
+import org.y20k.escapepods.extensions.isFastForwardEnabled
+import org.y20k.escapepods.extensions.isPlayEnabled
+import org.y20k.escapepods.extensions.isPlaying
+import org.y20k.escapepods.extensions.isRewindEnabled
 
 
 /*

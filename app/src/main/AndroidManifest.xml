@@ -23,6 +23,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- ANDROID AUTO SUPPORT -->
+        <!--  https://developer.android.com/training/auto/audio/ -->
+        <meta-data android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc"/>
+        <meta-data android:name="com.google.android.gms.car.notification.SmallIcon"
+            android:resource="@mipmap/ic_launcher" />
 
         <!-- Main activity for podcast playback on phone -->
         <activity

@@ -212,7 +212,8 @@ object DownloadHelper {
                 podcast.cover = localFileUri.toString()
                 podcast.smallCover = FileHelper.saveSmallCover(context, podcast).toString()
                 podcast.episodes.forEach { episode ->
-                    episode.cover = localFileUri.toString()
+                    episode.cover = podcast.cover
+                    episode.smallCover = podcast.smallCover
                 }
             }
         }

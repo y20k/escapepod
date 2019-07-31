@@ -39,13 +39,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import isActive
 import kotlinx.coroutines.*
 import org.y20k.escapepods.collection.CollectionAdapter
 import org.y20k.escapepods.collection.CollectionViewModel
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.dialogs.*
+import org.y20k.escapepods.extensions.isActive
 import org.y20k.escapepods.helpers.*
 import org.y20k.escapepods.ui.LayoutHolder
 import org.y20k.escapepods.ui.PlayerState
@@ -356,7 +356,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             val playbackState: PlaybackStateCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState
             when (playbackState.isActive) {
                 true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_START_SLEEP_TIMER, null, null)
-                false -> Toast.makeText(this, getString(R.string.toast_message_sleep_timer_unable_to_start), Toast.LENGTH_LONG).show()
+                false -> Toast.makeText(this, R.string.toast_message_sleep_timer_unable_to_start, Toast.LENGTH_LONG).show()
             }
         }
 

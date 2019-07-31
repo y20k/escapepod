@@ -18,6 +18,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.preference.PreferenceManager
+import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -26,6 +27,7 @@ import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
+import org.y20k.escapepods.extensions.*
 import java.io.File
 import java.util.*
 
@@ -123,6 +125,9 @@ object CollectionHelper {
                     newEpisodes.forEach { episode ->
                         if (episode.cover == Keys.LOCATION_DEFAULT_COVER) {
                             episode.cover = podcast.cover
+                        }
+                        if (episode.smallCover == Keys.LOCATION_DEFAULT_COVER) {
+                            episode.smallCover = podcast.smallCover
                         }
                     }
                 }
@@ -314,19 +319,29 @@ object CollectionHelper {
     }
 
 
-    /* Creates MediaMetadata for one episode */
-    fun buildMediaMetadata(podcast: Podcast, episodeId: Int): MediaMetadataCompat {
-        return MediaMetadataCompat.Builder()
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, podcast.episodes[episodeId].remoteAudioFileLocation)
-                .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, podcast.episodes[episodeId].audio)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, podcast.name)
-                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, Keys.APPLICATION_NAME)
-                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, Keys.MEDIA_GENRE)
-                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, podcast.cover)
-                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, podcast.episodes[episodeId].title)
-                .putLong(MediaMetadataCompat.METADATA_KEY_TRACK_NUMBER, podcast.episodes.size.toLong())
-                .putLong(MediaMetadataCompat.METADATA_KEY_NUM_TRACKS, episodeId.toLong())
-                .build()
+    /* Creates MediaMetadata for a single episode */
+    fun buildEpisodeMediaMetadata(context: Context, episode: Episode, albumArtAsBitmap: Boolean = false): MediaMetadataCompat {
+        return MediaMetadataCompat.Builder().apply {
+            id = episode.getMediaId()
+            title = episode.title
+            artist = episode.podcastName
+            if (albumArtAsBitmap) { albumArt = ImageHelper.getPodcastCover(context, Uri.parse(episode.cover), Keys.NOTIFICATION_NOW_PLAYING_ID) }
+            albumArtUri = episode.smallCover
+            flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+        }.build()
+    }
+
+
+    /* Creates MediaMetadata for a podcast */
+    fun buildPodcastMediaMetadata(context: Context, podcast: Podcast, albumArtAsBitmap: Boolean = false): MediaMetadataCompat {
+        return MediaMetadataCompat.Builder().apply {
+            id = podcast.getPodcastId()
+            title = podcast.name
+            artist = podcast.name
+            if (albumArtAsBitmap) { albumArt = ImageHelper.getPodcastCover(context, Uri.parse(podcast.cover), Keys.NOTIFICATION_NOW_PLAYING_ID) }
+            albumArtUri = podcast.smallCover
+            flag = MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
+        }.build()
     }
 
 
