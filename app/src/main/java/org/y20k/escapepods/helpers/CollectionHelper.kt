@@ -19,6 +19,7 @@ import android.content.Intent
 import android.net.Uri
 import android.preference.PreferenceManager
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -27,7 +28,6 @@ import org.y20k.escapepods.Keys
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
-import org.y20k.escapepods.extensions.*
 import java.io.File
 import java.util.*
 
@@ -234,6 +234,19 @@ object CollectionHelper {
     }
 
 
+    /* Gets a list of all episodes in collection in chronological order */
+    fun getAllEpisodesChronological(collection: Collection): MutableList<Episode> {
+        val episodesChronological: MutableList<Episode> = mutableListOf()
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                episodesChronological.add(episode)
+            }
+        }
+        episodesChronological.sortByDescending { it.publicationDate}
+        return episodesChronological
+    }
+
+
     /* Sets the flag "manually downloaded" in Episode for given media ID String */
     fun setManuallyDownloaded(collection: Collection, mediaId: String, manuallyDownloaded: Boolean): Collection {
         collection.podcasts.forEach { podcast ->
@@ -319,30 +332,40 @@ object CollectionHelper {
     }
 
 
-    /* Creates MediaMetadata for a single episode */
-    fun buildEpisodeMediaMetadata(context: Context, episode: Episode, albumArtAsBitmap: Boolean = false): MediaMetadataCompat {
+    /* Creates MediaMetadata for a single episode - used in media session*/
+    fun buildEpisodeMediaMetadata(context: Context, episode: Episode): MediaMetadataCompat {
         return MediaMetadataCompat.Builder().apply {
-            id = episode.getMediaId()
-            title = episode.title
-            artist = episode.podcastName
-            if (albumArtAsBitmap) { albumArt = ImageHelper.getPodcastCover(context, Uri.parse(episode.cover), Keys.NOTIFICATION_NOW_PLAYING_ID) }
-            albumArtUri = episode.smallCover
-            flag = MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+            putString(MediaMetadataCompat.METADATA_KEY_TITLE, episode.title)
+            putString(MediaMetadataCompat.METADATA_KEY_ARTIST, episode.podcastName)
+            putString(MediaMetadataCompat.METADATA_KEY_ALBUM, episode.podcastName)
+            putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, episode.cover)
+            putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
+
+            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getPodcastCover(context, Uri.parse(episode.cover), Keys.SIZE_COVER_LOCK_SCREEN))
         }.build()
     }
 
 
-    /* Creates MediaMetadata for a podcast */
-    fun buildPodcastMediaMetadata(context: Context, podcast: Podcast, albumArtAsBitmap: Boolean = false): MediaMetadataCompat {
-        return MediaMetadataCompat.Builder().apply {
-            id = podcast.getPodcastId()
-            title = podcast.name
-            artist = podcast.name
-            if (albumArtAsBitmap) { albumArt = ImageHelper.getPodcastCover(context, Uri.parse(podcast.cover), Keys.NOTIFICATION_NOW_PLAYING_ID) }
-            albumArtUri = podcast.smallCover
-            flag = MediaBrowserCompat.MediaItem.FLAG_BROWSABLE
-        }.build()
+    /* Creates MediaItem for a single episode - used by collection provider */
+    fun buildEpisodeMediaMetaItem(episode: Episode): MediaBrowserCompat.MediaItem {
+        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
+        mediaDescriptionBuilder.setMediaId(episode.getMediaId())
+        mediaDescriptionBuilder.setTitle(episode.title)
+        mediaDescriptionBuilder.setSubtitle(episode.podcastName)
+        mediaDescriptionBuilder.setDescription(episode.podcastName)
+        mediaDescriptionBuilder.setIconUri(Uri.parse(episode.cover))
+        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }
+
+
+    /* Creates MediaItem for a single episode - used by collection provider */
+    fun buildPodcastMediaMetaItem(podcast: Podcast): MediaBrowserCompat.MediaItem {
+        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
+        mediaDescriptionBuilder.setTitle(podcast.name)
+        mediaDescriptionBuilder.setIconUri(Uri.parse(podcast.cover))
+        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+    }
+
 
 
     /* Deletes unneeded episodes in collection */
@@ -452,9 +475,6 @@ object CollectionHelper {
     }
 
 
-
-
-
     /* Determines if an episode can be deleted */
     private fun canBeDeleted(context: Context, episode: Episode): Boolean {
         if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
@@ -520,6 +540,10 @@ object CollectionHelper {
         }
         return Episode()
     }
+
+
+
+
 
 
 }

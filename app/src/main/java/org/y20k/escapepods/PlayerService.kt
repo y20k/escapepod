@@ -179,10 +179,17 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     + clientPackageName)
             return BrowserRoot(Keys.MEDIA_ID_EMPTY_ROOT, null)
         } else {
-            // todo implement BrowserRoot Extras
-            // https://developer.android.com/training/cars/media
-            // https://developer.android.com/reference/androidx/media/MediaBrowserServiceCompat.BrowserRoot
-            return BrowserRoot(Keys.MEDIA_ID_ROOT, null)
+            // content style extras: see https://developer.android.com/training/cars/media#apply_content_style
+            val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
+            val CONTENT_STYLE_PLAYABLE_HINT = "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT"
+            val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
+            val CONTENT_STYLE_LIST_ITEM_HINT_VALUE = 1
+            val CONTENT_STYLE_GRID_ITEM_HINT_VALUE = 2
+            val extras = Bundle()
+            extras.putBoolean(CONTENT_STYLE_SUPPORTED, true)
+            extras.putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_GRID_ITEM_HINT_VALUE)
+            extras.putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_LIST_ITEM_HINT_VALUE)
+            return BrowserRoot(Keys.MEDIA_ID_ROOT, extras)
         }
     }
 
@@ -192,7 +199,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
             result.detach()
-            collectionProvider.retrieveMedia(this, collection, object: CollectionProvider.CollectionProviderCallback {
+            collectionProvider.retrieveMedia(collection, object: CollectionProvider.CollectionProviderCallback {
                 override fun onEpisodeListReady(success: Boolean) {
                     if (success) {
                         loadChildren(parentId, result)
@@ -284,7 +291,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         updatePlayerState(episode, playbackState)
         // update media session
         mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
-        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode, true))
+        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode))
         mediaSession.isActive = playbackState != PlaybackStateCompat.STATE_STOPPED
     }
 
@@ -381,9 +388,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
         when (parentId) {
             Keys.MEDIA_ID_ROOT -> {
-                // mediaItems
-                for (track in collectionProvider.getAllEpisodes()) {
-                    val item = MediaBrowserCompat.MediaItem(track.description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+                collectionProvider.episodeListByDate.forEach { item ->
                     mediaItems.add(item)
                 }
             }

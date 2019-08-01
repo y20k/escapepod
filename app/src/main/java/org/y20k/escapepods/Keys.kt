@@ -153,6 +153,7 @@ object Keys {
     const val SIZE_COVER_PLAYER: Int = 56
     const val SIZE_COVER_PODCAST_CARD: Int = 96
     const val SIZE_COVER_NOTIFICATION_LARGE_ICON: Int = 256
+    const val SIZE_COVER_LOCK_SCREEN: Int = 320
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // default values

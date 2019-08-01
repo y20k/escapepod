@@ -15,11 +15,9 @@
 
 package org.y20k.escapepods.collection
 
-import android.content.Context
-import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaBrowserCompat
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.helpers.CollectionHelper
-import java.util.*
 
 
 /**
@@ -33,81 +31,13 @@ class CollectionProvider {
 
     /* Main class variables */
     private enum class State { NON_INITIALIZED, INITIALIZING, INITIALIZED }
-    private val episodeListById: TreeMap<String, MediaMetadataCompat> = TreeMap()
-    private val podcastListById: TreeMap<String, MediaMetadataCompat> = TreeMap()
-
-    private val podcastCollection = mutableMapOf<String, MutableList<MediaMetadataCompat>>()
-
     private var currentState = State.NON_INITIALIZED
+    val episodeListByDate: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
 
 
     /* Callback used by PlayerService */
     interface CollectionProviderCallback {
         fun onEpisodeListReady(success: Boolean)
-    }
-
-
-    /* Return list of all available episodes */
-    fun getAllEpisodes(): Iterable<MediaMetadataCompat> {
-        if (currentState != State.INITIALIZED || episodeListById.isEmpty()) {
-            return emptyList()
-        } else {
-            return episodeListById.values
-        }
-    }
-
-
-    /* Return the first station in list, or null if none is available */
-    fun getFirstEpisode(): MediaMetadataCompat? {
-        val entry = episodeListById.firstEntry()
-        if (entry != null) {
-            return entry.value
-        } else {
-            return null
-        }
-    }
-
-
-    /* Return the last episode in list, or null if none is available */
-    fun getLastLast(): MediaMetadataCompat? {
-        val entry = episodeListById.lastEntry()
-        if (entry != null) {
-            return entry.value
-        } else {
-            return null
-        }
-    }
-
-
-    /* Return the first episode after the given episode, or null if none is available */
-    fun getEpisodenAfter(stationId:String):MediaMetadataCompat? {
-        val entry = episodeListById.higherEntry(stationId)
-        return if (entry != null) {
-            entry.value
-        } else null
-    }
-
-
-    /* Return the first episode before the given episode, or null if none is available */
-    fun getEpisodenBefore(stationId:String):MediaMetadataCompat? {
-        val entry = episodeListById.lowerEntry(stationId)
-        return if (entry != null) {
-            entry.value
-        } else null
-    }
-
-
-    /* Return the last listened episode */
-    fun getLastPlayedEpisode(context:Context):MediaMetadataCompat? {
-        // todo implement
-        // fallback: first station
-        return getFirstEpisode()
-    }
-
-
-    /* Return the MediaMetadata for given ID */
-    fun getEpisodeMediaMetadata(episodeId:String): MediaMetadataCompat? {
-        return if (episodeListById.containsKey(episodeId)) episodeListById[episodeId] else null
     }
 
 
@@ -117,36 +47,39 @@ class CollectionProvider {
     }
 
 
-    /* Check if empty */
-    fun isEmpty(): Boolean {
-        return episodeListById.isEmpty()
+    /* Gets list of episodes and caches meta information in list of MediaMetaItems */
+    fun retrieveMedia(collection: Collection, episodeListProviderCallback: CollectionProviderCallback) {
+        if (currentState == State.INITIALIZED) {
+            // already initialized, set callback immediately
+            episodeListProviderCallback.onEpisodeListReady(true)
+        } else {
+            // fill episode list
+            CollectionHelper.getAllEpisodesChronological(collection).forEach { episode ->
+                // add only episodes with downloaded audio
+                if (episode.audio.isNotEmpty()) {
+                    episodeListByDate.add(CollectionHelper.buildEpisodeMediaMetaItem(episode))
+                }
+            }
+            // afterwards: update state and set callback
+            currentState = State.INITIALIZED
+            episodeListProviderCallback.onEpisodeListReady(true)
+        }
     }
 
 
-    /* Gets list of episodes and caches track information in TreeMap */
-    fun retrieveMedia(context: Context, collection: Collection, episodeListProviderCallback: CollectionProviderCallback) {
+    /* Gets list of episodes and caches meta information in list of MediaMetaItems */
+    fun retrieveMedia2(collection: Collection, episodeListProviderCallback: CollectionProviderCallback) {
         if (currentState == State.INITIALIZED) {
             // already initialized, set callback immediately
             episodeListProviderCallback.onEpisodeListReady(true)
         } else {
             // fill podcast list
-            for (podcast in collection.podcasts) {
-                var podcastHasDownloadedEpisodes: Boolean = false
-                // fill episode list
-                for (episodeId: Int in podcast.episodes.indices) {
-                    val episode = podcast.episodes[episodeId]
-                    // add only episodes with downloaded audio
+            collection.podcasts.forEach { podcast ->
+                episodeListByDate.add(CollectionHelper.buildPodcastMediaMetaItem(podcast))
+                podcast.episodes.forEach { episode ->
                     if (episode.audio.isNotEmpty()) {
-                        val item: MediaMetadataCompat = CollectionHelper.buildEpisodeMediaMetadata(context, episode)
-                        val mediaId: String = episode.getMediaId()
-                        episodeListById.put(mediaId, item)
-                        podcastHasDownloadedEpisodes = true
+                        CollectionHelper.buildEpisodeMediaMetaItem(episode)
                     }
-                }
-                if (podcastHasDownloadedEpisodes) {
-                    val item: MediaMetadataCompat = CollectionHelper.buildPodcastMediaMetadata(context, podcast)
-                    val mediaId: String = podcast.getPodcastId()
-                    podcastListById.put(mediaId, item)
                 }
             }
             // afterwards: update state and set callback
