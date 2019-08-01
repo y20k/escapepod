@@ -25,7 +25,7 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- ONBOARDING -->
-    <!--<include layout="@layout/layout_onboarding" />-->
+    <include layout="@layout/element_onboarding" />
 
     <!-- PLAYER SHEET -->
     <include layout="@layout/bottom_sheet_playback_controls" />

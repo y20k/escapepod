@@ -75,6 +75,7 @@ data class LayoutHolder(var activity: Activity) {
     var sheetDebugToggleButtonView: ImageView
     var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
+    var onboardingLayout: ConstraintLayout
     var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
 
@@ -107,7 +108,9 @@ data class LayoutHolder(var activity: Activity) {
         sheetDebugToggleButtonView = activity.findViewById(R.id.debug_log_toggle_button)
         sheetUpNextName = activity.findViewById(R.id.player_sheet_up_next_name)
         sheetUpNextClearButton = activity.findViewById(R.id.player_sheet_up_next_clear_button)
+        onboardingLayout = activity.findViewById(R.id.onboarding_layout)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+
 
         // set layouts for list and player
         setupRecyclerView()
@@ -191,7 +194,6 @@ data class LayoutHolder(var activity: Activity) {
     }
 
 
-
     /* Toggles visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
     fun togglePlayerVisibility(context: Context, playbackState: Int): Boolean {
         when (playbackState) {
@@ -199,6 +201,15 @@ data class LayoutHolder(var activity: Activity) {
             PlaybackStateCompat.STATE_NONE -> return hidePlayer(context)
             PlaybackStateCompat.STATE_ERROR -> return hidePlayer(context)
             else -> return showPlayer(context)
+        }
+    }
+
+
+    fun toggleOnboarding(collectionSize: Int) {
+        if (collectionSize == 0) {
+            onboardingLayout.visibility = View.VISIBLE
+        } else {
+            onboardingLayout.visibility = View.GONE
         }
     }
 
@@ -235,7 +246,6 @@ data class LayoutHolder(var activity: Activity) {
 
         }
     }
-
 
 
     /* Shows player */

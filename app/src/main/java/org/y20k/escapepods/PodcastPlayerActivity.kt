@@ -127,8 +127,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         super.onResume()
         // assign volume buttons to music volume
         volumeControlStream = AudioManager.STREAM_MUSIC
-        // handle start intent
-        handleStartIntent()
         // try to recreate player state
         playerState = PreferencesHelper.loadPlayerState(this)
         // setup player ui
@@ -636,6 +634,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             collection = it
             // updates current episode in player views
             playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
+            // toggle onboarding
+            layout.toggleOnboarding(collection.podcasts.size)
             // toggle visibility of player
             if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playerState.playbackState)) {
                 // update player view, if player is visible
@@ -645,6 +645,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // updates the up next queue in player views
             val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
             layout.updateUpNextViews(upNextEpisode)
+            // handle start intent
+            handleStartIntent()
        })
     }
 

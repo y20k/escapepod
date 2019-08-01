@@ -128,6 +128,13 @@
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
     <string name="descr_player_podcast_name">Name of current podcast</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_app_description">Podcast App</string>
+    <string name="onboarding_app_get_started">Get started</string>
+    <string name="onboarding_app_hypercritical_quote_1" translatable="false">Nothing is so perfect</string>
+    <string name="onboarding_app_hypercritical_quote_2" translatable="false">that it can\'t be complained about.</string>
+    <string name="player_sheet_p_no_data" translatable="false">-</string>
+
     <!-- Sample Text -->
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
     <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>

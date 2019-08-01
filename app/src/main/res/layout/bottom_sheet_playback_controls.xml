@@ -196,7 +196,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/ic_circular_button_playback_84dp"
         android:clickable="true"
         android:contentDescription="@string/descr_expanded_player_playback_button"
