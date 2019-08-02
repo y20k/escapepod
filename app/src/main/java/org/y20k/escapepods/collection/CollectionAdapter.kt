@@ -209,7 +209,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     private fun setOlderEpisodesList(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
         if (podcast.episodes.size > 1) {
             // set up episode list
-            val episodeListAdapter = EpisodeListAdapter(activity, podcast)
+            val episodeListAdapter = EpisodeListAdapter(podcast)
             podcastViewHolder.olderEpisodesList.adapter = episodeListAdapter
             podcastViewHolder.olderEpisodesList.setLayoutManager(LinearLayoutManager(activity))
             podcastViewHolder.olderEpisodesList.setItemAnimator(DefaultItemAnimator())
@@ -414,7 +414,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /*
      * Inner class: Adapter for an episode list
      */
-    private inner class EpisodeListAdapter(val activity: Activity, val podcast: Podcast) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private inner class EpisodeListAdapter(val podcast: Podcast) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.element_episode, parent, false)
             return EpisodeViewHolder(v)

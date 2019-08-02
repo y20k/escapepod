@@ -205,9 +205,10 @@ data class LayoutHolder(var activity: Activity) {
     }
 
 
-    fun toggleOnboarding(collectionSize: Int) {
+    fun toggleOnboarding(context: Context, collectionSize: Int) {
         if (collectionSize == 0) {
             onboardingLayout.visibility = View.VISIBLE
+            hidePlayer(context)
         } else {
             onboardingLayout.visibility = View.GONE
         }

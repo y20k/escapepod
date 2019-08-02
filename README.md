@@ -46,5 +46,12 @@ For the foreseeable future the development of Escapepods will focus on stability
 ### Does Escapepods support OMPL?
 You can import an [OPML](https://en.wikipedia.org/wiki/OPML) formatted podcast list. Open the list in a file browser and choose Escapepods as a handler. Escapepods does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device `/Android/data/org.y20k.escapepods/files/collection/`.
 
-## User Interface (May 2019)
-<img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-001-2019-05.png" width="280" /><img src="https://raw.githubusercontent.com/y20k/escapepods/master/assets/ui-screenshot-002-2019-05.png" width="280" />
+## Screenshots (v0.5)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.5-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/02-playback-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/02-playback-v0.5-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/03-large-player-sheet-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/03-large-player-sheet-v0.5-oneplus5.png)
+
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/04-add-podcast-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/04-add-podcast-v0.5-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.5-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/06-notification-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/06-notification-v0.5-oneplus5.png)
+

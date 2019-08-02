@@ -291,7 +291,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         updatePlayerState(episode, playbackState)
         // update media session
         mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
-        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode))
         mediaSession.isActive = playbackState != PlaybackStateCompat.STATE_STOPPED
     }
 
@@ -308,8 +307,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             player.playWhenReady = false
         // CASE: Up next episode available
         } else {
-            // get up next episode
+            // update playback position
+            episode.playbackPosition = episode.duration
+            // get up next episode and set metadata
             episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
+            mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode))
             // clear up next media id and set position
             playerState.upNextEpisodeMediaId = String()
             playerState.playbackPosition = episode.playbackPosition
@@ -459,8 +461,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            // get episode
+            // get episode and set metadata
             episode = CollectionHelper.getEpisode(collection, mediaId ?: "")
+            mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
             // start playback
             onPlay()
         }

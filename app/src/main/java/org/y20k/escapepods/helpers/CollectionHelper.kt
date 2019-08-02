@@ -103,16 +103,16 @@ object CollectionHelper {
 
 
     /* Updates the episodes of a podcast in a given collection */
-    fun updatePodcast(context: Context, collection: Collection, newPodcast: Podcast): Collection {
+    fun updatePodcast(collection: Collection, newPodcast: Podcast): Collection {
         val newEpisodes: MutableList<Episode> = mutableListOf<Episode>()
         collection.podcasts.forEach { podcast ->
             // look for the matching podcast
             if (podcast.getPodcastId() == newPodcast.getPodcastId()) {
-                val lastUpdate = podcast.lastUpdate
-                // look for episodes newer than last update
+                val newestEpisodePublicationDate = podcast.episodes[0].publicationDate
+                // look for newer episodes
                 newPodcast.episodes.forEach { episode ->
                     // found a new episode within podcast
-                    if (lastUpdate < episode.publicationDate) {
+                    if (newestEpisodePublicationDate < episode.publicationDate) {
                         newEpisodes.add(episode)
                     }
                 }
@@ -340,7 +340,6 @@ object CollectionHelper {
             putString(MediaMetadataCompat.METADATA_KEY_ALBUM, episode.podcastName)
             putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, episode.cover)
             putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
-
             putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getPodcastCover(context, Uri.parse(episode.cover), Keys.SIZE_COVER_LOCK_SCREEN))
         }.build()
     }

@@ -635,7 +635,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // updates current episode in player views
             playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
             // toggle onboarding
-            layout.toggleOnboarding(collection.podcasts.size)
+            layout.toggleOnboarding(this@PodcastPlayerActivity, collection.podcasts.size)
             // toggle visibility of player
             if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playerState.playbackState)) {
                 // update player view, if player is visible

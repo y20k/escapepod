@@ -35,19 +35,14 @@ object Keys {
     // intent actions
     const val ACTION_SHOW_PLAYER = "org.y20k.escapepods.action.HOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepods.action.COLLECTION_CHANGED"
-    const val ACTION_PLAYBACK_POSITION_CHANGED: String = "org.y20k.escapepods.action.PLAYBACK_POSITION_CHANGED"
 
     // intent extras
-    const val EXTRA_COLLECTION: String = "COLLECTION"
-    const val EXTRA_PODCAST: String = "PODCAST"
-    const val EXTRA_EPISODE: String = "EPISODE"
     const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
-    const val EXTRA_CURRENT_PLAYBACK_POSITION: String = "LAST_UPDATE_COLLECTION"
-    const val EXTRA_DOWNLOAD_ID: String  = "DOWNLOAD_ID"
-    const val EXTRA_DOWNLOAD_PROGRESS: String  = "DOWNLOAD_PROGRESS"
+
+    // keys
+    const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
 
     // custom MediaController commands
-    const val CMD_REQUEST_CURRENT_MEDIA_ID: String = "REQUEST_CURRENT_MEDIA_ID"
     const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"
     const val CMD_REQUEST_PERIODIC_PROGRESS_UPDATE: String = "REQUEST_PERIODIC_PROGRESS_UPDATE"
     const val CMD_START_SLEEP_TIMER: String = "START_SLEEP_TIMER"
@@ -72,7 +67,6 @@ object Keys {
 
     // states
     const val STATE_SLEEP_TIMER_STOPPED: Int = 0
-    const val STATE_SLEEP_TIMER_RUNNING: Int = 1
 
     // default const values
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
@@ -113,10 +107,6 @@ object Keys {
     const val FILE_TYPE_AUDIO: Int  = 2
     const val FILE_TYPE_IMAGE: Int  = 3
 
-
-    // options
-    const val OPTION_REMOVE_FOLDER: Int = -1
-
     // mime types and charsets and file extensions
     const val CHARSET_UNDEFINDED = "undefined"
     const val MIME_TYPE_JPG = "image/jpeg"
@@ -127,12 +117,10 @@ object Keys {
     val MIME_TYPES_IMAGE = arrayOf("image/png", "image/jpeg")
     val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3")
     val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml")
+//    val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml", "text/html") // todo remove
     val MIME_TYPES_ATOM = arrayOf("application/atom+xml")
     val FILE_EXTENSIONS_AUDIO = arrayOf("mp3")
     val FILE_EXTENSIONS_IMAGE = arrayOf("png", "jpeg", "jpg")
-
-    // media genre
-    const val MEDIA_GENRE = "Podcast"
 
     // folder names
     const val FOLDER_COLLECTION: String = "collection"
@@ -159,15 +147,6 @@ object Keys {
     // default values
     val DEFAULT_DATE: Date = Date(0L)
     const val DEFAULT_RFC2822_DATE: String = "Thu, 01 Jan 1970 01:00:00 +0100" // --> Date(0)
-
-    // keys
-    const val KEY_IGNORE_WIFI_RESTRICTION: String = "IGNORE_WIFI_RESTRICTION"
-    const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
-    const val KEY_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
-    const val KEY_PODCAST_URLS: String = "PODCAST_URLS"
-    const val KEY_EPISODE_PODCAST_NAME: String = "EPISODE_PODCAST_NAME"
-    const val KEY_EPISODE_REMOTE_AUDIO_FILE_LOCATION: String = "EPISODE_REMOTE_AUDIO_FILE_LOCATION"
-    const val KEY_EPISODE_MEDIA_ID: String = "EPISODE_MEDIA_ID"
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1

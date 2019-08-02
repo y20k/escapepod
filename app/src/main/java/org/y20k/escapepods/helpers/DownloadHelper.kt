@@ -197,7 +197,7 @@ object DownloadHelper {
                 enqueuePodcastMediaFiles(context, podcast, true)
             }
             Keys.PODCAST_STATE_HAS_NEW_EPISODES -> {
-                collection = CollectionHelper.updatePodcast(context, collection, podcast)
+                collection = CollectionHelper.updatePodcast(collection, podcast)
                 saveCollection(context, false)
                 enqueuePodcastMediaFiles(context, podcast, false)
             }
