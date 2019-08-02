@@ -17,7 +17,7 @@ Escapepods is free and open source. It is published under the [MIT open source l
 As long as Escapepods is in beta you can only get it on [GitHub](https://github.com/y20k/escapepods/releases). A future release on F-Droid is planned.
 
 ### I can not add podcast X.
-The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected. Please head over to the [wiki](https://github.com/y20k/escapepods/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
+The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected. Please head over to the [Wiki](https://github.com/y20k/escapepods/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
 
 ### Where are the settings?
 Escapepods has no settings screen. It tries to rely on sensible defaults.

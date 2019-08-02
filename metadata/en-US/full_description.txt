@@ -1,0 +1,36 @@
+Escapepods is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepods is an app of type BYOP ("bring your own podcast"). It does not feature any kind of built-in search option. You will have to manually add podcasts.
+
+
+FREQUENT QUESTIONS
+
+WHERE CAN I DOWNLOAD ESCAPEPODS?
+As long as Escapepods is in beta you can only get it on GitHub (https://github.com/y20k/escapepods/releases). A future release on F-Droid is planned.
+
+I CAN NOT ADD PODCAST X.
+The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected. Please head over to the Wiki (https://github.com/y20k/escapepods/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
+
+WHERE ARE THE SETTINGS?
+Escapepods has no settings screen. It tries to rely on sensible defaults.
+
+WHAT ARE THE DEFAULT SETTINGS?
+- Auto-update does not download files over cellular network
+- Dark mode is handled by the Android system
+- Escapepods by default only keeps two episodes
+
+ESCAPEPODS KEEPS MORE THAN TWO EPISODES.
+Escapepods tries to reduce the number of episodes it keeps. Here are the rules for that:
+- Escapepods keeps the latest two episodes
+- Episodes, that have been started, or that have been downloaded manually, are kept, too
+- the maximum number of episodes available (and kept) is five
+
+WHY MAKE SIMPLICITY A HIGH PRIORITY?
+Escapepods is a one-person fun project. Simplicity helps maintaining the app.
+
+DOES ESCAPEPOD HAVE PLAYBACK QUEUE?
+Escapepods has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
+
+I REALLY MISS FEATURE X.
+For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon. The only feature planned, but not yet implemented is a show notes viewer.
+
+DOES ESCAPEPODS SUPPORT OMPL?
+You can import an OPML formatted podcast list. Open the list in a file browser and choose Escapepods as a handler. Escapepods does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device /Android/data/org.y20k.escapepods/files/collection/.
