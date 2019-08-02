@@ -1,1 +1,1 @@
-Escapepods is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepods does not feature any kind of built-in search option. You will have to manually add podcasts.
+Escapepods is a simple and lightweight app for listening to podcasts.
