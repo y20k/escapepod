@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/episode_background"
         app:layout_constraintEnd_toStartOf="@+id/episode_download_button"
         app:layout_constraintStart_toStartOf="@+id/episode_date"
-        tools:text="@string/sample_text_episode_0_name" />
+        tools:text="@string/sample_text_episode_0_title" />
 
     <ImageView
         android:id="@+id/episode_download_button"

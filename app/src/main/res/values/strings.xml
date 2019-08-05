@@ -35,6 +35,8 @@
     <string name="dialog_opml_import_message_error">Unable to import OPML file. No podcasts found.</string>
     <string name="dialog_opml_import_message">Do you want to add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
     <string name="dialog_opml_import_title">OMPL Import</string>
+    <string name="dialog_show_notes_close">Close</string>
+    <string name="dialog_show_notes_title">Show notes</string>
     <string name="dialog_yes_no_message_add_up_next">Do you want to start listening to this episode right away?</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_message_delete_downloads">Do you want to delete all downloaded episodes? You can re-download them afterwards.</string>
@@ -71,6 +73,7 @@
     <string name="toast_message_error_validation_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
     <string name="toast_message_debug_logging_to_file_started">Debug: Start writing to a local log file.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Stop writing to a local log file.</string>
+    <string name="toast_message_podcast_feed_address_copied">Feed address copied to clipboard.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is disabled.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Please start listening to an episode first.</string>
@@ -139,11 +142,14 @@
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
     <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
     <string name="sample_text_episode_0_length" translatable="false">-18:00</string>
-    <string name="sample_text_episode_0_name" translatable="false">As the Worm Turns</string>
+    <string name="sample_text_episode_0_title" translatable="false">As the Worm Turns</string>
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
     <string name="sample_text_podcast_name" translatable="false">Security Now</string>
+    <string name="sample_text_podcast_xml" translatable="false">https://feeds.twit.tv/sn.xml</string>
+    <string name="sample_text_show_notes" translatable="false">How a never-disclosed Windows vulnerability was quickly reverse-engineered from the patches to fix it and turned into more than 12 potent and damaging Internet worms in three days. What does this mean for the future of Internet security?</string>
     <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
     <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
+
 
     <!-- Allowed Caller Template -->
     <string name="allowed_caller_log" translatable="false">

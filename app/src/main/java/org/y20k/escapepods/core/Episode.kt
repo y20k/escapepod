@@ -43,7 +43,8 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var manuallyDownloaded: Boolean = false,
                     @Expose var remoteCoverFileLocation: String = "",
                     @Expose var remoteAudioFileLocation: String = "",
-                    @Expose var podcastName: String = ""): Parcelable {
+                    @Expose var podcastName: String = "",
+                    @Expose var podcastFeedLocation: String = ""): Parcelable {
 
 
     /* overrides toString method */

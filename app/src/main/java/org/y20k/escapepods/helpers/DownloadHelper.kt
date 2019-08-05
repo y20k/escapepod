@@ -166,6 +166,7 @@ object DownloadHelper {
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(uris[i].lastPathSegment)
                         .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                 newIds[i] = downloadManager.enqueue(request)
                 activeDownloads.add(newIds[i])
             }

@@ -138,6 +138,7 @@ class RssHelper {
         // initialize episode
         val episode: Episode = Episode()
         episode.podcastName = podcast.name
+        episode.podcastFeedLocation = podcast.remotePodcastFeedLocation
         episode.cover = podcast.cover
 
         while (parser.next() != XmlPullParser.END_TAG) {

@@ -641,6 +641,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 // update player view, if player is visible
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
                 layout.updatePlayerViews(this,episode)
+                layout.sheetCoverView.setOnClickListener{
+                    ShowNotesDialog().show(this@PodcastPlayerActivity, episode)
+                }
             }
             // updates the up next queue in player views
             val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)

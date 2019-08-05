@@ -2,6 +2,7 @@ package org.y20k.escapepods.dialogs
 
 import android.app.AlertDialog
 import android.content.Context
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -73,8 +74,9 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 }
                 detailsText = detailsBuilder.toString()
 
-                // set detailstext
+                // set details text
                 opmlImportDetailsView.text = detailsText
+                opmlImportDetailsView.movementMethod = ScrollingMovementMethod()
 
                 // change details visibility
                 opmlImportDetailsLinkView.setVisibility(View.VISIBLE)

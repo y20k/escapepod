@@ -27,7 +27,6 @@
         android:layout_marginTop="20dp"
         android:text="@string/dialog_generic_details_button"
         android:layout_gravity="center_horizontal"
-        android:scrollbars="vertical"
         android:visibility="gone"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.Button" />
 

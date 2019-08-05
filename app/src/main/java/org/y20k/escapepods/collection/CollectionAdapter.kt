@@ -39,6 +39,7 @@ import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Collection
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.core.Podcast
+import org.y20k.escapepods.dialogs.ShowNotesDialog
 import org.y20k.escapepods.helpers.CollectionHelper
 import org.y20k.escapepods.helpers.DownloadHelper
 import org.y20k.escapepods.helpers.LogHelper
@@ -167,7 +168,21 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
     /* Sets up an episode's title views */
     private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
         episodeViewHolder.episodeDateView.setText(episode.getDateString())
+        episodeViewHolder.episodeDateView.setOnLongClickListener {
+            ShowNotesDialog().show(activity, episode)
+            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+            return@setOnLongClickListener true
+        }
         episodeViewHolder.episodeTitleView.setText(episode.title)
+        episodeViewHolder.episodeTitleView.setOnLongClickListener {
+            ShowNotesDialog().show(activity, episode)
+            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+            return@setOnLongClickListener true
+        }
     }
 
     /* Sets up the circular progress bar */

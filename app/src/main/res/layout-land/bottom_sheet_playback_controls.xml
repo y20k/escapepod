@@ -135,12 +135,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
         android:contentDescription="@string/descr_expanded_player_seekbar"
         app:layout_constraintBottom_toTopOf="@+id/sheet_episode_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/vertical_center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sheet_play_button" />
 
     <!-- todo: remove android:text="@string/sample..." here -->
     <TextView
@@ -177,7 +179,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="@string/descr_expanded_player_episode_name"
         android:ellipsize="end"
         android:singleLine="true"
@@ -185,8 +187,8 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/player_sheet_text_main"
-        app:layout_constraintBottom_toTopOf="@+id/sheet_play_button"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_center"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/sample_text_episode_0_title" />
 
@@ -204,7 +206,7 @@
         android:scaleType="center"
         app:layout_constraintBottom_toTopOf="@+id/player_sheet_up_next_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/vertical_center"
         app:srcCompat="@drawable/ic_play_symbol_white_54dp" />
 
     <ImageView
@@ -414,5 +416,12 @@
         android:layout_height="0dp"
         android:visibility="invisible"
         app:constraint_referenced_ids="player_sheet_up_next_background,player_sheet_up_next_headline,player_sheet_up_next_name,player_sheet_up_next_clear_button" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
