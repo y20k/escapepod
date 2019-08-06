@@ -30,7 +30,7 @@ DOES ESCAPEPOD HAVE PLAYBACK QUEUE?
 Escapepods has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
 
 I REALLY MISS FEATURE X.
-For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon. The only feature planned, but not yet implemented is a show notes viewer.
+For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon.
 
 DOES ESCAPEPODS SUPPORT OMPL?
 You can import an OPML formatted podcast list. Open the list in a file browser and choose Escapepods as a handler. Escapepods does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device /Android/data/org.y20k.escapepods/files/collection/.

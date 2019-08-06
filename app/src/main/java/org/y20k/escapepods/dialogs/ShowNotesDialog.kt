@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -39,7 +40,9 @@ class ShowNotesDialog () {
         podcastNameView.text = episode.podcastName
         podcastFeedXmlView.text = episode.podcastFeedLocation
         episodeTitleView.text = episode.title
+        episodeTitleView.isSelected = true // triggers the marquee
         episodeShowNotesView.text = Html.fromHtml(episode.description, Html.FROM_HTML_MODE_COMPACT)
+        episodeShowNotesView.movementMethod = LinkMovementMethod.getInstance() // make link tapable
 
         // set up clipboard copy
         podcastFeedXmlView.setOnClickListener {

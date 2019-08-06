@@ -64,16 +64,20 @@ object DownloadHelper {
         // get episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
         // prevent double download
-        if (!isAlreadyActive(episode.remoteAudioFileLocation)) {
-            // set manually downloaded state, if necessary
-            if (manuallyDownloaded) {
-                collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
-                saveCollection(context)
+        activeDownloads.forEach { downloadId ->
+            if (getRemoteFileLocation(downloadManager, downloadId) == episode.remoteAudioFileLocation) {
+                // remove ID from active downloads - and enqueue a new download request later
+                removeFromActiveDownloads(context, downloadId)
             }
-            // enqueue episode
-            val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
-            enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
         }
+        // mark as manually downloaded if necessary
+        if (manuallyDownloaded) {
+            collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
+            saveCollection(context)
+        }
+        // enqueue episode
+        val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
+        enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
     }
 
 
@@ -184,8 +188,11 @@ object DownloadHelper {
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
         // start to download latest episode audio file
-        val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
-        enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
+        if (!isAlreadyActive(podcast.episodes[0].remoteAudioFileLocation)) {
+            val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
+            enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
+
+        }
     }
 
 
