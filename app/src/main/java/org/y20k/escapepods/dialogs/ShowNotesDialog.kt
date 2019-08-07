@@ -41,7 +41,7 @@ class ShowNotesDialog () {
         podcastFeedXmlView.text = episode.podcastFeedLocation
         episodeTitleView.text = episode.title
         episodeTitleView.isSelected = true // triggers the marquee
-        episodeShowNotesView.text = Html.fromHtml(episode.description, Html.FROM_HTML_MODE_COMPACT)
+        episodeShowNotesView.text = Html.fromHtml(episode.description.replace(Regex("<img.+?>"), ""), Html.FROM_HTML_MODE_COMPACT) // regex removes placeholder images
         episodeShowNotesView.movementMethod = LinkMovementMethod.getInstance() // make link tapable
 
         // set up clipboard copy

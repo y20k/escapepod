@@ -1,0 +1,15 @@
+# v0.6.0-beta - Drei Schritte Vom Abgrund Entfernt
+
+**2019-08-09**
+
+- basic show notes viewer
+- bug fixes
+
+
+Note: For the problem that single episodes appear twice in the list, there is unfortunately only a brute force solution: 
+1) Save the OPML export file 
+--> /Android/data/org.y20k.escapepods/files/collection/collection_opml.xml
+2) Delete all application data
+--> Settings > Apps & notifications > See all apps > Escapepods > Storage > Clear storage
+3) Open the OPML file with Escapepods and re-import all podcasts.
+

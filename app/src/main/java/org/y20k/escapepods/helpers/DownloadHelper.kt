@@ -165,7 +165,7 @@ object DownloadHelper {
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
-            if (uris[i].scheme.startsWith("http")) {
+            if (uris[i].scheme.startsWith("http") && isAlreadyActive(uris[i].toString())) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(uris[i].lastPathSegment)
@@ -188,11 +188,8 @@ object DownloadHelper {
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
         // start to download latest episode audio file
-        if (!isAlreadyActive(podcast.episodes[0].remoteAudioFileLocation)) {
-            val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
-            enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
-
-        }
+        val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
+        enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
     }
 
 
