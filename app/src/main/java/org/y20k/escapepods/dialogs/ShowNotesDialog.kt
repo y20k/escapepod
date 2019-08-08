@@ -1,6 +1,5 @@
 package org.y20k.escapepods.dialogs
 
-import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -10,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Episode
 import org.y20k.escapepods.helpers.LogHelper
@@ -23,10 +23,10 @@ class ShowNotesDialog () {
     /* Construct and show dialog */
     fun show(context: Context, episode: Episode) {
         // prepare dialog builder
-        val inflater: LayoutInflater = LayoutInflater.from(context)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
 
         // get views
+        val inflater: LayoutInflater = LayoutInflater.from(context)
         val view: View = inflater.inflate(R.layout.dialog_show_notes, null)
         val podcastNameView: TextView = view.findViewById(R.id.podcast_name)
         val podcastFeedXmlView: TextView = view.findViewById(R.id.podcast_feed_xml)

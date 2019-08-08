@@ -20,7 +20,7 @@ import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepods.R
 import org.y20k.escapepods.helpers.LogHelper
 
@@ -37,19 +37,22 @@ class ErrorDialog {
     /* Construct and show dialog */
     fun show(context: Context, errorTitle: Int, errorMessage: Int, errorDetails: String = String()) {
         // prepare dialog builder
-        val inflater: LayoutInflater = LayoutInflater.from(context)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+
+        // set title
+        builder.setTitle(context.getString(errorTitle))
 
         // get views
-        val view: View = inflater.inflate(R.layout.dialog_error, null)
-        val errorTitleView: TextView = view.findViewById(R.id.dialog_error_title) as TextView
-        val errorMessageView: TextView = view.findViewById(R.id.dialog_error_message) as TextView
-        val errorDetailsLinkView: TextView = view.findViewById(R.id.dialog_error_details_link) as TextView
-        val errorDetailsView: TextView = view.findViewById(R.id.dialog_error_details) as TextView
+        val inflater: LayoutInflater = LayoutInflater.from(context)
+        val view: View = inflater.inflate(R.layout.dialog_generic_with_details, null)
+        val errorMessageView: TextView = view.findViewById(R.id.dialog_message) as TextView
+        val errorDetailsLinkView: TextView = view.findViewById(R.id.dialog_details_link) as TextView
+        val errorDetailsView: TextView = view.findViewById(R.id.dialog_details) as TextView
 
         // set dialog view
         builder.setView(view)
 
+        // set detail view
         if (errorDetails.isNotEmpty()) {
             // show details link
             errorDetailsLinkView.setVisibility(View.VISIBLE)
@@ -72,7 +75,6 @@ class ErrorDialog {
         }
 
         // set text views
-        errorTitleView.text = context.getString(errorTitle)
         errorMessageView.text = context.getString(errorMessage)
 
         // add okay button

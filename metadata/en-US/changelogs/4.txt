@@ -3,6 +3,7 @@
 **2019-08-09**
 
 - basic show notes viewer
+- changed typography (Material Design Components)
 - bug fixes
 
 

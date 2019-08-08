@@ -5,9 +5,9 @@
 
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Add</string>
-    <string name="dialog_add_podcast_howto">You can add podcast XML adresses. Those can usually be found on the respective podcast\'s homepage. You may also tap on a podcast XML link and open it using Escapepods. Please note: Escapepods does not feature a podcast search</string>
-    <string name="dialog_add_podcast_input_hint">Paste podcast link</string>
-    <string name="dialog_add_podcast_message">Add new podcast</string>
+    <string name="dialog_add_podcast_howto">Please enter a podcast XML adresses. Those can usually be found on the respective podcast\'s homepage.</string>
+    <string name="dialog_add_podcast_input_hint">Enter podcast link</string>
+    <string name="dialog_add_podcast_title">Add New Podcast</string>
     <string name="dialog_error_message_default">An error occurred</string>
     <string name="dialog_error_message_no_network">Your device has no network connection.</string>
     <string name="dialog_error_message_podcast_duplicate">This podcast is already part of your collection.</string>
@@ -133,7 +133,7 @@
 
     <!-- Onboarding -->
     <string name="onboarding_app_description">Podcast App</string>
-    <string name="onboarding_app_get_started">Get started</string>
+    <string name="onboarding_app_get_started">Get Started</string>
     <string name="onboarding_app_hypercritical_quote_1" translatable="false">Nothing is so perfect</string>
     <string name="onboarding_app_hypercritical_quote_2" translatable="false">that it can\'t be complained about.</string>
     <string name="player_sheet_p_no_data" translatable="false">-</string>

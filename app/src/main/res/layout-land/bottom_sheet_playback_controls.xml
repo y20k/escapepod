@@ -28,13 +28,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_sleep_timer_24dp" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sleep_timer_remaining_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/descr_expanded_player_sleep_timer_remaining_time"
         android:text="@string/sample_text_sleep_timer_remaining_time"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toBottomOf="@+id/sleep_timer_start_button"
         app:layout_constraintEnd_toStartOf="@+id/sleep_timer_start_button"
@@ -111,7 +111,7 @@
         app:layout_constraintTop_toTopOf="@+id/episode_current_chapter_name"
         app:srcCompat="@drawable/ic_chevron_right_24dp" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_current_chapter_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
         android:singleLine="true"
         android:text="@string/sample_text_episode_0_chapter"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toTopOf="@+id/sheet_playback_seek_bar"
         app:layout_constraintEnd_toStartOf="@+id/next_chapter_button"
@@ -145,35 +145,35 @@
         app:layout_constraintTop_toTopOf="@+id/sheet_play_button" />
 
     <!-- todo: remove android:text="@string/sample..." here -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_time_played_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/descr_expanded_player_time_played"
         android:text="@string/sample_text_episode_0_played_time"
         android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
         app:layout_constraintStart_toStartOf="@+id/sheet_playback_seek_bar"
         app:layout_constraintTop_toBottomOf="@+id/sheet_playback_seek_bar"
         tools:text="@string/sample_text_episode_0_played_time" />
 
     <!-- todo: remove android:text="@string/sample..." here -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_duration_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/descr_expanded_episode_length"
         android:text="@string/sample_text_episode_0_length"
         android:textAlignment="textEnd"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
         app:layout_constraintEnd_toEndOf="@+id/sheet_playback_seek_bar"
         app:layout_constraintTop_toBottomOf="@+id/sheet_playback_seek_bar"
         tools:text="@string/sample_text_episode_0_length" />
 
     <!-- todo: remove android:text="@string/sample..." here -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -185,7 +185,7 @@
         android:singleLine="true"
         android:text="@string/sample_text_episode_0_title"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
         app:layout_constraintEnd_toStartOf="@+id/vertical_center"
@@ -247,13 +247,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/player_sheet_up_next_headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/player_up_next_headline"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/player_sheet_up_next_background"
@@ -262,7 +262,7 @@
         tools:text="@string/player_up_next_headline" />
 
     <!-- todo: remove android:text="@string/sample..." here - but leave in for player_sheet_up_next_headline -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/player_sheet_up_next_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -271,7 +271,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/sample_text_up_next_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toBottomOf="@+id/player_sheet_up_next_background"
         app:layout_constraintEnd_toStartOf="@+id/player_sheet_up_next_clear_button"
@@ -325,7 +325,7 @@
     <!-- android:clipToOutline="true" does not work at the moment - use setClipToOutline(true) on code instead-->
 
     <!-- todo: remove android:text="@string/sample..." here -->
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/player_podcast_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -336,7 +336,7 @@
         android:singleLine="true"
         android:text="@string/sample_text_podcast_name"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toTopOf="@+id/player_episode_title"
         app:layout_constraintEnd_toStartOf="@+id/player_play_button"
@@ -360,7 +360,7 @@
         app:layout_constraintTop_toTopOf="@+id/player_background"
         app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/player_episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -371,7 +371,7 @@
         android:singleLine="true"
         android:text="@string/sample_text_episode_0_title"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toBottomOf="@+id/player_podcast_cover"
         app:layout_constraintEnd_toStartOf="@+id/player_play_button"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,12 +15,13 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/sample_text_podcast_name"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+        android:textColor="@color/text_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -30,12 +31,13 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         android:text="@string/sample_text_episode_0_title"
-        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/text_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/podcast_feed_xml" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_feed_xml"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -45,21 +47,23 @@
         android:paddingBottom="4dp"
         android:singleLine="true"
         android:text="@string/sample_text_podcast_xml"
-        android:textAppearance="@android:style/TextAppearance.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/escapepods_red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/show_notes_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="@string/dialog_show_notes_title"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.Button"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+        android:textColor="@color/text_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/episode_title" />
@@ -75,11 +79,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/show_notes_title">
-        <TextView
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/episodes_show_notes_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/sample_text_show_notes"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="@color/text_default"
+            android:textColorLink="@color/escapepods_red"
             android:paddingBottom="128dp" /> <!-- stupid hack that prevents rows from getting cut off at the end -->
     </ScrollView>
 

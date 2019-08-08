@@ -15,10 +15,7 @@
 package org.y20k.escapepods.dialogs
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.helpers.LogHelper
@@ -42,20 +39,11 @@ class MeteredNetworkDialog (private var meteredNetworkDialogListener: MeteredNet
     /* Construct and show dialog */
     fun show(context: Context, dialogType: Int, meteredNetworkTitle: Int, meteredNetworkMessage: Int, okayButtonString: Int, payload: String = Keys.DIALOG_EMPTY_PAYLOAD_STRING) {
         // prepare dialog builder
-        val inflater: LayoutInflater = LayoutInflater.from(context)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
 
-        // get views
-        val view: View = inflater.inflate(R.layout.dialog_metered_network, null)
-        val meteredNetworkTitleView: TextView = view.findViewById(R.id.dialog_metered_network_title) as TextView
-        val meteredNetworkMessageView: TextView = view.findViewById(R.id.dialog_metered_network_message) as TextView
-
-        // set text views
-        meteredNetworkTitleView.text = context.getString(meteredNetworkTitle)
-        meteredNetworkMessageView.text = context.getString(meteredNetworkMessage)
-
-        // set dialog view
-        builder.setView(view)
+        // set title and message
+        builder.setTitle(context.getString(meteredNetworkTitle))
+        builder.setMessage(context.getString(meteredNetworkMessage))
 
         // add okay button
         builder.setPositiveButton(okayButtonString) { _, _ ->

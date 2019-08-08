@@ -5,19 +5,19 @@
     android:layout_height="wrap_content"
     android:padding="24dp">
 
-    <TextView
-        android:id="@+id/dialog_metered_network_title"
+        <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/dialog_yes_no_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_metered_network_title_default"
+        android:text="@string/dialog_yes_no_title_default"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
 
-    <TextView
-        android:id="@+id/dialog_metered_network_message"
+        <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/dialog_yes_no_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/dialog_metered_network_message_default"
+        android:text="@string/dialog_yes_no_message_default"
         android:textAppearance="@android:style/TextAppearance.Medium" />
 
 </LinearLayout>

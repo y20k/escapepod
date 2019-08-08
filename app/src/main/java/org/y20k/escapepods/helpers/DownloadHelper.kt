@@ -67,6 +67,7 @@ object DownloadHelper {
         activeDownloads.forEach { downloadId ->
             if (getRemoteFileLocation(downloadManager, downloadId) == episode.remoteAudioFileLocation) {
                 // remove ID from active downloads - and enqueue a new download request later
+                downloadManager.remove(downloadId)
                 removeFromActiveDownloads(context, downloadId)
             }
         }
@@ -165,7 +166,7 @@ object DownloadHelper {
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
-            if (uris[i].scheme.startsWith("http") && isAlreadyActive(uris[i].toString())) {
+            if (uris[i].scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(uris[i].lastPathSegment)
@@ -264,15 +265,16 @@ object DownloadHelper {
     }
 
 
-    /* Checks if a file is already being downloaded */
-    private fun isAlreadyActive(remoteFileLocation: String): Boolean {
+    /* Checks if a file is not yet in download queue */
+    private fun isNotInDownloadQueue(remoteFileLocation: String): Boolean {
         activeDownloads.forEach { downloadId ->
             if (getRemoteFileLocation(downloadManager, downloadId) == remoteFileLocation) {
-                LogHelper.d(TAG, "File is already in download queue: $remoteFileLocation")
-                return true
+                LogHelper.w(TAG, "File is already in download queue: $remoteFileLocation")
+                return false
             }
         }
-        return false
+        LogHelper.v(TAG, "File is not in download queue.")
+        return true
     }
 
 

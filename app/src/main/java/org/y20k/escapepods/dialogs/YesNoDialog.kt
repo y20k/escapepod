@@ -15,10 +15,7 @@
 package org.y20k.escapepods.dialogs
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.helpers.LogHelper
@@ -64,21 +61,11 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
     /* Construct and show dialog */
     fun show(context: Context, dialogType: Int, yesNoTitleRessouce: Int, yesNoMessageString: String, yesButtonRessouce: Int, noButtonRessouce: Int = R.string.dialog_generic_button_cancel, dialogPayloadInt: Int = Keys.DIALOG_EMPTY_PAYLOAD_INT, dialogPayloadString: String = Keys.DIALOG_EMPTY_PAYLOAD_STRING) {
         // prepare dialog builder
-        val inflater: LayoutInflater = LayoutInflater.from(context)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
 
-        // get views
-        val view: View = inflater.inflate(R.layout.dialog_yes_no, null)
-        val yesNoTitleView: TextView = view.findViewById(R.id.dialog_yes_no_title) as TextView
-        val yesNoMessageView: TextView = view.findViewById(R.id.dialog_yes_no_message) as TextView
-
-        // set text views
-        yesNoTitleView.text = context.getString(yesNoTitleRessouce)
-        yesNoMessageView.text = yesNoMessageString
-
-        // set dialog view
-        builder.setView(view)
-
+        // set title and message
+        builder.setTitle(context.getString(yesNoTitleRessouce))
+        builder.setMessage(yesNoMessageString)
 
         // add yes button
         builder.setPositiveButton(yesButtonRessouce) { _, _ ->

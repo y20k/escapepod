@@ -20,35 +20,36 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@color/list_card_episode_background" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="7dp"
         android:layout_marginEnd="4dp"
         android:contentDescription="@string/descr_card_episode_date"
         android:elevation="2dp"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+        android:textColor="@color/text_lightweight"
         app:layout_constraintEnd_toStartOf="@+id/episode_download_button"
         app:layout_constraintStart_toStartOf="@+id/episode_background"
         app:layout_constraintTop_toTopOf="@+id/episode_background"
         tools:text="@string/sample_text_episode_0_date" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="7dp"
         android:contentDescription="@string/descr_card_episode_name"
         android:elevation="2dp"
         android:ellipsize="end"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/text_default"
         app:layout_constraintBottom_toBottomOf="@+id/episode_background"
         app:layout_constraintEnd_toStartOf="@+id/episode_download_button"

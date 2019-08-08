@@ -1,11 +1,11 @@
 package org.y20k.escapepods.dialogs
 
-import android.app.AlertDialog
 import android.content.Context
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepods.R
 import org.y20k.escapepods.helpers.LogHelper
 
@@ -24,23 +24,23 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
     /* Construct and show dialog */
     fun show(context: Context, feedUrls: Array<String>) {
         // prepare dialog builder
-        val inflater: LayoutInflater = LayoutInflater.from(context)
-        val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+
+        // set title
+        builder.setTitle(R.string.dialog_opml_import_title)
 
         // get views
-        val view: View = inflater.inflate(R.layout.dialog_opml_import, null)
-        val opmlImportTitleView: TextView = view.findViewById(R.id.dialog_opml_import_title) as TextView
-        val opmlImportMessageView: TextView = view.findViewById(R.id.dialog_opml_import_message) as TextView
-        val opmlImportDetailsLinkView: TextView = view.findViewById(R.id.dialog_opml_import_details_link) as TextView
-        val opmlImportDetailsView: TextView = view.findViewById(R.id.dialog_opml_import_details) as TextView
+        val inflater: LayoutInflater = LayoutInflater.from(context)
+        val view: View = inflater.inflate(R.layout.dialog_generic_with_details, null)
+        val opmlImportMessageView: TextView = view.findViewById(R.id.dialog_message) as TextView
+        val opmlImportDetailsLinkView: TextView = view.findViewById(R.id.dialog_details_link) as TextView
+        val opmlImportDetailsView: TextView = view.findViewById(R.id.dialog_details) as TextView
 
         // set dialog view
         builder.setView(view)
 
-        // set text views
-        opmlImportTitleView.text = context.getString(R.string.dialog_opml_import_title)
+        // set detail view
         val numberOfFeeds: Int = feedUrls.size
-
         when (numberOfFeeds) {
 
             // CASE: No new feeds found

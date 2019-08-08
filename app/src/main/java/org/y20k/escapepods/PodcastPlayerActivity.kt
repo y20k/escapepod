@@ -515,7 +515,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Download podcast feed using async co-routine */
     private fun downloadPodcastFeed(feedUrl: String) {
-        if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
+        if (!feedUrl.startsWith("http")) {
+            ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+        } else if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
             launch {
                 // detect content type on background thread
                 val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }

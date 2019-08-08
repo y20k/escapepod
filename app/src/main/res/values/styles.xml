@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <!-- Set AppCompat’s colors -->
         <item name="colorPrimary">@color/escapepods_grey_dark</item>

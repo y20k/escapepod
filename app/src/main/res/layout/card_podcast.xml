@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardBackgroundColor="@color/list_card_background"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,17 +24,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/podcast_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:contentDescription="@string/descr_card_podcast_name"
             android:elevation="2dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="@color/text_default"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
@@ -47,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
@@ -65,7 +65,7 @@
             app:layout_constraintTop_toBottomOf="@+id/episode_current"
             app:srcCompat="@color/list_card_episode_background" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/older_episodes_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,10 +77,8 @@
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
             android:text="@string/podcast_list_button_toggle_show_older_episodes"
-            android:textAllCaps="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
             android:textColor="@color/text_default"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/older_episode_list" />

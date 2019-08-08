@@ -18,7 +18,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepods.R
 import org.y20k.escapepods.helpers.LogHelper
 
@@ -41,13 +41,15 @@ class AddPodcastDialog (private var addPodcastDialogListener: AddPodcastDialogLi
     /* Construct and show dialog */
     fun show(context: Context) {
         // prepare dialog builder
-        val inflater = LayoutInflater.from(context)
-        val builder = AlertDialog.Builder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+
+        // set title
+        builder.setTitle(R.string.dialog_add_podcast_title)
 
         // get input field
+        val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.dialog_add_podcast, null)
-
-        val inputField = view.findViewById<View>(R.id.dialog_add_podcast_input) as EditText
+        val inputField = view.findViewById<View>(R.id.dialog_add_podcast_input_edit_text) as EditText
 
         // set dialog view
         builder.setView(view)

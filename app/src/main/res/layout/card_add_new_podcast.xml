@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardBackgroundColor="@color/list_card_background"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/card_add_new_podcast"
@@ -15,7 +15,7 @@
         android:clickable="true"
         android:focusable="true">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_add_new_podcast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,10 +24,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/podcast_list_button_add_new_podcast"
-            android:textAllCaps="true"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
             android:textColor="@color/text_default"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
