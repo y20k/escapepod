@@ -5,8 +5,8 @@
 
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Add</string>
-    <string name="dialog_add_podcast_howto">Please enter a podcast XML adresses. Those can usually be found on the respective podcast\'s homepage.</string>
-    <string name="dialog_add_podcast_input_hint">Enter podcast link</string>
+    <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for the RSS symbol on the respective podcast\'s homepage.</string>
+    <string name="dialog_add_podcast_input_hint">Enter podcast feed link</string>
     <string name="dialog_add_podcast_title">Add New Podcast</string>
     <string name="dialog_error_message_default">An error occurred</string>
     <string name="dialog_error_message_no_network">Your device has no network connection.</string>
@@ -36,7 +36,7 @@
     <string name="dialog_opml_import_message">Do you want to add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
     <string name="dialog_opml_import_title">OMPL Import</string>
     <string name="dialog_show_notes_close">Close</string>
-    <string name="dialog_show_notes_title">Show notes</string>
+    <string name="dialog_show_notes_title">Show Notes</string>
     <string name="dialog_yes_no_message_add_up_next">Do you want to start listening to this episode right away?</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_message_delete_downloads">Do you want to delete all downloaded episodes? You can re-download them afterwards.</string>
@@ -102,17 +102,17 @@
     <string name="descr_app_icon">App icon depicting an escapepod in space</string>
     <string name="descr_card_add_new_button">Button for adding new podcast feed</string>
     <string name="descr_card_delete_episode_button">Small button deleting an episode download file</string>
-    <string name="descr_card_episode_date">Publishing date of episode</string>
-    <string name="descr_card_episode_name">Name of episode</string>
     <string name="descr_card_playback_indicator">Indicator for playback progress</string>
     <string name="descr_card_podcast_cover">Podcast cover image</string>
-    <string name="descr_card_podcast_name">Name of podcast</string>
     <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
+    <string name="descr_episode_date">Publishing date of episode</string>
+    <string name="descr_episode_show_notes_description_text">Show notes for this episode</string>
+    <string name="descr_episode_title">Title of episode</string>
     <string name="descr_expanded_episode_length">Time remaining in current episode</string>
     <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Debug log file toggle button</string>
-    <string name="descr_expanded_player_episode_name">Name of current episode</string>
+    <string name="descr_expanded_player_episode_title">Title of current episode</string>
     <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter button</string>
     <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
@@ -130,6 +130,8 @@
     <string name="descr_player_playback_button">Main button for starting and pausing playback</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
     <string name="descr_player_podcast_name">Name of current podcast</string>
+    <string name="descr_podcast_feed_address">Address of podcast feed</string>
+    <string name="descr_podcast_name">Name of podcast</string>
 
     <!-- Onboarding -->
     <string name="onboarding_app_description">Podcast App</string>

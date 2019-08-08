@@ -30,6 +30,7 @@ class ShowNotesDialog () {
         val view: View = inflater.inflate(R.layout.dialog_show_notes, null)
         val podcastNameView: TextView = view.findViewById(R.id.podcast_name)
         val podcastFeedXmlView: TextView = view.findViewById(R.id.podcast_feed_xml)
+        val episodeDateView: TextView = view.findViewById(R.id.episode_date)
         val episodeTitleView: TextView = view.findViewById(R.id.episode_title)
         val episodeShowNotesView: TextView = view.findViewById(R.id.episodes_show_notes_view)
 
@@ -39,6 +40,7 @@ class ShowNotesDialog () {
         // set views
         podcastNameView.text = episode.podcastName
         podcastFeedXmlView.text = episode.podcastFeedLocation
+        episodeDateView.text = episode.getDateString()
         episodeTitleView.text = episode.title
         episodeTitleView.isSelected = true // triggers the marquee
         episodeShowNotesView.text = Html.fromHtml(episode.description.replace(Regex("<img.+?>"), ""), Html.FROM_HTML_MODE_COMPACT) // regex removes placeholder images

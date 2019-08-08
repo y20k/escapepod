@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dialog_show_notes"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,14 +13,44 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:contentDescription="@string/descr_podcast_name"
         android:ellipsize="end"
         android:singleLine="true"
-        android:text="@string/sample_text_podcast_name"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         android:textColor="@color/text_default"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/sample_text_podcast_name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/episode_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/descr_episode_date"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        tools:text="@string/sample_text_episode_0_date" />
+
+    <ImageView
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/podcast_feed_xml"
+        app:srcCompat="@color/list_card_episode_background" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_title"
@@ -27,46 +58,50 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        android:contentDescription="@string/descr_episode_title"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
-        android:text="@string/sample_text_episode_0_title"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textColor="@color/text_default"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/podcast_feed_xml" />
+        app:layout_constraintTop_toBottomOf="@+id/episode_date"
+        tools:text="@string/sample_text_episode_0_title" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_feed_xml"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_podcast_feed_address"
         android:ellipsize="end"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         android:paddingBottom="4dp"
         android:singleLine="true"
-        android:text="@string/sample_text_podcast_xml"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/escapepods_red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
+        app:layout_constraintTop_toBottomOf="@+id/podcast_name"
+        tools:text="@string/sample_text_podcast_xml" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/show_notes_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/dialog_show_notes_title"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
         android:textColor="@color/text_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/episode_title" />
+        app:layout_constraintTop_toBottomOf="@+id/episode_title"
+        tools:text="@string/dialog_show_notes_title" />
 
     <ScrollView
         android:layout_width="0dp"
@@ -84,10 +119,11 @@
             android:id="@+id/episodes_show_notes_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sample_text_show_notes"
+            android:contentDescription="@string/descr_episode_show_notes_description_text"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/text_default"
             android:textColorLink="@color/escapepods_red"
+            tools:text="@string/sample_text_show_notes"
             android:paddingBottom="128dp" /> <!-- stupid hack that prevents rows from getting cut off at the end -->
     </ScrollView>
 
