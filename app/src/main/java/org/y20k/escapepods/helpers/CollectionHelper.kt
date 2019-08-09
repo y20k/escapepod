@@ -108,12 +108,15 @@ object CollectionHelper {
         collection.podcasts.forEach { podcast ->
             // look for the matching podcast
             if (podcast.getPodcastId() == newPodcast.getPodcastId()) {
-                val newestEpisodePublicationDate = podcast.episodes[0].publicationDate
+                val newestEpisodePublicationDate: Date = podcast.episodes[0].publicationDate
+                val newestEpisodeRemoteAudioFileLocation: String = podcast.episodes[0].remoteAudioFileLocation
                 // look for newer episodes
                 newPodcast.episodes.forEach { episode ->
                     // found a new episode within podcast
-                    if (newestEpisodePublicationDate < episode.publicationDate) {
-                        newEpisodes.add(episode)
+                    if (episode.publicationDate.after(newestEpisodePublicationDate) && !episode.publicationDate.equals(newestEpisodePublicationDate)) {
+                        if (episode.remoteAudioFileLocation != newestEpisodeRemoteAudioFileLocation) {
+                            newEpisodes.add(episode)
+                        }
                     }
                 }
                 if (newEpisodes.isNotEmpty()) {

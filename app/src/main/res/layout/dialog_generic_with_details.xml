@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -18,7 +19,8 @@
             android:textColor="@color/text_default"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/dialog_error_message_default" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dialog_details_link"
@@ -35,7 +37,8 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_message" />
+            app:layout_constraintTop_toBottomOf="@+id/dialog_message"
+            tools:text="@string/dialog_generic_details_button" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dialog_details"
@@ -52,6 +55,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dialog_details_link" />
+            app:layout_constraintTop_toBottomOf="@+id/dialog_details_link"
+            tools:text="@string/dialog_opml_import_details_default" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

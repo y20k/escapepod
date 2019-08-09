@@ -1,6 +1,6 @@
 # v0.6.0-beta - Drei Schritte Vom Abgrund Entfernt
 
-**2019-08-09**
+**2019-08-14**
 
 - basic show notes viewer
 - changed typography (Material Design Components)

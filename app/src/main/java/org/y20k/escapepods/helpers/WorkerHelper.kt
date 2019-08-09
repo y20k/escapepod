@@ -39,8 +39,8 @@ object WorkerHelper {
                 .setRequiredNetworkType(NetworkType.UNMETERED)
                 .build()
         val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
+                //.setConstraints(unmeteredConstraint)
                 .setInputData(requestData)
-                .setConstraints(unmeteredConstraint)
                 .build()
         WorkManager.getInstance().enqueueUniquePeriodicWork(Keys.NAME_PERIODIC_COLLECTION_UPDATE_WORK,  ExistingPeriodicWorkPolicy.REPLACE, updateCollectionPeriodicWork)
         return updateCollectionPeriodicWork.id

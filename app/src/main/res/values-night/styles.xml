@@ -17,7 +17,7 @@
         <item name="android:statusBarColor">@color/status_bar_background</item>
 
         <!-- Default window background used for resizing on v24 -->
-        <item name="android:windowBackgroundFallback">@color/escapepods_grey_darker</item>
+        <item name="android:windowBackgroundFallback">@color/escapepods_black</item>
 
         <!-- Colors used by playback seek bar -->
         <!-- <item name="android:colorControlActivated"></item> -->
