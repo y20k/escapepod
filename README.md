@@ -4,7 +4,7 @@ README
 # Escapepods - Podcast Player for Android
 <img src="https://raw.githubusercontent.com/y20k/escapepods/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="192" />
 
-**Version 0.5.x (Beta)**
+**Version 0.6.x (Beta)**
 
 Escapepods is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepods is an app of type BYOP ("bring your own podcast"). It does not feature any kind of built-in search option. You will have to manually add podcasts.
 
@@ -41,17 +41,17 @@ Escapepods is a one-person fun project. Simplicity helps maintaining the app.
 Escapepods has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
 
 ### I really miss feature X.
-For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon. 
+For the foreseeable future the development of Escapepods will focus on stability and user interface polish. Do not expect new features anytime soon.
 
 ### Does Escapepods support OMPL?
 You can import an [OPML](https://en.wikipedia.org/wiki/OPML) formatted podcast list. Open the list in a file browser and choose Escapepods as a handler. Escapepods does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device `/Android/data/org.y20k.escapepods/files/collection/`.
 
-## Screenshots (v0.5)
-[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.5-oneplus5.png)
-[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/02-playback-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/02-playback-v0.5-oneplus5.png)
-[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/03-large-player-sheet-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/03-large-player-sheet-v0.5-oneplus5.png)
+## Screenshots (v0.6)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.6-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.6-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/02-playback-v0.6-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/02-playback-v0.6-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/03-large-player-sheet-v0.6-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/03-large-player-sheet-v0.6-oneplus5.png)
 
-[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/04-add-podcast-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/04-add-podcast-v0.5-oneplus5.png)
-[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.5-oneplus5.png)
-[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/06-notification-v0.5-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/06-notification-v0.5-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/04-show_notes-v0.6-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/04-show_notes-v0.6-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.6-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.6-oneplus5.png)
+[<img src="https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/06-add-podcast-v0.6-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepods/master/metadata/en-US/phoneScreenshots/06-add-podcast-v0.6-oneplus5.png)
 
