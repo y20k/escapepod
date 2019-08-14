@@ -17,6 +17,7 @@ package org.y20k.escapepods.ui
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.os.Vibrator
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.view.animation.Animation
@@ -34,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepods.Keys
 import org.y20k.escapepods.R
 import org.y20k.escapepods.core.Episode
+import org.y20k.escapepods.dialogs.ShowNotesDialog
 import org.y20k.escapepods.helpers.DateTimeHelper
 import org.y20k.escapepods.helpers.ImageHelper
 import org.y20k.escapepods.helpers.LogHelper
@@ -132,6 +134,26 @@ data class LayoutHolder(var activity: Activity) {
         sheetEpisodeTitleView.text = episode.title
         sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
         sheetProgressBarView.max = episode.duration.toInt()
+
+        // update click listeners
+        sheetCoverView.setOnClickListener{
+            ShowNotesDialog().show(context, episode)
+        }
+        sheetEpisodeTitleView.setOnClickListener {
+            ShowNotesDialog().show(context, episode)
+        }
+        podcastNameView.setOnLongClickListener{ view ->
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            ShowNotesDialog().show(context, episode)
+            return@setOnLongClickListener true
+        }
+        episodeTitleView.setOnLongClickListener{
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            ShowNotesDialog().show(context, episode)
+            return@setOnLongClickListener true
+        }
     }
 
 

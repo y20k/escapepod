@@ -13,4 +13,3 @@ Note: For the problem that single episodes appear twice in the list, there is un
 2) Delete all application data
 --> Settings > Apps & notifications > See all apps > Escapepods > Storage > Clear storage
 3) Open the OPML file with Escapepods and re-import all podcasts.
-
