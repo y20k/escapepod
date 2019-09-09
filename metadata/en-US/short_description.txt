@@ -1,1 +1,1 @@
-Escapepods is a simple and lightweight app for listening to podcasts.
+Escapepod is a simple and lightweight app for listening to podcasts.

@@ -3,7 +3,7 @@
     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 1024 500" version="1.1"
     id="svg9807" sodipodi:docname="feature-graphic-google-play.svg" inkscape:version="0.92.4 5da689c313, 2019-01-14"
-    width="1024" height="500" inkscape:export-filename="/home/solaris/Desktop/escapepods/metadata/en-US/images/featureGraphic.png"
+    width="1024" height="500" inkscape:export-filename="/home/solaris/Desktop/escapepod/metadata/en-US/images/featureGraphic.png"
     inkscape:export-xdpi="96" inkscape:export-ydpi="96">
   <metadata
      id="metadata9811">
@@ -863,12 +863,12 @@
        x="50.407406"
        y="138.80247"
        id="text4662"
-       inkscape:label="Escapepods - Roboto Heavy 52"><tspan
+       inkscape:label="Escapepod - Roboto Heavy 52"><tspan
          sodipodi:role="line"
          id="tspan4660"
          x="50.407406"
          y="138.80247"
-         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:69.33333588px;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#ffffff;fill-opacity:1">Escapepods</tspan></text>
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:69.33333588px;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#ffffff;fill-opacity:1">Escapepod</tspan></text>
   </g>
   <!-- global background -->
   <!-- basic set-up -->

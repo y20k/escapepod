@@ -1,7 +1,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.y20k.escapepods">
+    package="org.y20k.escapepod">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +13,7 @@
 
 
     <application
-        android:name=".Escapepods"
+        android:name=".Escapepod"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
         android:usesCleartextTraffic="true"

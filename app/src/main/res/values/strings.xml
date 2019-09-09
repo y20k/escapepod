@@ -1,7 +1,7 @@
 <resources>
 
     <!-- App Name -->
-    <string name="app_name">Escapepods</string>
+    <string name="app_name">Escapepod</string>
 
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Add</string>

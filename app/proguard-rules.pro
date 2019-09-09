@@ -22,4 +22,4 @@
 
 
 # Preserve the core classes - because they need to be de-/serialized with GSON
--keep public class org.y20k.escapepods.core.**  { *; }
+-keep public class org.y20k.escapepod.core.**  { *; }
