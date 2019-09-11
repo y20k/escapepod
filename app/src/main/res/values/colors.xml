@@ -2,48 +2,48 @@
 
 <resources>
     <!-- DAY THEME COLORS -->
-    <color name="app_window_background">@color/escapepods_grey_very_light</color>
-    <color name="status_bar_background">@color/escapepods_white</color>
-    <color name="app_onboarding_icons">@color/escapepods_grey_dark</color>
+    <color name="app_window_background">@color/escapepod_grey_very_light</color>
+    <color name="status_bar_background">@color/escapepod_white</color>
+    <color name="app_onboarding_icons">@color/escapepod_grey_dark</color>
 
-    <color name="text_default">@color/escapepods_grey_dark</color>
-    <color name="text_lightweight">@color/escapepods_grey</color>
+    <color name="text_default">@color/escapepod_grey_dark</color>
+    <color name="text_lightweight">@color/escapepod_grey</color>
 
-    <color name="icon_default">@color/escapepods_grey</color>
-    <color name="icon_lightweight">@color/escapepods_grey_light</color>
-    <color name="icon_very_lightweight">@color/escapepods_grey_lighter</color>
+    <color name="icon_default">@color/escapepod_grey</color>
+    <color name="icon_lightweight">@color/escapepod_grey_light</color>
+    <color name="icon_very_lightweight">@color/escapepod_grey_lighter</color>
 
-    <color name="player_button_background">@color/escapepods_red</color>
-    <color name="player_background">@color/escapepods_grey_darker</color>
-    <color name="player_sheet_text_main">@color/escapepods_white</color>
-    <color name="player_sheet_background">@color/escapepods_grey_dark</color>
-    <color name="player_sheet_background_border">@color/escapepods_grey</color>
-    <color name="player_sheet_text_details">@color/escapepods_white</color>
-    <color name="player_sheet_up_next_background">@color/escapepods_grey</color>
-    <color name="player_sheet_icon">@color/escapepods_white</color>
+    <color name="player_button_background">@color/escapepod_red</color>
+    <color name="player_background">@color/escapepod_grey_darker</color>
+    <color name="player_sheet_text_main">@color/escapepod_white</color>
+    <color name="player_sheet_background">@color/escapepod_grey_dark</color>
+    <color name="player_sheet_background_border">@color/escapepod_grey</color>
+    <color name="player_sheet_text_details">@color/escapepod_white</color>
+    <color name="player_sheet_up_next_background">@color/escapepod_grey</color>
+    <color name="player_sheet_icon">@color/escapepod_white</color>
 
-    <color name="list_card_background">@color/escapepods_white</color>
-    <color name="list_card_cover_background">@color/escapepods_grey_very_light</color>
-    <color name="list_card_divider">@color/escapepods_grey_very_light</color>
-    <color name="list_card_delete_background">@color/escapepods_red</color>
-    <color name="list_card_episode_background">@color/escapepods_grey_very_light</color>
-    <color name="list_card_episode_progress_background">@color/escapepods_grey_lighter</color>
+    <color name="list_card_background">@color/escapepod_white</color>
+    <color name="list_card_cover_background">@color/escapepod_grey_very_light</color>
+    <color name="list_card_divider">@color/escapepod_grey_very_light</color>
+    <color name="list_card_delete_background">@color/escapepod_red</color>
+    <color name="list_card_episode_background">@color/escapepod_grey_very_light</color>
+    <color name="list_card_episode_progress_background">@color/escapepod_grey_lighter</color>
 
     <!-- COLOR NAMES -->
-    <color name="escapepods_grey">#FF595959</color> <!-- derived from recommended dark theme surface color -->
-    <color name="escapepods_grey_light">#FF7D7D7D</color>
-    <color name="escapepods_grey_lighter">#FFDADADA</color>
-    <color name="escapepods_grey_very_light">#FFF2F2F2</color>
-    <color name="escapepods_grey_dark">#FF414141</color>
-    <color name="escapepods_grey_darker">#FF2D2D2D</color>
+    <color name="escapepod_grey">#FF595959</color> <!-- derived from recommended dark theme surface color -->
+    <color name="escapepod_grey_light">#FF7D7D7D</color>
+    <color name="escapepod_grey_lighter">#FFDADADA</color>
+    <color name="escapepod_grey_very_light">#FFF2F2F2</color>
+    <color name="escapepod_grey_dark">#FF414141</color>
+    <color name="escapepod_grey_darker">#FF2D2D2D</color>
 
-    <color name="escapepods_red">#DC3D33</color> <!-- Slightly muted variant of -> Material Design 2: Red 600 -->
-    <color name="escapepods_red_light">#FFE15950</color>
-    <color name="escapepods_red_dark">#FFCA2D23</color>
-    <color name="escapepods_red_darker">#FFAD261E</color>
+    <color name="escapepod_red">#DC3D33</color> <!-- Slightly muted variant of -> Material Design 2: Red 600 -->
+    <color name="escapepod_red_light">#FFE15950</color>
+    <color name="escapepod_red_dark">#FFCA2D23</color>
+    <color name="escapepod_red_darker">#FFAD261E</color>
 
-    <color name="escapepods_black">#FF121212</color> <!-- Material Design recommended dark theme surface color -->
-    <color name="escapepods_white">#FFFFFFFF</color>
-    <color name="escapepods_transparent">#00ffffff</color>
+    <color name="escapepod_black">#FF121212</color> <!-- Material Design recommended dark theme surface color -->
+    <color name="escapepod_white">#FFFFFFFF</color>
+    <color name="escapepod_transparent">#00ffffff</color>
 
 </resources>

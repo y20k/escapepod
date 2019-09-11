@@ -82,7 +82,7 @@
         android:paddingBottom="4dp"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:textColor="@color/escapepods_red"
+        android:textColor="@color/escapepod_red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,6 +110,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,9 +123,10 @@
             android:contentDescription="@string/descr_episode_show_notes_description_text"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/text_default"
-            android:textColorLink="@color/escapepods_red"
-            tools:text="@string/sample_text_show_notes"
-            android:paddingBottom="128dp" /> <!-- stupid hack that prevents rows from getting cut off at the end -->
+            android:textColorLink="@color/escapepod_red"
+            android:paddingBottom="16dp"
+            tools:text="@string/sample_text_show_notes" />
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

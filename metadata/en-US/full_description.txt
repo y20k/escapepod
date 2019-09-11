@@ -3,9 +3,6 @@ Escapepod is a simple and lightweight app for listening to podcasts. It's bare b
 
 FREQUENT QUESTIONS
 
-WHERE CAN I DOWNLOAD ESCAPEPODS?
-As long as Escapepod is in beta you can only get it on GitHub (https://github.com/y20k/escapepod/releases). A future release on F-Droid is planned.
-
 I CAN NOT ADD PODCAST X.
 The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected. Please head over to the Wiki (https://github.com/y20k/escapepod/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
 

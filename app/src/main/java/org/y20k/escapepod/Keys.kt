@@ -4,7 +4,7 @@
  * This object hosts all keys used to control Escapepod state
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License

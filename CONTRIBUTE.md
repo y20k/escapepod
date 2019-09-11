@@ -5,7 +5,7 @@ How to contribute to Escapepod
 Bugs and new features are being discussed on the GitHub [Issue Tracker](https://github.com/y20k/escapepod/issues).
 
 ### Help with translations
-There will be (hopefully) a Weblate account for Escapepod as soon as the app reaches 1.0.
+There will be (hopefully) a Weblate account for Escapepod as soon as the app has been released on F-Droid.
 
 ### Submit your own solutions
 Help is very welcome. Be it in the form of code, or artwork, or enhancements to the website, or tutorial videos, or whatever.

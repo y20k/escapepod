@@ -4,7 +4,7 @@
  * A DownloadHelper provides helper methods for downloading files
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -166,7 +166,8 @@ object DownloadHelper {
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
-            if (uris[i].scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {
+            val scheme: String = uris[i].scheme ?: String()
+            if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(uris[i].lastPathSegment)

@@ -50,7 +50,7 @@ class ShowNotesDialog () {
         podcastFeedXmlView.setOnClickListener {
             val clip: ClipData = ClipData.newPlainText("simple text", episode.podcastFeedLocation)
             val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            cm.primaryClip = clip
+            cm.setPrimaryClip(clip)
             Toast.makeText(context, R.string.toast_message_podcast_feed_address_copied, Toast.LENGTH_LONG).show()
         }
 

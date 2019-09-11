@@ -64,6 +64,7 @@
         android:clickable="true"
         android:contentDescription="@string/descr_expanded_player_debug_log_toggle_button"
         android:focusable="true"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_developer_mode_24dp" />
@@ -370,7 +371,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:constraint_referenced_ids="debug_log_toggle_button,sleep_timer_start_button,sleep_timer_remaining_time,sleep_timer_cancel_button" />
+        app:constraint_referenced_ids="sleep_timer_start_button,sleep_timer_remaining_time,sleep_timer_cancel_button" />
+        <!-- app:constraint_referenced_ids="debug_log_toggle_button,sleep_timer_start_button,sleep_timer_remaining_time,sleep_timer_cancel_button" /> -->
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/sleep_timer_running_views"

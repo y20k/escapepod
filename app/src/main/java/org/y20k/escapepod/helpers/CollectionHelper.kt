@@ -4,7 +4,7 @@
  * A CollectionHelper provides helper methods for the podcast collection
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -186,7 +186,6 @@ object CollectionHelper {
     fun removeDuplicates(collection: Collection, feedUrls: Array<String>): Array<String> {
         val feedUrlList: MutableList<String> = feedUrls.toMutableList()
         collection.podcasts.forEach { podcast ->
-            LogHelper.e(TAG, "Trying to remove: ${podcast.remotePodcastFeedLocation}") // todo remove
             feedUrlList.remove(podcast.remotePodcastFeedLocation)
         }
         return feedUrlList.toTypedArray()

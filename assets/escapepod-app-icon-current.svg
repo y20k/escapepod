@@ -4,8 +4,8 @@
 <svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="108pt" height="108pt"
-    viewBox="0 0 38.100001 38.1" version="1.1" id="svg8" inkscape:version="0.92.2 5c3e80d, 2017-08-06"
-    sodipodi:docname="escapepod-app-icon-variant.svg" inkscape:export-filename="/Users/solaris/Desktop/escapepod/assets/escapepod-app-icon-current-background.png"
+    viewBox="0 0 38.100001 38.1" version="1.1" id="svg8" inkscape:version="0.92.4 5da689c313, 2019-01-14"
+    sodipodi:docname="escapepod-app-icon-current.svg" inkscape:export-filename="/Users/solaris/Desktop/escapepod/assets/escapepod-app-icon-current-background.png"
     inkscape:export-xdpi="600" inkscape:export-ydpi="600">
   <defs
      id="defs2">
@@ -276,17 +276,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3"
-     inkscape:cx="52.3809"
-     inkscape:cy="72.467213"
+     inkscape:cx="-21.452433"
+     inkscape:cy="70.967213"
      inkscape:document-units="pt"
-     inkscape:current-layer="g916"
+     inkscape:current-layer="layer1"
      showgrid="false"
      units="pt"
      inkscape:snap-object-midpoints="true"
      inkscape:window-width="2408"
      inkscape:window-height="1260"
-     inkscape:window-x="209"
-     inkscape:window-y="124"
+     inkscape:window-x="249"
+     inkscape:window-y="143"
      inkscape:window-maximized="0"
      inkscape:snap-global="false"
      showguides="true"
@@ -490,7 +490,7 @@
      inkscape:label="RSS with thruster"
      id="g5089"
      inkscape:groupmode="layer"
-     style="display:none">
+     style="display:inline">
     <path
        inkscape:label="Background"
        inkscape:connector-curvature="0"
@@ -539,6 +539,8 @@
        height="25.4"
        x="6.3500004"
        y="6.3500004"
-       inkscape:label="Rectangle 72pt" />
+       inkscape:label="Rectangle 72pt"
+       inkscape:export-xdpi="512"
+       inkscape:export-ydpi="512" />
   </g>
 </svg>

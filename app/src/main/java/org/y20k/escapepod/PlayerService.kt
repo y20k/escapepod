@@ -4,7 +4,7 @@
  * PodcastPlayerActivity is Escapepod's foreground service that plays podcast audio and handles playback controls
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License

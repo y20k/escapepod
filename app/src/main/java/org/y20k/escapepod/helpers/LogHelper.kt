@@ -4,7 +4,7 @@
  * A LogHelper wraps the logging calls to be able to strip them out of release versions
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -27,8 +27,8 @@ import java.util.*
  */
 object LogHelper {
 
-    private val TESTING: Boolean = true
-    private val LOG_PREFIX: String = "escapepods_"
+    private val TESTING: Boolean = false // set to "false"
+    private val LOG_PREFIX: String = "escapepod_"
     private val LOG_PREFIX_LENGTH: Int = LOG_PREFIX.length
     private val MAX_LOG_TAG_LENGTH: Int = 64
 

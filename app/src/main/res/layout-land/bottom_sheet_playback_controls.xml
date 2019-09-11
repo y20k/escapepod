@@ -64,6 +64,7 @@
         android:clickable="true"
         android:contentDescription="@string/descr_expanded_player_debug_log_toggle_button"
         android:focusable="true"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_developer_mode_24dp" />

@@ -4,7 +4,7 @@
  * A PreferencesHelper provides helper methods for the saving and loading values from shared preferences
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License

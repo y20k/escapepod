@@ -4,7 +4,7 @@
  * A FileHelper provides helper methods for reading and writing files from and to device storage
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -43,33 +43,46 @@ object FileHelper {
 
 
     /* Return an InputStream for given Uri */
-    fun getTextFileStream(context: Context, uri: Uri): InputStream {
+    fun getTextFileStream(context: Context, uri: Uri): InputStream? {
         return context.contentResolver.openInputStream(uri)
     }
 
 
     /* Get file size for given Uri */
     fun getFileSize(context: Context, uri: Uri): Long {
-        val cursor: Cursor = context.contentResolver.query(uri, null, null, null, null)
-        val sizeIndex: Int = cursor.getColumnIndex(OpenableColumns.SIZE)
-        cursor.moveToFirst()
-        return cursor.getLong(sizeIndex)
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        if (cursor != null) {
+            val sizeIndex: Int = cursor.getColumnIndex(OpenableColumns.SIZE)
+            cursor.moveToFirst()
+            return cursor.getLong(sizeIndex)
+        } else {
+            return 0L
+        }
     }
 
 
     /* Get file name for given Uri */
     fun getFileName(context: Context, uri: Uri): String {
-        val cursor: Cursor = context.contentResolver.query(uri, null, null, null, null)
-        val nameIndex: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        cursor.moveToFirst()
-        return cursor.getString(nameIndex)
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        if (cursor != null) {
+            val nameIndex: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.moveToFirst()
+            return cursor.getString(nameIndex)
+        } else {
+            return String()
+        }
     }
 
 
     /* Get MIME type for given file */
     fun getFileType(context: Context, uri: Uri): String {
-        val fileType: String = context.contentResolver.getType(uri)
-        if (fileType == Keys.MIME_TYPE_UNSUPPORTED) {
+        // get file type from content resolver
+        val fileType: String = context.contentResolver.getType(uri) ?: Keys.MIME_TYPE_UNSUPPORTED
+        if (fileType != Keys.MIME_TYPE_UNSUPPORTED) {
+            // return the found file type
+            return fileType
+        } else {
+            // fallback: try to determine file type based on file extension
             val fileName = getFileName(context, uri)
             if (fileName.endsWith("xml", true)) return Keys.MIME_TYPE_XML
             if (fileName.endsWith("rss", true)) return Keys.MIME_TYPE_XML
@@ -77,8 +90,6 @@ object FileHelper {
             if (fileName.endsWith("png", true)) return Keys.MIME_TYPE_PNG
             if (fileName.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
             if (fileName.endsWith("jpeg", true)) return Keys.MIME_TYPE_JPG
-        } else {
-            return fileType
         }
         return Keys.MIME_TYPE_UNSUPPORTED
     }
@@ -118,8 +129,8 @@ object FileHelper {
 
 
     /* Clears given folder - keeps given number of files */
-    fun clearFolder(folder: File, keep: Int, deleteFolder: Boolean = false) {
-        if (folder.exists()) {
+    fun clearFolder(folder: File?, keep: Int, deleteFolder: Boolean = false) {
+        if (folder != null && folder.exists()) {
             val files = folder.listFiles()
             val fileCount: Int = files.size
             files.sortBy { it.lastModified() }

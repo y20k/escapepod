@@ -4,7 +4,7 @@
  * PodcastPlayerActivity is Escapepod's main activity that hosts a list of podcast and a player sheet
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -601,14 +601,15 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Handles ACTION_VIEW request to add Podcast or import OPML */
     private fun handleViewIntent() {
         val contentUri: Uri? = intent.data
-        if (contentUri != null && contentUri.scheme != null) {
+        if (contentUri != null) {
+            val scheme: String = contentUri.scheme ?: String()
             when {
                 // download new podcast
-                contentUri.scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download + dialog and stuff
+                scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download + dialog and stuff
                 // readSuspended opml from content uri
-                contentUri.scheme.startsWith("content") -> readOpmlFile(contentUri, false) // todo implement OPML readSuspended + dialog and stuff
+                scheme.startsWith("content") -> readOpmlFile(contentUri, false) // todo implement OPML readSuspended + dialog and stuff
                 // readSuspended opml from file uri
-                contentUri.scheme.startsWith("file") -> readOpmlFile(contentUri, true) // todo implement OPML readSuspended + dialog and stuff
+                scheme.startsWith("file") -> readOpmlFile(contentUri, true) // todo implement OPML readSuspended + dialog and stuff
             }
         }
     }

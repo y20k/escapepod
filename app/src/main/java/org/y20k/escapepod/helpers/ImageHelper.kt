@@ -4,7 +4,7 @@
  * An ImageHelper provides helper methods for image related operations
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -66,7 +66,7 @@ object ImageHelper {
             return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
         } else {
             // default return
-            return context.resources.getColor(R.color.escapepods_grey_light, null)
+            return context.resources.getColor(R.color.escapepod_grey_light, null)
         }
     }
 

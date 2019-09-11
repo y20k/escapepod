@@ -4,7 +4,7 @@
  * An OpmlHelper provides helper methods for exporting and importing OPML podcast lists
  *
  * This file is part of
- * ESCAPEPODS - Free and Open Podcast App
+ * ESCAPEPOD - Free and Open Podcast App
  *
  * Copyright (c) 2018-19 - Y20K.org
  * Licensed under the MIT-License
@@ -47,7 +47,7 @@ class OpmlHelper {
         return suspendCoroutine {cont ->
            LogHelper.v(TAG, "Reading OPML feed - Thread: ${Thread.currentThread().name}")
             // try parsing
-            val stream: InputStream = FileHelper.getTextFileStream(context, localFileUri)
+            val stream: InputStream? = FileHelper.getTextFileStream(context, localFileUri)
             try {
                 // create XmlPullParser for InputStream
                 val parser: XmlPullParser = Xml.newPullParser()
@@ -59,7 +59,7 @@ class OpmlHelper {
             } catch (exception : Exception) {
                 exception.printStackTrace()
             } finally {
-                stream.close()
+                stream?.close()
             }
 
             // return parsing result

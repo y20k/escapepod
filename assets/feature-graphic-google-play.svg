@@ -31,8 +31,8 @@
      id="namedview9809"
      showgrid="false"
      inkscape:zoom="0.81"
-     inkscape:cx="304.22421"
-     inkscape:cy="297.18601"
+     inkscape:cx="30.76742"
+     inkscape:cy="292.24774"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -44,6 +44,7 @@
      id="defs151">
     <style
        id="style4"><!-- spectral types -->
+
 
 
 
@@ -785,7 +786,7 @@
      style="display:inline">
     <path
        id="path10226"
-       d="m 317.92593,303.16809 c -3.43213,27.18402 -20.66766,44.87641 -42.29251,54.09353 26.02466,0.27014 49.3497,-8.24897 60.25717,-29.49555 1.38885,-2.70084 2.97134,-5.12464 4.70876,-7.47752 l 2.34849,-2.58392 1.00357,0.46341 -4.01249,10.25621 c -7.70635,16.57772 -19.8545,30.03355 -37.35873,38.82495 -34.42728,17.07843 -48.31069,53.62835 -47.9226,94.57195 14.99563,-34.04175 43.75954,-61.0331 87.71169,-66.43254 8.40651,-1.00138 16.23231,-2.73844 23.55492,-5.20468 l 4.70394,-1.76997 -0.96373,0.72913 c -20.47029,12.68438 -27.02685,36.20376 -24.24859,61.64857 7.36276,-22.01227 23.67259,-40.56021 50.89169,-46.49581 26.02327,-8.20887 49.54497,-27.17965 58.33446,-49.92867 11.87382,-33.69818 7.86282,-58.68203 -11.30023,-78.92247 -2.81374,-2.88907 -5.85814,-5.70758 -9.25413,-8.3287 -17.81183,-14.34218 -45.76043,-26.56815 -70.85908,-14.42178 -22.36571,9.56832 -41.76146,22.87098 -45.3026,50.47386 z"
+       d="m 297.91015,303.16809 c -3.43213,27.18402 -20.66766,44.87641 -42.29251,54.09353 26.02466,0.27014 49.3497,-8.24897 60.25717,-29.49555 1.38885,-2.70084 2.97134,-5.12464 4.70876,-7.47752 l 2.34849,-2.58392 1.00357,0.46341 -4.01249,10.25621 c -7.70635,16.57772 -19.8545,30.03355 -37.35873,38.82495 -34.42728,17.07843 -48.31069,53.62835 -47.9226,94.57195 14.99563,-34.04175 43.75954,-61.0331 87.71169,-66.43254 8.40651,-1.00138 16.23231,-2.73844 23.55492,-5.20468 l 4.70394,-1.76997 -0.96373,0.72913 c -20.47029,12.68438 -27.02685,36.20376 -24.24859,61.64857 7.36276,-22.01227 23.67259,-40.56021 50.89169,-46.49581 26.02327,-8.20887 49.54497,-27.17965 58.33446,-49.92867 11.87382,-33.69818 7.86282,-58.68203 -11.30023,-78.92247 -2.81374,-2.88907 -5.85814,-5.70758 -9.25413,-8.3287 -17.81183,-14.34218 -45.76043,-26.56815 -70.85908,-14.42178 -22.36571,9.56832 -41.76146,22.87098 -45.3026,50.47386 z"
        inkscape:connector-curvature="0"
        style="fill:#ffe790;fill-opacity:0.92592594;stroke-width:0.51199907"
        inkscape:label="Flame" />
@@ -798,7 +799,7 @@
        style="display:inline"
        id="g5089"
        inkscape:label="RSS with thruster"
-       transform="translate(-16.763368,42.78423)">
+       transform="translate(-36.779149,42.78423)">
       <path
          sodipodi:nodetypes="ccccccccc"
          style="display:inline;opacity:1;fill:#17181a;fill-opacity:1;stroke:none;stroke-width:2.90456462;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.40687681"
@@ -843,30 +844,30 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:48px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
-       x="542.03693"
+       x="534.02112"
        y="319.4028"
        id="text4662-5"
        inkscape:label="Lets keep ... - Roboto Bold 34 + 52"><tspan
          sodipodi:role="line"
          id="tspan4660-9"
-         x="542.03693"
+         x="534.02112"
          y="319.4028"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:45.33333206px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';fill:#ffffff;fill-opacity:1">let's keep podcasting</tspan><tspan
          sodipodi:role="line"
-         x="542.03693"
+         x="534.02112"
          y="399.01926"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:69.33333588px;font-family:Roboto;-inkscape-font-specification:'Roboto Bold';fill:#ffffff;fill-opacity:1"
          id="tspan4684">free and open</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:69.33333588px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;display:inline;fill:#000000;fill-opacity:1;stroke:none"
-       x="50.407406"
+       x="60.391624"
        y="138.80247"
        id="text4662"
        inkscape:label="Escapepod - Roboto Heavy 52"><tspan
          sodipodi:role="line"
          id="tspan4660"
-         x="50.407406"
+         x="60.391624"
          y="138.80247"
          style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:69.33333588px;font-family:Roboto;-inkscape-font-specification:'Roboto Heavy';fill:#ffffff;fill-opacity:1">Escapepod</tspan></text>
   </g>
