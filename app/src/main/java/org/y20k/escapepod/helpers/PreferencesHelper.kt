@@ -15,8 +15,9 @@
 package org.y20k.escapepod.helpers
 
 import android.content.Context
-import android.preference.PreferenceManager
+
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.core.Collection

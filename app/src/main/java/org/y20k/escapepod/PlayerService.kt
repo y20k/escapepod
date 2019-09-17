@@ -278,7 +278,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // create MediaSource
         val mediaSource: MediaSource = ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent)).createMediaSource(Uri.parse(episode.audio))
         // prepare player with source
-        player.prepare(mediaSource);
+        player.prepare(mediaSource)
         // set player position
         player.seekTo(episode.playbackPosition)
     }
@@ -455,7 +455,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 episode.playbackPosition = 0L
             }
             // prepare player
-            preparePlayer();
+            preparePlayer()
             // start playback
             player.playWhenReady = true
         }

@@ -328,7 +328,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Sets up views and connects tap listeners - first run */
     private fun initializeViews() {
         // set adapter data source
-        layout.recyclerView.setAdapter(collectionAdapter)
+        layout.recyclerView.adapter = collectionAdapter
 
         // enable swipe to delete
         val swipeHandler = object : UiHelper.SwipeToDeleteCallback(this) {
@@ -587,7 +587,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         }
         // clear intent action to prevent double calls
-        intent.setAction("")
+        intent.action = ""
     }
 
 

@@ -49,7 +49,7 @@ import org.y20k.escapepod.helpers.PreferencesHelper
 /*
  * CollectionAdapter class
  */
-class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(CollectionAdapter::class.java)
@@ -111,7 +111,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             // CASE ADD NEW CARD
             is AddNewViewHolder -> {
                 // get reference to StationViewHolder
-                val addNewViewHolder: AddNewViewHolder = holder as AddNewViewHolder
+                val addNewViewHolder: AddNewViewHolder = holder
                 addNewViewHolder.addNewPodcastView.setOnClickListener {
                     // show the add podcast dialog
                     collectionAdapterListener.onAddNewButtonTapped()
@@ -128,7 +128,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
                 val podcast: Podcast = collection.podcasts[position]
 
                 // get reference to StationViewHolder
-                val podcastViewHolder: PodcastViewHolder = holder as PodcastViewHolder
+                val podcastViewHolder: PodcastViewHolder = holder
 
                 // set up podcast
                 setPodcastName(podcastViewHolder, podcast)
@@ -148,7 +148,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Sets the podcast name view */
     private fun setPodcastName(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
-        podcastViewHolder.podcastNameView.setText(podcast.name)
+        podcastViewHolder.podcastNameView.text = podcast.name
     }
 
 
@@ -167,7 +167,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
 
     /* Sets up an episode's title views */
     private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        episodeViewHolder.episodeDateView.setText(episode.getDateString())
+        episodeViewHolder.episodeDateView.text = episode.getDateString()
         episodeViewHolder.episodeDateView.setOnLongClickListener {
             ShowNotesDialog().show(activity, episode)
             val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -175,7 +175,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             return@setOnLongClickListener true
         }
-        episodeViewHolder.episodeTitleView.setText(episode.title)
+        episodeViewHolder.episodeTitleView.text = episode.title
         episodeViewHolder.episodeTitleView.setOnLongClickListener {
             ShowNotesDialog().show(activity, episode)
             val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -226,8 +226,8 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             // set up episode list
             val episodeListAdapter = EpisodeListAdapter(podcast)
             podcastViewHolder.olderEpisodesList.adapter = episodeListAdapter
-            podcastViewHolder.olderEpisodesList.setLayoutManager(LinearLayoutManager(activity))
-            podcastViewHolder.olderEpisodesList.setItemAnimator(DefaultItemAnimator())
+            podcastViewHolder.olderEpisodesList.layoutManager = LinearLayoutManager(activity)
+            podcastViewHolder.olderEpisodesList.itemAnimator = DefaultItemAnimator()
             // set up Older Episodes button
             setOlderEpisodesButton(podcastViewHolder)
             podcastViewHolder.olderEpisodesButtonView.setOnClickListener {
@@ -281,7 +281,7 @@ class CollectionAdapter(val activity: Activity) : RecyclerView.Adapter<RecyclerV
             val podcast = collection.podcasts[holder.getAdapterPosition()]
 
             // get reference to StationViewHolder
-            val stationViewHolder = holder as PodcastViewHolder
+            val stationViewHolder = holder
 
             for (data in payloads) {
                 when (data as Int) {

@@ -284,7 +284,7 @@ object DownloadHelper {
         val iterator: MutableIterator<Long> = activeDownloads.iterator()
         while (iterator.hasNext()) {
             val activeDownload = iterator.next()
-            if (activeDownload.equals(downloadId)) {
+            if (activeDownload == downloadId) {
                 iterator.remove()
                 setActiveDownloads(context, activeDownloads)
                 return true
@@ -413,7 +413,7 @@ object DownloadHelper {
         var allowedNetworkTypes: Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         // restrict download of audio files to WiFi if necessary
         if (type == Keys.FILE_TYPE_AUDIO) {
-            val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE);
+            val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE)
             if (!ignoreWifiRestriction && !downloadOverMobile) {
                 allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
             }

@@ -139,6 +139,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="visible"
-        app:constraint_referenced_ids="episode_delete_button, episode_play_button, episode_playback_progress" />
+        app:constraint_referenced_ids="episode_delete_button,episode_play_button,episode_playback_progress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,9 +51,9 @@ class OpmlHelper {
             try {
                 // create XmlPullParser for InputStream
                 val parser: XmlPullParser = Xml.newPullParser()
-                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
                 parser.setInput(stream, null)
-                parser.nextTag();
+                parser.nextTag()
                 // start reading opml feed
                 feedUrlList = parseFeed(parser)
             } catch (exception : Exception) {

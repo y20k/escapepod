@@ -54,7 +54,9 @@ object FileHelper {
         if (cursor != null) {
             val sizeIndex: Int = cursor.getColumnIndex(OpenableColumns.SIZE)
             cursor.moveToFirst()
-            return cursor.getLong(sizeIndex)
+            val size: Long = cursor.getLong(sizeIndex)
+            cursor.close()
+            return size
         } else {
             return 0L
         }
@@ -67,7 +69,9 @@ object FileHelper {
         if (cursor != null) {
             val nameIndex: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             cursor.moveToFirst()
-            return cursor.getString(nameIndex)
+            val name: String = cursor.getString(nameIndex)
+            cursor.close()
+            return name
         } else {
             return String()
         }
@@ -258,7 +262,7 @@ object FileHelper {
         val unit: Long = if (si) 1000L else 1024L
 
         // just return bytes if file size is smaller than requested unit
-        if (bytes < unit) return bytes.toString() + " B"
+        if (bytes < unit) return "$bytes B"
 
         // calculate exp
         val exp: Int = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()

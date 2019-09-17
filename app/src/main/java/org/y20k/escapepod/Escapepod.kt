@@ -33,7 +33,7 @@ class Escapepod: Application () {
         super.onCreate()
         LogHelper.v(TAG, "Escapepod application started.")
         // set Day / Night theme state
-        NightModeHelper.restoreSavedState(this);
+        NightModeHelper.restoreSavedState(this)
     }
 
 

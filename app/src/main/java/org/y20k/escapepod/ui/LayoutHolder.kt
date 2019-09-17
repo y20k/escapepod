@@ -54,31 +54,31 @@ data class LayoutHolder(var activity: Activity) {
     /* Main class variables */
     var swipeRefreshLayout: SwipeRefreshLayout
     var recyclerView: RecyclerView
-    var bottomSheet: ConstraintLayout
-    var playerViews: Group
-    var upNextViews: Group
-    var topButtonViews: Group
+    private var bottomSheet: ConstraintLayout
+    private var playerViews: Group
+    private var upNextViews: Group
+    private var topButtonViews: Group
     var sleepTimerRunningViews: Group
-    var coverView: ImageView
-    var podcastNameView: TextView
-    var episodeTitleView: TextView
+    private var coverView: ImageView
+    private var podcastNameView: TextView
+    private var episodeTitleView: TextView
     var playButtonView: ImageView
-    var sheetCoverView: ImageView
+    private var sheetCoverView: ImageView
     var sheetProgressBarView: SeekBar
-    var sheetTimePlayedView: TextView
-    var sheetDurationView: TextView
-    var sheetEpisodeTitleView: TextView
+    private var sheetTimePlayedView: TextView
+    private var sheetDurationView: TextView
+    private var sheetEpisodeTitleView: TextView
     var sheetPlayButtonView: ImageView
     var sheetSkipBackButtonView: ImageView
     var sheetSkipForwardButtonView: ImageView
     var sheetSleepTimerStartButtonView: ImageView
     var sheetSleepTimerCancelButtonView: ImageView
-    var sheetSleepTimerRemainingTimeView: TextView
+    private var sheetSleepTimerRemainingTimeView: TextView
     var sheetDebugToggleButtonView: ImageView
-    var sheetUpNextName: TextView
+    private var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
-    var onboardingLayout: ConstraintLayout
-    var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private var onboardingLayout: ConstraintLayout
+    private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
 
 
     /* Init block */
@@ -275,7 +275,7 @@ data class LayoutHolder(var activity: Activity) {
     private fun showPlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
         if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         return true
     }
@@ -284,7 +284,7 @@ data class LayoutHolder(var activity: Activity) {
     /* Hides player */
     private fun hidePlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, 0)
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         return true
     }
 
@@ -310,8 +310,8 @@ data class LayoutHolder(var activity: Activity) {
                 return true
             }
         }
-        recyclerView.setLayoutManager(layoutManager)
-        recyclerView.setItemAnimator(DefaultItemAnimator())
+        recyclerView.layoutManager = layoutManager
+        recyclerView.itemAnimator = DefaultItemAnimator()
     }
 
 
@@ -319,7 +319,7 @@ data class LayoutHolder(var activity: Activity) {
     private fun setupBottomSheet() {
         // show / hide the small player
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.bottomSheetCallback = object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(view: View, slideOffset: Float) {
                 if (slideOffset < 0.25f) {
                     showPlayerViews()
@@ -337,7 +337,7 @@ data class LayoutHolder(var activity: Activity) {
                     BottomSheetBehavior.STATE_HIDDEN -> showPlayerViews()
                 }
             }
-        })
+        }
         // toggle collapsed state on tap
         bottomSheet.setOnClickListener {
             when (bottomSheetBehavior.state) {
@@ -350,14 +350,14 @@ data class LayoutHolder(var activity: Activity) {
 
     /* Shows player views and hides of the top button views */
     private fun showPlayerViews() {
-        playerViews.visibility = View.VISIBLE;
+        playerViews.visibility = View.VISIBLE
         topButtonViews.visibility = View.GONE
     }
 
 
     /* Hides player views in favor of the top button views */
     private fun hidePlayerViews() {
-        playerViews.visibility = View.GONE;
+        playerViews.visibility = View.GONE
         topButtonViews.visibility = View.VISIBLE
     }
 

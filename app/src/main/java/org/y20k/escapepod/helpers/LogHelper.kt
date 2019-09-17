@@ -27,10 +27,10 @@ import java.util.*
  */
 object LogHelper {
 
-    private val TESTING: Boolean = false // set to "false"
-    private val LOG_PREFIX: String = "escapepod_"
+    private const val TESTING: Boolean = false // set to "false"
+    private const val LOG_PREFIX: String = "escapepod_"
+    private const val MAX_LOG_TAG_LENGTH: Int = 64
     private val LOG_PREFIX_LENGTH: Int = LOG_PREFIX.length
-    private val MAX_LOG_TAG_LENGTH: Int = 64
 
     fun makeLogTag(str: String): String {
         return if (str.length > MAX_LOG_TAG_LENGTH - LOG_PREFIX_LENGTH) {

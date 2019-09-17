@@ -79,7 +79,7 @@ object CollectionHelper {
         var newerCollectionAvailable = false
         val lastSavedUpdateString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_LAST_UPDATE_COLLECTION, Keys.DEFAULT_RFC2822_DATE)!!
         val lastSavedUpdate: Date = DateTimeHelper.convertFromRfc2822(lastSavedUpdateString)
-        if (lastSavedUpdate.after(lastUpdate) || lastSavedUpdateString.equals(Keys.DEFAULT_RFC2822_DATE)) {
+        if (lastSavedUpdate.after(lastUpdate) || lastSavedUpdateString == Keys.DEFAULT_RFC2822_DATE) {
             newerCollectionAvailable = true
         }
         return newerCollectionAvailable
@@ -113,7 +113,7 @@ object CollectionHelper {
                 // look for newer episodes
                 newPodcast.episodes.forEach { episode ->
                     // found a new episode within podcast
-                    if (episode.publicationDate.after(newestEpisodePublicationDate) && !episode.publicationDate.equals(newestEpisodePublicationDate)) {
+                    if (episode.publicationDate.after(newestEpisodePublicationDate) && episode.publicationDate != newestEpisodePublicationDate) {
                         if (episode.remoteAudioFileLocation != newestEpisodeRemoteAudioFileLocation) {
                             newEpisodes.add(episode)
                         }
@@ -461,7 +461,7 @@ object CollectionHelper {
                     // delete audio file
                     LogHelper.d(TAG, "Deleting audio file for episode: ${episode.title}")
                     try {
-                        context.getContentResolver().delete(Uri.parse(episode.audio), null, null)
+                        context.contentResolver.delete(Uri.parse(episode.audio), null, null)
                     } catch (e: Exception) {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }

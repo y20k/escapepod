@@ -55,7 +55,7 @@ class ErrorDialog {
         // set detail view
         if (errorDetails.isNotEmpty()) {
             // show details link
-            errorDetailsLinkView.setVisibility(View.VISIBLE)
+            errorDetailsLinkView.visibility = View.VISIBLE
 
             // allow scrolling on details view
             errorDetailsView.movementMethod = ScrollingMovementMethod()
@@ -63,15 +63,15 @@ class ErrorDialog {
             // show and hide details on click
             errorDetailsLinkView.setOnClickListener {
                 when (errorDetailsView.visibility) {
-                    View.GONE -> errorDetailsView.setVisibility(View.VISIBLE)
-                    View.VISIBLE -> errorDetailsView.setVisibility(View.GONE)
+                    View.GONE -> errorDetailsView.visibility = View.VISIBLE
+                    View.VISIBLE -> errorDetailsView.visibility = View.GONE
                 }
             }
             // set details text view
             errorDetailsView.text = errorDetails
         } else {
             // hide details link
-            errorDetailsLinkView.setVisibility(View.GONE)
+            errorDetailsLinkView.visibility = View.GONE
         }
 
         // set text views

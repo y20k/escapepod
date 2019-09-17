@@ -40,8 +40,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
         builder.setView(view)
 
         // set detail view
-        val numberOfFeeds: Int = feedUrls.size
-        when (numberOfFeeds) {
+        when (val numberOfFeeds: Int = feedUrls.size) {
 
             // CASE: No new feeds found
             0 -> {
@@ -49,8 +48,8 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 opmlImportMessageView.text = context.getString(R.string.dialog_opml_import_message_error)
 
                 // change details visibility
-                opmlImportDetailsLinkView.setVisibility(View.GONE)
-                opmlImportDetailsView.setVisibility(View.GONE)
+                opmlImportDetailsLinkView.visibility = View.GONE
+                opmlImportDetailsView.visibility = View.GONE
 
                 // add okay button
                 builder.setPositiveButton(R.string.dialog_generic_button_okay) { _, _ ->
@@ -79,14 +78,14 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 opmlImportDetailsView.movementMethod = ScrollingMovementMethod()
 
                 // change details visibility
-                opmlImportDetailsLinkView.setVisibility(View.VISIBLE)
-                opmlImportDetailsView.setVisibility(View.GONE)
+                opmlImportDetailsLinkView.visibility = View.VISIBLE
+                opmlImportDetailsView.visibility = View.GONE
 
                 // show and hide details on click
                 opmlImportDetailsLinkView.setOnClickListener {
                     when (opmlImportDetailsView.visibility) {
-                        View.GONE -> opmlImportDetailsView.setVisibility(View.VISIBLE)
-                        View.VISIBLE -> opmlImportDetailsView.setVisibility(View.GONE)
+                        View.GONE -> opmlImportDetailsView.visibility = View.VISIBLE
+                        View.VISIBLE -> opmlImportDetailsView.visibility = View.GONE
                     }
                 }
 

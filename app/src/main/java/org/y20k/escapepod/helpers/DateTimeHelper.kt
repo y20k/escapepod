@@ -26,7 +26,7 @@ object DateTimeHelper {
 
 
     /* Main class variables */
-    private val pattern: String = "EEE, dd MMM yyyy HH:mm:ss Z"
+    private const val pattern: String = "EEE, dd MMM yyyy HH:mm:ss Z"
     private val dateFormat: SimpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
 
 

@@ -36,7 +36,7 @@ object ImageHelper {
 
     /* Get scaling factor from display density */
     fun getDensityScalingFactor(context: Context): Float {
-        return context.getResources().getDisplayMetrics().density
+        return context.resources.displayMetrics.density
     }
 
 
@@ -53,16 +53,16 @@ object ImageHelper {
         // extract color palette from station image
         val palette: Palette = Palette.from(decodeSampledBitmapFromUri(context, imageUri, 72, 72)).generate()
         // get muted and vibrant swatches
-        val vibrantSwatch = palette.getVibrantSwatch()
-        val mutedSwatch = palette.getMutedSwatch()
+        val vibrantSwatch = palette.vibrantSwatch
+        val mutedSwatch = palette.mutedSwatch
 
         if (vibrantSwatch != null) {
             // return vibrant color
-            val rgb = vibrantSwatch.getRgb()
+            val rgb = vibrantSwatch.rgb
             return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
         } else if (mutedSwatch != null) {
             // return muted color
-            val rgb = mutedSwatch.getRgb()
+            val rgb = mutedSwatch.rgb
             return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
         } else {
             // default return
@@ -77,7 +77,7 @@ object ImageHelper {
         var bitmap: Bitmap? = null
         try {
             // first decode with inJustDecodeBounds=true to check dimensions
-            var stream = context.getContentResolver().openInputStream(imageUri)
+            var stream = context.contentResolver.openInputStream(imageUri)
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             BitmapFactory.decodeStream(stream, null, options)
@@ -87,7 +87,7 @@ object ImageHelper {
             options.inSampleSize = calculateSampleParameter(options, reqWidth, reqHeight)
 
             // decode bitmap with inSampleSize set
-            stream = context.getContentResolver().openInputStream(imageUri)
+            stream = context.contentResolver.openInputStream(imageUri)
             options.inJustDecodeBounds = false
             bitmap = BitmapFactory.decodeStream(stream, null, options)
             stream!!.close()
