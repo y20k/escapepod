@@ -95,6 +95,22 @@ object PreferencesHelper {
     }
 
 
+    /* Loads state of playback for player / PlayerService from shared preferences */
+    fun loadPlayerPlayBackSpeed(context: Context): Float {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
+    }
+
+
+    /* Saves state of playback for player / PlayerService to shared preferences */
+    fun savePlayerPlaybackSpeed(context: Context, playbackSpeed: Float) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playbackSpeed)
+        editor.apply()
+    }
+
+
     /* Loads last update from shared preferences */
     fun loadLastUpdateCollection(context: Context): Date {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
@@ -129,7 +145,6 @@ object PreferencesHelper {
     }
 
 
-
     /* Loads state of player user interface from shared preferences */
     fun loadPlayerState(context: Context): PlayerState {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
@@ -137,6 +152,7 @@ object PreferencesHelper {
         playerState.episodeMediaId = settings.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
         playerState.playbackState = settings.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
         playerState.playbackPosition = settings.getLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, 0)
+        playerState.playbackSpeed = settings.getFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
         playerState.upNextEpisodeMediaId = settings.getString(Keys.PREF_UP_NEXT_MEDIA_ID, String()) ?: String()
         playerState.bottomSheetState = settings.getInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
         playerState.sleepTimerState = settings.getInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, Keys.STATE_SLEEP_TIMER_STOPPED)
@@ -151,6 +167,7 @@ object PreferencesHelper {
         editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
         editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
         editor.putLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, playerState.playbackPosition)
+        editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playerState.playbackSpeed)
         editor.putString(Keys.PREF_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
         editor.putInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, playerState.bottomSheetState)
         editor.putInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, playerState.sleepTimerState)

@@ -116,6 +116,7 @@
     <string name="descr_expanded_player_forward_button">Button forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter button</string>
     <string name="descr_expanded_player_playback_button">Large button for starting and pausing playback</string>
+    <string name="descr_expanded_player_playback_speed_button">Increase playback speed button</string>
     <string name="descr_expanded_player_podcast_cover">Large podcast cover image</string>
     <string name="descr_expanded_player_previous_chapter_button">Previous chapter button</string>
     <string name="descr_expanded_player_replay_button">Button replay 10 seconds</string>
@@ -146,6 +147,7 @@
     <string name="sample_text_episode_0_length" translatable="false">-18:00</string>
     <string name="sample_text_episode_0_title" translatable="false">As the Worm Turns</string>
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
+    <string name="sample_text_playback_speed" translatable="false">1.0 x</string>
     <string name="sample_text_podcast_name" translatable="false">Security Now</string>
     <string name="sample_text_podcast_xml" translatable="false">https://feeds.twit.tv/sn.xml</string>
     <string name="sample_text_show_notes" translatable="false">How a never-disclosed Windows vulnerability was quickly reverse-engineered from the patches to fix it and turned into more than 12 potent and damaging Internet worms in three days. What does this mean for the future of Internet security?</string>

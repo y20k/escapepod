@@ -14,62 +14,6 @@
     tools:showIn="@layout/activity_podcast_player">
 
     <ImageView
-        android:id="@+id/sleep_timer_start_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/descr_expanded_player_sleep_timer_start_button"
-        android:focusable="true"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_sleep_timer_24dp" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/sleep_timer_remaining_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/descr_expanded_player_sleep_timer_remaining_time"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:textColor="@color/player_sheet_text_main"
-        app:layout_constraintBottom_toBottomOf="@+id/sleep_timer_start_button"
-        app:layout_constraintEnd_toStartOf="@+id/sleep_timer_start_button"
-        app:layout_constraintTop_toTopOf="@+id/sleep_timer_start_button"
-        tools:text="@string/sample_text_sleep_timer_remaining_time" />
-
-    <ImageView
-        android:id="@+id/sleep_timer_cancel_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/descr_expanded_player_sleep_timer_cancel_button"
-        android:focusable="true"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/sleep_timer_remaining_time"
-        app:layout_constraintEnd_toStartOf="@+id/sleep_timer_remaining_time"
-        app:layout_constraintTop_toTopOf="@+id/sleep_timer_remaining_time"
-        app:srcCompat="@drawable/ic_clear_24dp" />
-
-    <ImageView
-        android:id="@+id/debug_log_toggle_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:contentDescription="@string/descr_expanded_player_debug_log_toggle_button"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_developer_mode_24dp" />
-
-    <ImageView
         android:id="@+id/sheet_large_podcast_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -78,40 +22,16 @@
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/descr_expanded_player_podcast_cover"
-        app:layout_constraintBottom_toTopOf="@+id/episode_current_chapter_name"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_episode_current_chapter_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_min="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_min="48dp"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
-    <!-- android:background="@drawable/shape_cover_large" removed only necessary if used with setClipToOutline(true) -->
-    <!-- android:clipToOutline="true" does not work at the moment - use setClipToOutline(true) on code instead-->
-
-    <ImageView
-        android:id="@+id/previous_chapter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:contentDescription="@string/descr_expanded_player_previous_chapter_button"
-        app:layout_constraintBottom_toBottomOf="@+id/episode_current_chapter_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/episode_current_chapter_name"
-        app:srcCompat="@drawable/ic_chevron_left_24dp" />
-
-    <ImageView
-        android:id="@+id/next_chapter_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/descr_expanded_player_next_chapter_button"
-        app:layout_constraintBottom_toBottomOf="@+id/episode_current_chapter_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/episode_current_chapter_name"
-        app:srcCompat="@drawable/ic_chevron_right_24dp" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/episode_current_chapter_name"
+        android:id="@+id/sheet_episode_current_chapter_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -124,9 +44,31 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toTopOf="@+id/sheet_playback_seek_bar"
-        app:layout_constraintEnd_toStartOf="@+id/next_chapter_button"
-        app:layout_constraintStart_toEndOf="@+id/previous_chapter_button"
+        app:layout_constraintEnd_toStartOf="@+id/sheet_next_chapter_button"
+        app:layout_constraintStart_toEndOf="@+id/sheet_previous_chapter_button"
         tools:text="@string/sample_text_episode_0_chapter" />
+
+    <ImageView
+        android:id="@+id/sheet_previous_chapter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:contentDescription="@string/descr_expanded_player_previous_chapter_button"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_episode_current_chapter_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sheet_episode_current_chapter_name"
+        app:srcCompat="@drawable/ic_chevron_left_24dp" />
+
+    <ImageView
+        android:id="@+id/sheet_next_chapter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/descr_expanded_player_next_chapter_button"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_episode_current_chapter_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sheet_episode_current_chapter_name"
+        app:srcCompat="@drawable/ic_chevron_right_24dp" />
 
     <SeekBar
         android:id="@+id/sheet_playback_seek_bar"
@@ -196,7 +138,7 @@
         android:contentDescription="@string/descr_expanded_player_playback_button"
         android:focusable="true"
         android:scaleType="center"
-        app:layout_constraintBottom_toTopOf="@+id/player_sheet_up_next_background"
+        app:layout_constraintBottom_toTopOf="@+id/sheet_up_next_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/vertical_center"
         app:srcCompat="@drawable/ic_play_symbol_white_54dp" />
@@ -230,7 +172,7 @@
         app:srcCompat="@drawable/ic_forward_30sek_56dp" />
 
     <View
-        android:id="@+id/player_sheet_up_next_background"
+        android:id="@+id/sheet_up_next_background"
         android:layout_width="0dp"
         android:layout_height="36dp"
         android:background="@color/player_sheet_up_next_background"
@@ -240,7 +182,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/player_sheet_up_next_headline"
+        android:id="@+id/sheet_up_next_headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -248,12 +190,12 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/player_sheet_up_next_background"
-        app:layout_constraintStart_toStartOf="@+id/player_sheet_up_next_background"
-        app:layout_constraintTop_toTopOf="@+id/player_sheet_up_next_background" />
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_up_next_background"
+        app:layout_constraintStart_toStartOf="@+id/sheet_up_next_background"
+        app:layout_constraintTop_toTopOf="@+id/sheet_up_next_background" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/player_sheet_up_next_name"
+        android:id="@+id/sheet_up_next_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -262,14 +204,14 @@
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_main"
-        app:layout_constraintBottom_toBottomOf="@+id/player_sheet_up_next_background"
-        app:layout_constraintEnd_toStartOf="@+id/player_sheet_up_next_clear_button"
-        app:layout_constraintStart_toEndOf="@+id/player_sheet_up_next_headline"
-        app:layout_constraintTop_toTopOf="@+id/player_sheet_up_next_background"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_up_next_background"
+        app:layout_constraintEnd_toStartOf="@+id/sheet_up_next_clear_button"
+        app:layout_constraintStart_toEndOf="@+id/sheet_up_next_headline"
+        app:layout_constraintTop_toTopOf="@+id/sheet_up_next_background"
         tools:text="@string/sample_text_up_next_name" />
 
     <ImageView
-        android:id="@+id/player_sheet_up_next_clear_button"
+        android:id="@+id/sheet_up_next_clear_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -279,9 +221,9 @@
         android:paddingTop="4dp"
         android:paddingEnd="16dp"
         android:paddingBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/player_sheet_up_next_background"
-        app:layout_constraintEnd_toEndOf="@+id/player_sheet_up_next_background"
-        app:layout_constraintTop_toTopOf="@+id/player_sheet_up_next_background"
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_up_next_background"
+        app:layout_constraintEnd_toEndOf="@+id/sheet_up_next_background"
+        app:layout_constraintTop_toTopOf="@+id/sheet_up_next_background"
         app:srcCompat="@drawable/ic_clear_24dp" />
 
 
@@ -311,8 +253,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
-    <!-- android:background="@drawable/shape_cover_small" removed only necessary if used with setClipToOutline(true) -->
-    <!-- android:clipToOutline="true" does not work at the moment - use setClipToOutline(true) on code instead-->
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/player_podcast_name"
@@ -332,21 +272,6 @@
         app:layout_constraintTop_toTopOf="@+id/player_podcast_cover"
         tools:text="@string/sample_text_podcast_name" />
 
-    <ImageView
-        android:id="@+id/player_play_button"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/ic_circular_button_playback_56dp"
-        android:clickable="true"
-        android:contentDescription="@string/descr_player_playback_button"
-        android:focusable="true"
-        android:scaleType="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player_background"
-        app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
-
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/player_episode_title"
         android:layout_width="0dp"
@@ -365,6 +290,93 @@
         app:layout_constraintTop_toBottomOf="@+id/player_podcast_name"
         tools:text="@string/sample_text_episode_0_title" />
 
+    <ImageView
+        android:id="@+id/player_play_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/ic_circular_button_playback_56dp"
+        android:clickable="true"
+        android:contentDescription="@string/descr_player_playback_button"
+        android:focusable="true"
+        android:scaleType="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_background"
+        app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/playback_speed_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/descr_expanded_player_playback_speed_button"
+        android:padding="16dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+        android:textColor="@color/player_sheet_text_main"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/sample_text_playback_speed" />
+
+
+    <ImageView
+        android:id="@+id/debug_log_toggle_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_debug_log_toggle_button"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_developer_mode_24dp" />
+
+    <ImageView
+        android:id="@+id/sleep_timer_start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_sleep_timer_start_button"
+        android:focusable="true"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_sleep_timer_24dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/sleep_timer_remaining_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_expanded_player_sleep_timer_remaining_time"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/player_sheet_text_main"
+        app:layout_constraintBottom_toBottomOf="@+id/sleep_timer_start_button"
+        app:layout_constraintEnd_toStartOf="@+id/sleep_timer_start_button"
+        app:layout_constraintTop_toTopOf="@+id/sleep_timer_start_button"
+        tools:text="@string/sample_text_sleep_timer_remaining_time" />
+
+    <ImageView
+        android:id="@+id/sleep_timer_cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/descr_expanded_player_sleep_timer_cancel_button"
+        android:focusable="true"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sleep_timer_remaining_time"
+        app:layout_constraintEnd_toStartOf="@+id/sleep_timer_remaining_time"
+        app:layout_constraintTop_toTopOf="@+id/sleep_timer_remaining_time"
+        app:srcCompat="@drawable/ic_clear_24dp" />
+
 
     <!-- Constraintlayout View Groups -->
 
@@ -373,7 +385,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:constraint_referenced_ids="debug_log_toggle_button,sleep_timer_start_button,sleep_timer_remaining_time,sleep_timer_cancel_button" />
+        app:constraint_referenced_ids="playback_speed_button,sleep_timer_start_button,sleep_timer_remaining_time,sleep_timer_cancel_button" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/sleep_timer_running_views"
@@ -394,14 +406,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:constraint_referenced_ids="previous_chapter_button,next_chapter_button,episode_current_chapter_name" />
+        app:constraint_referenced_ids="sheet_previous_chapter_button,sheet_next_chapter_button,sheet_episode_current_chapter_name" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/up_next_views"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="invisible"
-        app:constraint_referenced_ids="player_sheet_up_next_background,player_sheet_up_next_headline,player_sheet_up_next_name,player_sheet_up_next_clear_button" />
+        app:constraint_referenced_ids="sheet_up_next_background,sheet_up_next_headline,sheet_up_next_name,sheet_up_next_clear_button" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/vertical_center"

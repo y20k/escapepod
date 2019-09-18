@@ -75,6 +75,7 @@ data class LayoutHolder(var activity: Activity) {
     var sheetSleepTimerCancelButtonView: ImageView
     private var sheetSleepTimerRemainingTimeView: TextView
     var sheetDebugToggleButtonView: ImageView
+    var sheetPlaybackSpeedButtonView: TextView
     private var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
     private var onboardingLayout: ConstraintLayout
@@ -108,8 +109,9 @@ data class LayoutHolder(var activity: Activity) {
         sheetSleepTimerCancelButtonView = activity.findViewById(R.id.sleep_timer_cancel_button)
         sheetSleepTimerRemainingTimeView = activity.findViewById(R.id.sleep_timer_remaining_time)
         sheetDebugToggleButtonView = activity.findViewById(R.id.debug_log_toggle_button)
-        sheetUpNextName = activity.findViewById(R.id.player_sheet_up_next_name)
-        sheetUpNextClearButton = activity.findViewById(R.id.player_sheet_up_next_clear_button)
+        sheetPlaybackSpeedButtonView = activity.findViewById(R.id.playback_speed_button)
+        sheetUpNextName = activity.findViewById(R.id.sheet_up_next_name)
+        sheetUpNextClearButton = activity.findViewById(R.id.sheet_up_next_clear_button)
         onboardingLayout = activity.findViewById(R.id.onboarding_layout)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
 
@@ -161,6 +163,13 @@ data class LayoutHolder(var activity: Activity) {
     fun updateProgressbar(position: Long) {
         sheetTimePlayedView.text = DateTimeHelper.convertToMinutesAndSeconds(position)
         sheetProgressBarView.progress = position.toInt()
+    }
+
+
+    /* Updates the playback speed view */
+    fun updatePlaybackSpeedView(speed: Float = 1f) {
+        val playbackSpeedButtonText: String = "$speed x"
+        sheetPlaybackSpeedButtonView.text = playbackSpeedButtonText
     }
 
 

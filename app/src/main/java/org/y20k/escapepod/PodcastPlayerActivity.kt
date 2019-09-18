@@ -393,10 +393,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // main play/pause button
         layout.playButtonView.setOnClickListener {
-            when (mediaController.playbackState.state) {
-                PlaybackStateCompat.STATE_PLAYING -> mediaController.transportControls.pause()
-                else -> mediaController.transportControls.playFromMediaId(playerState.episodeMediaId, null)
-            }
+            onPlayButtonTapped(playerState.episodeMediaId, mediaController.playbackState.state)
         }
 
         // bottom sheet play/pause button
@@ -442,6 +439,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Toast.makeText(this, R.string.toast_message_up_next_removed_episode, Toast.LENGTH_LONG).show()
         }
 
+        // bottom sheet playback speed button
+        layout.sheetPlaybackSpeedButtonView.setOnClickListener {
+            // request playback speed change
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_CHANGE_PLAYBACK_SPEED, null, resultReceiver)
+        }
+
         // register a callback to stay in sync
         mediaController.registerCallback(mediaControllerCallback)
     }
@@ -457,6 +460,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
                 layout.updatePlayerViews(this, episode)
                 layout.updateProgressbar(episode.playbackPosition)
+                layout.updatePlaybackSpeedView(playerState.playbackSpeed)
             }
         }
     }
@@ -643,8 +647,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playerState.playbackState)) {
                 // update player view, if player is visible
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-                layout.updatePlayerViews(this@PodcastPlayerActivity,episode)
-
+                layout.updatePlayerViews(this@PodcastPlayerActivity, episode)
             }
             // updates the up next queue in player views
             val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
@@ -785,6 +788,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
                         layout.updateSleepTimer(resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
+                    }
+                }
+                Keys.RESULT_CODE_PLAYBACK_SPEED -> {
+                    if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_SPEED)) {
+                        playerState.playbackSpeed = resultData.getFloat(Keys.RESULT_DATA_PLAYBACK_SPEED, 1f)
+                        layout.updatePlaybackSpeedView(playerState.playbackSpeed)
                     }
                 }
             }

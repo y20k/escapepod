@@ -153,7 +153,9 @@ class RssHelper {
                 // found episode title
                 Keys.RSS_EPISODE_TITLE -> episode.title = readEpisodeTitle(parser, Keys.XML_NAME_SPACE)
                 // found episode description
-                Keys.RSS_EPISODE_DESCRIPTION -> episode.description = readEpisodeDescription(parser, Keys.XML_NAME_SPACE)
+                Keys.RSS_EPISODE_DESCRIPTION -> episode.description = getLongerString(episode.description, readEpisodeDescription(parser, Keys.XML_NAME_SPACE))
+                // found episode description
+                Keys.RSS_EPISODE_DESCRIPTION_ITUNES -> episode.description = getLongerString(episode.description, readEpisodeDescriptionItunes(parser, Keys.XML_NAME_SPACE))
                 // found episode publication date
                 Keys.RSS_EPISODE_PUBLICATION_DATE -> episode.publicationDate = readEpisodePublicationDate(parser, Keys.XML_NAME_SPACE)
                 // found episode audio link
@@ -212,6 +214,16 @@ class RssHelper {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION)
         val summary = XmlHelper.readText(parser)
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION)
+        return summary
+    }
+
+
+    /* EPISODE: readSuspended description / summary - iTunes variant */
+    @Throws(IOException::class, XmlPullParserException::class)
+    private fun readEpisodeDescriptionItunes(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION_ITUNES)
+        val summary = XmlHelper.readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION_ITUNES)
         return summary
     }
 
@@ -292,5 +304,16 @@ class RssHelper {
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_AUDIO_LINK)
         return link
     }
+
+
+    /* Compares the length of two stings and returns the longer string */
+    private fun getLongerString(currentString: String, newString: String): String {
+        if (currentString.length >= newString.length) {
+            return currentString
+        } else {
+            return newString
+        }
+    }
+
 
 }

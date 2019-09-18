@@ -47,6 +47,7 @@ object Keys {
     const val CMD_REQUEST_PERIODIC_PROGRESS_UPDATE: String = "REQUEST_PERIODIC_PROGRESS_UPDATE"
     const val CMD_START_SLEEP_TIMER: String = "START_SLEEP_TIMER"
     const val CMD_CANCEL_SLEEP_TIMER: String = "CANCEL_SLEEP_TIMER"
+    const val CMD_CHANGE_PLAYBACK_SPEED: String = "CHANGE_PLAYBACK_SPEED"
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
@@ -62,11 +63,15 @@ object Keys {
     const val PREF_PLAYER_STATE_EPISODE_MEDIA_ID: String = "PLAYER_STATE_EPISODE_MEDIA_ID"
     const val PREF_PLAYER_STATE_PLAYBACK_STATE: String = "PLAYER_STATE_PLAYBACK_STATE"
     const val PREF_PLAYER_STATE_PLAYBACK_POSITION: String = "PLAYER_STATE_PLAYBACK_POSITION"
+    const val PREF_PLAYER_STATE_PLAYBACK_SPEED: String = "PLAYER_STATE_PLAYBACK_SPEED"
     const val PREF_PLAYER_STATE_BOTTOM_SHEET_STATE: String = "PLAYER_STATE_BOTTOM_SHEET_STATE"
     const val PREF_PLAYER_STATE_SLEEP_TIMER_STATE: String = "PLAYER_STATE_SLEEP_TIMER_STATE"
 
     // states
     const val STATE_SLEEP_TIMER_STOPPED: Int = 0
+
+    // ranges
+    val PLAYBACK_SPEEDS = arrayOf(1.0f, 1.2f, 1.4f, 1.6f, 1.8f, 2.0f)
 
     // default const values
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
@@ -153,10 +158,11 @@ object Keys {
     const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: Int = 23
 
     // results
+    const val RESULT_DATA_SLEEP_TIMER_REMAINING: String = "DATA_SLEEP_TIMER_REMAINING"
     const val RESULT_CODE_PERIODIC_PROGRESS_UPDATE: Int = 1
     const val RESULT_DATA_PLAYBACK_PROGRESS: String = "DATA_PLAYBACK_PROGRESS"
-    const val RESULT_DATA_SLEEP_TIMER_REMAINING: String = "DATA_SLEEP_TIMER_REMAINING"
-
+    const val RESULT_CODE_PLAYBACK_SPEED: Int = 2
+    const val RESULT_DATA_PLAYBACK_SPEED: String = "DATA_PLAYBACK_SPEED"
 
     // podcast validation states
     const val PODCAST_VALIDATION_SUCESS: Int = 0
@@ -192,6 +198,7 @@ object Keys {
     const val RSS_EPISODE_GUID = "guid"
     const val RSS_EPISODE_TITLE = "title"
     const val RSS_EPISODE_DESCRIPTION = "description"
+    const val RSS_EPISODE_DESCRIPTION_ITUNES= "itunes:summary"
     const val RSS_EPISODE_PUBLICATION_DATE = "pubDate"
     const val RSS_EPISODE_AUDIO_LINK = "enclosure"
     const val RSS_EPISODE_AUDIO_LINK_TYPE = "type"
