@@ -444,6 +444,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // request playback speed change
             MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_CHANGE_PLAYBACK_SPEED, null, resultReceiver)
         }
+        layout.sheetPlaybackSpeedButtonView.setOnLongClickListener {
+            if (playerState.playbackSpeed != 1f) {
+                val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                v.vibrate(50)
+                // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+                Toast.makeText(this, R.string.toast_message_playback_speed_reset, Toast.LENGTH_LONG).show()
+                // request playback speed reset
+                MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_RESET_PLAYBACK_SPEED, null, resultReceiver)
+            }
+            return@setOnLongClickListener true
+        }
 
         // register a callback to stay in sync
         mediaController.registerCallback(mediaControllerCallback)

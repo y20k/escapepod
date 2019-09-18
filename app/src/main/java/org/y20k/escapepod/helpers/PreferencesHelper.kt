@@ -80,23 +80,23 @@ object PreferencesHelper {
 
 
     /* Loads state of playback for player / PlayerService from shared preferences */
-    fun loadPlayerPlayBackState(context: Context): Int {
+    fun loadPlayerPlaybackState(context: Context): Int {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         return settings.getInt(Keys.PREF_CURRENT_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
     }
 
 
     /* Saves state of playback for player / PlayerService to shared preferences */
-    fun savePlayerPlayBackState(context: Context, playBackState: Int) {
+    fun savePlayerPlaybackState(context: Context, playbackState: Int) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
-        editor.putInt(Keys.PREF_CURRENT_PLAYBACK_STATE, playBackState)
+        editor.putInt(Keys.PREF_CURRENT_PLAYBACK_STATE, playbackState)
         editor.apply()
     }
 
 
     /* Loads state of playback for player / PlayerService from shared preferences */
-    fun loadPlayerPlayBackSpeed(context: Context): Float {
+    fun loadPlayerPlaybackSpeed(context: Context): Float {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         return settings.getFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
     }
@@ -107,6 +107,7 @@ object PreferencesHelper {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
         editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playbackSpeed)
+        LogHelper.e("TEST", "SAVING (only) = ${playbackSpeed} x") // todo remove
         editor.apply()
     }
 
@@ -172,6 +173,7 @@ object PreferencesHelper {
         editor.putInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, playerState.bottomSheetState)
         editor.putInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, playerState.sleepTimerState)
         editor.apply()
+        LogHelper.e("TEST", "SAVING (all) = ${playerState.playbackSpeed} x") // todo remove
     }
 
 

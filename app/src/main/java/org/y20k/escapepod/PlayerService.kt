@@ -242,7 +242,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Creates a new MediaSession */
     private fun createMediaSession(): MediaSessionCompat {
-        val initialPlaybackState: Int = PreferencesHelper.loadPlayerPlayBackState(this)
+        val initialPlaybackState: Int = PreferencesHelper.loadPlayerPlaybackState(this)
         val sessionActivityPendingIntent =
                 packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
                     PendingIntent.getActivity(this, 0, sessionIntent, 0)
@@ -264,8 +264,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 .setUsage(C.USAGE_MEDIA)
                 .build()
         player.setAudioAttributes(audioAttributes, true)
-        player.seekTo(playerState.playbackPosition)
-        player.playbackParameters = PlaybackParameters(playerState.playbackSpeed)
         return player
     }
 
@@ -278,7 +276,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // prepare player with source
         player.prepare(mediaSource)
         // set player position
-        player.seekTo(episode.playbackPosition)
+        playerState.playbackPosition = episode.playbackPosition
+        player.seekTo(playerState.playbackPosition)
+        player.playbackParameters = PlaybackParameters(playerState.playbackSpeed)
     }
 
 
@@ -308,9 +308,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             // get up next episode and set metadata
             episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
             mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode))
-            // clear up next media id and set position
+            // clear up next media id
             playerState.upNextEpisodeMediaId = String()
-            playerState.playbackPosition = episode.playbackPosition
             // start playback
             preparePlayer()
             player.playWhenReady = true
@@ -383,20 +382,31 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private fun updatePlaybackSpeed(currentSpeed: Float = 1f): Float {
         var newSpeed: Float = 1f
         // circle through the speed presets
-        Keys.PLAYBACK_SPEEDS.forEachIndexed { index, speed ->
-            if (speed == currentSpeed) {
-                if (index < Keys.PLAYBACK_SPEEDS.size - 1) {
-                    // get the next speed preset
-                    newSpeed = Keys.PLAYBACK_SPEEDS[index + 1]
+        val iterator = Keys.PLAYBACK_SPEEDS.iterator()
+        while (iterator.hasNext()) {
+            // found current speed in array
+            if (iterator.next() == currentSpeed) {
+                if (iterator.hasNext()) {
+                    newSpeed = iterator.next()
                 }
+                break
             }
         }
-        // update playback parameters - speed up playback
-        player.playbackParameters = PlaybackParameters(newSpeed)
-        // save speed
-        PreferencesHelper.savePlayerPlaybackSpeed(this, newSpeed)
+        // apply new speed
+        setPlaybackSpeed(newSpeed)
         return newSpeed
     }
+
+
+    /* Sets playback speed */
+    private fun setPlaybackSpeed(speed: Float = 1f) {
+        // update playback parameters - speed up playback
+        player.playbackParameters = PlaybackParameters(speed)
+        // save speed
+        playerState.playbackSpeed = speed
+        PreferencesHelper.savePlayerPlaybackSpeed(this, speed)
+    }
+
 
 
     /* Loads media items into result - assumes that collectionProvider is initialized */
@@ -454,6 +464,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         playerState.episodeMediaId = episode.getMediaId()
         playerState.playbackPosition = episode.playbackPosition
         playerState.playbackState = playbackState
+        LogHelper.e(TAG, "DING?") // todo remove
         PreferencesHelper.savePlayerState(this, playerState)
     }
 
@@ -484,8 +495,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         override fun onPause() {
             LogHelper.d(TAG, "Pausing Playback")
-            // update playback position
-            episode.playbackPosition = player.contentPosition
             // pause playback
             player.playWhenReady = false
         }
@@ -575,12 +584,20 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 Keys.CMD_CHANGE_PLAYBACK_SPEED -> {
                     if (cb != null) {
                         // change player speed
-                        val newPlaybackSpeed: Float = updatePlaybackSpeed(player.playbackParameters.speed)
+                        val newPlaybackSpeed: Float = updatePlaybackSpeed(playerState.playbackSpeed)
                         // send back new playback speed
                         val playbackSpeedBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_SPEED to newPlaybackSpeed)
                         cb.send(Keys.RESULT_CODE_PLAYBACK_SPEED, playbackSpeedBundle)
                     }
-
+                }
+                Keys.CMD_RESET_PLAYBACK_SPEED -> {
+                    if (cb != null) {
+                        // change player speed
+                        setPlaybackSpeed(1f)
+                        // send back new playback speed
+                        val playbackSpeedBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_SPEED to 1f)
+                        cb.send(Keys.RESULT_CODE_PLAYBACK_SPEED, playbackSpeedBundle)
+                    }
                 }
             }
         }

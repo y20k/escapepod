@@ -278,7 +278,7 @@ object CollectionHelper {
         // save collection
         saveCollection(context, collection)
         // save playback state of PlayerService
-        PreferencesHelper.savePlayerPlayBackState(context, playbackState)
+        PreferencesHelper.savePlayerPlaybackState(context, playbackState)
         return collection
     }
 
