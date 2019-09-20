@@ -107,7 +107,6 @@ object PreferencesHelper {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
         editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playbackSpeed)
-        LogHelper.e("TEST", "SAVING (only) = ${playbackSpeed} x") // todo remove
         editor.apply()
     }
 
@@ -173,7 +172,6 @@ object PreferencesHelper {
         editor.putInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, playerState.bottomSheetState)
         editor.putInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, playerState.sleepTimerState)
         editor.apply()
-        LogHelper.e("TEST", "SAVING (all) = ${playerState.playbackSpeed} x") // todo remove
     }
 
 
