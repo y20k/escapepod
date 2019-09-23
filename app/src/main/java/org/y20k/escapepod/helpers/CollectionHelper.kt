@@ -262,6 +262,19 @@ object CollectionHelper {
     }
 
 
+    /* Marks Episode for given media ID String as played - sets position of playback to episode end (= to duration) */
+    fun markEpisodePlayed(collection: Collection, mediaId: String): Collection {
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                if (episode.getMediaId() == mediaId) {
+                    episode.playbackPosition = episode.duration
+                }
+            }
+        }
+        return collection
+    }
+
+
     /* Saves the playback state of a given episode */
     fun savePlaybackState(context: Context, collection: Collection, episode: Episode = Episode(), playbackState: Int): Collection {
         // set playback state of given episode

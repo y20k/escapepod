@@ -217,7 +217,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
 
         }
+    }
 
+
+    /* Overrides onMarkListenedButtonTapped from CollectionAdapterListener */
+    override fun onMarkListenedButtonTapped(mediaId: String) {
+        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_mark_episode_played)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
+        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_MARK_EPISODE_PLAYED, R.string.dialog_yes_no_title_mark_episode_played, dialogMessage, R.string.dialog_yes_no_positive_button_mark_episode_played, R.string.dialog_yes_no_negative_button_cancel, mediaId)
     }
 
 
@@ -310,6 +317,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 when (dialogResult) {
                     // user tapped: delete all downloads
                     true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
+                }
+            }
+            Keys.DIALOG_MARK_EPISODE_PLAYED -> {
+                when (dialogResult) {
+                    // user tapped: mark episode played
+                    true -> collectionAdapter.markEpisodePlayed(this@PodcastPlayerActivity, dialogPayloadString)
                 }
             }
             Keys.DIALOG_ADD_UP_NEXT -> {

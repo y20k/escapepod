@@ -64,6 +64,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     /* Listener Interface */
     interface CollectionAdapterListener {
         fun onPlayButtonTapped(mediaId: String, playbackState: Int)
+        fun onMarkListenedButtonTapped(mediaId: String)
         fun onDownloadButtonTapped(episode: Episode)
         fun onDeleteButtonTapped(episode: Episode)
         fun onDeleteAllButtonTapped()
@@ -206,6 +207,10 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         }
         episodeViewHolder.episodePlayButtonView.setOnClickListener {
             collectionAdapterListener.onPlayButtonTapped(episode.getMediaId(), playbackState)
+        }
+        episodeViewHolder.episodePlayButtonView.setOnLongClickListener {
+            collectionAdapterListener.onMarkListenedButtonTapped(episode.getMediaId())
+            return@setOnLongClickListener true
         }
         episodeViewHolder.episodeDeleteButtonView.setOnClickListener {
             collectionAdapterListener.onDeleteButtonTapped(episode)
@@ -358,6 +363,19 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, collection)
     }
+
+
+    /* Marks an episode as playedin collection */
+    fun markEpisodePlayed(context: Context, mediaID: String) {
+        LogHelper.v(TAG, "Marking as played episode: $mediaID")
+        // mark episode als played and update collection
+        collection = CollectionHelper.markEpisodePlayed(collection, mediaID)
+        // update player state if necessary
+        PreferencesHelper.updatePlayerState(context, collection)
+        // save collection and broadcast changes
+        CollectionHelper.saveCollection(context, collection)
+    }
+
 
 
     /* Determines if position is last */

@@ -121,10 +121,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/descr_episode_show_notes_description_text"
+            android:paddingBottom="16dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
             android:textColor="@color/text_default"
             android:textColorLink="@color/escapepod_red"
-            android:paddingBottom="16dp"
+            android:textIsSelectable="true"
             tools:text="@string/sample_text_show_notes" />
 
     </ScrollView>
