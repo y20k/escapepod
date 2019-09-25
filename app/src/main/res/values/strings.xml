@@ -86,6 +86,7 @@
     <string name="toast_message_theme_night">Switching to Night mode (long press detected)</string>
     <string name="toast_message_up_next_added_episode">Added episode to Up Next queue.</string>
     <string name="toast_message_up_next_removed_episode">Removed episode from Up Next queue.</string>
+    <string name="toast_message_up_next_start_playback">Starting playback of next episode.</string>
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
 
     <!-- Podcast List -->

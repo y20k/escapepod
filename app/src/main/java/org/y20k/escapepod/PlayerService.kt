@@ -300,6 +300,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 .setUsage(C.USAGE_MEDIA)
                 .build()
         player.setAudioAttributes(audioAttributes, true)
+        player.seekTo(playerState.playbackPosition)
         return player
     }
 
@@ -324,6 +325,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // reset playback position if necessary
         if (episode.isFinished()) {
             episode.playbackPosition = 0L
+        }
+        // check if episode is in up-next queue
+        if (playerState.upNextEpisodeMediaId == episode.getMediaId()){
+            playerState.upNextEpisodeMediaId = String()
         }
         // prepare player
         preparePlayer()
@@ -501,7 +506,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             // get episode, set metadata and start playback
-            episode = CollectionHelper.getEpisode(collection, mediaId ?: "")
+            episode = CollectionHelper.getEpisode(collection, mediaId ?: String())
             mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
             startPlayback()
         }

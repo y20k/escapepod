@@ -445,6 +445,13 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         })
 
+        // bottom sheet start button for Up Next queue
+        layout.sheetUpNextName.setOnClickListener {
+            // start episode in up next queue
+            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(playerState.upNextEpisodeMediaId, null)
+            Toast.makeText(this, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
+        }
+
         // bottom sheet clear button for Up Next queue
         layout.sheetUpNextClearButton.setOnClickListener {
             // clear up next
@@ -704,15 +711,11 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // request current playback position
             MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
 
-//            // show / hide player
-//            setupPlayerVisibility(MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState.state)
-
             // start requesting position updates if playback is running
             if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
                 handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
                 handler.postDelayed(periodicProgressUpdateRequestRunnable, 0)
             }
-
 
             // begin looking for changes in collection
             observeCollectionViewModel()

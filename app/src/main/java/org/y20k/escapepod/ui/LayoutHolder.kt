@@ -76,7 +76,7 @@ data class LayoutHolder(var activity: Activity) {
     private var sheetSleepTimerRemainingTimeView: TextView
     var sheetDebugToggleButtonView: ImageView
     var sheetPlaybackSpeedButtonView: TextView
-    private var sheetUpNextName: TextView
+    var sheetUpNextName: TextView
     var sheetUpNextClearButton: ImageView
     private var onboardingLayout: ConstraintLayout
     private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
