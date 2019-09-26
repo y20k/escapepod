@@ -20,6 +20,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    lintOptions{
+        disable 'MissingTranslation'
+    }
+
     buildTypes {
         release {
             // Enables code shrinking, obfuscation, and optimization for only
