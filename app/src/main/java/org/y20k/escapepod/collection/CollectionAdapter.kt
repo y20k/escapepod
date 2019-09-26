@@ -209,6 +209,9 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
             collectionAdapterListener.onPlayButtonTapped(episode.getMediaId(), playbackState)
         }
         episodeViewHolder.episodePlayButtonView.setOnLongClickListener {
+            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             collectionAdapterListener.onMarkListenedButtonTapped(episode.getMediaId())
             return@setOnLongClickListener true
         }
