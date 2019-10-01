@@ -11,12 +11,14 @@ Escapepod is a simple and lightweight app for listening to podcasts. It's bare b
 Escapepod is free and open source. It is published under the [MIT open source license](https://opensource.org/licenses/MIT). Want to help? Please check out the notes in [CONTRIBUTING.md](https://github.com/y20k/escapepod/blob/master/CONTRIBUTE.md) first.
 
 ## Install Escapepod
-You can install Escapepod via <!--F-Froid and -->Google Play - or you can go and grab the latest APK on [GitHub](https://github.com/y20k/escapepod/releases).
+You can install Escapepod via F-Froid and Google Play - or you can go and grab the latest APK on [GitHub](https://github.com/y20k/escapepod/releases).
 
-<!-- [<img src="https://cloud.githubusercontent.com/assets/9103935/14702535/45f6326a-07ab-11e6-9256-469c1dd51c22.png" width="192">](https://f-droid.org/packages/org.y20k.escapepod) -->
-
-[<img src="https://play.google.com/intl/de_de/badges/images/generic/en_badge_web_generic.png" width="192">](https://play.google.com/store/apps/details?id=org.y20k.escapepod)
-
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/org.y20k.escapepod/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=org.y20k.escapepod)
 
 ## Frequent Questions
 
@@ -61,4 +63,3 @@ You can import an [OPML](https://en.wikipedia.org/wiki/OPML) formatted podcast l
 [<img src="https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/04-show_notes-v0.7-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/04-show_notes-v0.7-oneplus5.png)
 [<img src="https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.7-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/05-podcast-details-v0.7-oneplus5.png)
 [<img src="https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/06-add-podcast-v0.7-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/06-add-podcast-v0.7-oneplus5.png)
-
