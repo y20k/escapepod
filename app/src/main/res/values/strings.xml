@@ -101,7 +101,7 @@
     <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
     <string name="descr_episode_date">Date the episode was published</string>
-    <string name="descr_episode_shownotes_description_text">Text notes that accompanies a podcast to describe its content.</string>  <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
+    <string name="descr_episode_shownotes_description_text">Show notes for this episode.</string>  <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
     <string name="descr_episode_title">Title of episode</string>
     <string name="descr_expanded_episode_length">Time remaining of current episode</string>
     <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
