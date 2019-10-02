@@ -38,7 +38,8 @@
     <string name="dialog_opml_import_message">Add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
     <string name="dialog_opml_import_title">OMPL Import</string>
     <string name="dialog_show_notes_close">Close</string>
-    <string name="dialog_show_notes_title">Shownotes</string>
+    <!-- The \"Episode\" part can be omitted https://en.wiktionary.org/wiki/show_notes -->
+    <string name="dialog_show_notes_title">Episode Show Notes</string>
     <string name="dialog_yes_no_message_add_up_next">Start listening to this episode right away?</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_message_delete_downloads">Delete all downloaded episodes? You can re-download them afterwards.</string>
@@ -114,7 +115,8 @@
     <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
     <string name="descr_episode_date">Date the episode was published</string>
-    <string name="descr_episode_show_notes_description_text">Shownotes for this episode</string>
+    <!-- Describes the word \'Show notes\' omitted https://en.wiktionary.org/wiki/show_notes -->
+    <string name="descr_episode_show_notes_description_text">Text notes that accompanies a podcast to describe its content.</string>
     <string name="descr_episode_title">Title of episode</string>
     <string name="descr_expanded_episode_length">Time remaining of current episode</string>
     <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
