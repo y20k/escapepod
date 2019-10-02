@@ -55,7 +55,7 @@ class ShowNotesDialog () {
         }
 
         // add close button
-        builder.setPositiveButton(R.string.dialog_show_notes_close) { _, _ ->
+        builder.setPositiveButton(R.string.dialog_episode_shownotes_close) { _, _ ->
             // listen for click on close button
             // do nothing
         }

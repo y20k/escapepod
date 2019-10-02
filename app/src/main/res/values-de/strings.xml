@@ -14,13 +14,6 @@
     <string name="dialog_generic_button_cancel">Abbrechen</string>
     <string name="dialog_generic_details_button">Zeige Details</string>
     <string name="dialog_generic_details_default">Keine Details verfügbar</string>
-    <string name="dialog_metered_download_episode_button_okay">Trotzdem herunterladen</string>
-    <string name="dialog_metered_download_episode_message">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du diese Episode trotzdem herunterladen\?</string>
-    <string name="dialog_metered_download_episode_title">Ohne WLAN herunterladen</string>
-    <string name="dialog_metered_network_button_okay_default">Trotzdem fortfahren</string>
-    <string name="dialog_metered_network_message_default">Dein Gerät ist mit einem getakteten Netzwerk verbunden.</string>
-    <string name="dialog_metered_network_title_default">Getaktetes Netzwerk</string>
-    <string name="dialog_metered_update_collection_button_okay">Trotzdem aktualisieren</string>
-    <string name="dialog_metered_update_collection_message">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du deine Podcasts trotzdem aktualisieren\?</string>
-    <string name="dialog_metered_update_collection_title">Ohne WLAN aktualisieren</string>
+    <string name="dialog_yes_no_positive_button_metered_network_download">Trotzdem herunterladen</string>
+    <string name="dialog_yes_no_message_metered_network_download">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du diese Episode trotzdem herunterladen\?</string>
 </resources>

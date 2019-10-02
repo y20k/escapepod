@@ -10,6 +10,8 @@
     <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for a RSS symbol on the homepage of the respective podcast.</string>
     <string name="dialog_add_podcast_input_hint">Enter podcast feed link</string>
     <string name="dialog_add_podcast_title">Add New Podcast</string>
+    <string name="dialog_episode_shownotes_close">Close</string>
+    <string name="dialog_episode_shownotes_title">Show Notes</string> <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
     <string name="dialog_error_message_default">An error occurred</string>
     <string name="dialog_error_message_no_network">Connect to the Internet.</string>
     <string name="dialog_error_message_podcast_duplicate">This podcast is already part of your collection.</string>
@@ -22,24 +24,13 @@
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Show details</string>
     <string name="dialog_generic_details_default">No details available</string>
-    <string name="dialog_metered_download_episode_button_okay">Download anyway</string>
-    <string name="dialog_metered_download_episode_message">Your device is not connected to Wi-Fi. Download episode anyway?</string>
-    <string name="dialog_metered_download_episode_title">Download without Wi-Fi</string>
-    <string name="dialog_metered_network_button_okay_default">Proceed anyway</string>
-    <string name="dialog_metered_network_message_default">Your device is connected to a metered network.</string>
-    <string name="dialog_metered_network_title_default">Metered Network</string>
-    <string name="dialog_metered_update_collection_button_okay">Update anyway</string>
-    <string name="dialog_metered_update_collection_message">Your device is not connected to Wi-Fi. Update your podcasts anyway?</string>
-    <string name="dialog_metered_update_collection_title">Update without Wi-Fi</string>
+    <string name="dialog_yes_no_message_metered_network_download">Your device is not connected to Wi-Fi. Download episode anyway?</string>
     <string name="dialog_opml_import_button_okay">Import</string>
     <string name="dialog_opml_import_details_button">Show details</string>
     <string name="dialog_opml_import_details_default">No details available</string>
     <string name="dialog_opml_import_message_error">Could not import OPML file. No podcasts found.</string>
     <string name="dialog_opml_import_message">Add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
     <string name="dialog_opml_import_title">OMPL Import</string>
-    <string name="dialog_show_notes_close">Close</string>
-    <!-- The \"Episode\" part can be omitted https://en.wiktionary.org/wiki/show_notes -->
-    <string name="dialog_show_notes_title">Episode Show Notes</string>
     <string name="dialog_yes_no_message_add_up_next">Start listening to this episode right away?</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_message_delete_downloads">Delete all downloaded episodes? You can re-download them afterwards.</string>
@@ -55,15 +46,10 @@
     <string name="dialog_yes_no_positive_button_delete_downloads">Delete All</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Mark Played</string>
+    <string name="dialog_yes_no_positive_button_metered_network_download">Download anyway</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
     <string name="dialog_yes_no_positive_button_update_collection">Update</string>
-    <string name="dialog_yes_no_title_add_up_next">Start Listening</string>
     <string name="dialog_yes_no_title_default">Decide</string>
-    <string name="dialog_yes_no_title_delete_downloads">Delete Downloads</string>
-    <string name="dialog_yes_no_title_delete_episode">Delete Episode</string>
-    <string name="dialog_yes_no_title_mark_episode_played">Mark Episode as Played</string>
-    <string name="dialog_yes_no_title_remove_podcast">Remove Podcast</string>
-    <string name="dialog_yes_no_title_update_collection">Update Podcasts</string>
 
     <!-- Player -->
     <string name="player_up_next_headline">Up Next:</string>
@@ -115,8 +101,7 @@
     <string name="descr_card_small_download_button">Small button for downloading</string>
     <string name="descr_card_small_playback_button">Small button for starting and pausing playback</string>
     <string name="descr_episode_date">Date the episode was published</string>
-    <!-- Describes the word \'Show notes\' omitted https://en.wiktionary.org/wiki/show_notes -->
-    <string name="descr_episode_show_notes_description_text">Text notes that accompanies a podcast to describe its content.</string>
+    <string name="descr_episode_shownotes_description_text">Text notes that accompanies a podcast to describe its content.</string>  <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
     <string name="descr_episode_title">Title of episode</string>
     <string name="descr_expanded_episode_length">Time remaining of current episode</string>
     <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>

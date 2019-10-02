@@ -28,6 +28,17 @@ object Keys {
     // version numbers
     const val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
 
+    // time values
+    const val UPDATE_REPEAT_INTERVAL: Long = 4L             // every 4 hours
+    const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 60000L   // 1 minute in milliseconds
+    const val SKIP_BACK_TIME_SPAN: Long = 10000L            // 10 seconds in milliseconds
+    const val SKIP_FORWARD_TIME_SPAN: Long = 30000L         // 30 seconds in milliseconds
+    const val SLEEP_TIMER_DURATION: Long = 900000L          // 15 minutes in  milliseconds
+    const val SLEEP_TIMER_INTERVAL: Long = 1000L            // 1 second in milliseconds
+
+    // ranges
+    val PLAYBACK_SPEEDS = arrayOf(1.0f, 1.2f, 1.4f, 1.6f, 1.8f, 2.0f)
+
     // notification
     const val NOTIFICATION_NOW_PLAYING_ID: Int = 42
     const val NOTIFICATION_NOW_PLAYING_CHANNEL = "notificationChannelIdPlaybackChannel"
@@ -70,9 +81,6 @@ object Keys {
 
     // states
     const val STATE_SLEEP_TIMER_STOPPED: Int = 0
-
-    // ranges
-    val PLAYBACK_SPEEDS = arrayOf(1.0f, 1.2f, 1.4f, 1.6f, 1.8f, 2.0f)
 
     // default const values
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
@@ -124,7 +132,6 @@ object Keys {
     val MIME_TYPES_IMAGE = arrayOf("image/png", "image/jpeg")
     val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3")
     val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml")
-//    val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml", "text/html") // todo remove
     val MIME_TYPES_ATOM = arrayOf("application/atom+xml")
     val FILE_EXTENSIONS_AUDIO = arrayOf("mp3")
     val FILE_EXTENSIONS_IMAGE = arrayOf("png", "jpeg", "jpg")
@@ -154,6 +161,7 @@ object Keys {
     // default values
     val DEFAULT_DATE: Date = Date(0L)
     const val DEFAULT_RFC2822_DATE: String = "Thu, 01 Jan 1970 01:00:00 +0100" // --> Date(0)
+    const val EMPTY_STRING_RESOURCE: Int = 0
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
@@ -178,13 +186,6 @@ object Keys {
 
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"
-
-    // const values
-    const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 60000L   // 1 minute in milliseconds
-    const val SKIP_BACK_TIME_SPAN: Long = 10000L            // 10 seconds in milliseconds
-    const val SKIP_FORWARD_TIME_SPAN: Long = 30000L         // 30 seconds in milliseconds
-    const val SLEEP_TIMER_DURATION: Long = 900000L          // 15 minutes in  milliseconds
-    const val SLEEP_TIMER_INTERVAL: Long = 1000L            // 1 second in milliseconds
 
     // rss tags
     val XML_NAME_SPACE: String? = null

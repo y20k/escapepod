@@ -4,5 +4,4 @@
 
 - new playback speed switch 
 - longer episode descriptions are displayed in show notes, if available in RSS feed
-- Norwegian language version
 - bug fixes

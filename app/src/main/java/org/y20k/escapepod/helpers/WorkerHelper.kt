@@ -38,7 +38,7 @@ object WorkerHelper {
         val unmeteredConstraint = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED)
                 .build()
-        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(4, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
+        val updateCollectionPeriodicWork = PeriodicWorkRequestBuilder<DownloadWorker>(Keys.UPDATE_REPEAT_INTERVAL, TimeUnit.HOURS, 30, TimeUnit.MINUTES)
                 //.setConstraints(unmeteredConstraint)
                 .setInputData(requestData)
                 .build()

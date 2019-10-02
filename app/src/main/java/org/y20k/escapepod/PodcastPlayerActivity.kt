@@ -44,7 +44,10 @@ import org.y20k.escapepod.collection.CollectionAdapter
 import org.y20k.escapepod.collection.CollectionViewModel
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
-import org.y20k.escapepod.dialogs.*
+import org.y20k.escapepod.dialogs.AddPodcastDialog
+import org.y20k.escapepod.dialogs.ErrorDialog
+import org.y20k.escapepod.dialogs.OpmlImportDialog
+import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.LayoutHolder
@@ -59,7 +62,6 @@ import kotlin.coroutines.CoroutineContext
 class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         AddPodcastDialog.AddPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
-        MeteredNetworkDialog.MeteredNetworkDialogListener,
         OpmlImportDialog.OpmlImportDialogListener,
         YesNoDialog.YesNoDialogListener {
 
@@ -206,7 +208,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     else -> {
                         // ask user: playback or add to Up Next
                         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
-                        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_ADD_UP_NEXT, R.string.dialog_yes_no_title_add_up_next, dialogMessage, R.string.dialog_yes_no_positive_button_add_up_next, R.string.dialog_yes_no_negative_button_add_up_next, mediaId)
+                        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId)
                     }
                 }
             }
@@ -224,7 +226,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override fun onMarkListenedButtonTapped(mediaId: String) {
         MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_mark_episode_played)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
-        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_MARK_EPISODE_PLAYED, R.string.dialog_yes_no_title_mark_episode_played, dialogMessage, R.string.dialog_yes_no_positive_button_mark_episode_played, R.string.dialog_yes_no_negative_button_cancel, mediaId)
+        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId)
     }
 
 
@@ -238,7 +240,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override fun onDeleteButtonTapped(episode: Episode) {
         MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_delete_episode)}\n\n- ${episode.title}"
-        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_DELETE_EPISODE, R.string.dialog_yes_no_title_delete_episode, dialogMessage, R.string.dialog_yes_no_positive_button_delete_episode, dialogPayloadString = episode.getMediaId())
+        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_DELETE_EPISODE, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_delete_episode, payloadString = episode.getMediaId())
     }
 
 
@@ -254,20 +256,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         v.vibrate(50)
         // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-        YesNoDialog(this).show(this, Keys.DIALOG_DELETE_DOWNLOADS, R.string.dialog_yes_no_title_delete_downloads, R.string.dialog_yes_no_message_delete_downloads, R.string.dialog_yes_no_positive_button_delete_downloads)
-
-    }
-
-
-    /* Overrides onMeteredNetworkDialog from MeteredNetworkDialogListener */
-    override fun onMeteredNetworkDialog(dialogType: Int, payload: String) {
-        super.onMeteredNetworkDialog(dialogType, payload)
-        when (dialogType) {
-            Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
-                Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-                DownloadHelper.downloadEpisode(this, payload, true, true)
-            }
-        }
+        YesNoDialog(this).show(context = this, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
     }
 
 
@@ -334,6 +323,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     false -> updateUpNext(episode)
                 }
             }
+            Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
+                when (dialogResult) {
+                    true -> {
+                        Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
+                        DownloadHelper.downloadEpisode(this, dialogPayloadString, true, true)
+                    }
+                }
+            }
         }
     }
 
@@ -349,7 +346,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 // ask user
                 val adapterPosition: Int = viewHolder.adapterPosition
                 val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n\n- ${collection.podcasts[adapterPosition].name}"
-                YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_REMOVE_PODCAST, R.string.dialog_yes_no_title_remove_podcast, dialogMessage, R.string.dialog_yes_no_positive_button_remove_podcast, dialogPayloadInt = adapterPosition)
+                YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
@@ -358,7 +355,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // enable for swipe to refresh
         layout.swipeRefreshLayout.setOnRefreshListener {
             // ask user to confirm update
-            YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(this@PodcastPlayerActivity, Keys.DIALOG_UPDATE_COLLECTION, R.string.dialog_yes_no_title_update_collection, R.string.dialog_yes_no_message_update_collection, R.string.dialog_yes_no_positive_button_update_collection)
+            YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
             layout.swipeRefreshLayout.isRefreshing = false
         }
 
@@ -541,7 +538,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
             DownloadHelper.downloadEpisode(this, episode.getMediaId(), true, true)
         } else if (NetworkHelper.isConnectedToCellular(this)) {
-            MeteredNetworkDialog(this).show(this, Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, R.string.dialog_metered_download_episode_title, R.string.dialog_metered_download_episode_message, R.string.dialog_metered_download_episode_button_okay, episode.getMediaId())
+            YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_metered_network_download, yesButton = R.string.dialog_yes_no_positive_button_metered_network_download, payloadString = episode.getMediaId())
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
