@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_add_podcast_button">Hinzufügen</string>
+    <string name="dialog_add_podcast_howto">Bitte gib eine Podcast-Feed-Adresse ein. Such dazu nach dem RSS-Symbol auf der Website des Podcasts.</string>
+    <string name="dialog_add_podcast_input_hint">Podcast-Feed-Link eingeben</string>
+    <string name="dialog_add_podcast_title">Neuen Podcast hinzufügen</string>
+    <string name="dialog_error_message_default">Ein Fehler ist aufgetreten</string>
+    <string name="dialog_error_message_no_network">Dein Gerät hat keine Netzwerkverbindung.</string>
+    <string name="dialog_error_message_podcast_duplicate">Der Podcast ist schon in deiner Liste.</string>
+    <string name="dialog_error_message_podcast_invalid_feed">Diese Adresse ist kein RSS-Feed.</string>
+    <string name="dialog_error_title_default">Fehler</string>
+    <string name="dialog_error_title_podcast_duplicate">Doppelter Podcast</string>
+    <string name="dialog_error_title_podcast_invalid_feed">Ungültiger Podcast-Feed</string>
+    <string name="dialog_generic_button_cancel">Abbrechen</string>
+    <string name="dialog_generic_details_button">Zeige Details</string>
+    <string name="dialog_generic_details_default">Keine Details verfügbar</string>
+    <string name="dialog_metered_download_episode_button_okay">Trotzdem herunterladen</string>
+    <string name="dialog_metered_download_episode_message">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du diese Episode trotzdem herunterladen\?</string>
+    <string name="dialog_metered_download_episode_title">Ohne WLAN herunterladen</string>
+    <string name="dialog_metered_network_button_okay_default">Trotzdem fortfahren</string>
+    <string name="dialog_metered_network_message_default">Dein Gerät ist mit einem getakteten Netzwerk verbunden.</string>
+    <string name="dialog_metered_network_title_default">Getaktetes Netzwerk</string>
+    <string name="dialog_metered_update_collection_button_okay">Trotzdem aktualisieren</string>
+    <string name="dialog_metered_update_collection_message">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du deine Podcasts trotzdem aktualisieren\?</string>
+    <string name="dialog_metered_update_collection_title">Ohne WLAN aktualisieren</string>
+</resources>
