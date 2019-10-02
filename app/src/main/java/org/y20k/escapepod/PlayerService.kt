@@ -342,6 +342,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Analyt
     /* Start playback with current episode */
     private fun startPlayback() {
         LogHelper.d(TAG, "Starting Playback. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
+        // sanity check
+        if (episode.audio.isEmpty()) {
+            LogHelper.e(TAG, "Unable to start playback. No episode has been selected.")
+            return
+        }
         // reset playback position if necessary
         if (episode.isFinished()) {
             episode.playbackPosition = 0L
@@ -545,20 +550,13 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Analyt
 
             if (TextUtils.isEmpty(query)) {
                 // user provided generic string e.g. 'Play music'
-                // mStation = Station(mStationListProvider.getFirstStation())
+                // episode = ...
             } else {
-                // try to match station name and voice query
-//                for (stationMetadata in mStationListProvider.getAllStations()) {
-//                    val words = query!!.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-//                    for (word in words) {
-//                        if (stationMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE).toLowerCase().contains(word.toLowerCase())) {
-//                            mStation = Station(stationMetadata)
-//                        }
-//                    }
-//                }
+                // try to match podcast name or episode name and voice query
+                // episode = ...
             }
             // start playback
-            onPlay()
+            // onPlay()
         }
 
         override fun onFastForward() {
