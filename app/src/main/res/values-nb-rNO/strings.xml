@@ -50,4 +50,20 @@
     <string name="descr_player_podcast_name">Navn på gjeldende nettradioopptak</string>
     <string name="descr_podcast_name">Navn på nettradioopptak</string>
     <string name="onboarding_app_description">Nettradioopptakslytting</string>
+    <string name="dialog_add_podcast_howto">Skriv inn en informasjonsanalsadresse for nettradioopptak. Se etter et RSS-symbol på hjemmesiden til det respektive nettradioopptaket.</string>
+    <string name="dialog_opml_import_message_error">Kunne ikke importere OPML-fil. Fant ingen nettradioopptak.</string>
+    <string name="dialog_opml_import_message">Fant du ingen nettradioopptak. Duplikater vil bli fjernet før import. Antall nettradiopptak funnet:</string>
+    <string name="dialog_yes_no_message_add_up_next">Begynn å lytte til denne episoden uansett\?</string>
+    <string name="dialog_yes_no_message_default">Ønsker du virkelig å gjøre dette\?</string>
+    <string name="dialog_yes_no_message_delete_episode">Slett denne episoden\?</string>
+    <string name="dialog_yes_no_message_mark_episode_played">Marker denne episoden som avspilt\?</string>
+    <string name="dialog_yes_no_message_remove_podcast">Fjern dette nettradioopptaket\?</string>
+    <string name="dialog_yes_no_message_update_collection">Se etter nye episoder\?</string>
+    <string name="dialog_yes_no_positive_button_mark_episode_played">Marker som avspilt</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
+    <string name="dialog_yes_no_title_default">Avgjør</string>
+    <string name="toast_message_error_missing_storage_permission">Innvilg tilgang for \"Les lagring\" for å åpne denne filen.</string>
+    <string name="toast_message_error_refreshing_cover">Kunne ikke gjenoppfriske omslag. Informasjonskanalen inneholder ikke en omslagsreferanse.</string>
+    <string name="onboarding_app_get_started">Kom i gang</string>
+    <string name="dialog_episode_shownotes_title">Episodeinnhold</string>
 </resources>
