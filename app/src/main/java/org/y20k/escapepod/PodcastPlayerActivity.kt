@@ -268,9 +268,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 
     /* Overrides onYesNoDialog from YesNoDialogListener */
-    override fun onYesNoDialog(dialogType: Int, dialogResult: Boolean, dialogPayloadInt: Int, dialogPayloadString: String) {
-        super.onYesNoDialog(dialogType, dialogResult, dialogPayloadInt, dialogPayloadString)
-        when (dialogType) {
+    override fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String) {
+        super.onYesNoDialog(type, dialogResult, payload, payloadString)
+        when (type) {
             Keys.DIALOG_UPDATE_COLLECTION -> {
                 when (dialogResult) {
                     // user tapped update collection
@@ -291,15 +291,15 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_REMOVE_PODCAST -> {
                 when (dialogResult) {
                     // user tapped remove podcast
-                    true -> collectionAdapter.removePodcast(this@PodcastPlayerActivity, dialogPayloadInt)
+                    true -> collectionAdapter.removePodcast(this@PodcastPlayerActivity, payload)
                     // user tapped cancel
-                    false -> collectionAdapter.notifyItemChanged(dialogPayloadInt)
+                    false -> collectionAdapter.notifyItemChanged(payload)
                 }
             }
             Keys.DIALOG_DELETE_EPISODE -> {
                 when (dialogResult) {
                     // user tapped delete episode
-                    true -> collectionAdapter.deleteEpisode(this@PodcastPlayerActivity, dialogPayloadString)
+                    true -> collectionAdapter.deleteEpisode(this@PodcastPlayerActivity, payloadString)
                 }
             }
             Keys.DIALOG_DELETE_DOWNLOADS -> {
@@ -311,11 +311,11 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_MARK_EPISODE_PLAYED -> {
                 when (dialogResult) {
                     // user tapped: mark episode played
-                    true -> collectionAdapter.markEpisodePlayed(this@PodcastPlayerActivity, dialogPayloadString)
+                    true -> collectionAdapter.markEpisodePlayed(this@PodcastPlayerActivity, payloadString)
                 }
             }
             Keys.DIALOG_ADD_UP_NEXT -> {
-                val episode = CollectionHelper.getEpisode(collection, dialogPayloadString)
+                val episode = CollectionHelper.getEpisode(collection, payloadString)
                 when (dialogResult) {
                     // user tapped: start playback
                     true -> togglePlayback(true, episode.getMediaId(), episode.playbackState)
@@ -327,7 +327,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 when (dialogResult) {
                     true -> {
                         Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-                        DownloadHelper.downloadEpisode(this, dialogPayloadString, true, true)
+                        DownloadHelper.downloadEpisode(this, payloadString, true, true)
                     }
                 }
             }

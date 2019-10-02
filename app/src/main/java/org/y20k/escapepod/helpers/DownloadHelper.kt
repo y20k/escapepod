@@ -148,7 +148,7 @@ object DownloadHelper {
             collection = FileHelper.readCollection(context) // todo make async
         }
         if (!this::downloadManager.isInitialized) {
-            downloadManager = context.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+            downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         }
         if (!this::activeDownloads.isInitialized) {
             activeDownloads = getActiveDownloads(context)

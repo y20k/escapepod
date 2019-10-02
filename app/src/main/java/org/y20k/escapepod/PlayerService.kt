@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
-import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -39,7 +38,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -59,7 +57,7 @@ import kotlin.coroutines.CoroutineContext
 /*
  * PlayerService class
  */
-class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, AnalyticsListener, CoroutineScope {
+class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, CoroutineScope {
 
 
     /* Define log tag */
@@ -163,19 +161,20 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Analyt
         // cancel background job
         backgroundJob.cancel()
         // release player
-        player.removeAnalyticsListener(this)
+        //player.removeAnalyticsListener(this)
         player.release()
     }
 
 
-    /* Overrides onAudioSessionId from AnalyticsListener */
-    override fun onAudioSessionId(eventTime: AnalyticsListener.EventTime?, audioSessionId: Int) {
-        // integrate with system equalizer (AudioFX)
-        val intent: Intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-        sendBroadcast(intent)
-    }
+//    /* Overrides onAudioSessionId from AnalyticsListener */
+//    override fun onAudioSessionId(eventTime: AnalyticsListener.EventTime?, audioSessionId: Int) {
+//        super.onAudioSessionId(eventTime, audioSessionId)
+//        // integrate with system equalizer (AudioFX)
+//        val intent: Intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+//        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+//        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+//        sendBroadcast(intent)
+//    }
 
 
     /* Overrides onGetRoot */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
@@ -310,7 +309,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Analyt
     /* Creates a simple exo player */
     private fun createPlayer(): SimpleExoPlayer {
         if (this::player.isInitialized) {
-            player.removeAnalyticsListener(this)
+            //player.removeAnalyticsListener(this)
             player.release()
         }
         val player = ExoPlayerFactory.newSimpleInstance(this).apply { addListener(this@PlayerService) }
@@ -319,7 +318,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Analyt
                 .setUsage(C.USAGE_MEDIA)
                 .build()
         player.setAudioAttributes(audioAttributes, true)
-        player.addAnalyticsListener(this);
+        //player.addAnalyticsListener(this)
         player.seekTo(playerState.playbackPosition)
         return player
     }
@@ -463,7 +462,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Analyt
 
 
     /* Loads media items into result - assumes that collectionProvider is initialized */
-    private fun loadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+    private fun loadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
         when (parentId) {
             Keys.MEDIA_ID_ROOT -> {

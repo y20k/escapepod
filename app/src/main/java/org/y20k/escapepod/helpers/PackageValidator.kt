@@ -36,7 +36,7 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 /**
- * Validates that the calling package is authorized to browse a [MediaBrowserServiceCompat].
+ * Validates that the calling package is authorized to browse a MediaBrowserServiceCompat.
  *
  * The list of allowed signing certificates and their corresponding package names is defined in
  * res/xml/allowed_media_browser_callers.xml.
@@ -66,8 +66,8 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
     }
 
     /**
-     * Checks whether the caller attempting to connect to a [MediaBrowserServiceCompat] is known.
-     * See [MusicService.onGetRoot] for where this is utilized.
+     * Checks whether the caller attempting to connect to a MediaBrowserServiceCompat is known.
+     * See MusicService.onGetRoot for where this is utilized.
      *
      * @param callingPackage The package name of the caller.
      * @param callingUid The user id of the caller.
@@ -81,7 +81,7 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
         }
 
         /**
-         * Because some of these checks can be slow, we save the results in [callerChecked] after
+         * Because some of these checks can be slow, we save the results in callerChecked after
          * this code is run.
          *
          * In particular, there's little reason to recompute the calling package's certificate
@@ -117,18 +117,18 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
             // If the app was signed by the same certificate as the platform itself, also allow it.
             callerSignature == platformSignature -> true
             /**
-             * [MEDIA_CONTENT_CONTROL] permission is only available to system applications, and
+             * MEDIA_CONTENT_CONTROL permission is only available to system applications, and
              * while it isn't required to allow these apps to connect to a
-             * [MediaBrowserServiceCompat], allowing this ensures optimal compatability with apps
+             * MediaBrowserServiceCompat, allowing this ensures optimal compatability with apps
              * such as Android TV and the Google Assistant.
              */
             callerPackageInfo.permissions.contains(MEDIA_CONTENT_CONTROL) -> true
             /**
              * This last permission can be specifically granted to apps, and, in addition to
              * allowing them to retrieve notifications, it also allows them to connect to an
-             * active [MediaSessionCompat].
+             * active MediaSessionCompat.
              * As with the above, it's not required to allow apps holding this permission to
-             * connect to your [MediaBrowserServiceCompat], but it does allow easy comparability
+             * connect to your MediaBrowserServiceCompat, but it does allow easy comparability
              * with apps such as Wear OS.
              */
             callerPackageInfo.permissions.contains(BIND_NOTIFICATION_LISTENER_SERVICE) -> true
@@ -162,9 +162,9 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
     }
 
     /**
-     * Builds a [CallerPackageInfo] for a given package that can be used for all the
+     * Builds a CallerPackageInfo for a given package that can be used for all the
      * various checks that are performed before allowing an app to connect to a
-     * [MediaBrowserServiceCompat].
+     * MediaBrowserServiceCompat.
      */
     private fun buildCallerInfo(callingPackage: String): CallerPackageInfo? {
         val packageInfo = getPackageInfo(callingPackage) ?: return null
@@ -186,11 +186,11 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
     }
 
     /**
-     * Looks up the [PackageInfo] for a package name.
+     * Looks up the PackageInfo for a package name.
      * This requests both the signatures (for checking if an app is on the whitelist) and
      * the app's permissions, which allow for more flexibility in the whitelist.
      *
-     * @return [PackageInfo] for the package name or null if it's not found.
+     * @return PackageInfo for the package name or null if it's not found.
      */
     @SuppressLint("PackageManagerGetSignatures")
     private fun getPackageInfo(callingPackage: String): PackageInfo? =
@@ -198,7 +198,7 @@ class PackageValidator(context: Context, @XmlRes xmlResId: Int) {
                     PackageManager.GET_SIGNATURES or PackageManager.GET_PERMISSIONS)
 
     /**
-     * Gets the signature of a given package's [PackageInfo].
+     * Gets the signature of a given package's PackageInfo.
      *
      * The "signature" is a SHA-256 hash of the public key of the signing certificate used by
      * the app.
