@@ -1,0 +1,5 @@
+# v0.7.3 - Drüben Auf Dem Hügel
+
+**2019-10-03**
+
+- had to temporarily remove support for Android Auto (update got rejected on Google Play because of missing voice support)
