@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -30,7 +31,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.text.TextUtils
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -38,6 +38,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -74,11 +75,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private lateinit var backgroundJob: Job
     private lateinit var packageValidator: PackageValidator
     private lateinit var mediaSession: MediaSessionCompat
+    private lateinit var mediaController: MediaControllerCompat
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
     private lateinit var collectionChangedReceiver: BroadcastReceiver
-    private lateinit var mediaController: MediaControllerCompat
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var sleepTimer: CountDownTimer
     private var sleepTimerTimeRemaining: Long = 0L
@@ -161,20 +162,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // cancel background job
         backgroundJob.cancel()
         // release player
-        //player.removeAnalyticsListener(this)
+        player.removeAnalyticsListener(analyticsListener)
         player.release()
     }
-
-
-//    /* Overrides onAudioSessionId from AnalyticsListener */
-//    override fun onAudioSessionId(eventTime: AnalyticsListener.EventTime?, audioSessionId: Int) {
-//        super.onAudioSessionId(eventTime, audioSessionId)
-//        // integrate with system equalizer (AudioFX)
-//        val intent: Intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
-//        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
-//        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
-//        sendBroadcast(intent)
-//    }
 
 
     /* Overrides onGetRoot */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
@@ -309,7 +299,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Creates a simple exo player */
     private fun createPlayer(): SimpleExoPlayer {
         if (this::player.isInitialized) {
-            //player.removeAnalyticsListener(this)
+            player.removeAnalyticsListener(analyticsListener)
             player.release()
         }
         val player = ExoPlayerFactory.newSimpleInstance(this).apply { addListener(this@PlayerService) }
@@ -318,7 +308,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 .setUsage(C.USAGE_MEDIA)
                 .build()
         player.setAudioAttributes(audioAttributes, true)
-        //player.addAnalyticsListener(this)
+        player.addAnalyticsListener(analyticsListener)
         player.seekTo(playerState.playbackPosition)
         return player
     }
@@ -520,6 +510,22 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
+
+    /*
+     * Custom AnalyticsListener that enables AudioFX equalizer integration
+     */
+    private var analyticsListener = object: AnalyticsListener {
+        override fun onAudioSessionId(eventTime: AnalyticsListener.EventTime?, audioSessionId: Int) {
+            super.onAudioSessionId(eventTime, audioSessionId)
+            // integrate with system equalizer (AudioFX)
+            val intent: Intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
+            intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioSessionId)
+            intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, packageName)
+            sendBroadcast(intent)
+        }
+    }
+
+
     /*
      * Callback: Defines callbacks for active media session
      */
@@ -544,19 +550,34 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
-            // handle requests to begin playback from a search query (eg. Assistant, Android Auto, etc.)
-            LogHelper.i(TAG, "playFromSearch  query=$query extras=$extras")
-
-            if (TextUtils.isEmpty(query)) {
+            if (query.isNullOrEmpty()) {
                 // user provided generic string e.g. 'Play music'
-                // episode = ...
+                val mediaId = collectionProvider.getNewestEpisode().mediaId
+                onPlayFromMediaId(mediaId, null)
             } else {
-                // try to match podcast name or episode name and voice query
-                // episode = ...
+                // try to match podcast name and voice query - and start newest episode of that podcast
+                collectionProvider.episodeListByDate.forEach { mediaItem ->
+                    // get podcast name (here -> subtitle)
+                    val podcastName: String = mediaItem.description.subtitle.toString()
+                    // FIRST: try to match the whole query
+                    if (podcastName == query) {
+                        // start playback of newest podcast episode
+                        onPlayFromMediaId(mediaItem.description.mediaId, null)
+                        return
+                    }
+                    // SECOND: try to match parts of the query
+                    val words: List<String> = query.split(" ")
+                    words.forEach { word ->
+                        if (podcastName.contains(word)) {
+                            // start playback of newest podcast episode
+                            onPlayFromMediaId(mediaItem.description.mediaId, null)
+                            return
+                        }
+                    }
+                }
             }
-            // start playback
-            // onPlay()
         }
+
 
         override fun onFastForward() {
             LogHelper.d(TAG, "Skipping forward")

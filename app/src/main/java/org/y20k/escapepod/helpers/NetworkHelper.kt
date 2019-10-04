@@ -19,7 +19,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_WIFI
-import android.net.NetworkInfo
 import org.y20k.escapepod.Keys
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -70,8 +69,8 @@ object NetworkHelper {
     /* Checks if the active network connection is connected to any network */
     fun isConnectedToNetwork(context: Context): Boolean {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo: NetworkInfo = connMgr.activeNetworkInfo
-        return activeNetworkInfo.isConnected
+        val activeNetwork: Network? = connMgr.activeNetwork
+        return activeNetwork != null
     }
 
 

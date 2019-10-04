@@ -17,6 +17,7 @@ package org.y20k.escapepod.collection
 
 import android.support.v4.media.MediaBrowserCompat
 import org.y20k.escapepod.core.Collection
+import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.helpers.CollectionHelper
 
 
@@ -67,25 +68,51 @@ class CollectionProvider {
     }
 
 
-    /* Gets list of episodes and caches meta information in list of MediaMetaItems */
-    fun retrieveMedia2(collection: Collection, episodeListProviderCallback: CollectionProviderCallback) {
-        if (currentState == State.INITIALIZED) {
-            // already initialized, set callback immediately
-            episodeListProviderCallback.onEpisodeListReady(true)
-        } else {
-            // fill podcast list
-            collection.podcasts.forEach { podcast ->
-                episodeListByDate.add(CollectionHelper.buildPodcastMediaMetaItem(podcast))
-                podcast.episodes.forEach { episode ->
-                    if (episode.audio.isNotEmpty()) {
-                        CollectionHelper.buildEpisodeMediaMetaItem(episode)
-                    }
+    /* Get newest episode as media item */
+    fun getNewestEpisode(): MediaBrowserCompat.MediaItem {
+        when (isInitialized()) {
+            true -> return episodeListByDate.first()
+            false -> return CollectionHelper.buildEpisodeMediaMetaItem(Episode())
+        }
+    }
+
+
+    /* Get oldest episode as media item */
+    fun getOldestEpisode(): MediaBrowserCompat.MediaItem {
+        when (isInitialized()) {
+            true -> return episodeListByDate.last()
+            false -> return CollectionHelper.buildEpisodeMediaMetaItem(Episode())
+        }
+    }
+
+
+    /* Get next episode as media item */
+    fun getNextEpisode(mediaId: String): MediaBrowserCompat.MediaItem {
+        episodeListByDate.forEachIndexed { index, mediaItem ->
+            if (mediaItem.description.mediaId == mediaId) {
+                if (index + 1 > episodeListByDate.size) {
+                    // return next episode
+                    return episodeListByDate[index + 1]
                 }
             }
-            // afterwards: update state and set callback
-            currentState = State.INITIALIZED
-            episodeListProviderCallback.onEpisodeListReady(true)
         }
+        // default: return newest (cycle through from oldest)
+        return getNewestEpisode()
+    }
+
+
+    /* Get previous episode as media item */
+    fun getPreviousEpisode(mediaId: String): MediaBrowserCompat.MediaItem {
+        episodeListByDate.forEachIndexed { index, mediaItem ->
+            if (mediaItem.description.mediaId == mediaId) {
+                if (index - 1 >= 0) {
+                    // return previous episode
+                    return episodeListByDate[index - 1]
+                }
+            }
+        }
+        // default: return oldest (cycle through from newest)
+        return getOldestEpisode()
     }
 
 }

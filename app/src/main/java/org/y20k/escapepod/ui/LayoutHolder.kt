@@ -125,7 +125,7 @@ data class LayoutHolder(var activity: Activity) {
     /* Updates the player views */
     fun updatePlayerViews(context: Context, episode: Episode) {
         val coverUri = Uri.parse(episode.cover)
-        coverView.setImageBitmap(ImageHelper.getPodcastCover(context,coverUri, Keys.SIZE_COVER_PLAYER))
+        coverView.setImageBitmap(ImageHelper.getPodcastCover(context,coverUri, Keys.SIZE_COVER_PLAYER_SMALL))
         coverView.clipToOutline = true // apply rounded corner mask to covers
         coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
         podcastNameView.text = episode.podcastName
