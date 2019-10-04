@@ -558,7 +558,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 // try to match podcast name and voice query - and start newest episode of that podcast
                 collectionProvider.episodeListByDate.forEach { mediaItem ->
                     // get podcast name (here -> subtitle)
-                    val podcastName: String = mediaItem.description.subtitle.toString()
+                    val podcastName: String = mediaItem.description.subtitle.toString().toLowerCase(Locale.getDefault())
                     // FIRST: try to match the whole query
                     if (podcastName == query) {
                         // start playback of newest podcast episode
