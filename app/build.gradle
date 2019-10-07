@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId 'org.y20k.escapepod'
-        minSdkVersion 23
+        minSdkVersion 25
         targetSdkVersion 29
         versionCode 8
         versionName '0.7.3'
@@ -78,7 +78,7 @@ dependencies {
 
     implementation "com.google.android.exoplayer:exoplayer:2.10.5"
     implementation "com.google.android.exoplayer:extension-mediasession:2.10.5"
-    implementation "com.google.code.gson:gson:2.8.5"
+    implementation "com.google.code.gson:gson:2.8.6"
 }
 
 androidExtensions {

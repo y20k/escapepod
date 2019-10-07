@@ -24,6 +24,8 @@ import java.util.*
  */
 object DateTimeHelper {
 
+    /* Define log tag */
+    private val TAG: String = LogHelper.makeLogTag(DateTimeHelper::class.java)
 
     /* Main class variables */
     private const val pattern: String = "EEE, dd MMM yyyy HH:mm:ss Z"
@@ -35,7 +37,12 @@ object DateTimeHelper {
         if (dateString.isEmpty()) {
             return Keys.DEFAULT_DATE
         } else {
-            return dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
+            try {
+                return dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
+            } catch (e: Exception) {
+                LogHelper.w(TAG, "$e")
+                return Keys.DEFAULT_DATE
+            }
         }
     }
 

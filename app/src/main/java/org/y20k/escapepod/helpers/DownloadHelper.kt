@@ -324,7 +324,6 @@ object DownloadHelper {
                 }
                 Keys.PODCAST_VALIDATION_NO_AUDIO_FILES -> {
                     Toast.makeText(context, context.getString(R.string.toast_message_error_validation_audio_references), Toast.LENGTH_LONG).show()
-                    addPodcast(context, podcast)
                 }
             }
             CollectionHelper.trimPodcastEpisodeLists(context, collection)
