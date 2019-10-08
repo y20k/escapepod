@@ -34,16 +34,20 @@ object DateTimeHelper {
 
     /* Converts RFC 2822 string representation of a date to DATE */
     fun convertFromRfc2822(dateString: String): Date {
-        if (dateString.isEmpty()) {
-            return Keys.DEFAULT_DATE
-        } else {
+        var date: Date = Keys.DEFAULT_DATE
+        try {
+            // parse date string using standard pattern
+            date = dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
+        } catch (e: Exception) {
             try {
-                return dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
+                // try to parse without seconds - if first attempt failed
+                date = SimpleDateFormat("EEE, dd MMM yyyy HH:mm Z", Locale.ENGLISH).parse((dateString)) ?: Keys.DEFAULT_DATE
+                LogHelper.w(TAG, "Unable to parse. Trying an alternative Date format.\n$e")
             } catch (e: Exception) {
-                LogHelper.w(TAG, "$e")
-                return Keys.DEFAULT_DATE
+                LogHelper.e(TAG, "Unable to parse. Returning a default date.\n$e")
             }
         }
+        return date
     }
 
 

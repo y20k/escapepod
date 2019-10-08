@@ -17,6 +17,7 @@ package org.y20k.escapepod.helpers
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import org.y20k.escapepod.Keys
@@ -44,25 +45,33 @@ object NetworkHelper {
 
     /* Checks if the active network connection is over Wifi */
     fun isConnectedToWifi(context: Context): Boolean {
+        var result: Boolean = false
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: Network? = connMgr.activeNetwork
-        if (activeNetwork == null){
-            return false
-        } else {
-            return connMgr.getNetworkCapabilities(activeNetwork).hasTransport(TRANSPORT_WIFI)
+        if (activeNetwork != null) {
+            val capabilities: NetworkCapabilities? = connMgr.getNetworkCapabilities(activeNetwork)
+            if (capabilities != null) {
+                // check if a Wifi connection is active
+                result = capabilities.hasTransport(TRANSPORT_WIFI)
+            }
         }
+        return result
     }
 
 
     /* Checks if the active network connection is over Cellular */
     fun isConnectedToCellular(context: Context): Boolean {
+        var result: Boolean = false
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork: Network? = connMgr.activeNetwork
-        if (activeNetwork == null){
-            return false
-        } else {
-            return connMgr.getNetworkCapabilities(activeNetwork).hasTransport(TRANSPORT_CELLULAR)
+        if (activeNetwork != null) {
+            val capabilities: NetworkCapabilities? = connMgr.getNetworkCapabilities(activeNetwork)
+            if (capabilities != null) {
+                // check if a cellular connection is active
+                result = capabilities.hasTransport(TRANSPORT_CELLULAR)
+            }
         }
+        return result
     }
 
 
