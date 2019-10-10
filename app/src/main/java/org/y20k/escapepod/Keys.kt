@@ -211,9 +211,10 @@ object Keys {
     const val OPML_OPML = "opml"
     const val OPML_BODY = "body"
     const val OPML_OUTLINE = "outline"
-    const val OPML_OUTLINE_PODCAST = "outline"
-    const val OPML_OUTLINE_PODCAST_TYPE = "type"
-    const val OPML_OUTLINE_PODCAST_TYPE_RSS = "rss"
-    const val OPML_OUTLINE_PODCAST_URL = "xmlUrl"
+    const val OPML_OUTLINE_TEXT = "text"
+    const val OPML_OUTLINE_TEXT_FEEDS = "feeds"
+    const val OPML_OUTLINE_TYPE = "type"
+    const val OPML_OUTLINE_TYPE_RSS = "rss"
+    const val OPML_OUTLINE_XML_URL = "xmlUrl"
 
 }
