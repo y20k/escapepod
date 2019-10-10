@@ -16,4 +16,5 @@
     <string name="dialog_generic_details_default">Keine Details verfügbar</string>
     <string name="dialog_yes_no_positive_button_metered_network_download">Trotzdem herunterladen</string>
     <string name="dialog_yes_no_message_metered_network_download">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du diese Episode trotzdem herunterladen\?</string>
+    <string name="app_name">Escapepod</string>
 </resources>
