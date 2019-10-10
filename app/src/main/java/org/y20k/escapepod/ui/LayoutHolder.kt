@@ -333,7 +333,7 @@ data class LayoutHolder(var activity: Activity) {
     private fun setupBottomSheet() {
         // show / hide the small player
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.bottomSheetCallback = object: BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(view: View, slideOffset: Float) {
                 if (slideOffset < 0.25f) {
                     showPlayerViews()
@@ -351,7 +351,7 @@ data class LayoutHolder(var activity: Activity) {
                     BottomSheetBehavior.STATE_HIDDEN -> showPlayerViews()
                 }
             }
-        }
+        })
         // toggle collapsed state on tap
         bottomSheet.setOnClickListener {
             when (bottomSheetBehavior.state) {
