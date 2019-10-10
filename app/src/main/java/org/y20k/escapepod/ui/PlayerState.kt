@@ -28,7 +28,8 @@ import org.y20k.escapepod.Keys
 @Parcelize
 data class PlayerState (@Expose var episodeMediaId: String = String(),
                         @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
-                        @Expose var playbackPosition: Long = 0,
+                        @Expose var playbackPosition: Long = 0L,
+                        @Expose var episodeDuration: Long = 0L,
                         @Expose var playbackSpeed: Float = 1f,
                         @Expose var upNextEpisodeMediaId: String = String(),
                         @Expose var bottomSheetState: Int = BottomSheetBehavior.STATE_HIDDEN,

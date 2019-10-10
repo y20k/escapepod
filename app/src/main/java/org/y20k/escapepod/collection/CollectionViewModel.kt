@@ -41,7 +41,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
 
     /* Main class variables */
-    val collectionLiveData: MutableLiveData<Collection>
+    val collectionLiveData: MutableLiveData<Collection> = MutableLiveData<Collection>()
     private var lastUpdateViewModel: Date = Calendar.getInstance().time
     private var collectionChangedReceiver: BroadcastReceiver
     private val backgroundJob = Job()
@@ -50,8 +50,6 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Init constructor */
     init {
-        // create empty view model
-        collectionLiveData = MutableLiveData<Collection>()
         // load collection
         loadCollection(application)
         // create and register collection changed receiver

@@ -86,11 +86,14 @@
         android:id="@+id/sheet_time_played_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:clickable="true"
         android:contentDescription="@string/descr_expanded_player_time_played"
+        android:focusable="true"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
-        app:layout_constraintStart_toStartOf="@+id/sheet_playback_seek_bar"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sheet_playback_seek_bar"
         tools:text="@string/sample_text_episode_0_played_time" />
 
@@ -98,11 +101,12 @@
         android:id="@+id/sheet_duration_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
         android:contentDescription="@string/descr_expanded_episode_length"
         android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
-        app:layout_constraintEnd_toEndOf="@+id/sheet_playback_seek_bar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sheet_playback_seek_bar"
         tools:text="@string/sample_text_episode_0_length" />
 

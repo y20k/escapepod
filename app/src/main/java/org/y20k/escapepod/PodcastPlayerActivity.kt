@@ -15,6 +15,7 @@
 package org.y20k.escapepod
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -29,6 +30,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.MotionEvent
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
@@ -384,7 +386,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             layout.sleepTimerRunningViews.visibility = View.GONE
         }
 
-        // set up the degug log toogle switch
+        // set up the debug log toggle switch
         layout.sheetDebugToggleButtonView.setOnClickListener {
             LogHelper.toggleDebugLogFileCreation(this@PodcastPlayerActivity)
         }
@@ -393,6 +395,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 
     /* Builds playback controls - used after connected to player service */
+    @SuppressLint("ClickableViewAccessibility") // it is probably okay to suppress this warning - the OnTouchListener on the time played view does only toggle the time duration / remaining display
     private fun buildPlaybackControls() {
 
         // get player state
@@ -442,6 +445,25 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             }
         })
 
+        // bottom sheet time played display
+        layout.sheetTimePlayedView.setOnTouchListener { view, motionEvent ->
+            view.performClick()
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    // show time remaining while touching the time played view
+                    layout.displayTimeRemaining = true
+                    MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+                }
+                MotionEvent.ACTION_UP -> {
+                    // show episode duration when not touching the time played view anymore
+                    layout.displayTimeRemaining = false
+                    layout.sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(playerState.episodeDuration)
+                }
+                else -> return@setOnTouchListener false
+            }
+            return@setOnTouchListener true
+        }
+
         // bottom sheet start button for Up Next queue
         layout.sheetUpNextName.setOnClickListener {
             // start episode in up next queue
@@ -487,7 +509,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             if (playerState.episodeMediaId.isNotEmpty()) {
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
                 layout.updatePlayerViews(this, episode)
-                layout.updateProgressbar(episode.playbackPosition)
+                layout.updateProgressbar(episode.playbackPosition, episode.duration)
                 layout.updatePlaybackSpeedView(playerState.playbackSpeed)
             }
         }
@@ -808,7 +830,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             when (resultCode) {
                 Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_PROGRESS)) {
-                        layout.updateProgressbar(resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L))
+                        layout.updateProgressbar(resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
                         layout.updateSleepTimer(resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))

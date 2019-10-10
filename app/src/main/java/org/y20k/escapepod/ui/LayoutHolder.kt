@@ -65,8 +65,8 @@ data class LayoutHolder(var activity: Activity) {
     var playButtonView: ImageView
     private var sheetCoverView: ImageView
     var sheetProgressBarView: SeekBar
-    private var sheetTimePlayedView: TextView
-    private var sheetDurationView: TextView
+    var sheetTimePlayedView: TextView
+    var sheetDurationView: TextView
     private var sheetEpisodeTitleView: TextView
     var sheetPlayButtonView: ImageView
     var sheetSkipBackButtonView: ImageView
@@ -80,6 +80,7 @@ data class LayoutHolder(var activity: Activity) {
     var sheetUpNextClearButton: ImageView
     private var onboardingLayout: ConstraintLayout
     private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    var displayTimeRemaining: Boolean
 
 
     /* Init block */
@@ -114,6 +115,7 @@ data class LayoutHolder(var activity: Activity) {
         sheetUpNextClearButton = activity.findViewById(R.id.sheet_up_next_clear_button)
         onboardingLayout = activity.findViewById(R.id.onboarding_layout)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        displayTimeRemaining = false
 
 
         // set layouts for list and player
@@ -160,9 +162,12 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Updates the progress bar */
-    fun updateProgressbar(position: Long) {
+    fun updateProgressbar(position: Long, duration: Long = 0L) {
         sheetTimePlayedView.text = DateTimeHelper.convertToMinutesAndSeconds(position)
         sheetProgressBarView.progress = position.toInt()
+        if (displayTimeRemaining) {
+            sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
+        }
     }
 
 

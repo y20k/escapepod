@@ -505,6 +505,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private fun updatePlayerState (episode: Episode, playbackState: Int) {
         playerState.episodeMediaId = episode.getMediaId()
         playerState.playbackPosition = episode.playbackPosition
+        playerState.episodeDuration = episode.duration
         playerState.playbackState = playbackState
         PreferencesHelper.savePlayerState(this, playerState)
     }

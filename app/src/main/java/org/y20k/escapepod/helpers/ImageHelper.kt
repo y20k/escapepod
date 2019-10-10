@@ -56,17 +56,21 @@ object ImageHelper {
         val vibrantSwatch = palette.vibrantSwatch
         val mutedSwatch = palette.mutedSwatch
 
-        if (vibrantSwatch != null) {
-            // return vibrant color
-            val rgb = vibrantSwatch.rgb
-            return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
-        } else if (mutedSwatch != null) {
-            // return muted color
-            val rgb = mutedSwatch.rgb
-            return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
-        } else {
-            // default return
-            return context.resources.getColor(R.color.escapepod_grey_light, null)
+        when {
+            vibrantSwatch != null -> {
+                // return vibrant color
+                val rgb = vibrantSwatch.rgb
+                return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
+            }
+            mutedSwatch != null -> {
+                // return muted color
+                val rgb = mutedSwatch.rgb
+                return Color.argb(255, Color.red(rgb), Color.green(rgb), Color.blue(rgb))
+            }
+            else -> {
+                // default return
+                return context.resources.getColor(R.color.escapepod_grey_light, null)
+            }
         }
     }
 
