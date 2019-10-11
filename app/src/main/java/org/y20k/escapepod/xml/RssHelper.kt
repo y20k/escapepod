@@ -82,15 +82,15 @@ class RssHelper {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_RSS)
 
         while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
+            // skip this round early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // readSuspended only relevant tags
+            // read only relevant tags
             when (parser.name) {
                 // found a podcast
                 Keys.RSS_PODCAST -> readPodcast(parser)
-                // skip to next tag
+                // skip any other un-needed tag within document
                 else -> XmlHelper.skip(parser)
             }
         }
@@ -104,11 +104,11 @@ class RssHelper {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_PODCAST)
 
         while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
+            // skip this round early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // readSuspended only relevant tags
+            // read only relevant tags
             when (parser.name) {
                 // found a podcast name
                 Keys.RSS_PODCAST_NAME -> podcast.name = readPodcastName(parser, Keys.XML_NAME_SPACE)
@@ -122,7 +122,7 @@ class RssHelper {
                     val episode: Episode = readEpisode(parser, podcast)
                     if (episode.isValid()) { podcast.episodes.add(episode) }
                 }
-                // skip to next tag
+                // skip any other un-needed tag within "channel" ( = Podcast)
                 else -> XmlHelper.skip(parser)
             }
         }
@@ -142,11 +142,11 @@ class RssHelper {
         episode.cover = podcast.cover
 
         while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
+            // skip this round early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // readSuspended only relevant tags
+            // read only relevant tags
             when (parser.name) {
                 // found episode title
                 Keys.RSS_EPISODE_GUID -> episode.guid = readEpisodeGuid(parser, Keys.XML_NAME_SPACE)
@@ -160,7 +160,7 @@ class RssHelper {
                 Keys.RSS_EPISODE_PUBLICATION_DATE -> episode.publicationDate = readEpisodePublicationDate(parser, Keys.XML_NAME_SPACE)
                 // found episode audio link
                 Keys.RSS_EPISODE_AUDIO_LINK -> episode.remoteAudioFileLocation = readEpisodeAudioLink(parser, Keys.XML_NAME_SPACE)
-                // skip to next tag
+                // skip any other un-needed tag within "item" ( = Episode)
                 else -> XmlHelper.skip(parser)
             }
         }
@@ -248,11 +248,11 @@ class RssHelper {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // readSuspended only relevant tags
+            // read only relevant tags
             when (parser.name) {
                 // found episode cover
                 Keys.RSS_PODCAST_COVER_URL -> link = readPodcastCoverUrl(parser, nameSpace)
-                // skip to next tag
+                // skip any other un-needed tag within "image" ( = Cover)
                 else -> XmlHelper.skip(parser)
             }
         }

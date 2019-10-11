@@ -72,16 +72,17 @@ class OpmlHelper {
     @Throws(XmlPullParserException::class, IOException::class)
     private fun parseFeed(parser: XmlPullParser): ArrayList<String> {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.OPML_OPML)
+        // loop through all tags within the document
         while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
+            // skip this round early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // readSuspended only relevant tags
+            // read only relevant tags
             when (parser.name) {
-                // found a podcast
-                Keys.OPML_BODY -> readBody(parser)
-                // skip to next tag
+                // found a body tag
+                Keys.OPML_BODY -> readBody(parser, Keys.XML_NAME_SPACE)
+                // skip any other un-needed tag within the document
                 else -> XmlHelper.skip(parser)
             }
         }
@@ -91,64 +92,36 @@ class OpmlHelper {
 
     /* Reads body element - within feed */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readBody(parser: XmlPullParser) {
-        parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.OPML_BODY)
+    private fun readBody(parser: XmlPullParser, nameSpace: String?) {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.OPML_BODY)
+        // loop through tags within the body tag
         while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
+            // skip this round early if no start tag
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            // readSuspended only relevant tags
+            // read only relevant tags
             when (parser.name) {
                 // found an outline
                 Keys.OPML_OUTLINE -> {
-                    LogHelper.e(TAG, "found an outline") // todo remove
-                    val feedUrl: String = readOutline(parser, Keys.XML_NAME_SPACE)
-                    if (feedUrl.isNotEmpty()) {
-                        feedUrlList.add(feedUrl)
-                    } else {
-                        XmlHelper.skip(parser)
-                    }
-                }
-                // skip to next tag
-                else -> {
-                    LogHelper.e(TAG, "skip to next tag") // todo remove
-                    XmlHelper.skip(parser)
-                }
-            }
-        }
-
-    }
-
-
-    /* Reads (parent) outline tag - within body element (within feed) */
-    @Throws(XmlPullParserException::class, IOException::class)
-    private fun readParentOutline(parser: XmlPullParser) {
-        parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.OPML_OUTLINE)
-        while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
-            if (parser.eventType != XmlPullParser.START_TAG) {
-                continue
-            }
-            // readSuspended only relevant tags
-            when (parser.name) {
-                // found child outline element - usually containing a podcast url
-                Keys.OPML_OUTLINE -> {
-                    if (outlineTagIsParent(parser, Keys.XML_NAME_SPACE)) {
-                        // todo
-                        //  skip to next
-                        //  read child outline
-                    } else {
-                        // todo
-                        //  just read child outline
-                        val feedUrl: String = readOutline(parser, Keys.XML_NAME_SPACE)
-                        if (feedUrl.isNotEmpty()) {
-                            feedUrlList.add(feedUrl)
+                    // check outline type
+                    when (parser.getAttributeValue(null, Keys.OPML_OUTLINE_TEXT)) {
+                        // CASE: parent outline tag (with attribute text="feeds")
+                        Keys.OPML_OUTLINE_TEXT_FEEDS -> {
+                            // just skip to next tag
+                            parser.next()
+                        }
+                        // CASE: child outline tag - usually contains a podcast url (tag -> xmlUrl)
+                        else -> {
+                            // grab the podcast URL from outline and add it to feed list
+                            val feedUrl: String = readOutline(parser, nameSpace)
+                            if (feedUrl.isNotEmpty()) { feedUrlList.add(feedUrl) }
                         }
                     }
                 }
-                // skip to next tag
-                else -> { XmlHelper.skip(parser)
+                // skip any other un-needed tag within body
+                else -> {
+                    XmlHelper.skip(parser)
                 }
             }
         }
@@ -158,52 +131,22 @@ class OpmlHelper {
     /* Reads podcast URL from child outline element */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readOutline(parser: XmlPullParser, nameSpace: String?): String {
-        var link = String()
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.OPML_OUTLINE)
-        val tag = parser.name
-        if (tag == Keys.OPML_OUTLINE) {
-            val attributeCount: Int = parser.attributeCount
-            for (i in 0 until attributeCount) {
-                when (parser.getAttributeName(i)) {
-                    Keys.OPML_OUTLINE_TYPE -> {
-                        val type = parser.getAttributeValue(null, Keys.OPML_OUTLINE_TYPE)
-                        when (type) {
-                            Keys.OPML_OUTLINE_TYPE_RSS -> {
-                                link = parser.getAttributeValue(null, Keys.OPML_OUTLINE_XML_URL)
-                                parser.nextTag()
-                            }
-                            else -> {
-                                parser.nextTag()
-                            }
-                        }
-                    }
-                    Keys.OPML_OUTLINE_TEXT -> {
-                        val text = parser.getAttributeValue(null, Keys.OPML_OUTLINE_TEXT)
-                        if (text == Keys.OPML_OUTLINE_TEXT_FEEDS) {
-                            LogHelper.d(TAG, "feeds!") // todo remove
-                        }
-                    }
-                }
+        var link: String = String()
+        val type = parser.getAttributeValue(null, Keys.OPML_OUTLINE_TYPE)
+        when (type) {
+            // CASE: outline tag has rss attribute (type="rss")
+            Keys.OPML_OUTLINE_TYPE_RSS -> {
+                // try to get the value of xmlUrl (=podcast url)
+                link = parser.getAttributeValue(null, Keys.OPML_OUTLINE_XML_URL) ?: String()
+                parser.nextTag()
+            }
+            else -> {
+                parser.nextTag()
             }
         }
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.OPML_OUTLINE)
         return link
-    }
-
-
-    @Throws(IOException::class, XmlPullParserException::class)
-    private fun outlineTagIsParent(parser: XmlPullParser, nameSpace: String?): Boolean {
-        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.OPML_OUTLINE)
-        val attributeCount: Int = parser.attributeCount
-        for (i in 0 until attributeCount) {
-            if (parser.getAttributeName(i) == Keys.OPML_OUTLINE_TEXT) {
-                val text = parser.getAttributeValue(null, Keys.OPML_OUTLINE_TEXT)
-                if (text == Keys.OPML_OUTLINE_TEXT_FEEDS) {
-                    return true
-                }
-            }
-        }
-        return false
     }
 
 
