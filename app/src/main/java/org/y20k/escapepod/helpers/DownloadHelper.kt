@@ -18,9 +18,9 @@ import android.app.DownloadManager
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.preference.PreferenceManager
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
@@ -28,6 +28,7 @@ import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.xml.RssHelper
+
 import java.util.*
 
 
@@ -167,11 +168,12 @@ object DownloadHelper {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
             val scheme: String = uris[i].scheme ?: String()
+            val fileName: String = uris[i].pathSegments.last() ?: String()
             if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
-                        .setTitle(uris[i].lastPathSegment)
-                        .setDestinationInExternalFilesDir(context, folder, uris[i].lastPathSegment)
+                        .setTitle(fileName)
+                        .setDestinationInExternalFilesDir(context, folder, fileName)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                 newIds[i] = downloadManager.enqueue(request)
                 activeDownloads.add(newIds[i])
@@ -283,16 +285,11 @@ object DownloadHelper {
 
     /* Savely remove given startDownload ID from active downloads */
     private fun removeFromActiveDownloads(context: Context, downloadId: Long): Boolean {
-        val iterator: MutableIterator<Long> = activeDownloads.iterator()
-        while (iterator.hasNext()) {
-            val activeDownload = iterator.next()
-            if (activeDownload == downloadId) {
-                iterator.remove()
-                setActiveDownloads(context, activeDownloads)
-                return true
-            }
+        val success: Boolean = activeDownloads.removeAll { it == downloadId }
+        if (success) {
+            setActiveDownloads(context, activeDownloads)
         }
-        return false
+        return success
     }
 
 
