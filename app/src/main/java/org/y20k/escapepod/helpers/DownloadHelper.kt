@@ -190,8 +190,10 @@ object DownloadHelper {
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
         // start to download latest episode audio file
-        val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
-        enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
+        if (podcast.episodes.size > 0) {
+            val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
+            enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
+        }
     }
 
 
