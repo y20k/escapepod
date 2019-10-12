@@ -466,12 +466,15 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            val episode = podcast.episodes[position + 1] // only older episodes - leave out the current one
-            val episodeViewHolder: EpisodeViewHolder = holder as EpisodeViewHolder
-            // set up episode
-            setEpisodeTitle(episodeViewHolder, episode)
-            setEpisodeButtons(episodeViewHolder, episode)
-            setEpisodePlaybackProgress(episodeViewHolder, episode)
+            val episodeNumber = position + 1 // only older episodes - leave out the current one
+            if (podcast.episodes.size > episodeNumber) {
+                val episode = podcast.episodes[episodeNumber]
+                val episodeViewHolder: EpisodeViewHolder = holder as EpisodeViewHolder
+                // set up episode
+                setEpisodeTitle(episodeViewHolder, episode)
+                setEpisodeButtons(episodeViewHolder, episode)
+                setEpisodePlaybackProgress(episodeViewHolder, episode)
+            }
         }
     }
     /*

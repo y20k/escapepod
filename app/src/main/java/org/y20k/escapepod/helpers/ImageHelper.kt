@@ -82,6 +82,7 @@ object ImageHelper {
         var bitmap: Bitmap? = null
         try {
             // first decode with inJustDecodeBounds=true to check dimensions
+
             var stream: InputStream? = context.contentResolver.openInputStream(imageUri)
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
