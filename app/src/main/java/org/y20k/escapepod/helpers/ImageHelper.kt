@@ -24,6 +24,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import org.y20k.escapepod.R
 import java.io.IOException
+import java.io.InputStream
 
 
 /*
@@ -81,11 +82,11 @@ object ImageHelper {
         var bitmap: Bitmap? = null
         try {
             // first decode with inJustDecodeBounds=true to check dimensions
-            var stream = context.contentResolver.openInputStream(imageUri)
+            var stream: InputStream? = context.contentResolver.openInputStream(imageUri)
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
             BitmapFactory.decodeStream(stream, null, options)
-            stream!!.close()
+            stream?.close()
 
             // calculate inSampleSize
             options.inSampleSize = calculateSampleParameter(options, reqWidth, reqHeight)
@@ -94,7 +95,7 @@ object ImageHelper {
             stream = context.contentResolver.openInputStream(imageUri)
             options.inJustDecodeBounds = false
             bitmap = BitmapFactory.decodeStream(stream, null, options)
-            stream!!.close()
+            stream?.close()
 
         } catch (e: IOException) {
             e.printStackTrace()
