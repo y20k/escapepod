@@ -100,13 +100,8 @@
     <string name="descr_card_podcast_cover">Podcast cover image</string>
     <string name="descr_card_small_download_button">Download</string>
     <string name="descr_card_small_playback_button">Play / pause</string>
-    <string name="descr_episode_date">Date the episode was published</string>
-    <string name="descr_episode_shownotes_description_text">Show notes for this episode.</string>  <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
-    <string name="descr_episode_title">Title of episode</string>
     <string name="descr_expanded_episode_length">Time remaining</string>
-    <string name="descr_expanded_player_current_chapter_name">Name of current episode chapter</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Debug log file toggle</string>
-    <string name="descr_expanded_player_episode_title">Title of current episode</string>
     <string name="descr_expanded_player_forward_button">Forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter</string>
     <string name="descr_expanded_player_playback_button">Play / pause</string>
@@ -120,13 +115,8 @@
     <string name="descr_expanded_player_sleep_timer_start_button">Start sleep timer</string>
     <string name="descr_expanded_player_time_played">Time played in current episode</string>
     <string name="descr_expanded_player_up_next_clear_button">Clear \'Up Next\' queue</string>
-    <string name="descr_expanded_player_up_next_episode_name">Name of next episode in the \'Up Next\' queue</string>
-    <string name="descr_player_episode_name">Name of current episode</string>
     <string name="descr_player_playback_button">Play / pause</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
-    <string name="descr_player_podcast_name">Name of current podcast</string>
-    <string name="descr_podcast_feed_address">Address of podcast feed</string>
-    <string name="descr_podcast_name">Name of podcast</string>
 
     <!-- Onboarding -->
     <string name="onboarding_app_description">Podcast App</string>
