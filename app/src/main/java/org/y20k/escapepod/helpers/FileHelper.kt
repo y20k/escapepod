@@ -321,6 +321,25 @@ object FileHelper {
     }
 
 
+    /* Checks if an OPML file is in the collection folder */
+    fun getOpmlFile(context: Context): File {
+        return File(context.getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_OPML_FILE)
+    }
+
+
+    /* Checks the size of the collection folder */
+    fun getCollectionFolderSize(context: Context): Int {
+        val folder: File? = context.getExternalFilesDir(Keys.FOLDER_COLLECTION)
+        val files = folder?.listFiles()
+        if (folder != null && folder.exists() && folder.isDirectory) {
+            return files?.size ?: -1
+        } else {
+            return -1
+        }
+    }
+
+
+
     /* Returns a nomedia file object */
     private fun getNoMediaFile(folder: File): File {
         return File(folder, ".nomedia")

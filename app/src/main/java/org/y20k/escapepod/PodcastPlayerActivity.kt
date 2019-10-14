@@ -22,10 +22,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.ResultReceiver
-import android.os.Vibrator
+import android.os.*
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -37,6 +34,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -55,6 +53,7 @@ import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.LayoutHolder
 import org.y20k.escapepod.ui.PlayerState
 import org.y20k.escapepod.xml.OpmlHelper
+import java.io.File
 import kotlin.coroutines.CoroutineContext
 
 
@@ -78,8 +77,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private lateinit var layout: LayoutHolder
     private lateinit var collectionAdapter: CollectionAdapter
     private var collection: Collection = Collection()
-    private var playerServiceConnected = false
+    private var playerServiceConnected: Boolean = false
+    private var onboarding: Boolean = false
     private var playerState: PlayerState = PlayerState()
+    private var opmlCreatedObserver: FileObserver? = null
     private var tempOpmlUriString: String = String()
     private val handler: Handler = Handler()
 
@@ -106,6 +107,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
         // Create MediaBrowserCompat
         mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallback, null)
+
+        // Create an observer for OPML files in collection folder
+        opmlCreatedObserver = createOpmlCreatedObserver(Keys.FOLDER_COLLECTION)
 
         // find views
         layout = LayoutHolder(this)
@@ -145,6 +149,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         PreferencesHelper.savePlayerState(this, playerState)
         // stop receiving playback progress updates
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
+        // stop watching for new opml files
+        opmlCreatedObserver?.stopWatching()
     }
 
 
@@ -610,8 +616,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             true -> {
                 // permission check
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    // permission is not granted - request it
+                    // save uri for later use in onRequestPermissionsResult
                     tempOpmlUriString = opmlUri.toString()
+                    // permission is not granted - request it
                     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
                 } else {
                     // permission granted - call readOpmlFile again
@@ -619,6 +626,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 }
             }
             false -> {
+                // reset temp url string
+                tempOpmlUriString = String()
                 // read opml
                 launch {
                     // readSuspended OPML on background thread
@@ -691,8 +700,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             collection = it
             // updates current episode in player views
             playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
-            // toggle onboarding
-            layout.toggleOnboarding(this@PodcastPlayerActivity, collection.podcasts.size)
+            // toggle onboarding layout
+            toggleOnboarding()
             // toggle visibility of player
             if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playerState.playbackState)) {
                 // update player view, if player is visible
@@ -705,6 +714,50 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // handle start intent
             handleStartIntent()
        })
+    }
+
+
+    /* toggle onboarding layou on/off and try to offer an OPML import */
+    private fun toggleOnboarding() {
+        // toggle onboading layout
+        onboarding = layout.toggleOnboarding(this@PodcastPlayerActivity, collection.podcasts.size)
+        // start / stop watching for OPML
+        if (onboarding) {
+            // try to offer import
+            tryToOfferOpmlImport()
+            // start watching for files to be created in collection folder
+            opmlCreatedObserver?.startWatching()
+        } else {
+            opmlCreatedObserver?.stopWatching()
+        }
+    }
+
+
+    /* Offers to import podcasts if an OPML file was found in collection folder (probably from a restore via Play Services) */
+    private fun tryToOfferOpmlImport() {
+        val opmlFile: File? = File(getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_OPML_FILE)
+        if (FileHelper.getCollectionFolderSize(this) == 1 && opmlFile!= null && opmlFile.exists() && opmlFile.length() > 0L) {
+            LogHelper.i(TAG, "Found an OPML file in the otherwise empty Collection folder. Size: ${opmlFile.length()} bytes")
+            readOpmlFile(opmlFile.toUri(), permissionCheckNeeded = false)
+        }
+    }
+
+
+    /* Creates an observer for OPML files in collection folder */
+    private fun createOpmlCreatedObserver(folderString: String): FileObserver? {
+        val folder: File? = getExternalFilesDir(folderString)
+        var fileObserver: FileObserver? = null
+        // check if valid folder
+        if (folder != null && folder.isDirectory) {
+            // create the observer
+            fileObserver = object: FileObserver(folder.path, FileObserver.CREATE) {
+                override fun onEvent(event: Int, path: String?) {
+                    // a file file was created in the collection folder
+                    tryToOfferOpmlImport()
+                }
+            }
+        }
+        return fileObserver
     }
 
 

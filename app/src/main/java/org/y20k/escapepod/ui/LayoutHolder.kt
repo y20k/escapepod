@@ -241,12 +241,14 @@ data class LayoutHolder(var activity: Activity) {
     }
 
 
-    fun toggleOnboarding(context: Context, collectionSize: Int) {
+    fun toggleOnboarding(context: Context, collectionSize: Int): Boolean {
         if (collectionSize == 0) {
             onboardingLayout.visibility = View.VISIBLE
             hidePlayer(context)
+            return true
         } else {
             onboardingLayout.visibility = View.GONE
+            return false
         }
     }
 
