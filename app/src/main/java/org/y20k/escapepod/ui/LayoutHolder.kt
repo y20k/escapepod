@@ -136,7 +136,9 @@ data class LayoutHolder(var activity: Activity) {
         sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
         sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
         sheetEpisodeTitleView.text = episode.title
-        sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+        val duration = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+        sheetDurationView.text = duration
+        sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_episode_length)}: ${duration}"
         sheetProgressBarView.max = episode.duration.toInt()
 
         // update click listeners
@@ -168,7 +170,9 @@ data class LayoutHolder(var activity: Activity) {
         sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: ${timePlayed}"
         sheetProgressBarView.progress = position.toInt()
         if (displayTimeRemaining) {
-            sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
+            val timeRemaining = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
+            sheetDurationView.text = timeRemaining
+            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_time_remaining)}: ${timeRemaining}"
         }
     }
 

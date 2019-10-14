@@ -457,7 +457,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 MotionEvent.ACTION_UP -> {
                     // show episode duration when not touching the time played view anymore
                     layout.displayTimeRemaining = false
-                    layout.sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(playerState.episodeDuration)
+                    val duration = DateTimeHelper.convertToMinutesAndSeconds(playerState.episodeDuration)
+                    layout.sheetDurationView.text = duration
+                    layout.sheetDurationView.contentDescription = "${getString(R.string.descr_expanded_episode_length)}: ${duration}"
                 }
                 else -> return@setOnTouchListener false
             }

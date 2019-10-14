@@ -100,7 +100,8 @@
     <string name="descr_card_podcast_cover">Podcast cover image</string>
     <string name="descr_card_small_download_button">Download</string>
     <string name="descr_card_small_playback_button">Play / pause</string>
-    <string name="descr_expanded_episode_length">Time remaining</string>
+    <string name="descr_expanded_episode_length">Episode length</string>
+    <string name="descr_expanded_time_remaining">Time remaining</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Debug log file toggle</string>
     <string name="descr_expanded_player_forward_button">Forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter</string>
