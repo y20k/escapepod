@@ -207,7 +207,7 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Updates sleep timer views */
-    fun updateSleepTimer(timeRemaining: Long = 0L) {
+    fun updateSleepTimer(context: Context, timeRemaining: Long = 0L) {
         when (timeRemaining) {
             0L -> {
                 sleepTimerRunningViews.visibility = View.GONE
@@ -215,7 +215,9 @@ data class LayoutHolder(var activity: Activity) {
             else -> {
                 if (topButtonViews.visibility == View.VISIBLE) {
                     sleepTimerRunningViews.visibility = View.VISIBLE
-                    sheetSleepTimerRemainingTimeView.text = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
+                    val sleepTimerTimeRemaining = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
+                    sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
+                    sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: ${sleepTimerTimeRemaining}"
                 }
             }
         }

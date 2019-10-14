@@ -835,7 +835,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                         layout.updateProgressbar(this@PodcastPlayerActivity, resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
-                        layout.updateSleepTimer(resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
+                        layout.updateSleepTimer(this@PodcastPlayerActivity, resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
                     }
                 }
                 Keys.RESULT_CODE_PLAYBACK_SPEED -> {
