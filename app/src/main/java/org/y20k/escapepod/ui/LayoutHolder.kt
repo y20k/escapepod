@@ -178,9 +178,10 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Updates the playback speed view */
-    fun updatePlaybackSpeedView(speed: Float = 1f) {
+    fun updatePlaybackSpeedView(context: Context, speed: Float = 1f) {
         val playbackSpeedButtonText: String = "$speed x"
         sheetPlaybackSpeedButtonView.text = playbackSpeedButtonText
+        sheetPlaybackSpeedButtonView.contentDescription = "${playbackSpeedButtonText} - ${context.getString(R.string.descr_expanded_player_playback_speed_button)}"
     }
 
 

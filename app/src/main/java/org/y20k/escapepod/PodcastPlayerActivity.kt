@@ -512,7 +512,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
                 layout.updatePlayerViews(this, episode)
                 layout.updateProgressbar(this@PodcastPlayerActivity, episode.playbackPosition, episode.duration)
-                layout.updatePlaybackSpeedView(playerState.playbackSpeed)
+                layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
             }
         }
     }
@@ -841,7 +841,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 Keys.RESULT_CODE_PLAYBACK_SPEED -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_SPEED)) {
                         playerState.playbackSpeed = resultData.getFloat(Keys.RESULT_DATA_PLAYBACK_SPEED, 1f)
-                        layout.updatePlaybackSpeedView(playerState.playbackSpeed)
+                        layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
                     }
                 }
             }
