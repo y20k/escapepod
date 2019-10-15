@@ -336,8 +336,6 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         CollectionHelper.deletePodcastFolders(context, collection.podcasts[position])
         // remove podcast from collection
         collection.podcasts.removeAt(position)
-        // save last update
-        PreferencesHelper.saveLastUpdateCollection(context)
         // export collection as OPML
         CollectionHelper.exportCollection(context, collection)
         // save collection and broadcast changes

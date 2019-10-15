@@ -29,6 +29,7 @@ import org.y20k.escapepod.xml.OpmlHelper
 import java.io.*
 import java.net.URL
 import java.text.NumberFormat
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -161,14 +162,22 @@ object FileHelper {
 
 
     /* Saves podcast collection as JSON text file */
-    fun saveCollection(context: Context, collection: Collection) {
+    fun saveCollection(context: Context, collection: Collection, lastUpdate: Date) {
         LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
-        // save last update
-        PreferencesHelper.saveLastUpdateCollection(context)
         // convert to JSON
         val gson: Gson = getCustomGson()
-        val json: String = gson.toJson(collection)
-        writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+        var json: String = String()
+        try {
+            json = gson.toJson(collection)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        if (json.isNotBlank()) {
+            // save last update
+            PreferencesHelper.saveLastUpdateCollection(context, lastUpdate)
+            // write text file
+            writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+        }
     }
 
 
@@ -177,12 +186,16 @@ object FileHelper {
         LogHelper.v(TAG, "Reading collection - Thread: ${Thread.currentThread().name}")
         // get JSON from text file
         val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+        var collection: Collection = Collection()
         when (json.isNotBlank()) {
             // convert JSON and return as collection
-            true -> return getCustomGson().fromJson(json, Collection::class.java)
-            // return an empty collection
-            false -> return Collection()
+            true -> try {
+                collection = getCustomGson().fromJson(json, Collection::class.java)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
+        return collection
     }
 
 
@@ -204,9 +217,9 @@ object FileHelper {
 
 
     /* Suspend function: Wrapper for saveCollection */
-    suspend fun saveCollectionSuspended(context: Context, collection: Collection) {
+    suspend fun saveCollectionSuspended(context: Context, collection: Collection, lastUpdate: Date) {
         return suspendCoroutine { cont ->
-            cont.resume(saveCollection(context, collection))
+            cont.resume(saveCollection(context, collection, lastUpdate))
         }
     }
 

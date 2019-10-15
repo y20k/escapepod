@@ -120,7 +120,7 @@ object PreferencesHelper {
 
 
     /* Saves last update to shared preferences */
-    fun saveLastUpdateCollection(context: Context, lastUpdate: Date = Calendar.getInstance().time) {
+    fun saveLastUpdateCollection(context: Context, lastUpdate: Date) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
         editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateTimeHelper.convertToRfc2822(lastUpdate))

@@ -295,8 +295,10 @@ object DownloadHelper {
 
     /* Saves podcast collection to storage */
     private fun saveCollection(context: Context, opmlExport: Boolean = false) {
+        // store last update
+        collection.lastUpdate = Calendar.getInstance().time
         // save collection - not async
-        CollectionHelper.saveCollection(context, collection, Calendar.getInstance().time, false)
+        CollectionHelper.saveCollection(context, collection, async = false)
         // export as OPML, if requested
         if (opmlExport) {CollectionHelper.exportCollection(context, collection)}
     }

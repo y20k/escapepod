@@ -17,12 +17,12 @@ package org.y20k.escapepod.helpers
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.preference.PreferenceManager
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.core.Collection
@@ -301,8 +301,6 @@ object CollectionHelper {
         LogHelper.v(TAG, "Saving podcast collection to storage. Async = ${async}. Size = ${collection.podcasts.size}")
         // set last update in collection
         collection.lastUpdate = lastUpdate
-        // save last update to shared preferences
-        PreferencesHelper.saveLastUpdateCollection(context, lastUpdate)
         // save collection to storage
         when (async) {
             true -> {
@@ -310,7 +308,7 @@ object CollectionHelper {
                 val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
                 uiScope.launch {
                     // save collection on background thread
-                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection) }
+                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection, lastUpdate) }
                     // wait for result
                     deferred.await()
                     // broadcast collection update
@@ -320,7 +318,7 @@ object CollectionHelper {
             }
             false -> {
                 // save collection
-                FileHelper.saveCollection(context, collection)
+                FileHelper.saveCollection(context, collection, lastUpdate)
                 // broadcast collection update
                 sendCollectionBroadcast(context, lastUpdate)
             }
