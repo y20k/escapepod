@@ -25,10 +25,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.core.Collection
-import org.y20k.escapepod.helpers.DateTimeHelper
 import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.helpers.LogHelper
-import java.util.*
 
 
 /*
@@ -42,7 +40,6 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Main class variables */
     val collectionLiveData: MutableLiveData<Collection> = MutableLiveData<Collection>()
-    private var lastUpdateViewModel: Date = Calendar.getInstance().time
     private var collectionChangedReceiver: BroadcastReceiver
     private val backgroundJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
@@ -70,13 +67,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION)) {
-                    val lastUpdate: Date = DateTimeHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
-                    // check if reload is necessary
-                    if (lastUpdate.after(lastUpdateViewModel)) {
-                        loadCollection(context)
-                    }
-                }
+                LogHelper.v(TAG, "CollectionViewModel - reload collection after broadcast received.")
+                loadCollection(context)
             }
         }
     }
@@ -90,8 +82,6 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             val deferred: Deferred<Collection> = async(Dispatchers.Default) { FileHelper.readCollectionSuspended(getApplication()) }
             // wait for result
             val collection: Collection = deferred.await()
-            // get last update
-            lastUpdateViewModel = collection.lastUpdate
             // update collection view model
             collectionLiveData.value = collection
         }

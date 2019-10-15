@@ -30,7 +30,7 @@ object Keys {
 
     // time values
     const val UPDATE_REPEAT_INTERVAL: Long = 4L             // every 4 hours
-    const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 60000L   // 1 minute in milliseconds
+    const val MINIMUM_TIME_BETWEEN_UPDATES: Long = 180000L  // 3 minutes in milliseconds
     const val SKIP_BACK_TIME_SPAN: Long = 10000L            // 10 seconds in milliseconds
     const val SKIP_FORWARD_TIME_SPAN: Long = 30000L         // 30 seconds in milliseconds
     const val SLEEP_TIMER_DURATION: Long = 900000L          // 15 minutes in  milliseconds
@@ -47,9 +47,6 @@ object Keys {
     const val ACTION_SHOW_PLAYER = "org.y20k.escapepod.action.HOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepod.action.COLLECTION_CHANGED"
 
-    // intent extras
-    const val EXTRA_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
-
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
 
@@ -63,6 +60,7 @@ object Keys {
 
     // preferences
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
+    const val PREF_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
     const val PREF_CURRENT_MEDIA_ID: String = "CURRENT_MEDIA_ID"
     const val PREF_CURRENT_PLAYBACK_STATE: String = "CURRENT_PLAYBACK_STATE"
     const val PREF_UP_NEXT_MEDIA_ID: String = "UP_NEXT_MEDIA_ID"

@@ -45,6 +45,7 @@ object DownloadHelper {
     private lateinit var collection: Collection
     private lateinit var downloadManager: DownloadManager
     private lateinit var activeDownloads: ArrayList<Long>
+    private lateinit var modificationDate: Date
 
 
     /* Download a podcast */
@@ -105,6 +106,7 @@ object DownloadHelper {
         initialize(context)
         // re-download all podcast xml episode lists
         if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
+            PreferencesHelper.saveLastUpdateCollection(context)
             val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
                 collection.podcasts[it].remotePodcastFeedLocation.toUri()
             }
@@ -145,8 +147,12 @@ object DownloadHelper {
 
     /* Initializes main class variables of DownloadHelper, if necessary */
     private fun initialize(context: Context) {
-        if (!this::collection.isInitialized || CollectionHelper.isNewerCollectionAvailable(context, collection.lastUpdate)) {
+        if (!this::modificationDate.isInitialized) {
+            modificationDate = PreferencesHelper.loadCollectionModificationDate(context)
+        }
+        if (!this::collection.isInitialized || CollectionHelper.isNewerCollectionAvailable(context, modificationDate)) {
             collection = FileHelper.readCollection(context) // todo make async
+            modificationDate = PreferencesHelper.loadCollectionModificationDate(context)
         }
         if (!this::downloadManager.isInitialized) {
             downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -295,10 +301,8 @@ object DownloadHelper {
 
     /* Saves podcast collection to storage */
     private fun saveCollection(context: Context, opmlExport: Boolean = false) {
-        // store last update
-        collection.lastUpdate = Calendar.getInstance().time
-        // save collection - not async
-        CollectionHelper.saveCollection(context, collection, async = false)
+        // save collection (not async) - and store modification date
+        modificationDate = CollectionHelper.saveCollection(context, collection, async = false)
         // export as OPML, if requested
         if (opmlExport) {CollectionHelper.exportCollection(context, collection)}
     }

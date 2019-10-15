@@ -114,16 +114,33 @@ object PreferencesHelper {
     /* Loads last update from shared preferences */
     fun loadLastUpdateCollection(context: Context): Date {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val lastUpdateString: String = settings.getString(Keys.PREF_LAST_UPDATE_COLLECTION, "") ?: String()
-        return DateTimeHelper.convertFromRfc2822(lastUpdateString)
+        val lastSaveString: String = settings.getString(Keys.PREF_LAST_UPDATE_COLLECTION, "") ?: String()
+        return DateTimeHelper.convertFromRfc2822(lastSaveString)
     }
 
 
     /* Saves last update to shared preferences */
-    fun saveLastUpdateCollection(context: Context, lastUpdate: Date) {
+    fun saveLastUpdateCollection(context: Context, lastUpdate: Date = Calendar.getInstance().time) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
         editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateTimeHelper.convertToRfc2822(lastUpdate))
+        editor.apply()
+    }
+
+
+    /* Loads date of last save operation from shared preferences */
+    fun loadCollectionModificationDate(context: Context): Date {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val modificationDateString: String = settings.getString(Keys.PREF_COLLECTION_MODIFICATION_DATE, "") ?: String()
+        return DateTimeHelper.convertFromRfc2822(modificationDateString)
+    }
+
+
+    /* Saves date of last save operation to shared preferences */
+    fun saveCollectionModificationDate(context: Context, lastSave: Date = Calendar.getInstance().time) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putString(Keys.PREF_COLLECTION_MODIFICATION_DATE, DateTimeHelper.convertToRfc2822(lastSave))
         editor.apply()
     }
 

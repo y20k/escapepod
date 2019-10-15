@@ -162,7 +162,7 @@ object FileHelper {
 
 
     /* Saves podcast collection as JSON text file */
-    fun saveCollection(context: Context, collection: Collection, lastUpdate: Date) {
+    fun saveCollection(context: Context, collection: Collection, lastSave: Date) {
         LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
         // convert to JSON
         val gson: Gson = getCustomGson()
@@ -173,8 +173,8 @@ object FileHelper {
             e.printStackTrace()
         }
         if (json.isNotBlank()) {
-            // save last update
-            PreferencesHelper.saveLastUpdateCollection(context, lastUpdate)
+            // save modification date
+            PreferencesHelper.saveCollectionModificationDate(context, lastSave)
             // write text file
             writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
         }

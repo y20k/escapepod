@@ -476,14 +476,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.hasExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION)) {
-                    val lastUpdate: Date = DateTimeHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION))
-                    // check if reload is necessary
-                    if (lastUpdate.after(collection.lastUpdate)) {
-                        LogHelper.i(TAG, "PlayerService - reload collection after broadcast received.") // todo remove
-                        loadCollection(context)
-                    }
-                }
+                LogHelper.v(TAG, "PlayerService - reload collection after broadcast received.")
+                loadCollection(context)
             }
         }
     }

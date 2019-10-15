@@ -67,19 +67,17 @@ object CollectionHelper {
 
     /* Checks if enough time passed since last update */
     fun hasEnoughTimePassedSinceLastUpdate(context: Context): Boolean {
-        val lastSavedUpdate: Date = PreferencesHelper.loadLastUpdateCollection(context)
+        val lastUpdate: Date = PreferencesHelper.loadLastUpdateCollection(context)
         val currentDate: Date = Calendar.getInstance().time
-//        return currentDate.time - lastUpdate  > Keys.FIVE_MINUTES_IN_MILLISECONDS // todo uncomment for production
-        return currentDate.time - lastSavedUpdate.time  > Keys.MINIMUM_TIME_BETWEEN_UPDATES
+        return currentDate.time - lastUpdate.time  > Keys.MINIMUM_TIME_BETWEEN_UPDATES
     }
 
 
     /* Checks if a newer collection is available on storage */
-    fun isNewerCollectionAvailable(context: Context, lastUpdate: Date): Boolean {
+    fun isNewerCollectionAvailable(context: Context, date: Date): Boolean {
         var newerCollectionAvailable = false
-        val lastSavedUpdateString: String = PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_LAST_UPDATE_COLLECTION, Keys.DEFAULT_RFC2822_DATE)!!
-        val lastSavedUpdate: Date = DateTimeHelper.convertFromRfc2822(lastSavedUpdateString)
-        if (lastSavedUpdate.after(lastUpdate) || lastSavedUpdateString == Keys.DEFAULT_RFC2822_DATE) {
+        val modificationDate: Date = PreferencesHelper.loadCollectionModificationDate(context)
+        if (modificationDate.after(date) || date == Keys.DEFAULT_DATE) {
             newerCollectionAvailable = true
         }
         return newerCollectionAvailable
@@ -297,10 +295,10 @@ object CollectionHelper {
 
 
     /* Saves podcast collection */
-    fun saveCollection (context: Context, collection: Collection, lastUpdate: Date = Calendar.getInstance().time, async: Boolean = true) {
+    fun saveCollection (context: Context, collection: Collection, async: Boolean = true): Date {
         LogHelper.v(TAG, "Saving podcast collection to storage. Async = ${async}. Size = ${collection.podcasts.size}")
-        // set last update in collection
-        collection.lastUpdate = lastUpdate
+        // get modification date
+        val lastSaveDate: Date = Calendar.getInstance().time
         // save collection to storage
         when (async) {
             true -> {
@@ -308,21 +306,23 @@ object CollectionHelper {
                 val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
                 uiScope.launch {
                     // save collection on background thread
-                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection, lastUpdate) }
+                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection, lastSaveDate) }
                     // wait for result
                     deferred.await()
                     // broadcast collection update
-                    sendCollectionBroadcast(context, lastUpdate)
+                    sendCollectionBroadcast(context)
                     backgroundJob.cancel()
                 }
             }
             false -> {
                 // save collection
-                FileHelper.saveCollection(context, collection, lastUpdate)
+                FileHelper.saveCollection(context, collection, lastSaveDate)
                 // broadcast collection update
-                sendCollectionBroadcast(context, lastUpdate)
+                sendCollectionBroadcast(context)
             }
         }
+        // return modification date
+        return lastSaveDate
     }
 
 
@@ -335,12 +335,10 @@ object CollectionHelper {
 
 
     /* Sends a broadcast containing the collection as parcel */
-    private fun sendCollectionBroadcast(context: Context, lastUpdate: Date) {
+    private fun sendCollectionBroadcast(context: Context) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
-        val lastUpdateString: String = DateTimeHelper.convertToRfc2822(lastUpdate)
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
-        collectionChangedIntent.putExtra(Keys.EXTRA_LAST_UPDATE_COLLECTION, lastUpdateString)
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
     }
 
@@ -377,7 +375,6 @@ object CollectionHelper {
         mediaDescriptionBuilder.setIconUri(Uri.parse(podcast.cover))
         return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
     }
-
 
 
     /* Deletes unneeded episodes in collection */
