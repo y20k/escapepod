@@ -79,6 +79,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
+    private lateinit var modificationDate: Date
     private lateinit var collectionChangedReceiver: BroadcastReceiver
     private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var sleepTimer: CountDownTimer
@@ -98,6 +99,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
+
+        // load modification date of collection
+        modificationDate = PreferencesHelper.loadCollectionModificationDate(this)
 
         // get the package validator // todo can be local?
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
@@ -476,8 +480,13 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private fun createCollectionChangedReceiver(): BroadcastReceiver {
         return object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                LogHelper.v(TAG, "PlayerService - reload collection after broadcast received.")
-                loadCollection(context)
+                if (intent.hasExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE)) {
+                    val date: Date = DateTimeHelper.convertFromRfc2822(intent.getStringExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE) ?: String())
+                    if (date.after(collection.modificationDate)) {
+                        LogHelper.v(TAG, "PlayerService - reload collection after broadcast received.")
+                        loadCollection(context)
+                    }
+                }
             }
         }
     }

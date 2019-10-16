@@ -41,11 +41,14 @@ object Keys {
 
     // notification
     const val NOTIFICATION_NOW_PLAYING_ID: Int = 42
-    const val NOTIFICATION_NOW_PLAYING_CHANNEL = "notificationChannelIdPlaybackChannel"
+    const val NOTIFICATION_NOW_PLAYING_CHANNEL: String = "notificationChannelIdPlaybackChannel"
 
     // intent actions
-    const val ACTION_SHOW_PLAYER = "org.y20k.escapepod.action.HOW_PLAYER"
+    const val ACTION_SHOW_PLAYER: String = "org.y20k.escapepod.action.HOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepod.action.COLLECTION_CHANGED"
+
+    // intent extras
+    const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"

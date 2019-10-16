@@ -286,8 +286,8 @@ object CollectionHelper {
                 }
             }
         }
-        // save collection
-        saveCollection(context, collection)
+        // save collection and store modification date
+        collection.modificationDate = saveCollection(context, collection)
         // save playback state of PlayerService
         PreferencesHelper.savePlayerPlaybackState(context, playbackState)
         return collection
@@ -299,6 +299,7 @@ object CollectionHelper {
         LogHelper.v(TAG, "Saving podcast collection to storage. Async = ${async}. Size = ${collection.podcasts.size}")
         // get modification date
         val lastSaveDate: Date = Calendar.getInstance().time
+        collection. modificationDate = lastSaveDate
         // save collection to storage
         when (async) {
             true -> {

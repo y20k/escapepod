@@ -19,6 +19,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepod.Keys
+import java.util.*
 
 
 /*
@@ -27,7 +28,8 @@ import org.y20k.escapepod.Keys
 @Keep
 @Parcelize
 data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
-                      @Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>()) : Parcelable {
+                      @Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
+                      @Expose var modificationDate: Date = Date()) : Parcelable {
 
     /* overrides toString method */
     override fun toString(): String {
