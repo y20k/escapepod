@@ -20,7 +20,7 @@
     <string name="dialog_error_title_no_network">Offline</string>
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_episode_shownotes_close">Schließen</string>
-    <string name="dialog_episode_shownotes_title">Notizen anzeigen</string>
+    <string name="dialog_episode_shownotes_title">Sendungsnotizen</string>
     <string name="dialog_opml_import_button_okay">Import</string>
     <string name="dialog_opml_import_details_button">Details anzeigen</string>
     <string name="dialog_opml_import_details_default">Keine Details verfügbar</string>
@@ -113,5 +113,5 @@
     <string name="descr_podcast_name">Name des Podcasts</string>
     <string name="onboarding_app_description">Podcast-App</string>
     <string name="onboarding_app_get_started">Jetzt starten</string>
-    <string name="descr_episode_shownotes_description_text">Notizen zu dieser Episode anzeigen.</string>
+    <string name="descr_episode_shownotes_description_text">Sendungsnotizen zu dieser Episode anzeigen.</string>
 </resources>
