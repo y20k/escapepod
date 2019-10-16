@@ -603,6 +603,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             if (urls.isNotEmpty()) {
                 Toast.makeText(this@PodcastPlayerActivity, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
                 DownloadHelper.downloadPodcasts(this, CollectionHelper.removeDuplicates(collection, feedUrls))
+                PreferencesHelper.saveLastUpdateCollection(this)
             }
         } else {
             ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
