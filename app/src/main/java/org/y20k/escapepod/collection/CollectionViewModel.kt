@@ -42,7 +42,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Main class variables */
     val collectionLiveData: MutableLiveData<Collection> = MutableLiveData<Collection>()
-    private var modificationDateViewModel: Date = Calendar.getInstance().time
+    private var modificationDateViewModel: Date = Date()
     private var collectionChangedReceiver: BroadcastReceiver
     private val backgroundJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)

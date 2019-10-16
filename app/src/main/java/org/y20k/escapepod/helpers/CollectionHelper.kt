@@ -298,8 +298,8 @@ object CollectionHelper {
     fun saveCollection (context: Context, collection: Collection, async: Boolean = true): Date {
         LogHelper.v(TAG, "Saving podcast collection to storage. Async = ${async}. Size = ${collection.podcasts.size}")
         // get modification date
-        val lastSaveDate: Date = Calendar.getInstance().time
-        collection. modificationDate = lastSaveDate
+        val date: Date = Calendar.getInstance().time
+        collection.modificationDate = date
         // save collection to storage
         when (async) {
             true -> {
@@ -307,23 +307,23 @@ object CollectionHelper {
                 val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
                 uiScope.launch {
                     // save collection on background thread
-                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection, lastSaveDate) }
+                    val deferred = async(Dispatchers.Default) { FileHelper.saveCollectionSuspended(context, collection, date) }
                     // wait for result
                     deferred.await()
                     // broadcast collection update
-                    sendCollectionBroadcast(context)
+                    sendCollectionBroadcast(context, date)
                     backgroundJob.cancel()
                 }
             }
             false -> {
                 // save collection
-                FileHelper.saveCollection(context, collection, lastSaveDate)
+                FileHelper.saveCollection(context, collection, date)
                 // broadcast collection update
-                sendCollectionBroadcast(context)
+                sendCollectionBroadcast(context, date)
             }
         }
         // return modification date
-        return lastSaveDate
+        return date
     }
 
 
@@ -336,10 +336,12 @@ object CollectionHelper {
 
 
     /* Sends a broadcast containing the collection as parcel */
-    private fun sendCollectionBroadcast(context: Context) {
+    private fun sendCollectionBroadcast(context: Context, modificationDate: Date) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
+        val modificationDateString: String = DateTimeHelper.convertToRfc2822(modificationDate)
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
+        collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, modificationDateString)
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
     }
 
