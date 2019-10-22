@@ -164,7 +164,7 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Updates the progress bar */
-    fun updateProgressbar(context :Context, position: Long, duration: Long = 0L) {
+    fun updateProgressbar(context: Context, position: Long, duration: Long = 0L) {
         val timePlayed = DateTimeHelper.convertToMinutesAndSeconds(position)
         sheetTimePlayedView.text = timePlayed
         sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: ${timePlayed}"
@@ -172,7 +172,7 @@ data class LayoutHolder(var activity: Activity) {
         if (displayTimeRemaining) {
             val timeRemaining = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
             sheetDurationView.text = timeRemaining
-            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_time_remaining)}: ${timeRemaining}"
+            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: ${timeRemaining}"
         }
     }
 

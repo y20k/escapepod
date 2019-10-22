@@ -101,7 +101,6 @@
     <string name="descr_card_small_download_button">Download</string>
     <string name="descr_card_small_playback_button">Play / pause</string>
     <string name="descr_expanded_episode_length">Episode length</string>
-    <string name="descr_expanded_time_remaining">Time remaining</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Debug log file toggle</string>
     <string name="descr_expanded_player_forward_button">Forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter</string>
@@ -114,7 +113,8 @@
     <string name="descr_expanded_player_sleep_timer_cancel_button">Cancel sleep timer</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">Time remaining on sleep timer</string>
     <string name="descr_expanded_player_sleep_timer_start_button">Start sleep timer</string>
-    <string name="descr_expanded_player_time_played">Time played in current episode</string>
+    <string name="descr_expanded_player_time_played">Time played</string>
+    <string name="descr_expanded_player_time_remaining">Time remaining</string>
     <string name="descr_expanded_player_up_next_clear_button">Clear \'Up Next\' queue</string>
     <string name="descr_player_playback_button">Play / pause</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>

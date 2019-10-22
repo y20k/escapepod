@@ -66,13 +66,13 @@ object DownloadHelper {
         // get episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
         // prevent double download
-        activeDownloads.forEach { downloadId ->
-            if (getRemoteFileLocation(downloadManager, downloadId) == episode.remoteAudioFileLocation) {
-                // remove ID from active downloads - and enqueue a new download request later
-                downloadManager.remove(downloadId)
-                removeFromActiveDownloads(context, downloadId)
+        val duplicateDownloadIds: Array<Long> = emptyArray()
+        activeDownloads.forEach { id ->
+            if (getRemoteFileLocation(downloadManager, id) == episode.remoteAudioFileLocation) {
+                duplicateDownloadIds.plus(id)
             }
         }
+        removeFromActiveDownloads(context, duplicateDownloadIds)
         // mark as manually downloaded if necessary
         if (manuallyDownloaded) {
             collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
@@ -140,7 +140,7 @@ object DownloadHelper {
             if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
             if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, localFileUri, remoteFileLocation)
             // remove ID from active downloads
-            removeFromActiveDownloads(context, downloadId)
+            removeFromActiveDownloads(context, arrayOf(downloadId))
         }
     }
 
@@ -289,9 +289,10 @@ object DownloadHelper {
     }
 
 
-    /* Savely remove given startDownload ID from active downloads */
-    private fun removeFromActiveDownloads(context: Context, downloadId: Long): Boolean {
-        val success: Boolean = activeDownloads.removeAll { it == downloadId }
+    /* Savely remove given download IDs from downloadManager and activeDownloads */
+    private fun removeFromActiveDownloads(context: Context, downloadIds: Array<Long>): Boolean {
+        downloadIds.forEach { downloadId -> downloadManager.remove(downloadId) }
+        val success: Boolean = activeDownloads.removeAll { downloadId -> downloadIds.contains(downloadId) }
         if (success) {
             setActiveDownloads(context, activeDownloads)
         }
