@@ -136,7 +136,9 @@ data class LayoutHolder(var activity: Activity) {
         sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
         sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
         sheetEpisodeTitleView.text = episode.title
-        sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+        val duration = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+        sheetDurationView.text = duration
+        sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_episode_length)}: ${duration}"
         sheetProgressBarView.max = episode.duration.toInt()
 
         // update click listeners
@@ -162,19 +164,24 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Updates the progress bar */
-    fun updateProgressbar(position: Long, duration: Long = 0L) {
-        sheetTimePlayedView.text = DateTimeHelper.convertToMinutesAndSeconds(position)
+    fun updateProgressbar(context :Context, position: Long, duration: Long = 0L) {
+        val timePlayed = DateTimeHelper.convertToMinutesAndSeconds(position)
+        sheetTimePlayedView.text = timePlayed
+        sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: ${timePlayed}"
         sheetProgressBarView.progress = position.toInt()
         if (displayTimeRemaining) {
-            sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
+            val timeRemaining = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
+            sheetDurationView.text = timeRemaining
+            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_time_remaining)}: ${timeRemaining}"
         }
     }
 
 
     /* Updates the playback speed view */
-    fun updatePlaybackSpeedView(speed: Float = 1f) {
+    fun updatePlaybackSpeedView(context: Context, speed: Float = 1f) {
         val playbackSpeedButtonText: String = "$speed x"
         sheetPlaybackSpeedButtonView.text = playbackSpeedButtonText
+        sheetPlaybackSpeedButtonView.contentDescription = "${playbackSpeedButtonText} - ${context.getString(R.string.descr_expanded_player_playback_speed_button)}"
     }
 
 
@@ -200,7 +207,7 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /* Updates sleep timer views */
-    fun updateSleepTimer(timeRemaining: Long = 0L) {
+    fun updateSleepTimer(context: Context, timeRemaining: Long = 0L) {
         when (timeRemaining) {
             0L -> {
                 sleepTimerRunningViews.visibility = View.GONE
@@ -208,7 +215,9 @@ data class LayoutHolder(var activity: Activity) {
             else -> {
                 if (topButtonViews.visibility == View.VISIBLE) {
                     sleepTimerRunningViews.visibility = View.VISIBLE
-                    sheetSleepTimerRemainingTimeView.text = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
+                    val sleepTimerTimeRemaining = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
+                    sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
+                    sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: ${sleepTimerTimeRemaining}"
                 }
             }
         }

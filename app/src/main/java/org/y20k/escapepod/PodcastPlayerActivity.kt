@@ -463,7 +463,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 MotionEvent.ACTION_UP -> {
                     // show episode duration when not touching the time played view anymore
                     layout.displayTimeRemaining = false
-                    layout.sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(playerState.episodeDuration)
+                    val duration = DateTimeHelper.convertToMinutesAndSeconds(playerState.episodeDuration)
+                    layout.sheetDurationView.text = duration
+                    layout.sheetDurationView.contentDescription = "${getString(R.string.descr_expanded_episode_length)}: ${duration}"
                 }
                 else -> return@setOnTouchListener false
             }
@@ -515,8 +517,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             if (playerState.episodeMediaId.isNotEmpty()) {
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
                 layout.updatePlayerViews(this, episode)
-                layout.updateProgressbar(episode.playbackPosition, episode.duration)
-                layout.updatePlaybackSpeedView(playerState.playbackSpeed)
+                layout.updateProgressbar(this@PodcastPlayerActivity, episode.playbackPosition, episode.duration)
+                layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
             }
         }
     }
@@ -884,16 +886,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             when (resultCode) {
                 Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_PROGRESS)) {
-                        layout.updateProgressbar(resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
+                        layout.updateProgressbar(this@PodcastPlayerActivity, resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
-                        layout.updateSleepTimer(resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
+                        layout.updateSleepTimer(this@PodcastPlayerActivity, resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
                     }
                 }
                 Keys.RESULT_CODE_PLAYBACK_SPEED -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_SPEED)) {
                         playerState.playbackSpeed = resultData.getFloat(Keys.RESULT_DATA_PLAYBACK_SPEED, 1f)
-                        layout.updatePlaybackSpeedView(playerState.playbackSpeed)
+                        layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
                     }
                 }
             }

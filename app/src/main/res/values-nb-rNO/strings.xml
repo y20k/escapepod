@@ -42,13 +42,8 @@
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Spill av</string>
     <string name="notification_playing">Spiller</string>
-    <string name="descr_episode_date">Publisert</string>
-    <string name="descr_episode_title">Episodetittel</string>
-    <string name="descr_player_episode_name">Navn på gjeldende episode</string>
     <string name="descr_player_playback_button">Hovedknapp for start og pausing av avspilling</string>
     <string name="descr_player_podcast_cover">Lite omslagsbilde for nettradioopptak</string>
-    <string name="descr_player_podcast_name">Navn på gjeldende nettradioopptak</string>
-    <string name="descr_podcast_name">Navn på nettradioopptak</string>
     <string name="onboarding_app_description">Nettradioopptakslytting</string>
     <string name="dialog_add_podcast_howto">Skriv inn en informasjonsanalsadresse for nettradioopptak. Se etter et RSS-symbol på hjemmesiden til det respektive nettradioopptaket.</string>
     <string name="dialog_opml_import_message_error">Kunne ikke importere OPML-fil. Fant ingen nettradioopptak.</string>
