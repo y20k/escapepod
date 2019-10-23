@@ -30,6 +30,9 @@ import java.util.*
  */
 object PreferencesHelper {
 
+    /* Define log tag */
+    private val TAG: String = LogHelper.makeLogTag(PreferencesHelper::class.java)
+
 
     /* Loads mediaId of current episode from shared preferences */
     fun loadCurrentMediaId(context: Context): String {
@@ -148,7 +151,8 @@ object PreferencesHelper {
     /* Loads active downloads from shared preferences */
     fun loadActiveDownloads(context: Context): String {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val activeDownloadsString: String = settings.getString(Keys.PREF_ACTIVE_DOWNLOADS, "") ?: String()
+        val activeDownloadsString: String = settings.getString(Keys.PREF_ACTIVE_DOWNLOADS, Keys.ACTIVE_DOWNLOADS_EMPTY) ?: Keys.ACTIVE_DOWNLOADS_EMPTY
+        LogHelper.v(TAG, "actives downloads: $activeDownloadsString")
         return activeDownloadsString
     }
 

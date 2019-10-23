@@ -23,6 +23,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +38,6 @@ import org.y20k.escapepod.R
 import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.dialogs.ShowNotesDialog
 import org.y20k.escapepod.helpers.DateTimeHelper
-import org.y20k.escapepod.helpers.ImageHelper
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.UiHelper
 
@@ -59,6 +59,7 @@ data class LayoutHolder(var activity: Activity) {
     private var upNextViews: Group
     private var topButtonViews: Group
     var sleepTimerRunningViews: Group
+    var downloadProgressIndicator: ProgressBar
     private var coverView: ImageView
     private var podcastNameView: TextView
     private var episodeTitleView: TextView
@@ -94,6 +95,7 @@ data class LayoutHolder(var activity: Activity) {
         upNextViews = activity.findViewById(R.id.up_next_views)
         topButtonViews = activity.findViewById(R.id.top_button_views)
         sleepTimerRunningViews = activity.findViewById(R.id.sleep_timer_running_views)
+        downloadProgressIndicator = activity.findViewById(R.id.download_progress_indicator)
         coverView = activity.findViewById(R.id.player_podcast_cover)
         podcastNameView = activity.findViewById(R.id.player_podcast_name)
         episodeTitleView = activity.findViewById(R.id.player_episode_title)
@@ -126,8 +128,10 @@ data class LayoutHolder(var activity: Activity) {
 
     /* Updates the player views */
     fun updatePlayerViews(context: Context, episode: Episode) {
-        val coverUri = Uri.parse(episode.cover)
-        coverView.setImageBitmap(ImageHelper.getPodcastCover(context,coverUri, Keys.SIZE_COVER_PLAYER_SMALL))
+        val coverUri: Uri = Uri.parse(episode.cover)
+        val duration: String = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+        // coverView.setImageBitmap(ImageHelper.getPodcastCover(context, coverUri, Keys.SIZE_COVER_PLAYER_SMALL))
+        coverView.setImageURI(coverUri)
         coverView.clipToOutline = true // apply rounded corner mask to covers
         coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
         podcastNameView.text = episode.podcastName
@@ -136,9 +140,8 @@ data class LayoutHolder(var activity: Activity) {
         sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
         sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
         sheetEpisodeTitleView.text = episode.title
-        val duration = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
         sheetDurationView.text = duration
-        sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_episode_length)}: ${duration}"
+        sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_episode_length)}: $duration"
         sheetProgressBarView.max = episode.duration.toInt()
 
         // update click listeners

@@ -28,7 +28,6 @@ import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.xml.RssHelper
-
 import java.util.*
 
 
@@ -65,17 +64,9 @@ object DownloadHelper {
         initialize(context)
         // get episode
         val episode: Episode = CollectionHelper.getEpisode(collection, mediaId)
-        // prevent double download
-        val duplicateDownloadIds: Array<Long> = emptyArray()
-        activeDownloads.forEach { id ->
-            if (getRemoteFileLocation(downloadManager, id) == episode.remoteAudioFileLocation) {
-                duplicateDownloadIds.plus(id)
-            }
-        }
-        removeFromActiveDownloads(context, duplicateDownloadIds)
         // mark as manually downloaded if necessary
         if (manuallyDownloaded) {
-            collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, true)
+            collection = CollectionHelper.setManuallyDownloaded(collection, mediaId, manuallyDownloaded = true)
             saveCollection(context)
         }
         // enqueue episode
@@ -121,20 +112,20 @@ object DownloadHelper {
     fun processDownload(context: Context, downloadId: Long) {
         // initialize main class variables, if necessary
         initialize(context)
-        // get local Uri in content://downloads/all_downloads/ for startDownload ID
+        // get local Uri in content://downloads/all_downloads/ for download ID
         val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadId)
         if (downloadResult == null) {
             LogHelper.w(TAG, "Download not successful. Error code = ${getDownloadError(downloadId)}")
             return
         } else {
             val localFileUri: Uri = downloadResult
-            // get remote URL for startDownload ID
+            // get remote URL for download ID
             val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadId)
             // determine what to
             val fileType = FileHelper.getFileType(context, localFileUri)
-            // Log completed startDownload // todo remove
-            LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
-            LogHelper.save(context, TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri), true)} | $fileType") // todo remove
+            // Log completed download // todo remove
+            LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri))} | $fileType") // todo remove
+            LogHelper.save(context, TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri))} | $fileType") // todo remove
             if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
             if (fileType in Keys.MIME_TYPES_ATOM) LogHelper.w(TAG, "ATOM Feeds are not yet supported")
             if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
@@ -155,6 +146,7 @@ object DownloadHelper {
             modificationDate = PreferencesHelper.loadCollectionModificationDate(context)
         }
         if (!this::downloadManager.isInitialized) {
+            FileHelper.clearFolder(context.getExternalFilesDir(Keys.FOLDER_TEMP), 0)
             downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         }
         if (!this::activeDownloads.isInitialized) {
@@ -165,21 +157,21 @@ object DownloadHelper {
 
     /* Enqueues an Array of files in DownloadManager */
     private fun enqueueDownload(context: Context, uris: Array<Uri>, type: Int, podcastName: String = String(), ignoreWifiRestriction: Boolean = false) {
-        // determine destination folder and allowed network types
-        val folder: String = FileHelper.determineDestinationFolderPath(type, podcastName)
+        // determine allowed network types
         val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
-        // enqueues downloads
+        // enqueue downloads
         val newIds = LongArray(uris.size)
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
+            // check if valid url and prevent double download
             val scheme: String = uris[i].scheme ?: String()
-            val fileName: String = uris[i].pathSegments.last() ?: String()
             if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {
+                val fileName: String = uris[i].pathSegments.last() ?: String()
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(fileName)
-                        .setDestinationInExternalFilesDir(context, folder, fileName)
+                        .setDestinationInExternalFilesDir(context, Keys.FOLDER_TEMP, fileName)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                 newIds[i] = downloadManager.enqueue(request)
                 activeDownloads.add(newIds[i])
@@ -210,24 +202,24 @@ object DownloadHelper {
         when (CollectionHelper.checkPodcastState(collection, podcast)) {
             Keys.PODCAST_STATE_NEW_PODCAST -> {
                 collection = CollectionHelper.addPodcast(collection, podcast)
-                saveCollection(context, true)
-                enqueuePodcastMediaFiles(context, podcast, true)
+                saveCollection(context, opmlExport = true)
+                enqueuePodcastMediaFiles(context, podcast, isNew = true)
             }
             Keys.PODCAST_STATE_HAS_NEW_EPISODES -> {
                 collection = CollectionHelper.updatePodcast(collection, podcast)
-                saveCollection(context, false)
-                enqueuePodcastMediaFiles(context, podcast, false)
+                saveCollection(context, opmlExport = false)
+                enqueuePodcastMediaFiles(context, podcast, isNew = false)
             }
         }
     }
 
 
     /* Sets podcast cover */
-    private fun setPodcastImage(context: Context, localFileUri: Uri, remoteFileLocation: String) {
+    private fun setPodcastImage(context: Context, tempFileUri: Uri, remoteFileLocation: String) {
         collection.podcasts.forEach { podcast ->
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
-                podcast.cover = localFileUri.toString()
-                podcast.smallCover = FileHelper.saveSmallCover(context, podcast).toString()
+                podcast.smallCover = FileHelper.saveSmallCover(context, podcast.name, tempFileUri).toString()
+                podcast.cover = FileHelper.saveCopyOfFile(context, podcast.name, tempFileUri, Keys.FILE_TYPE_IMAGE, Keys.PODCAST_COVER_FILE).toString()
                 podcast.episodes.forEach { episode ->
                     episode.cover = podcast.cover
                     episode.smallCover = podcast.smallCover
@@ -240,28 +232,28 @@ object DownloadHelper {
 
 
     /* Sets Media Uri in Episode */
-    private fun setEpisodeMediaUri(context: Context, localFileUri: Uri, remoteAudioFileLocation: String) {
+    private fun setEpisodeMediaUri(context: Context, tempFileUri: Uri, remoteAudioFileLocation: String) {
         var matchingEpisodeFound = false
         // compare remoteFileLocations
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
                 if (episode.remoteAudioFileLocation == remoteAudioFileLocation) {
                     matchingEpisodeFound = true
-                    episode.audio = localFileUri.toString()
-                    episode.duration = AudioHelper.getDuration(context, localFileUri)
+                    episode.audio = FileHelper.saveCopyOfFile(context, podcast.name, tempFileUri, Keys.FILE_TYPE_AUDIO, FileHelper.getFileName(context, tempFileUri), async = true).toString()
+                    episode.duration = AudioHelper.getDuration(context, tempFileUri)
                 }
             }
         }
         // no matching episode found - try matching filename only (second run) - a hack that should prevent a ton of network requests for potential redirects (e.g. feedburner links)
         if (!matchingEpisodeFound) {
-            val localFileName: String = FileHelper.getFileName(context, localFileUri)
+            val localFileName: String = FileHelper.getFileName(context, tempFileUri)
             collection.podcasts.forEach { podcast ->
                 podcast.episodes.forEach { episode ->
                     // compare file names
                     val url: String = episode.remoteAudioFileLocation
                      if (localFileName == url.substring(url.lastIndexOf('/')+1, url.length)) {
-                        episode.audio = localFileUri.toString()
-                        episode.duration = AudioHelper.getDuration(context, localFileUri)
+                         episode.audio = FileHelper.saveCopyOfFile(context, podcast.name, tempFileUri, Keys.FILE_TYPE_AUDIO, FileHelper.getFileName(context, tempFileUri), async = true).toString()
+                         episode.duration = AudioHelper.getDuration(context, tempFileUri)
                     }
                 }
             }
@@ -272,7 +264,6 @@ object DownloadHelper {
         PreferencesHelper.updatePlayerState(context, collection)
         // save collection
         saveCollection(context)
-
     }
 
 
@@ -289,12 +280,16 @@ object DownloadHelper {
     }
 
 
-    /* Savely remove given download IDs from downloadManager and activeDownloads */
-    private fun removeFromActiveDownloads(context: Context, downloadIds: Array<Long>): Boolean {
-        downloadIds.forEach { downloadId -> downloadManager.remove(downloadId) }
+    /* Savely remove given download IDs from activeDownloads and delete download if requested */
+    private fun removeFromActiveDownloads(context: Context, downloadIds: Array<Long>, deleteDownload: Boolean = false): Boolean {
+        // remove download ids from activeDownloads
         val success: Boolean = activeDownloads.removeAll { downloadId -> downloadIds.contains(downloadId) }
         if (success) {
             setActiveDownloads(context, activeDownloads)
+        }
+        // optionally: delete download
+        if (deleteDownload) {
+            downloadIds.forEach { downloadId -> downloadManager.remove(downloadId) }
         }
         return success
     }
@@ -344,22 +339,26 @@ object DownloadHelper {
         for (i in activeDownloads.indices) {
             builder.append(activeDownloads[i]).append(",")
         }
-        PreferencesHelper.saveActiveDownloads(context, builder.toString())
+        var activeDownloadsString: String = builder.toString()
+        if (activeDownloadsString.isEmpty()) {
+            activeDownloadsString = Keys.ACTIVE_DOWNLOADS_EMPTY
+        }
+        PreferencesHelper.saveActiveDownloads(context, activeDownloadsString)
     }
 
 
     /* Loads active downloads (IntArray) from shared preferences */
     private fun getActiveDownloads(context: Context): ArrayList<Long> {
+        val activeDownloadsList: ArrayList<Long> = arrayListOf<Long>()
         val activeDownloadsString: String = PreferencesHelper.loadActiveDownloads(context)
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
-        val activeDownloads: ArrayList<Long> = arrayListOf<Long>()
         repeat(count) {
             val token = tokenizer.nextToken().toLong()
             if (isDownloadActive(token)) {
-                activeDownloads.add(token) }
+                activeDownloadsList.add(token) }
         }
-        return activeDownloads
+        return activeDownloadsList
     }
 
 

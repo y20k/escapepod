@@ -1,34 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_window_background"
-    tools:context="org.y20k.escapepod.PodcastPlayerActivity">
+    android:orientation="vertical">
 
-    <!-- PODCAST LIST -->
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
+    <android.widget.ProgressBar
+        android:id="@+id/download_progress_indicator"
+        android:indeterminate="true"
+        android:background="@color/app_window_background"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="0dp">
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyleHorizontal" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/podcast_list"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/app_window_background"
+        tools:context="org.y20k.escapepod.PodcastPlayerActivity">
+
+
+        <!-- PODCAST LIST -->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="0dp">
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/podcast_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
 
-    <!-- ONBOARDING -->
-    <include layout="@layout/element_onboarding" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- PLAYER SHEET -->
-    <include layout="@layout/bottom_sheet_playback_controls" />
+        <!-- ONBOARDING -->
+        <include layout="@layout/element_onboarding" />
+
+        <!-- PLAYER SHEET -->
+        <include layout="@layout/bottom_sheet_playback_controls" />
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+</LinearLayout>
+
+

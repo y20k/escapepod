@@ -81,6 +81,8 @@ object Keys {
     const val PREF_PLAYER_STATE_BOTTOM_SHEET_STATE: String = "PLAYER_STATE_BOTTOM_SHEET_STATE"
     const val PREF_PLAYER_STATE_SLEEP_TIMER_STATE: String = "PLAYER_STATE_SLEEP_TIMER_STATE"
 
+
+
     // states
     const val STATE_SLEEP_TIMER_STOPPED: Int = 0
 
@@ -88,6 +90,7 @@ object Keys {
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
     const val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
+    const val ACTIVE_DOWNLOADS_EMPTY: String = "zero"
 
     // media browser
     const val MEDIA_ID_ROOT = "__ROOT__"
@@ -147,6 +150,7 @@ object Keys {
     // file names
     const val COLLECTION_FILE: String = "collection.json"
     const val COLLECTION_OPML_FILE: String = "collection_opml.xml"
+    const val PODCAST_COVER_FILE: String = "cover.jpg"
     const val PODCAST_SMALL_COVER_FILE: String = "cover-small.jpg"
     const val DEBUG_LOG_FILE: String = "log-can-be-deleted.txt"
 

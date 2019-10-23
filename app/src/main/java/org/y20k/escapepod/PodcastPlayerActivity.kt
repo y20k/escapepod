@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
@@ -37,6 +38,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
@@ -61,6 +63,7 @@ import kotlin.coroutines.CoroutineContext
  * PodcastPlayerActivity class
  */
 class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
+        SharedPreferences.OnSharedPreferenceChangeListener,
         AddPodcastDialog.AddPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
         OpmlImportDialog.OpmlImportDialogListener,
@@ -96,9 +99,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // initialize background job
         backgroundJob = Job()
 
-        // clear temp folder
-        FileHelper.clearFolder(getExternalFilesDir(Keys.FOLDER_TEMP), 0)
-
         // create view model and observe changes in collection view model
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
 
@@ -108,14 +108,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // Create MediaBrowserCompat
         mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallback, null)
 
+        // find views and set them up
+        layout = LayoutHolder(this)
+        initializeViews()
+
         // Create an observer for OPML files in collection folder
         opmlCreatedObserver = createOpmlCreatedObserver(Keys.FOLDER_COLLECTION)
-
-        // find views
-        layout = LayoutHolder(this)
-
-        // set up views
-        initializeViews()
 
         // start worker that periodically updates the podcast collection
         WorkerHelper.schedulePeriodicUpdateWorker()
@@ -139,6 +137,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         playerState = PreferencesHelper.loadPlayerState(this)
         // setup player ui
         setupPlayer()
+        // start watching for changes in shared preferences
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
     }
 
 
@@ -151,6 +151,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
         // stop watching for new opml files
         opmlCreatedObserver?.stopWatching()
+        // stop watching for changes in shared preferences
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
     }
 
 
@@ -178,6 +180,17 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     // permission denied
                     Toast.makeText(this, R.string.toast_message_error_missing_storage_permission, Toast.LENGTH_LONG).show()
                 }
+            }
+        }
+    }
+
+
+    /* Overrides onSharedPreferenceChanged from OnSharedPreferenceChangeListener */
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (key == Keys.PREF_ACTIVE_DOWNLOADS) {
+            when (PreferencesHelper.loadActiveDownloads(this)) {
+                Keys.ACTIVE_DOWNLOADS_EMPTY -> layout.downloadProgressIndicator.visibility = View.GONE
+                else -> layout.downloadProgressIndicator.visibility = View.VISIBLE
             }
         }
     }

@@ -22,9 +22,10 @@ import android.provider.OpenableColumns
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.core.Collection
-import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.xml.OpmlHelper
 import java.io.*
 import java.net.URL
@@ -45,7 +46,13 @@ object FileHelper {
 
     /* Return an InputStream for given Uri */
     fun getTextFileStream(context: Context, uri: Uri): InputStream? {
-        return context.contentResolver.openInputStream(uri)
+        var stream : InputStream? = null
+        try {
+            stream = context.contentResolver.openInputStream(uri)
+        } catch (e : Exception) {
+            e.printStackTrace()
+        }
+        return stream
     }
 
 
@@ -100,25 +107,6 @@ object FileHelper {
     }
 
 
-    /* Checks if given feed string is XML */
-    fun determineMimeType(feedUrl: String): String {
-        // FIRST check if NOT an URL
-        if (!feedUrl.startsWith("http", true)) return Keys.MIME_TYPE_UNSUPPORTED
-        if (!isParsableAsUrl(feedUrl)) return Keys.MIME_TYPE_UNSUPPORTED
-        // THEN check for type
-        if (feedUrl.endsWith("xml", true)) return Keys.MIME_TYPE_XML
-        if (feedUrl.endsWith("rss", true)) return Keys.MIME_TYPE_XML
-        if (feedUrl.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
-        if (feedUrl.endsWith("png", true)) return Keys.MIME_TYPE_PNG
-        if (feedUrl.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
-        if (feedUrl.endsWith("jpeg", true)) return Keys.MIME_TYPE_JPG
-        // todo implement a real mime type check
-        // https://developer.android.com/reference/java/net/URLConnection#guessContentTypeFromName(java.lang.String)
-        return Keys.MIME_TYPE_UNSUPPORTED
-    }
-
-
-
     /* Determines a destination folder */
     fun determineDestinationFolderPath(type: Int, podcastName: String): String {
         val folderPath: String
@@ -151,14 +139,31 @@ object FileHelper {
     }
 
 
-    /* Creates and save a smaller version of the podcast cover - used by the list of podcasts view */
-    fun saveSmallCover(context: Context, podcast: Podcast): Uri {
-        val smallCoverBitmap: Bitmap = ImageHelper.getPodcastCover(context, Uri.parse(podcast.cover), Keys.SIZE_COVER_PODCAST_CARD)
-        val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcast.name)), Keys.PODCAST_SMALL_COVER_FILE)
-        writeImageFile(context, smallCoverBitmap, file, Bitmap.CompressFormat.JPEG, 75)
-        return file.toUri()
+    /* Creates a copy of a given uri */
+    fun saveCopyOfFile(context: Context, podcastName: String, tempFileUri: Uri, fileType: Int, fileName: String, async: Boolean = false): Uri {
+        val targetFile: File = File(context.getExternalFilesDir(determineDestinationFolderPath(fileType, podcastName)), fileName)
+        if (targetFile.exists()) targetFile.delete()
+        when (async) {
+            true -> {
+                // copy file async (= fire & forget - no return value needed)
+                GlobalScope.launch { saveCopyOfFileSuspended(context, tempFileUri, targetFile.toUri()) }
+            }
+            false -> {
+                // copy file
+                copyFile(context, tempFileUri, targetFile.toUri(), deleteOriginal = true)
+            }
+        }
+        return targetFile.toUri()
     }
 
+
+    /* Creates and save a smaller version of the podcast cover - used by the list of podcasts view */
+    fun saveSmallCover(context: Context, podcastName: String, tempFileUri: Uri): Uri {
+        val smallCoverBitmap: Bitmap = ImageHelper.getPodcastCover(context, tempFileUri, Keys.SIZE_COVER_PODCAST_CARD)
+        val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcastName)), Keys.PODCAST_SMALL_COVER_FILE)
+        writeImageFile(context, smallCoverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
+        return file.toUri()
+    }
 
 
     /* Saves podcast collection as JSON text file */
@@ -251,6 +256,27 @@ object FileHelper {
     }
 
 
+    /* Suspend function: Wrapper for saveCollection */
+    suspend fun saveCopyOfFileSuspended(context: Context, tempFileUri: Uri, targetFileUri: Uri) {
+        return suspendCoroutine { cont ->
+            cont.resume(copyFile(context, tempFileUri, targetFileUri, deleteOriginal = true))
+        }
+    }
+
+
+    /* Copies file to specified target */
+    private fun copyFile(context: Context, originalFileUri: Uri, targetFileUri: Uri, deleteOriginal: Boolean = false) {
+        val inputStream = context.contentResolver.openInputStream(originalFileUri)
+        val outputStream = context.contentResolver.openOutputStream(targetFileUri)
+        if (outputStream != null) {
+            inputStream?.copyTo(outputStream)
+        }
+        if (deleteOriginal) {
+            context.contentResolver.delete(originalFileUri, null, null)
+        }
+    }
+
+
     /*  Creates a Gson object */
     private fun getCustomGson(): Gson {
         val gsonBuilder = GsonBuilder()
@@ -258,7 +284,6 @@ object FileHelper {
         gsonBuilder.excludeFieldsWithoutExposeAnnotation()
         return gsonBuilder.create()
     }
-
 
 
     /* Create nomedia file in given folder to prevent media scanning */
@@ -276,7 +301,7 @@ object FileHelper {
 
     /* Converts byte value into a human readable format */
     // Source: https://programming.guide/java/formatting-byte-size-to-human-readable-format.html
-    fun getReadableByteCount(bytes: Long, si: Boolean): String {
+    fun getReadableByteCount(bytes: Long, si: Boolean = true): String {
 
         // check if Decimal prefix symbol (SI) or Binary prefix symbol (IEC) requested
         val unit: Long = if (si) 1000L else 1024L
