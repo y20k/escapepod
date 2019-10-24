@@ -86,7 +86,7 @@
     <string name="descr_card_small_download_button">Herunterladen</string>
     <string name="descr_card_small_playback_button">Starten / Pausieren</string>
     <string name="descr_expanded_episode_length">Restzeit der aktuellen Episode</string>
-    <string name="descr_expanded_player_debug_log_toggle_button">Umschalttaste zum Debuggen der Protokolldatei</string>
+    <string name="descr_expanded_player_debug_log_toggle_button">Debug-Protokolldatei aktivieren / deaktivieren</string>
     <string name="descr_expanded_player_forward_button">30 Sekunden vorwärtsspringen</string>
     <string name="descr_expanded_player_next_chapter_button">Nächstes Kapitel</string>
     <string name="descr_expanded_player_playback_button">Starten / Pausieren</string>
@@ -100,7 +100,7 @@
     <string name="descr_expanded_player_sleep_timer_start_button">Sleep-Timer starten</string>
     <string name="descr_expanded_player_time_played">Wiedergabedauer</string>
     <string name="descr_expanded_player_up_next_clear_button">\'Als Nächstes\' Warteschlange löschen</string>
-    <string name="descr_player_playback_button">Hauptschaltfläche zum Starten und Pausieren der Wiedergabe</string>
+    <string name="descr_player_playback_button">Starten / Pausieren</string>
     <string name="descr_player_podcast_cover">Kleines Podcast-Titelbild</string>
     <string name="onboarding_app_description">Podcast-App</string>
     <string name="onboarding_app_get_started">Jetzt starten</string>
