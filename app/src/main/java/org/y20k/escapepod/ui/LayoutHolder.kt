@@ -39,6 +39,7 @@ import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.dialogs.ShowNotesDialog
 import org.y20k.escapepod.helpers.DateTimeHelper
 import org.y20k.escapepod.helpers.LogHelper
+import org.y20k.escapepod.helpers.PreferencesHelper
 import org.y20k.escapepod.helpers.UiHelper
 
 
@@ -249,6 +250,15 @@ data class LayoutHolder(var activity: Activity) {
             PlaybackStateCompat.STATE_NONE -> return hidePlayer(context)
             PlaybackStateCompat.STATE_ERROR -> return hidePlayer(context)
             else -> return showPlayer(context)
+        }
+    }
+
+
+    /* Toggles visibility of the download progress indicator */
+    fun toggleDownloadProgressIndicator(context: Context) {
+        when (PreferencesHelper.loadActiveDownloads(context)) {
+            Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator.visibility = View.GONE
+            else -> downloadProgressIndicator.visibility = View.VISIBLE
         }
     }
 

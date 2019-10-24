@@ -116,6 +116,7 @@ object DownloadHelper {
         val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadId)
         if (downloadResult == null) {
             LogHelper.w(TAG, "Download not successful. Error code = ${getDownloadError(downloadId)}")
+            removeFromActiveDownloads(context, arrayOf(downloadId), deleteDownload = true)
             return
         } else {
             val localFileUri: Uri = downloadResult
@@ -349,15 +350,19 @@ object DownloadHelper {
 
     /* Loads active downloads (IntArray) from shared preferences */
     private fun getActiveDownloads(context: Context): ArrayList<Long> {
+        var inactiveDownloadsFound: Boolean = false
         val activeDownloadsList: ArrayList<Long> = arrayListOf<Long>()
         val activeDownloadsString: String = PreferencesHelper.loadActiveDownloads(context)
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
         repeat(count) {
             val token = tokenizer.nextToken().toLong()
-            if (isDownloadActive(token)) {
-                activeDownloadsList.add(token) }
+            when (isDownloadActive(token)) {
+                true -> activeDownloadsList.add(token)
+                false -> inactiveDownloadsFound = true
+            }
         }
+        if (inactiveDownloadsFound) setActiveDownloads(context, activeDownloadsList)
         return activeDownloadsList
     }
 

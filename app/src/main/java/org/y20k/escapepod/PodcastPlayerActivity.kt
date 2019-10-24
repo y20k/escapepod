@@ -38,7 +38,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
@@ -138,7 +137,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // setup player ui
         setupPlayer()
         // start watching for changes in shared preferences
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this)
+        PreferencesHelper.registerPreferenceChangeListener(this)
+        // toggle download progress indicator
+        layout.toggleDownloadProgressIndicator(this)
     }
 
 
@@ -152,7 +153,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // stop watching for new opml files
         opmlCreatedObserver?.stopWatching()
         // stop watching for changes in shared preferences
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this)
+        PreferencesHelper.unregisterPreferenceChangeListener(this)
+
     }
 
 
@@ -188,10 +190,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Overrides onSharedPreferenceChanged from OnSharedPreferenceChangeListener */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == Keys.PREF_ACTIVE_DOWNLOADS) {
-            when (PreferencesHelper.loadActiveDownloads(this)) {
-                Keys.ACTIVE_DOWNLOADS_EMPTY -> layout.downloadProgressIndicator.visibility = View.GONE
-                else -> layout.downloadProgressIndicator.visibility = View.VISIBLE
-            }
+            layout.toggleDownloadProgressIndicator(this)
         }
     }
 

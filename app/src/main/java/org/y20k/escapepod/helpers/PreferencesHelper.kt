@@ -15,6 +15,7 @@
 package org.y20k.escapepod.helpers
 
 import android.content.Context
+import android.content.SharedPreferences
 
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.preference.PreferenceManager
@@ -204,4 +205,18 @@ object PreferencesHelper {
             savePlayerState(context, PlayerState())
         }
     }
+
+
+    /* Start watching for changes in shared preferences - context must implement OnSharedPreferenceChangeListener */
+    fun registerPreferenceChangeListener(context: Context) {
+        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(context as SharedPreferences.OnSharedPreferenceChangeListener)
+    }
+
+
+    /* Stop watching for changes in shared preferences - context must implement OnSharedPreferenceChangeListener */
+    fun unregisterPreferenceChangeListener(context: Context) {
+        PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(context as SharedPreferences.OnSharedPreferenceChangeListener)
+    }
+
+
 }
