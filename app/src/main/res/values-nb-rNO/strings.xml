@@ -1,64 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
+
+    <!-- App Name -->
     <string name="app_name">Escapepod</string>
+
+    <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Legg til</string>
-    <string name="dialog_add_podcast_input_hint">Skriv inn lenke til nettradioopptak</string>
+    <string name="dialog_add_podcast_howto">Legg til adresse til et nettradioopptak. Se etter et RSS-symbol på hjemmesiden til kanalen du ønsker å legge til.</string>
+    <string name="dialog_add_podcast_input_hint">Skriv inn lenke til informasjonskanal</string>
     <string name="dialog_add_podcast_title">Legg til nytt nettradioopptak</string>
+    <string name="dialog_episode_shownotes_close">Lukk</string>
+    <string name="dialog_episode_shownotes_title">Episodeinnhold</string> <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
     <string name="dialog_error_message_default">En feil inntraff</string>
-    <string name="dialog_error_message_no_network">Din enhet har ingen nettverkstilknytning</string>
+    <string name="dialog_error_message_no_network">Koble til Internett.</string>
     <string name="dialog_error_message_podcast_duplicate">Dette nettradioopptaket er allerede i samlingen din.</string>
-    <string name="dialog_error_message_podcast_invalid_feed">Denne adressen er ikke en RSS-informasjonskanal.</string>
+    <string name="dialog_error_message_podcast_invalid_feed">Denne adressen er ikke en gyldig RSS-informasjonskanal.</string>
     <string name="dialog_error_title_default">Feil</string>
     <string name="dialog_error_title_no_network">Frakoblet</string>
-    <string name="dialog_error_title_podcast_duplicate">Duplisert nettradioopptak</string>
-    <string name="dialog_error_title_podcast_invalid_feed">Ugyldig nettradioopptaks-informasjonskanal</string>
+    <string name="dialog_error_title_podcast_duplicate">Finnes allerede</string>
+    <string name="dialog_error_title_podcast_invalid_feed">Ugyldig nattradioopptaksadresse</string>
     <string name="dialog_generic_button_cancel">Avbryt</string>
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Vis detaljer</string>
-    <string name="dialog_generic_details_default">Ingen detaljer tilgjengelig</string>
-    <string name="dialog_yes_no_positive_button_metered_network_download">Last ned uansett</string>
-    <string name="dialog_yes_no_message_metered_network_download">Dun enhet er ikke tilknyttet til et Wi-Fi-nettverk. Ønsker du å laste ned denne episoden uansett\?</string>
+    <string name="dialog_generic_details_default">Ingen detaljer tilgjengelige</string>
+    <string name="dialog_yes_no_message_metered_network_download">Enheten din er ikke tilknyttet til et Wi-Fi-nettverk. Last ned episode uansett?</string>
     <string name="dialog_opml_import_button_okay">Importer</string>
     <string name="dialog_opml_import_details_button">Vis detaljer</string>
-    <string name="dialog_opml_import_details_default">Ingen detaljer tilgjengelig</string>
+    <string name="dialog_opml_import_details_default">Ingen detaljer tilgjengelige</string>
+    <string name="dialog_opml_import_message_error">Kunne ikke importere OPML-fil. Fant ikke noen nettradioopptak.</string>
+    <string name="dialog_opml_import_message">Legg til nye nettradioopptak? Duplikater vil bli fjernet før import. Antall nettradioopptak funnet:</string>
     <string name="dialog_opml_import_title">OMPL-import</string>
-    <string name="dialog_episode_shownotes_close">Lukk</string>
+    <string name="dialog_yes_no_message_add_up_next">Lytt til epiosde umiddelbart?</string>
+    <string name="dialog_yes_no_message_default">Ønsker du virkelig å gjøre dette?</string>
+    <string name="dialog_yes_no_message_delete_downloads">Slett alle nedlastede episoder? Du kan laste dem ned igjen etterpå.</string>
+    <string name="dialog_yes_no_message_delete_episode">Slett denne episoden?</string>
+    <string name="dialog_yes_no_message_mark_episode_played">Merk denne episoden som avspilt?</string>
+    <string name="dialog_yes_no_message_remove_podcast">Fjern dette nettradioopptaket?</string>
+    <string name="dialog_yes_no_message_update_collection">Se etter nye episoder?</string>
+    <string name="dialog_yes_no_negative_button_add_up_next">Legg til i \'Spilles etterpå\'</string>
     <string name="dialog_yes_no_negative_button_cancel">Avbryt</string>
     <string name="dialog_yes_no_negative_button_default">Nei</string>
     <string name="dialog_yes_no_positive_button_add_up_next">Start nå</string>
     <string name="dialog_yes_no_positive_button_default">Ja</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Slett alle</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Slett</string>
+    <string name="dialog_yes_no_positive_button_mark_episode_played">Merk som avspilt</string>
+    <string name="dialog_yes_no_positive_button_metered_network_download">Last ned uansett</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Fjern</string>
-    <string name="player_up_next_headline">Neste:</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
+    <string name="dialog_yes_no_title_default">Avgjør</string>
+
+    <!-- Player -->
+    <string name="player_up_next_headline">Spilles etterpå:</string>
+
+    <!-- Toasts -->
     <string name="toast_message_adding_podcast">Legger til nettradioopptak.</string>
     <string name="toast_message_adding_podcasts">Legger til nettradioopptak.</string>
-    <string name="toast_message_collection_update_not_necessary">Nettradioopptaksamlingen er oppdatert.</string>
+    <string name="toast_message_collection_update_not_necessary">Nettradioopptakssamling oppdatert.</string>
     <string name="toast_message_downloading_episode">Laster ned episode.</string>
+    <string name="toast_message_error_missing_storage_permission">Innvilg tilgang for \"Les lagring\" for å åpne denne filen.</string>
+    <string name="toast_message_error_refreshing_cover">Kunne ikke oppdatere omslag. Informasjonskanalen inneholder ikke omslagsreferanse.</string>
+    <string name="toast_message_error_validation_audio_references">RSS-bekreftelse: Informasjonskanalen inneholder ikke en lydreferanse.</string>
+    <string name="toast_message_error_validation_missing_cover">RSS-bekreftelse: Informasjonskanalen inneholder ikke en omslagsreferanse.</string>
+    <string name="toast_message_debug_logging_to_file_started">Feilretting: Start skriving til lokal loggfil.</string>
+    <string name="toast_message_debug_logging_to_file_stopped">Feilretting: Stopp skriving til lokal loggfil.</string>
+    <string name="toast_message_playback_speed_reset">Avspillingshastighet tilbakestilt.</string>
+    <string name="toast_message_podcast_feed_address_copied">Informasjonskanalsadresse kopiert til utklippstavle.</string>
+    <string name="toast_message_refreshing_cover">Oppdaterer nettradioopptaksomslag.</string>
+    <string name="toast_message_skipping_disabled">Ingenting spilles av. Sporveksling er avskrudd.</string>
+    <string name="toast_message_sleep_timer_unable_to_start">Start en episode først.</string>
+    <string name="toast_message_theme_day">Bytter til \'Dagsmodus\' (langt trykk oppdaget)</string>
+    <string name="toast_message_theme_follow_system">Bytter til \'Følg systeminnstillingsmodus\' (langt trykk oppdaget)</string>
+    <string name="toast_message_theme_night">Bytter til \'Nattmodus\' (langt trykk oppdaget)</string>
+    <string name="toast_message_up_next_added_episode">Episode lagt til i \'Spilles etterpå\'-kø.</string>
+    <string name="toast_message_up_next_removed_episode">Fjernet epsiode fra \'Spilles etterpå\'-kø.</string>
+    <string name="toast_message_up_next_start_playback">Starter neste episode.</string>
+    <string name="toast_message_updating_collection">Oppdaterer nettradioopptakssamling.</string>
+
+    <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">Legg til nytt nettradioopptak</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Skjul eldre episoder</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Eldre episoder</string>
+
+    <!-- Notification -->
+    <string name="notification_now_playing_channel_description">Avspillingskontroller, episodenavn og logo.</string>
     <string name="notification_now_playing_channel_name">Avspillingskontroller</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Spill av</string>
     <string name="notification_playing">Spiller</string>
-    <string name="descr_player_playback_button">Hovedknapp for start og pausing av avspilling</string>
-    <string name="descr_player_podcast_cover">Lite omslagsbilde for nettradioopptak</string>
-    <string name="onboarding_app_description">Nettradioopptakslytting</string>
-    <string name="dialog_add_podcast_howto">Skriv inn en informasjonsanalsadresse for nettradioopptak. Se etter et RSS-symbol på hjemmesiden til det respektive nettradioopptaket.</string>
-    <string name="dialog_opml_import_message_error">Kunne ikke importere OPML-fil. Fant ingen nettradioopptak.</string>
-    <string name="dialog_opml_import_message">Fant du ingen nettradioopptak. Duplikater vil bli fjernet før import. Antall nettradiopptak funnet:</string>
-    <string name="dialog_yes_no_message_add_up_next">Begynn å lytte til denne episoden uansett\?</string>
-    <string name="dialog_yes_no_message_default">Ønsker du virkelig å gjøre dette\?</string>
-    <string name="dialog_yes_no_message_delete_episode">Slett denne episoden\?</string>
-    <string name="dialog_yes_no_message_mark_episode_played">Marker denne episoden som avspilt\?</string>
-    <string name="dialog_yes_no_message_remove_podcast">Fjern dette nettradioopptaket\?</string>
-    <string name="dialog_yes_no_message_update_collection">Se etter nye episoder\?</string>
-    <string name="dialog_yes_no_positive_button_mark_episode_played">Marker som avspilt</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
-    <string name="dialog_yes_no_title_default">Avgjør</string>
-    <string name="toast_message_error_missing_storage_permission">Innvilg tilgang for \"Les lagring\" for å åpne denne filen.</string>
-    <string name="toast_message_error_refreshing_cover">Kunne ikke gjenoppfriske omslag. Informasjonskanalen inneholder ikke en omslagsreferanse.</string>
-    <string name="onboarding_app_get_started">Kom i gang</string>
-    <string name="dialog_episode_shownotes_title">Episodeinnhold</string>
+    <string name="notification_skip_back">Hopp bakover</string>
+    <string name="notification_skip_forward">Hopp forover</string>
+
+    <!-- Accessibility Descriptions -->
+    <string name="descr_app_icon">Programikon som viser en flyktkapsel i ytre rom</string>
+    <string name="descr_card_add_new_button">Legg til nytt nettradioopptak</string>
+    <string name="descr_card_delete_episode_button">Fjern nedlastet episode</string>
+    <string name="descr_card_playback_indicator">Avspillingsframdrift</string>
+    <string name="descr_card_podcast_cover">Omslagsbilde for nettradioopptak</string>
+    <string name="descr_card_small_download_button">Last ned</string>
+    <string name="descr_card_small_playback_button">Spill av / pause</string>
+    <string name="descr_expanded_episode_length">Episodelengde</string>
+    <string name="descr_expanded_player_debug_log_toggle_button">Veksling av feilrettingsfil</string>
+    <string name="descr_expanded_player_forward_button">Forover 30 sekunder</string>
+    <string name="descr_expanded_player_next_chapter_button">Neste kapittel</string>
+    <string name="descr_expanded_player_playback_button">Spill av / sett på pause</string>
+    <string name="descr_expanded_player_playback_speed_button">Øk avspillingshastighet</string>
+    <string name="descr_expanded_player_podcast_cover">Stort nettradioopptaksomslag</string>
+    <string name="descr_expanded_player_previous_chapter_button">Forrige kapittel</string>
+    <string name="descr_expanded_player_replay_button">Gjenta siste 10 sekunder</string>
+    <string name="descr_expanded_player_seekbar">Episodeavspillingstid</string>
+    <string name="descr_expanded_player_sleep_timer_cancel_button">Avbryt vekkeklokke</string>
+    <string name="descr_expanded_player_sleep_timer_remaining_time">Gjenstående tid før vekkeklokke utløses</string>
+    <string name="descr_expanded_player_sleep_timer_start_button">Start vekkeklokke</string>
+    <string name="descr_expanded_player_time_played">Avspilt tid</string>
+    <string name="descr_expanded_player_time_remaining">Gjenstående tid</string>
+    <string name="descr_expanded_player_up_next_clear_button">Tøm \'Spilles etterpå\'-kø</string>
+    <string name="descr_player_playback_button">Spill av / sett på pause</string>
+    <string name="descr_player_podcast_cover">Lite nettradioopptaksomslag</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_app_description">Nettradioopptaksavspillingsprogram</string>
+    <string name="onboarding_app_get_started">Begynn nå</string>
+    <string name="onboarding_app_hypercritical_quote_1" translatable="false">Ingenting er så perfekt</string>
+    <string name="onboarding_app_hypercritical_quote_2" translatable="false">at det ikke kan påklages.</string>
+    <string name="player_sheet_p_no_data" translatable="false">-</string>
+
+    <!-- Sample Text -->
+    <string name="sample_text_episode_0_chapter" translatable="false">De første internettormene i 2005</string>
+    <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
+    <string name="sample_text_episode_0_length" translatable="false">-18:00</string>
+    <string name="sample_text_episode_0_title" translatable="false">Som ormen snor seg</string>
+    <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
+    <string name="sample_text_playback_speed" translatable="false">1.0 x</string>
+    <string name="sample_text_podcast_name" translatable="false">Sikkerhet nå</string>
+    <string name="sample_text_podcast_xml" translatable="false">https://feeds.twit.tv/sn.xml</string>
+    <string name="sample_text_show_notes" translatable="false">Hvordan en aldri oppgitt Windows-sikkerhetsfeil raskt ble omvendt utrensket fra feilfiksene for å fikse den, og omgjort til 12 potente og skadelige internettormer på tre dager. Hva betyr det for fremtidig internettsikkerhet?</string>
+    <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
+    <string name="sample_text_up_next_name" translatable="false">Spillveteranen - Nå snakker de også! (tyskspråklig)</string>
+
+
+    <!-- Allowed Caller Template -->
+    <string name="allowed_caller_log" translatable="false">
+        Ringeren har et gyldig sertifikat, men dens pakkenavn samsvarer ikke med noen forventet pakke for
+        angitt sertifikat. For å tillate denne ringeren, legg til følgende i anropsliste:\n
+        <![CDATA[
+        <signature name=\"%1$s\" package=\"%2$s\">\n\t<key>%3$s</key>\n</signature>\n
+        ]]>
+    </string>
+
 </resources>
