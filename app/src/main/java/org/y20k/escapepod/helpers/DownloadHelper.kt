@@ -108,6 +108,21 @@ object DownloadHelper {
     }
 
 
+    /* Updates all podcast covers */
+    fun updateCovers(context: Context) {
+        // initialize main class variables, if necessary
+        initialize(context)
+        // re-download all podcast covers
+        PreferencesHelper.saveLastUpdateCollection(context)
+        val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
+            collection.podcasts[it].remoteImageFileLocation.toUri()
+        }
+        enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE)
+        LogHelper.i(TAG, "Updating all covers.")
+        LogHelper.save(context, TAG, "Updating all covers.") // todo remove
+    }
+
+
     /* Processes a given download ID */
     fun processDownload(context: Context, downloadId: Long) {
         // initialize main class variables, if necessary

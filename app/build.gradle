@@ -13,7 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 13
         versionName '0.7.8'
-        resConfigs "en", "de"
+        resConfigs "en", "de", "nb-rNO"
     }
 
     kotlinOptions {
@@ -77,7 +77,7 @@ dependencies {
     implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
     implementation "com.google.android.exoplayer:exoplayer:2.10.5"
-    implementation "com.google.android.exoplayer:extension-mediasession:2.10.5"
+    implementation "com.google.android.exoplayer:extension-mediasession:2.10.6"
     implementation "com.google.code.gson:gson:2.8.6"
 }
 

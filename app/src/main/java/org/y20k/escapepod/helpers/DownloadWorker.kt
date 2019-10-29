@@ -34,7 +34,10 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
         // determine what type of download is requested
         when(inputData.getInt(Keys.KEY_DOWNLOAD_WORK_REQUEST,0)) {
             // CASE: update collection
-            Keys.REQUEST_UPDATE_COLLECTION -> { updateCollection() }
+            Keys.REQUEST_UPDATE_COLLECTION -> {
+                updateCollection()
+                doOneTimeHousekeeping()
+            }
         }
         return Result.success()
         // (Returning Result.retry() tells WorkManager to try this task again later; Result.failure() says not to try again.)
@@ -44,6 +47,18 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
     /* Updates podcast collection */
     private fun updateCollection() {
         DownloadHelper.updateCollection(applicationContext)
+    }
+
+
+    /* Execute one-time housekeeping */
+    private fun doOneTimeHousekeeping() {
+        if (PreferencesHelper.isHouseKeepingNecessary(applicationContext)) {
+            /* add whatever housekeeping is necessary here */
+            // update covers after app update to versionCode 13 (-> Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY)
+            DownloadHelper.updateCovers(applicationContext)
+            // housekeeping finished - save state
+            PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext)
+        }
     }
 
 }

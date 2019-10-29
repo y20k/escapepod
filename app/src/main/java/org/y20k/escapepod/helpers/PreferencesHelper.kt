@@ -219,4 +219,19 @@ object PreferencesHelper {
     }
 
 
+    /* Checks if housekeeping work needs to be done - used usually in DownloadWorker "REQUEST_UPDATE_COLLECTION" */
+    fun isHouseKeepingNecessary(context: Context): Boolean {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, true)
+    }
+
+
+    /* Saves state of housekeeping */
+    fun saveHouseKeepingNecessaryState(context: Context, state: Boolean = false) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, state)
+        editor.apply()
+    }
+
 }

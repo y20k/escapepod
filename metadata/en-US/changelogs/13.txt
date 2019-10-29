@@ -1,6 +1,7 @@
 # v0.7.8 - Drüben Auf Dem Hügel
 
-**2019-xx-xx**
+**2019-10-30**
 
 - improved accessibility via TalkBack
-- ...
+- Norwegian language version
+- stability improvements
