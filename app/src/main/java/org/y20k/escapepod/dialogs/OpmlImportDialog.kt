@@ -1,3 +1,17 @@
+/*
+ * OpmlImportDialog
+ * Implements the OpmlImportDialog class
+ * A OpmlImportDialog asks the user if he/she wants import files from OPML
+ *
+ * This file is part of
+ * ESCAPEPOD - Free and Open Podcast App
+ *
+ * Copyright (c) 2018-19 - Y20K.org
+ * Licensed under the MIT-License
+ * http://opensource.org/licenses/MIT
+ */
+
+
 package org.y20k.escapepod.dialogs
 
 import android.content.Context
