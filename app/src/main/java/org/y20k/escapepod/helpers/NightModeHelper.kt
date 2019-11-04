@@ -17,11 +17,9 @@ package org.y20k.escapepod.helpers
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.preference.PreferenceManager
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 
 
@@ -60,7 +58,7 @@ object NightModeHelper {
 
     /* Sets night mode / dark theme */
     fun restoreSavedState(context: Context) {
-        val savedNightModeState = loadNightModeState(context)
+        val savedNightModeState = PreferencesHelper.loadNightModeState(context)
         val currentNightModeState = AppCompatDelegate.getDefaultNightMode()
         if (savedNightModeState != currentNightModeState) {
             when (savedNightModeState) {
@@ -80,7 +78,7 @@ object NightModeHelper {
 
     /* Activates Night Mode */
     private fun activateNightMode(context: Context, notifyUser: Boolean) {
-        saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_YES)
+        PreferencesHelper.saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_YES)
 
         // switch to Night Mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -95,7 +93,7 @@ object NightModeHelper {
     /* Activates Day Mode */
     private fun activateDayMode(context: Context, notifyUser: Boolean) {
         // save the new state
-        saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_NO)
+        PreferencesHelper.saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_NO)
 
         // switch to Day Mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -110,7 +108,7 @@ object NightModeHelper {
     /* Activate Mode "Follow System" */
     private fun activateFollowSystemMode(context: Context, notifyUser: Boolean) {
         // save the new state
-        saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        PreferencesHelper.saveNightModeState(context, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
         // switch to Undefined Mode / Follow System
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
@@ -133,21 +131,6 @@ object NightModeHelper {
     private fun displayLightStatusBar(activity: Activity) {
         val decorView = activity.window.decorView
         decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-    }
-
-
-    /* Save state of night mode */
-    private fun saveNightModeState(context: Context, currentState: Int) {
-        val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putInt(Keys.PREF_NIGHT_MODE_STATE, currentState)
-        editor.apply()
-    }
-
-
-    /* Load state of Night Mode */
-    private fun loadNightModeState(context: Context): Int {
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NIGHT_MODE_STATE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
 
 }

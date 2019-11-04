@@ -11,8 +11,8 @@ android {
         applicationId 'org.y20k.escapepod'
         minSdkVersion 25
         targetSdkVersion 29
-        versionCode 13
-        versionName '0.7.8'
+        versionCode 14
+        versionName '0.7.9'
         resConfigs "en", "de", "nb-rNO"
     }
 

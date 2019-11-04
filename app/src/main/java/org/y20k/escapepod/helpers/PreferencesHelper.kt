@@ -18,6 +18,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepod.Keys
@@ -231,6 +232,21 @@ object PreferencesHelper {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
         editor.putBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, state)
+        editor.apply()
+    }
+
+
+    /* Load state of Night Mode */
+    fun loadNightModeState(context: Context): Int {
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NIGHT_MODE_STATE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+    }
+
+
+    /* Save state of night mode */
+    fun saveNightModeState(context: Context, currentState: Int) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putInt(Keys.PREF_NIGHT_MODE_STATE, currentState)
         editor.apply()
     }
 
