@@ -28,12 +28,18 @@ object AudioHelper {
     private val TAG: String = LogHelper.makeLogTag(AudioHelper::class.java)
 
 
-    /* Extract duration from audio file */
+    /* Extract duration metadata from audio file */
     fun getDuration(context: Context, audioFileUri: Uri): Long {
         val metadataRetriever: MediaMetadataRetriever = MediaMetadataRetriever()
-        metadataRetriever.setDataSource(context, audioFileUri)
-        val durationString: String = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        return durationString.toLong()
+        var duration: Long = 0L
+        try {
+            metadataRetriever.setDataSource(context, audioFileUri)
+            val durationString = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION) ?: String()
+            duration = durationString.toLong()
+        } catch (exception: Exception) {
+            LogHelper.e(TAG, "Unable to extract duration metadata from audio file")
+        }
+        return duration
     }
 
 }
