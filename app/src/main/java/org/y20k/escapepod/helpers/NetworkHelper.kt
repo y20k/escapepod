@@ -21,7 +21,6 @@ import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import org.y20k.escapepod.Keys
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
@@ -89,57 +88,53 @@ object NetworkHelper {
             LogHelper.v(TAG, "Determining content type - Thread: ${Thread.currentThread().name}")
             val CONTENT_TYPE_PATTERN:  Pattern  = Pattern.compile("([^;]*)(; ?charset=([^;]+))?")
             val contentType: ContentType = ContentType(Keys.MIME_TYPE_UNSUPPORTED, Keys.CHARSET_UNDEFINDED)
-            val connection = createConnection(URL(urlString))
-            if (connection != null) {
-                val contentTypeHeader = connection.contentType
-                val matcher = CONTENT_TYPE_PATTERN.matcher(contentTypeHeader.trim().toLowerCase(Locale.ENGLISH))
-                if (matcher.matches()) {
-                    val contentTypeString: String? = matcher.group (1)
-                    val charsetString: String? = matcher.group (3)
-                    if (contentTypeString != null) {
-                        contentType.type = contentTypeString.trim()
+            var connection: HttpURLConnection? = null
+            try {
+                // try to open connection
+                try {
+                    LogHelper.i(TAG, "Opening http connection.")
+                    connection = URL(urlString).openConnection() as HttpURLConnection
+                } catch (e: Exception) {
+                    LogHelper.e(TAG, "Unable to open http connection.")
+                    e.printStackTrace()
+                }
+
+                // get content type if connection has been established
+                if (connection != null) {
+                    // handle redirects
+                    var redirect: Boolean = false
+                    val status: Int = connection.responseCode
+                    if (status != HttpURLConnection.HTTP_OK) {
+                        if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
+                            redirect = true
+                        }
                     }
-                    if (charsetString != null) {
+                    if (redirect) {
+                        // get redirect url from "location" header field
+                        LogHelper.i(TAG, "Following a redirect.")
+                        val newUrl = connection.getHeaderField("Location")
+                        connection = URL(newUrl).openConnection() as HttpURLConnection
+                    }
+
+                    // extract content type from connection
+                    val contentTypeHeader: String = connection.contentType
+                    val matcher = CONTENT_TYPE_PATTERN.matcher(contentTypeHeader.trim().toLowerCase(Locale.ENGLISH))
+                    if (matcher.matches()) {
+                        val contentTypeString: String = matcher.group (1) ?: Keys.MIME_TYPE_UNSUPPORTED
+                        val charsetString: String = matcher.group (3) ?: Keys.CHARSET_UNDEFINDED
+                        contentType.type = contentTypeString.trim()
                         contentType.charset = charsetString.trim()
                     }
                 }
-                connection.disconnect()
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+            } finally {
+                connection?.disconnect()
             }
             LogHelper.i(TAG, "content type: ${contentType.type} / character set: ${contentType.charset}")
             cont.resume(contentType)
         }
     }
 
-
-    /* Creates a http connection from given url */
-    private fun createConnection(url: URL): HttpURLConnection? {
-        var connection: HttpURLConnection? = null
-        try {
-            // open connection
-            LogHelper.i(TAG, "Opening http connection.")
-            connection = url.openConnection() as HttpURLConnection
-
-            // handle redirects
-            var redirect = false
-            val status = connection.responseCode
-            if (status != HttpURLConnection.HTTP_OK) {
-                if (status == HttpURLConnection.HTTP_MOVED_TEMP
-                        || status == HttpURLConnection.HTTP_MOVED_PERM
-                        || status == HttpURLConnection.HTTP_SEE_OTHER)
-                    redirect = true
-            }
-            if (redirect) {
-                // get redirect url from "location" header field
-                LogHelper.i(TAG, "Following a redirect.")
-                val newUrl = connection.getHeaderField("Location")
-                connection = URL(newUrl).openConnection() as HttpURLConnection
-            }
-            return connection
-        } catch (e: IOException) {
-            LogHelper.e(TAG, "Unable to open http connection.")
-            e.printStackTrace()
-            return connection
-        }
-    }
 
 }

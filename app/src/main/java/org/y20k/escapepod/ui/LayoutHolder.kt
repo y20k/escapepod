@@ -60,7 +60,7 @@ data class LayoutHolder(var activity: Activity) {
     private var upNextViews: Group
     private var topButtonViews: Group
     var sleepTimerRunningViews: Group
-    var downloadProgressIndicator: ProgressBar
+    private var downloadProgressIndicator: ProgressBar
     private var coverView: ImageView
     private var podcastNameView: TextView
     private var episodeTitleView: TextView
@@ -377,12 +377,10 @@ data class LayoutHolder(var activity: Activity) {
             }
         })
         // toggle collapsed state on tap
-        bottomSheet.setOnClickListener {
-            when (bottomSheetBehavior.state) {
-                BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-        }
+        bottomSheet.setOnClickListener { toggleBottomSheetState() }
+        coverView.setOnClickListener { toggleBottomSheetState() }
+        podcastNameView.setOnClickListener { toggleBottomSheetState() }
+        episodeTitleView.setOnClickListener { toggleBottomSheetState() }
     }
 
 
@@ -397,6 +395,15 @@ data class LayoutHolder(var activity: Activity) {
     private fun hidePlayerViews() {
         playerViews.visibility = View.GONE
         topButtonViews.visibility = View.VISIBLE
+    }
+
+
+    /* Toggle expanded/collapsed state of bottom sheet */
+    private fun toggleBottomSheetState() {
+        when (bottomSheetBehavior.state) {
+            BottomSheetBehavior.STATE_COLLAPSED -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
     }
 
 }

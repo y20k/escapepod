@@ -257,7 +257,7 @@ object FileHelper {
 
 
     /* Suspend function: Wrapper for copyFile */
-    suspend fun saveCopyOfFileSuspended(context: Context, tempFileUri: Uri, targetFileUri: Uri) {
+    suspend fun saveCopyOfFileSuspended(context: Context, tempFileUri: Uri, targetFileUri: Uri): Boolean {
         return suspendCoroutine { cont ->
             cont.resume(copyFile(context, tempFileUri, targetFileUri, deleteOriginal = true))
         }
@@ -265,15 +265,23 @@ object FileHelper {
 
 
     /* Copies file to specified target */
-    private fun copyFile(context: Context, originalFileUri: Uri, targetFileUri: Uri, deleteOriginal: Boolean = false) {
-        val inputStream = context.contentResolver.openInputStream(originalFileUri)
-        val outputStream = context.contentResolver.openOutputStream(targetFileUri)
-        if (outputStream != null) {
-            inputStream?.copyTo(outputStream)
+    private fun copyFile(context: Context, originalFileUri: Uri, targetFileUri: Uri, deleteOriginal: Boolean = false): Boolean {
+        var success: Boolean = true
+        try {
+            val inputStream = context.contentResolver.openInputStream(originalFileUri)
+            val outputStream = context.contentResolver.openOutputStream(targetFileUri)
+            if (outputStream != null && inputStream != null) {
+                inputStream.copyTo(outputStream)
+            }
+        } catch (exception: Exception) {
+            LogHelper.e(TAG, "Unable to copy file.")
+            success = false
+            exception.printStackTrace()
         }
         if (deleteOriginal) {
             context.contentResolver.delete(originalFileUri, null, null)
         }
+        return success
     }
 
 
