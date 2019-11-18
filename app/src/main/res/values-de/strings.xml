@@ -105,4 +105,8 @@
     <string name="onboarding_app_description">Podcast-App</string>
     <string name="onboarding_app_get_started">Jetzt starten</string>
     <string name="descr_expanded_player_time_remaining">Verbleibende Zeit</string>
+    <string name="dialog_find_podcast_button_add">Hinzufügen</string>
+    <string name="dialog_find_podcast_hint">Name oder Feed-Adresse</string>
+    <string name="dialog_find_podcast_no_results">Keine Ergebnisse gefunden.</string>
+    <string name="dialog_find_podcast_title">Podcast finden</string>
 </resources>
