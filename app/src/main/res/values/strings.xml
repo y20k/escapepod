@@ -20,6 +20,10 @@
     <string name="dialog_error_title_no_network">Offline</string>
     <string name="dialog_error_title_podcast_duplicate">Duplicate Podcast</string>
     <string name="dialog_error_title_podcast_invalid_feed">Invalid Podcast Feed</string>
+    <string name="dialog_find_podcast_button_add">Add</string>
+    <string name="dialog_find_podcast_hint">Name or feed address</string>
+    <string name="dialog_find_podcast_no_results">No results found.</string>
+    <string name="dialog_find_podcast_title">Find Podcast</string>
     <string name="dialog_generic_button_cancel">Cancel</string>
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Show details</string>

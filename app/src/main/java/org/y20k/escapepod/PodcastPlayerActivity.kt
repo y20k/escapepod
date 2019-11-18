@@ -45,10 +45,7 @@ import org.y20k.escapepod.collection.CollectionAdapter
 import org.y20k.escapepod.collection.CollectionViewModel
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
-import org.y20k.escapepod.dialogs.AddPodcastDialog
-import org.y20k.escapepod.dialogs.ErrorDialog
-import org.y20k.escapepod.dialogs.OpmlImportDialog
-import org.y20k.escapepod.dialogs.YesNoDialog
+import org.y20k.escapepod.dialogs.*
 import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.LayoutHolder
@@ -64,6 +61,7 @@ import kotlin.coroutines.CoroutineContext
 class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         SharedPreferences.OnSharedPreferenceChangeListener,
         AddPodcastDialog.AddPodcastDialogListener,
+        FindPodcastDialog.FindPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
         OpmlImportDialog.OpmlImportDialogListener,
         YesNoDialog.YesNoDialogListener {
@@ -207,6 +205,18 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
+    /* Overrides onFindPodcastDialog from FindPodcastDialog */
+    override fun onFindPodcastDialog(remotePodcastFeedLocation: String) {
+        super.onFindPodcastDialog(remotePodcastFeedLocation)
+        val podcastUrl = remotePodcastFeedLocation.trim()
+        if (CollectionHelper.isNewPodcast(podcastUrl, collection)) {
+            downloadPodcastFeed(podcastUrl)
+        } else {
+            ErrorDialog().show(this, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
+        }
+    }
+
+
     /* Overrides onPlayButtonTapped from CollectionAdapterListener */
     override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
         when (playerState.playbackState) {
@@ -266,7 +276,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
     override fun onAddNewButtonTapped() {
-        AddPodcastDialog(this).show(this)
+        // AddPodcastDialog(this).show(this)
+        FindPodcastDialog(this).show(this)
     }
 
 
