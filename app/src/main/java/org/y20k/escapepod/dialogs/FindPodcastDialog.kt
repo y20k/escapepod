@@ -1,6 +1,7 @@
 package org.y20k.escapepod.dialogs
 
 import android.content.Context
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
@@ -16,6 +17,7 @@ import com.google.gson.GsonBuilder
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.search.GpodderResult
+//import kotlin.collections.HashMap
 
 
 /*
@@ -39,6 +41,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
     private lateinit var searchRequestProgressBar: ProgressBar
     private lateinit var noSearchResultsTextView: MaterialTextView
     private lateinit var requestQueue: RequestQueue
+    private val handler: Handler = Handler()
     private var podcastFeedLocation: String = String()
 
 
@@ -67,11 +70,15 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         // add cancel button
         builder.setNegativeButton(R.string.dialog_generic_button_cancel) { _, _ ->
             // listen for click on cancel button
-            requestQueue.stop()
+            if (this::requestQueue.isInitialized) {
+                requestQueue.stop()
+            }
         }
         // handle outside-click as "no"
         builder.setOnCancelListener(){
-            requestQueue.stop()
+            if (this::requestQueue.isInitialized) {
+                requestQueue.stop()
+            }
         }
 
         // listen for input
@@ -111,7 +118,11 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
     private fun handleSearchBoxLiveInput(context: Context, query: String) {
         when {
-            query.contains(" ") || query.length > 4 -> search(context, query)
+            query.contains(" ") || query.length > 4 -> {
+                handler.postDelayed(object : Runnable {
+                    override fun run() { search(context, query) }
+                }, 250)
+            }
             query.startsWith("http") -> activateAddButton(query)
             else -> resetLayout()
         }
@@ -148,8 +159,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
 
     private fun search(context: Context, query: String) {
-        // create queue and request and show progress indicator
-        showProgressIndicator()
+        // create queue and request
         requestQueue = Volley.newRequestQueue(context)
         val requestUrl = "https://gpodder.net/search.json?q=${query.replace(" ", "+")}"
 
@@ -179,6 +189,9 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
         // add to RequestQueue.
         requestQueue.add(stringRequest)
+
+        // show progress indicator
+        showProgressIndicator()
     }
 
 
@@ -203,6 +216,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
     private val errorListener: Response.ErrorListener = Response.ErrorListener { error ->
         showNoResultsError()
-        LogHelper.w(TAG, "Error: $error") }
+        LogHelper.w(TAG, "Error: $error")
+    }
 
 }
