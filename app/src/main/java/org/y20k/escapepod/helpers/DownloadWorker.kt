@@ -18,6 +18,7 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import org.y20k.escapepod.Keys
+import org.y20k.escapepod.core.Collection
 
 
 /*
@@ -35,8 +36,8 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
         when(inputData.getInt(Keys.KEY_DOWNLOAD_WORK_REQUEST,0)) {
             // CASE: update collection
             Keys.REQUEST_UPDATE_COLLECTION -> {
-                updateCollection()
                 doOneTimeHousekeeping()
+                updateCollection()
             }
         }
         return Result.success()
@@ -55,7 +56,8 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
         if (PreferencesHelper.isHouseKeepingNecessary(applicationContext)) {
             /* add whatever housekeeping is necessary here */
             // update covers after app update to versionCode 13 (-> Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY)
-            DownloadHelper.updateCovers(applicationContext)
+            val collection: Collection = FileHelper.readCollection(applicationContext)
+            FileHelper.deleteUnReferencedAudioFiles(applicationContext, collection)
             // housekeeping finished - save state
             PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext)
         }

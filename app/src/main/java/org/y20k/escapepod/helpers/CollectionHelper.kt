@@ -335,6 +335,20 @@ object CollectionHelper {
     }
 
 
+    /* Extracts all audio file references from a collection */
+    fun getAllAudioFileReferences(collection: Collection): ArrayList<String> {
+        val audioFileReferences: ArrayList<String> = arrayListOf()
+        collection.podcasts.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                if (episode.audio.isNotBlank()) {
+                    audioFileReferences.add(episode.audio)
+                }
+            }
+        }
+        return audioFileReferences
+    }
+
+
     /* Sends a broadcast containing the collection as parcel */
     private fun sendCollectionBroadcast(context: Context, modificationDate: Date) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
@@ -492,7 +506,7 @@ object CollectionHelper {
         if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
             // episode is in Up Next queue
             return false
-        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED || episode.isFinished()) {
+        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED || !episode.isFinished()) {
             // episode is paused or playing
             return false
         } else if (episode.audio.isEmpty()) {
@@ -552,10 +566,5 @@ object CollectionHelper {
         }
         return Episode()
     }
-
-
-
-
-
 
 }

@@ -63,7 +63,7 @@
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection up-to-date.</string>
     <string name="toast_message_downloading_episode">Downloading Episode.</string>
-    <string name="toast_message_error_feed_not_supported">Feed not supported.</string>
+    <string name="toast_message_error_feed_not_supported">Feed not supported (application/atom+xml).</string>
     <string name="toast_message_error_missing_storage_permission">Grant \"Read Storage\" permission to open this file.</string>
     <string name="toast_message_error_refreshing_cover">Could not refresh cover. The feed does not contain a cover reference.</string>
     <string name="toast_message_error_validation_audio_references">RSS validation: Feed does not contain any audio references.</string>

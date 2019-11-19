@@ -336,7 +336,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_DELETE_DOWNLOADS -> {
                 when (dialogResult) {
                     // user tapped: delete all downloads
-                    true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
+                    // true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
+                    true -> FileHelper.deleteUnReferencedAudioFiles(this, collection)
                 }
             }
             Keys.DIALOG_MARK_EPISODE_PLAYED -> {
