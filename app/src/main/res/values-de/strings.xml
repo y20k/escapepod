@@ -109,4 +109,5 @@
     <string name="dialog_find_podcast_hint">Name oder Feed-Adresse</string>
     <string name="dialog_find_podcast_no_results">Keine Ergebnisse gefunden.</string>
     <string name="dialog_find_podcast_title">Podcast finden</string>
+    <string name="toast_message_error_feed_not_supported">Feed wird nicht unterstützt.</string>
 </resources>
