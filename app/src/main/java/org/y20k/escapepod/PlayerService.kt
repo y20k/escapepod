@@ -539,6 +539,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+            // stop current playback, if necessary
+            if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
+                stopPlayback()
+            }
             // get episode, set metadata and start playback
             episode = CollectionHelper.getEpisode(collection, mediaId ?: String())
             mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))

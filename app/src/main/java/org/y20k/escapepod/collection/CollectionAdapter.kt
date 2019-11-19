@@ -459,7 +459,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
             if (podcast.episodes.size > numberOfOlderEpisodes) {
                 return numberOfOlderEpisodes
             } else {
-                return podcast.episodes.size
+                return podcast.episodes.size -1
             }
         }
 

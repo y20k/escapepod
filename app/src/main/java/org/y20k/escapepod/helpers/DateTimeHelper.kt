@@ -42,9 +42,9 @@ object DateTimeHelper {
             try {
                 // try to parse without seconds - if first attempt failed
                 date = SimpleDateFormat("EEE, dd MMM yyyy HH:mm Z", Locale.ENGLISH).parse((dateString)) ?: Keys.DEFAULT_DATE
-                LogHelper.w(TAG, "Unable to parse. Trying an alternative Date format.\n$e")
+                LogHelper.w(TAG, "Unable to parse. Trying an alternative Date format. $e")
             } catch (e: Exception) {
-                LogHelper.e(TAG, "Unable to parse. Returning a default date.\n$e")
+                LogHelper.e(TAG, "Unable to parse. Returning a default date. $e")
             }
         }
         return date

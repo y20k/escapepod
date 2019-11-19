@@ -62,7 +62,6 @@ class RssHelper {
                 // start reading rss feed
                 podcast = parseFeed(parser)
             } catch (e : Exception) {
-                LogHelper.e(TAG, "readSuspended - Exception") // todo remove
                 // e.printStackTrace()
             } finally {
                 stream?.close()
