@@ -199,14 +199,19 @@ object DownloadHelper {
 
     /*  episode and podcast cover */
     private fun enqueuePodcastMediaFiles(context: Context, podcast: Podcast, isNew: Boolean) {
+
         if (isNew && podcast.remoteImageFileLocation.isNotEmpty()) {
-            // start to download podcast cover
+            // new podcast: first download the cover
             CollectionHelper.clearImagesFolder(context, podcast)
             val coverUris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
-        // start to download latest episode audio file
+
         if (podcast.episodes.size > 0) {
+            // delete oldest audio file
+            val oldestEpisode: Episode = podcast.episodes.get(Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP - 1)
+            if (oldestEpisode.audio.isNotBlank()) { collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, oldestEpisode.getMediaId()) }
+            // start download of latest episode audio file
             val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
             enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
         }

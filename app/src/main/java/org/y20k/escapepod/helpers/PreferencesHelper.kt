@@ -154,7 +154,7 @@ object PreferencesHelper {
     fun loadActiveDownloads(context: Context): String {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val activeDownloadsString: String = settings.getString(Keys.PREF_ACTIVE_DOWNLOADS, Keys.ACTIVE_DOWNLOADS_EMPTY) ?: Keys.ACTIVE_DOWNLOADS_EMPTY
-        LogHelper.v(TAG, "actives downloads: $activeDownloadsString")
+        LogHelper.v(TAG, "IDs of active downloads: $activeDownloadsString")
         return activeDownloadsString
     }
 

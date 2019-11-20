@@ -347,7 +347,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     fun deleteEpisode(context: Context, mediaID: String) {
         LogHelper.v(TAG, "Deleting episode: $mediaID")
         // delete episode and update collection
-        collection = CollectionHelper.deleteEpisodeFile(context, collection, mediaID)
+        collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, mediaID)
         // update player state if necessary
         PreferencesHelper.updatePlayerState(context, collection)
         // save collection and broadcast changes

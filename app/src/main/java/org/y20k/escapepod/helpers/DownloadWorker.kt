@@ -57,7 +57,7 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
             /* add whatever housekeeping is necessary here */
             // update covers after app update to versionCode 13 (-> Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY)
             val collection: Collection = FileHelper.readCollection(applicationContext)
-            FileHelper.deleteUnReferencedAudioFiles(applicationContext, collection)
+            CollectionHelper.deleteUnReferencedAudioFiles(applicationContext, collection)
             // housekeeping finished - save state
             PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext)
         }

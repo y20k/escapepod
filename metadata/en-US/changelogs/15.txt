@@ -1,0 +1,5 @@
+# v0.7.10 - Drüben Auf Dem Hügel
+
+**2019-11-20**
+
+- fixed auto clean-up (should free up some space on your device)

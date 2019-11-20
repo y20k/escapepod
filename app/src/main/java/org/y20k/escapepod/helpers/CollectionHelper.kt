@@ -21,6 +21,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.core.net.toFile
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
@@ -414,7 +415,7 @@ object CollectionHelper {
                             LogHelper.d(TAG, "Trim list of episodes (delete if > 5): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}")
                             LogHelper.save(context, TAG, "Trim list of episodes (delete if > 5): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}") // todo remove
                             try {
-                                context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
+                                Uri.parse(podcast.episodes[i].audio).toFile().delete()
                             } catch (e: Exception) {
                                 LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                             }
@@ -461,6 +462,29 @@ object CollectionHelper {
     }
 
 
+
+    /* Delete files in audio folder that are not referenced in collection - used for housekeeping */
+    fun deleteUnReferencedAudioFiles(context: Context, collection: Collection) {
+        val audioFileReferences: ArrayList<String> = CollectionHelper.getAllAudioFileReferences(collection)
+        val audioFolder: File? = context.getExternalFilesDir(Keys.FOLDER_AUDIO)
+        if (audioFolder != null && audioFolder.exists()) {
+            val subFolders: Array<File>? = audioFolder.listFiles()
+            subFolders?.forEach { folder ->
+
+                // look for un-referenced files in each subfolder
+                val files: Array<File>? = folder.listFiles()
+                files?.forEach { file ->
+                    val fileUriString: String = Uri.fromFile(file).toString()
+                    if (!(audioFileReferences.contains(fileUriString))) {
+                        file.delete()
+                    }
+                }
+
+            }
+        }
+    }
+
+
     /* Deletes all files in the audio folders of a collection */
     fun deleteAllAudioFile(context: Context, collection: Collection): Collection {
         collection.podcasts.forEach { podcast ->
@@ -479,7 +503,7 @@ object CollectionHelper {
 
 
     /* Deletes an episode - used when user presses the delete button */
-    fun deleteEpisodeFile(context: Context, collection: Collection, mediaId: String): Collection {
+    fun deleteEpisodeAudioFile(context: Context, collection: Collection, mediaId: String): Collection {
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
                 if (episode.getMediaId() == mediaId) {

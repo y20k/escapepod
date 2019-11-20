@@ -140,28 +140,6 @@ object FileHelper {
     }
 
 
-    /* Delete files in audio folder that are not referenced in collection - used for housekeeping */
-    fun deleteUnReferencedAudioFiles(context: Context, collection: Collection) {
-        val audioFileReferences: ArrayList<String> = CollectionHelper.getAllAudioFileReferences(collection)
-        val audioFolder: File? = context.getExternalFilesDir(Keys.FOLDER_AUDIO)
-        if (audioFolder != null && audioFolder.exists()) {
-            val subFolders: Array<File>? = audioFolder.listFiles()
-            subFolders?.forEach { folder ->
-
-                // look for un-referenced files in each subfolder
-                val files: Array<File>? = folder.listFiles()
-                files?.forEach { file ->
-                    val fileUriString: String = Uri.fromFile(file).toString()
-                    if (!(audioFileReferences.contains(fileUriString))) {
-                        file.delete()
-                    }
-                }
-
-            }
-        }
-    }
-
-
     /* Creates a copy of a given uri */
     fun saveCopyOfFile(context: Context, podcastName: String, tempFileUri: Uri, fileType: Int, fileName: String, async: Boolean = false): Uri {
         val targetFile: File = File(context.getExternalFilesDir(determineDestinationFolderPath(fileType, podcastName)), fileName)
