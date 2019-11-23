@@ -11,8 +11,8 @@ android {
         applicationId 'org.y20k.escapepod'
         minSdkVersion 25
         targetSdkVersion 29
-        versionCode 15
-        versionName '0.7.10'
+        versionCode 16
+        versionName '0.7.11'
         resConfigs "en", "de", "nb-rNO"
     }
 
@@ -76,8 +76,8 @@ dependencies {
 
     implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
-    implementation "com.google.android.exoplayer:exoplayer:2.10.7"
-    implementation "com.google.android.exoplayer:extension-mediasession:2.10.7"
+    implementation "com.google.android.exoplayer:exoplayer:2.10.8"
+    implementation "com.google.android.exoplayer:extension-mediasession:2.10.8"
     implementation "com.google.code.gson:gson:2.8.6"
 
     implementation 'com.android.volley:volley:1.1.1'

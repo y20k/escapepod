@@ -395,10 +395,10 @@ object CollectionHelper {
     }
 
 
-    /* Deletes unneeded episodes in collection */
+    /* Deletes unneeded episodes in collection - removes audio files first and then trims episode list afterwards */
     fun trimPodcastEpisodeLists(context: Context, collection: Collection): Collection {
         collection.podcasts.forEach { podcast ->
-            // remove episodes without audio
+            // remove episodes without a remote audio location available
             podcast.episodes.removeIf {
                 episode -> episode.remoteAudioFileLocation.isEmpty()
             }
@@ -408,12 +408,10 @@ object CollectionHelper {
             // delete audio files, if necessary
             when (podcastSize > numberOfEpisodesToKeep) {
                 true -> {
-                    // from the last episode down to default number of episode that the app keeps
+                    // from the oldest episode down to default number of episode that the app keeps
                     for (i in podcastSize -1 downTo numberOfEpisodesToKeep) {
                         val audioUri: String = podcast.episodes[i].audio
                         if (audioUri.isNotEmpty()) {
-                            LogHelper.d(TAG, "Trim list of episodes (delete if > 5): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}")
-                            LogHelper.save(context, TAG, "Trim list of episodes (delete if > 5): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}") // todo remove
                             try {
                                 Uri.parse(podcast.episodes[i].audio).toFile().delete()
                             } catch (e: Exception) {
@@ -424,7 +422,7 @@ object CollectionHelper {
                 }
                 false -> numberOfEpisodesToKeep = podcastSize
             }
-            // create a trimmed version of the episode list
+            // afterwards create a trimmed version of the episode list
             val episodesTrimmed: MutableList<Episode> = podcast.episodes.subList(0, numberOfEpisodesToKeep)
             podcast.episodes = episodesTrimmed
         }
@@ -432,7 +430,7 @@ object CollectionHelper {
     }
 
 
-    /* Deletes audio files that are no longer needed */
+    /* Deletes audio files that are no longer needed - but keep episodes */
     fun deleteUnneededAudioFiles(context: Context, collection: Collection): Collection {
         val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP)
         for (podcast: Podcast in collection.podcasts) {
@@ -442,8 +440,6 @@ object CollectionHelper {
                 for (i in podcastSize -1 downTo numberOfAudioFilesToKeep) {
                     // check if episode can be deleted
                     if (canBeDeleted(context, podcast.episodes[i])) {
-                        LogHelper.d(TAG, "Deleting unneeded audio files (delete if > 2): Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title} ")
-                        LogHelper.save(context, TAG, "Deleting unneeded audio files (delete if > 2):: Deleting audio file for episode no. ${i+1} - ${podcast.episodes[i].title}") // todo remove
                         // delete audio file
                         try {
                             context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
@@ -530,7 +526,7 @@ object CollectionHelper {
         if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
             // episode is in Up Next queue
             return false
-        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED || !episode.isFinished()) {
+        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED && !episode.isFinished()) {
             // episode is paused or playing
             return false
         } else if (episode.audio.isEmpty()) {
