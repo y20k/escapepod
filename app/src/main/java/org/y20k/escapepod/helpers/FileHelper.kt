@@ -19,6 +19,7 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -280,7 +281,11 @@ object FileHelper {
             exception.printStackTrace()
         }
         if (deleteOriginal) {
-            context.contentResolver.delete(originalFileUri, null, null)
+            try {
+                originalFileUri.toFile().delete()
+            } catch (e: Exception) {
+                LogHelper.e(TAG, "Unable to delete the original file. Stack trace: $e")
+            }
         }
         return success
     }

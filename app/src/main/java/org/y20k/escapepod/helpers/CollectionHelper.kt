@@ -442,7 +442,7 @@ object CollectionHelper {
                     if (canBeDeleted(context, podcast.episodes[i])) {
                         // delete audio file
                         try {
-                            context.contentResolver.delete(Uri.parse(podcast.episodes[i].audio), null, null)
+                            Uri.parse(podcast.episodes[i].audio).toFile().delete()
                         } catch (e: Exception) {
                             LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                         }
@@ -506,7 +506,7 @@ object CollectionHelper {
                     // delete audio file
                     LogHelper.d(TAG, "Deleting audio file for episode: ${episode.title}")
                     try {
-                        context.contentResolver.delete(Uri.parse(episode.audio), null, null)
+                        Uri.parse(episode.audio).toFile().delete()
                     } catch (e: Exception) {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }
