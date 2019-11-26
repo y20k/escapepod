@@ -13,7 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 17
         versionName '0.7.12'
-        resConfigs "en", "de", "nb-rNO"
+        resConfigs "en", "de", "nb-rNO", "pt"
     }
 
     kotlinOptions {
