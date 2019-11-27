@@ -46,11 +46,11 @@
         tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/pocast_search_results"
+        android:id="@+id/podcast_search_result_list"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="44dp"
+        android:paddingBottom="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/podcast_search_box_view"
         app:layout_constraintStart_toStartOf="@+id/podcast_search_box_view"

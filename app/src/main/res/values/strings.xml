@@ -139,6 +139,7 @@
     <string name="sample_text_episode_0_played_time" translatable="false">00:00</string>
     <string name="sample_text_playback_speed" translatable="false">1.0 x</string>
     <string name="sample_text_podcast_name" translatable="false">Security Now</string>
+    <string name="sample_text_podcast_description" translatable="false">Steve Gibson, the man who coined the term spyware and created the first anti-spyware program, creator of Spinrite and ShieldsUP, discusses the hot topics in security today with Leo Laporte. Records live every Tuesday at 4:30pm Eastern / 1:30pm Pacific / 21:30 UTC.</string>
     <string name="sample_text_podcast_xml" translatable="false">https://feeds.twit.tv/sn.xml</string>
     <string name="sample_text_show_notes" translatable="false">How a never-disclosed Windows vulnerability was quickly reverse-engineered from the patches to fix it and turned into more than 12 potent and damaging Internet worms in three days. What does this mean for the future of Internet security?</string>
     <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>

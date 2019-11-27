@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -17,13 +19,15 @@ import com.google.gson.GsonBuilder
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.search.GpodderResult
+import org.y20k.escapepod.search.GpodderResultAdapter
+
 //import kotlin.collections.HashMap
 
 
 /*
  * FindPodcastDialog class
  */
-class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialogListener) {
+class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialogListener): GpodderResultAdapter.GpodderResultAdapterListener {
 
     /* Interface used to communicate back to activity */
     interface FindPodcastDialogListener {
@@ -40,9 +44,18 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
     private lateinit var podcastSearchBoxView: SearchView
     private lateinit var searchRequestProgressBar: ProgressBar
     private lateinit var noSearchResultsTextView: MaterialTextView
+    private lateinit var podcastSearchResultList: RecyclerView
+    private lateinit var searchResultAdapter: GpodderResultAdapter
     private lateinit var requestQueue: RequestQueue
+    private var result: Array<GpodderResult> = arrayOf()
     private val handler: Handler = Handler()
     private var podcastFeedLocation: String = String()
+
+
+    /* Overrides onSearchResultTapped from GpodderResultAdapterListener */
+    override fun onSearchResultTapped(url: String) {
+        activateAddButton(url)
+    }
 
 
     /* Construct and show dialog */
@@ -59,8 +72,12 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         val view = inflater.inflate(R.layout.dialog_find_podcast, null)
         podcastSearchBoxView = view.findViewById(R.id.podcast_search_box_view)
         searchRequestProgressBar = view.findViewById(R.id.search_request_progress_bar)
+        podcastSearchResultList = view.findViewById(R.id.podcast_search_result_list)
         noSearchResultsTextView = view.findViewById(R.id.no_results_text_view)
         noSearchResultsTextView.visibility = View.GONE
+
+        // set up list of search results
+        setupRecyclerView(context)
 
         // add okay ("import") button
         builder.setPositiveButton(R.string.dialog_find_podcast_button_add) { _, _ ->
@@ -106,6 +123,20 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
     }
 
 
+    /* Sets up list of results (RecyclerView) */
+    private fun setupRecyclerView(context: Context) {
+        searchResultAdapter = GpodderResultAdapter(this, result)
+        podcastSearchResultList.adapter = searchResultAdapter
+        val layoutManager: LinearLayoutManager = object: LinearLayoutManager(context) {
+            override fun supportsPredictiveItemAnimations(): Boolean {
+                return true
+            }
+        }
+        podcastSearchResultList.layoutManager = layoutManager
+        podcastSearchResultList.itemAnimator = DefaultItemAnimator()
+    }
+
+
 
     private fun handleSearchBoxInput(context: Context, query: String) {
         when {
@@ -117,14 +148,14 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
 
     private fun handleSearchBoxLiveInput(context: Context, query: String) {
-        when {
-            query.contains(" ") || query.length > 4 -> {
-                handler.postDelayed(object : Runnable {
-                    override fun run() { search(context, query) }
-                }, 250)
-            }
-            query.startsWith("http") -> activateAddButton(query)
-            else -> resetLayout()
+        if (query.startsWith("http")) {
+            activateAddButton(query)
+        } else if (query.contains(" ") || query.length > 4) {
+            handler.postDelayed(object : Runnable {
+                override fun run() { search(context, query) }
+            }, 250)
+        } else {
+            resetLayout()
         }
     }
 
@@ -138,6 +169,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
 
     private fun resetLayout() {
+        LogHelper.v(TAG, "resetLayout") // todo remove
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
         searchRequestProgressBar.visibility = View.GONE
         noSearchResultsTextView.visibility = View.GONE
@@ -145,6 +177,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
 
     private fun showNoResultsError() {
+        LogHelper.v(TAG, "showNoResultsError") // todo remove
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
         searchRequestProgressBar.visibility = View.GONE
         noSearchResultsTextView.visibility = View.VISIBLE
@@ -205,18 +238,25 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
     private val responseListener: Response.Listener<String> = Response.Listener<String> { response ->
         if (response != null && response.isNotBlank()) {
-            val result: Array<GpodderResult> = createGpodderResult(response)
+            result = createGpodderResult(response)
             if (result.isNotEmpty()) {
-                Toast.makeText(findPodcastDialogListener as Context, "Best result = ${result[0].title}", Toast.LENGTH_LONG).show()
+                searchResultAdapter.searchResults = result
+                searchResultAdapter.notifyDataSetChanged()
+                resetLayout()
+            } else if (searchResultAdapter.searchResults.isEmpty()) {
+                showNoResultsError()
             }
         }
-        resetLayout()
     }
 
 
     private val errorListener: Response.ErrorListener = Response.ErrorListener { error ->
-        showNoResultsError()
+        if (searchResultAdapter.searchResults.isEmpty()) {
+            showNoResultsError()
+        }
         LogHelper.w(TAG, "Error: $error")
     }
+
+
 
 }

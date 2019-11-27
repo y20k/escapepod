@@ -42,7 +42,7 @@ class ShowNotesDialog () {
         // get views
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val view: View = inflater.inflate(R.layout.dialog_show_notes, null)
-        val podcastNameView: TextView = view.findViewById(R.id.podcast_name)
+        val podcastNameView: TextView = view.findViewById(R.id.result_podcast_name)
         val podcastFeedXmlView: TextView = view.findViewById(R.id.podcast_feed_xml)
         val episodeDateView: TextView = view.findViewById(R.id.episode_date)
         val episodeTitleView: TextView = view.findViewById(R.id.episode_title)

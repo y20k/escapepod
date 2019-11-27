@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/podcast_name"
+        android:id="@+id/result_podcast_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -82,7 +82,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/podcast_name"
+        app:layout_constraintTop_toBottomOf="@+id/result_podcast_name"
         tools:text="@string/sample_text_podcast_xml" />
 
     <com.google.android.material.textview.MaterialTextView

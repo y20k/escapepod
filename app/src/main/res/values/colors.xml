@@ -29,6 +29,9 @@
     <color name="list_card_episode_background">@color/escapepod_grey_very_light</color>
     <color name="list_card_episode_progress_background">@color/escapepod_grey_lighter</color>
 
+    <color name="search_result_background">@color/escapepod_grey_very_light</color>
+    <color name="search_result_background_selected">@color/escapepod_grey_lighter</color>
+
     <!-- COLOR NAMES -->
     <color name="escapepod_grey">#FF595959</color> <!-- derived from recommended dark theme surface color -->
     <color name="escapepod_grey_light">#FF7D7D7D</color>

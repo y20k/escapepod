@@ -1,7 +1,7 @@
 /*
  * CollectionAdapter.kt
  * Implements the CollectionAdapter class
- * A CollectionAdapter is a custom adapter for a RecyclerView
+ * A CollectionAdapter is a custom adapter providing podcast card views for a RecyclerView
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -419,7 +419,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
      */
     private inner class PodcastViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
         val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.player_podcast_cover)
-        val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
+        val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.result_podcast_name)
         val currentEpisodeViews: EpisodeViewHolder = EpisodeViewHolder(podcastCardLayout)
         val olderEpisodesButtonView: TextView = podcastCardLayout.findViewById(R.id.older_episodes_toggle)
         val olderEpisodesList: RecyclerView = podcastCardLayout.findViewById(R.id.older_episode_list)
