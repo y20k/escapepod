@@ -5,8 +5,9 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,6 @@ import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.search.GpodderResult
 import org.y20k.escapepod.search.GpodderResultAdapter
-
-//import kotlin.collections.HashMap
 
 
 /*
@@ -42,7 +41,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
     /* Main class variables */
     private lateinit var dialog: AlertDialog
     private lateinit var podcastSearchBoxView: SearchView
-    private lateinit var searchRequestProgressBar: ProgressBar
+    private lateinit var searchRequestProgressIndicator: ProgressBar
     private lateinit var noSearchResultsTextView: MaterialTextView
     private lateinit var podcastSearchResultList: RecyclerView
     private lateinit var searchResultAdapter: GpodderResultAdapter
@@ -71,7 +70,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.dialog_find_podcast, null)
         podcastSearchBoxView = view.findViewById(R.id.podcast_search_box_view)
-        searchRequestProgressBar = view.findViewById(R.id.search_request_progress_bar)
+        searchRequestProgressIndicator = view.findViewById(R.id.search_request_progress_indicator)
         podcastSearchResultList = view.findViewById(R.id.podcast_search_result_list)
         noSearchResultsTextView = view.findViewById(R.id.no_results_text_view)
         noSearchResultsTextView.visibility = View.GONE
@@ -110,6 +109,14 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
             }
         })
 
+
+        // listen for click on clear button
+        val clearButton: AppCompatImageView = view.findViewById(androidx.appcompat.R.id.search_close_btn)
+        clearButton.setOnClickListener {
+            resetLayout(clearAdapter = true)
+            // TODO Do not override system listener
+        }
+
         // set dialog view
         builder.setView(view)
 
@@ -138,59 +145,68 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
 
 
+    /* Handles user input into search box - user has to submit the search */
     private fun handleSearchBoxInput(context: Context, query: String) {
         when {
-            query.isEmpty() -> resetLayout()
+            // handle empty search box input
+            query.isEmpty() -> resetLayout(clearAdapter = true)
+            // handle direct URL input
             query.startsWith("http") -> activateAddButton(query)
+            // handle search string input
             else -> search(context, query)
         }
     }
 
 
+    /* Handles live user input into search box */
     private fun handleSearchBoxLiveInput(context: Context, query: String) {
         if (query.startsWith("http")) {
+            // handle direct URL input
             activateAddButton(query)
         } else if (query.contains(" ") || query.length > 4) {
+            // handle search string input - delay request to manage server load (not sure if necessary)
             handler.postDelayed(object : Runnable {
                 override fun run() { search(context, query) }
             }, 250)
-        } else {
-            resetLayout()
         }
     }
 
 
+    /* Makes the "Add" button clickable */
     private fun activateAddButton(query: String) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-        searchRequestProgressBar.visibility = View.GONE
+        searchRequestProgressIndicator.visibility = View.GONE
         noSearchResultsTextView.visibility = View.GONE
         podcastFeedLocation = query
     }
 
 
-    private fun resetLayout() {
-        LogHelper.v(TAG, "resetLayout") // todo remove
+    /* Resets the dialog layout to default state */
+    private fun resetLayout(clearAdapter: Boolean = false) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        searchRequestProgressBar.visibility = View.GONE
+        searchRequestProgressIndicator.visibility = View.GONE
         noSearchResultsTextView.visibility = View.GONE
+        searchResultAdapter.resetSelection(clearAdapter)
     }
 
 
+    /* Display the "No Results" error - hide other unneeded views */
     private fun showNoResultsError() {
-        LogHelper.v(TAG, "showNoResultsError") // todo remove
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        searchRequestProgressBar.visibility = View.GONE
+        searchRequestProgressIndicator.visibility = View.GONE
         noSearchResultsTextView.visibility = View.VISIBLE
     }
 
 
+    /* Display the "No Results" error - hide other unneeded views */
     private fun showProgressIndicator() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        searchRequestProgressBar.visibility = View.VISIBLE
+        searchRequestProgressIndicator.visibility = View.VISIBLE
         noSearchResultsTextView.visibility = View.GONE
     }
 
 
+    /* Initiates podcast search on gpodder.net */
     private fun search(context: Context, query: String) {
         // create queue and request
         requestQueue = Volley.newRequestQueue(context)
@@ -228,35 +244,35 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
     }
 
 
-    private fun createGpodderResult(result: String): Array<GpodderResult> {
-        val gsonBuilder = GsonBuilder()
-        gsonBuilder.setDateFormat("M/d/yy hh:mm a")
-        val gson = gsonBuilder.create()
-        return gson.fromJson(result, Array<GpodderResult>::class.java)
-    }
 
-
+    /* Listens for (positive) server responses to search requests */
     private val responseListener: Response.Listener<String> = Response.Listener<String> { response ->
-        if (response != null && response.isNotBlank()) {
+        if (response != null) {
             result = createGpodderResult(response)
             if (result.isNotEmpty()) {
                 searchResultAdapter.searchResults = result
                 searchResultAdapter.notifyDataSetChanged()
-                resetLayout()
-            } else if (searchResultAdapter.searchResults.isEmpty()) {
+                resetLayout(clearAdapter = false)
+            } else {
                 showNoResultsError()
             }
         }
     }
 
 
+    /* Listens for error response from server */
     private val errorListener: Response.ErrorListener = Response.ErrorListener { error ->
-        if (searchResultAdapter.searchResults.isEmpty()) {
-            showNoResultsError()
-        }
         LogHelper.w(TAG, "Error: $error")
     }
 
+
+    /* Converts search result JSON string */
+    private fun createGpodderResult(result: String): Array<GpodderResult> {
+        val gsonBuilder = GsonBuilder()
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a")
+        val gson = gsonBuilder.create()
+        return gson.fromJson(result, Array<GpodderResult>::class.java)
+    }
 
 
 }

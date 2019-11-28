@@ -86,6 +86,20 @@ class GpodderResultAdapter(val listener: GpodderResultAdapterListener, var searc
     }
 
 
+    /* Resets the selected position */
+    fun resetSelection(clearAdapter: Boolean) {
+        val currentlySelected: Int = selectedPosition
+        selectedPosition = RecyclerView.NO_POSITION
+        if (clearAdapter) {
+            searchResults = arrayOf()
+            notifyDataSetChanged()
+        } else {
+            notifyItemChanged(currentlySelected)
+        }
+    }
+
+
+
     /*
      * Inner class: ViewHolder for a podcast search result
      */
