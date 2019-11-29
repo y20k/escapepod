@@ -1,4 +1,4 @@
-Escapepod is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepod is an app of type BYOP ("bring your own podcast"). It does not feature any kind of built-in search option. You will have to manually add podcasts.
+Escapepod is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
 
 
 FREQUENT QUESTIONS
@@ -31,3 +31,6 @@ For the foreseeable future the development of Escapepod will focus on stability 
 
 DOES ESCAPEPODS SUPPORT OMPL?
 You can import an OPML formatted podcast list. Open the list in a file browser and choose Escapepod as a handler. Escapepod does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device /Android/data/org.y20k.escapepod/files/collection/.
+
+WHERE DO THE PODCAST SEARCH RESULTS COME FROM?
+Escapepod searches the gpodder.net (https://gpodder.net/directory/) online database. Gpodder.net is a great page, if you are looking for new stuff to listen to, BTW.

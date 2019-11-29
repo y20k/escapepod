@@ -70,7 +70,7 @@ class CollectionProvider {
 
     /* Get newest episode as media item */
     fun getNewestEpisode(): MediaBrowserCompat.MediaItem {
-        when (isInitialized()) {
+        when (isInitialized() && episodeListByDate.isNotEmpty()) {
             true -> return episodeListByDate.first()
             false -> return CollectionHelper.buildEpisodeMediaMetaItem(Episode())
         }
@@ -79,7 +79,7 @@ class CollectionProvider {
 
     /* Get oldest episode as media item */
     fun getOldestEpisode(): MediaBrowserCompat.MediaItem {
-        when (isInitialized()) {
+        when (isInitialized() && episodeListByDate.isNotEmpty()) {
             true -> return episodeListByDate.last()
             false -> return CollectionHelper.buildEpisodeMediaMetaItem(Episode())
         }

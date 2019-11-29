@@ -27,6 +27,7 @@ import org.y20k.escapepod.R
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.core.Podcast
+import org.y20k.escapepod.extensions.copy
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
 
@@ -207,10 +208,12 @@ object DownloadHelper {
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
 
-        if (podcast.episodes.size > 0) {
+        if (podcast.episodes.isNotEmpty()) {
             // delete oldest audio file
-            val oldestEpisode: Episode = podcast.episodes.get(Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP - 1)
-            if (oldestEpisode.audio.isNotBlank()) { collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, oldestEpisode.getMediaId()) }
+            if (podcast.episodes.size >= Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP) {
+                val oldestEpisode: Episode = podcast.episodes[Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP - 1]
+                if (oldestEpisode.audio.isNotBlank()) { collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, oldestEpisode.getMediaId()) }
+            }
             // start download of latest episode audio file
             val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
             enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
@@ -290,7 +293,8 @@ object DownloadHelper {
 
     /* Checks if a file is not yet in download queue */
     private fun isNotInDownloadQueue(remoteFileLocation: String): Boolean {
-        activeDownloads.forEach { downloadId ->
+        val activeDownloadsCopy = activeDownloads.copy()
+        activeDownloadsCopy.forEach { downloadId ->
             if (getRemoteFileLocation(downloadManager, downloadId) == remoteFileLocation) {
                 LogHelper.w(TAG, "File is already in download queue: $remoteFileLocation")
                 return false

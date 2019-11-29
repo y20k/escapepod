@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,6 +45,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
     private lateinit var podcastSearchResultList: RecyclerView
     private lateinit var searchResultAdapter: GpodderResultAdapter
     private lateinit var requestQueue: RequestQueue
+    private var currentSearchString: String = String()
     private var result: Array<GpodderResult> = arrayOf()
     private val handler: Handler = Handler()
     private var podcastFeedLocation: String = String()
@@ -110,13 +110,6 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         })
 
 
-        // listen for click on clear button
-        val clearButton: AppCompatImageView = view.findViewById(androidx.appcompat.R.id.search_close_btn)
-        clearButton.setOnClickListener {
-            resetLayout(clearAdapter = true)
-            // TODO Do not override system listener
-        }
-
         // set dialog view
         builder.setView(view)
 
@@ -153,21 +146,32 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
             // handle direct URL input
             query.startsWith("http") -> activateAddButton(query)
             // handle search string input
-            else -> search(context, query)
+            else -> {
+                showProgressIndicator()
+                search(context, query)
+            }
         }
     }
 
 
     /* Handles live user input into search box */
     private fun handleSearchBoxLiveInput(context: Context, query: String) {
+        currentSearchString = query
         if (query.startsWith("http")) {
             // handle direct URL input
             activateAddButton(query)
         } else if (query.contains(" ") || query.length > 4) {
+            // show progress indicator
+            showProgressIndicator()
             // handle search string input - delay request to manage server load (not sure if necessary)
             handler.postDelayed(object : Runnable {
-                override fun run() { search(context, query) }
-            }, 250)
+                override fun run() {
+                    // only start search if query is the same as one second ago
+                    if (currentSearchString == query) search(context, query)
+                }
+            }, 1000)
+        } else if (query.isEmpty()) {
+            resetLayout(clearAdapter = true)
         }
     }
 
@@ -208,6 +212,7 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
     /* Initiates podcast search on gpodder.net */
     private fun search(context: Context, query: String) {
+        LogHelper.e(TAG, "Searching for: $query")
         // create queue and request
         requestQueue = Volley.newRequestQueue(context)
         val requestUrl = "https://gpodder.net/search.json?q=${query.replace(" ", "+")}"
@@ -238,9 +243,6 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
         // add to RequestQueue.
         requestQueue.add(stringRequest)
-
-        // show progress indicator
-        showProgressIndicator()
     }
 
 

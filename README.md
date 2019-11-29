@@ -4,9 +4,9 @@ README
 # Escapepod - Podcast Player for Android
 <img src="https://raw.githubusercontent.com/y20k/escapepod/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="192" />
 
-**Version 0.7.x**
+**Version 0.8.x**
 
-Escapepod is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepod is an app of type BYOP ("bring your own podcast"). It does not feature any kind of built-in search option. You will have to manually add podcasts.
+Escapepod is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
 
 Escapepod is free and open source. It is published under the [MIT open source license](https://opensource.org/licenses/MIT). Want to help? Please check out the notes in [CONTRIBUTING.md](https://github.com/y20k/escapepod/blob/master/CONTRIBUTE.md) first.
 
@@ -54,6 +54,10 @@ For the foreseeable future the development of Escapepod will focus on stability 
 
 ### Does Escapepod support OMPL?
 You can import an [OPML](https://en.wikipedia.org/wiki/OPML) formatted podcast list. Open the list in a file browser and choose Escapepod as a handler. Escapepod does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device `/Android/data/org.y20k.escapepod/files/collection/`.
+
+### Where do the podcast search results come from?
+Escapepod searches the [gpodder.net](https://gpodder.net/directory/) online database. Gpodder.net is a great page, if you are looking for new stuff to listen to, btw.
+
 
 ## Screenshots (v0.7)
 [<img src="https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.7-oneplus5.png" width="240">](https://raw.githubusercontent.com/y20k/escapepod/master/metadata/en-US/phoneScreenshots/01-lockscreen-active-v0.7-oneplus5.png)
