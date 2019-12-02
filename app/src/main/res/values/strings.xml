@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-
     <!-- App Name -->
     <string name="app_name">Escapepod</string>
-
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Add</string>
     <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for a RSS symbol on the homepage of the respective podcast.</string>
     <string name="dialog_add_podcast_input_hint">Enter podcast feed link</string>
     <string name="dialog_add_podcast_title">Add New Podcast</string>
     <string name="dialog_episode_shownotes_close">Close</string>
-    <string name="dialog_episode_shownotes_title">Show Notes</string> <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
+    <string name="dialog_episode_shownotes_title">Show Notes</string>
+    <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
     <string name="dialog_error_message_default">An error occurred</string>
     <string name="dialog_error_message_no_network">Connect to the Internet.</string>
     <string name="dialog_error_message_podcast_duplicate">This podcast is already part of your collection.</string>
@@ -49,21 +47,19 @@
     <string name="dialog_yes_no_positive_button_default">Yes</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Delete All</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
-    <string name="dialog_yes_no_positive_button_mark_episode_played">Mark Played</string>
+    <string name="dialog_yes_no_positive_button_mark_episode_played">Mark as Played</string>
     <string name="dialog_yes_no_positive_button_metered_network_download">Download anyway</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
     <string name="dialog_yes_no_positive_button_update_collection">Update</string>
     <string name="dialog_yes_no_title_default">Decide</string>
-
     <!-- Player -->
     <string name="player_up_next_headline">Up Next:</string>
-
     <!-- Toasts -->
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection up-to-date.</string>
     <string name="toast_message_downloading_episode">Downloading Episode.</string>
-    <string name="toast_message_error_feed_not_supported">Feed not supported (application/atom+xml).</string>
+    <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Grant \"Read Storage\" permission to open this file.</string>
     <string name="toast_message_error_refreshing_cover">Could not refresh cover. The feed does not contain a cover reference.</string>
     <string name="toast_message_error_validation_audio_references">RSS validation: Feed does not contain any audio references.</string>
@@ -82,12 +78,10 @@
     <string name="toast_message_up_next_removed_episode">Removed episode from \'Up Next\' queue.</string>
     <string name="toast_message_up_next_start_playback">Starting next episode.</string>
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
-
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">Add new podcast</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Hide older episodes</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
-
     <!-- Notification -->
     <string name="notification_now_playing_channel_description">Playback controls, episode name and logo.</string>
     <string name="notification_now_playing_channel_name">Playback Controls</string>
@@ -96,7 +90,6 @@
     <string name="notification_playing">Playing</string>
     <string name="notification_skip_back">Skip back</string>
     <string name="notification_skip_forward">Skip forward</string>
-
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">App icon depicting an escape capsule in space</string>
     <string name="descr_card_add_new_button">Add new podcast feed</string>
@@ -104,12 +97,12 @@
     <string name="descr_card_playback_indicator">Playback progress</string>
     <string name="descr_card_podcast_cover">Podcast cover image</string>
     <string name="descr_card_small_download_button">Download</string>
-    <string name="descr_card_small_playback_button">Play / pause</string>
+    <string name="descr_card_small_playback_button">Play/pause</string>
     <string name="descr_expanded_episode_length">Episode length</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Debug log file toggle</string>
     <string name="descr_expanded_player_forward_button">Forward 30 seconds</string>
     <string name="descr_expanded_player_next_chapter_button">Next chapter</string>
-    <string name="descr_expanded_player_playback_button">Play / pause</string>
+    <string name="descr_expanded_player_playback_button">Play/pause</string>
     <string name="descr_expanded_player_playback_speed_button">Increase playback speed</string>
     <string name="descr_expanded_player_podcast_cover">Large podcast cover image</string>
     <string name="descr_expanded_player_previous_chapter_button">Previous chapter</string>
@@ -121,16 +114,14 @@
     <string name="descr_expanded_player_time_played">Time played</string>
     <string name="descr_expanded_player_time_remaining">Time remaining</string>
     <string name="descr_expanded_player_up_next_clear_button">Clear \'Up Next\' queue</string>
-    <string name="descr_player_playback_button">Play / pause</string>
+    <string name="descr_player_playback_button">Play/pause</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
-
     <!-- Onboarding -->
     <string name="onboarding_app_description">Podcast App</string>
     <string name="onboarding_app_get_started">Get Started</string>
     <string name="onboarding_app_hypercritical_quote_1" translatable="false">Nothing is so perfect</string>
     <string name="onboarding_app_hypercritical_quote_2" translatable="false">that it can\'t be complained about.</string>
     <string name="player_sheet_p_no_data" translatable="false">-</string>
-
     <!-- Sample Text -->
     <string name="sample_text_episode_0_chapter" translatable="false">The first Internet worms of 2005</string>
     <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
@@ -144,8 +135,6 @@
     <string name="sample_text_show_notes" translatable="false">How a never-disclosed Windows vulnerability was quickly reverse-engineered from the patches to fix it and turned into more than 12 potent and damaging Internet worms in three days. What does this mean for the future of Internet security?</string>
     <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
     <string name="sample_text_up_next_name" translatable="false">Spieleveteranen - Jetzt labern die auch noch!</string>
-
-
     <!-- Allowed Caller Template -->
     <string name="allowed_caller_log" translatable="false">
         Caller has a valid certificate, but its package doesn\'t match any expected package for the
@@ -154,5 +143,4 @@
         <signature name=\"%1$s\" package=\"%2$s\">\n\t<key>%3$s</key>\n</signature>\n
         ]]>
     </string>
-
 </resources>
