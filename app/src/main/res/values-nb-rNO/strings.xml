@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-
     <!-- App Name -->
     <string name="app_name">Escapepod</string>
-
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Legg til</string>
     <string name="dialog_add_podcast_howto">Legg til adresse til et nettradioopptak. Se etter et RSS-symbol på hjemmesiden til kanalen du ønsker å legge til.</string>
     <string name="dialog_add_podcast_input_hint">Skriv inn lenke til informasjonskanal</string>
     <string name="dialog_add_podcast_title">Legg til nytt nettradioopptak</string>
     <string name="dialog_episode_shownotes_close">Lukk</string>
-    <string name="dialog_episode_shownotes_title">Episodeinnhold</string> <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
+    <string name="dialog_episode_shownotes_title">Episodeinnhold</string>
+    <!-- Text notes that accompany a podcast and describe its content. https://en.wiktionary.org/wiki/show_notes -->
     <string name="dialog_error_message_default">En feil inntraff</string>
     <string name="dialog_error_message_no_network">Koble til Internett.</string>
     <string name="dialog_error_message_podcast_duplicate">Dette nettradioopptaket er allerede i samlingen din.</string>
@@ -50,10 +48,8 @@
     <string name="dialog_yes_no_positive_button_remove_podcast">Fjern</string>
     <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
     <string name="dialog_yes_no_title_default">Avgjør</string>
-
     <!-- Player -->
     <string name="player_up_next_headline">Spilles etterpå:</string>
-
     <!-- Toasts -->
     <string name="toast_message_adding_podcast">Legger til nettradioopptak.</string>
     <string name="toast_message_adding_podcasts">Legger til nettradioopptak.</string>
@@ -77,12 +73,10 @@
     <string name="toast_message_up_next_removed_episode">Fjernet epsiode fra \'Spilles etterpå\'-kø.</string>
     <string name="toast_message_up_next_start_playback">Starter neste episode.</string>
     <string name="toast_message_updating_collection">Oppdaterer nettradioopptakssamling.</string>
-
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">Legg til nytt nettradioopptak</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Skjul eldre episoder</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Eldre episoder</string>
-
     <!-- Notification -->
     <string name="notification_now_playing_channel_description">Avspillingskontroller, episodenavn og logo.</string>
     <string name="notification_now_playing_channel_name">Avspillingskontroller</string>
@@ -91,7 +85,6 @@
     <string name="notification_playing">Spiller</string>
     <string name="notification_skip_back">Hopp bakover</string>
     <string name="notification_skip_forward">Hopp forover</string>
-
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">Programikon som viser en flyktkapsel i ytre rom</string>
     <string name="descr_card_add_new_button">Legg til nytt nettradioopptak</string>
@@ -118,14 +111,12 @@
     <string name="descr_expanded_player_up_next_clear_button">Tøm \'Spilles etterpå\'-kø</string>
     <string name="descr_player_playback_button">Spill av / sett på pause</string>
     <string name="descr_player_podcast_cover">Lite nettradioopptaksomslag</string>
-
     <!-- Onboarding -->
     <string name="onboarding_app_description">Nettradioopptaksavspillingsprogram</string>
     <string name="onboarding_app_get_started">Begynn nå</string>
     <string name="onboarding_app_hypercritical_quote_1" translatable="false">Ingenting er så perfekt</string>
     <string name="onboarding_app_hypercritical_quote_2" translatable="false">at det ikke kan påklages.</string>
     <string name="player_sheet_p_no_data" translatable="false">-</string>
-
     <!-- Sample Text -->
     <string name="sample_text_episode_0_chapter" translatable="false">De første internettormene i 2005</string>
     <string name="sample_text_episode_0_date" translatable="false">19 Aug 2005</string>
@@ -138,8 +129,6 @@
     <string name="sample_text_show_notes" translatable="false">Hvordan en aldri oppgitt Windows-sikkerhetsfeil raskt ble omvendt utrensket fra feilfiksene for å fikse den, og omgjort til 12 potente og skadelige internettormer på tre dager. Hva betyr det for fremtidig internettsikkerhet?</string>
     <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
     <string name="sample_text_up_next_name" translatable="false">Spillveteranen - Nå snakker de også! (tyskspråklig)</string>
-
-
     <!-- Allowed Caller Template -->
     <string name="allowed_caller_log" translatable="false">
         Ringeren har et gyldig sertifikat, men dens pakkenavn samsvarer ikke med noen forventet pakke for
@@ -148,5 +137,9 @@
         <signature name=\"%1$s\" package=\"%2$s\">\n\t<key>%3$s</key>\n</signature>\n
         ]]>
     </string>
-
+    <string name="dialog_find_podcast_button_add">Legg til</string>
+    <string name="dialog_find_podcast_hint">Navn eller adresse for informasjonskanal</string>
+    <string name="dialog_find_podcast_no_results">Resultatløst søk.</string>
+    <string name="dialog_find_podcast_title">Finn nettradioopptak</string>
+    <string name="toast_message_error_feed_not_supported">Ustøttet informasjonskanal (program/Atom+XML).</string>
 </resources>
