@@ -4,3 +4,4 @@
 
 - basic podcast search on the gpodder.net service
 - Portuguese language version
+- Dutch language version

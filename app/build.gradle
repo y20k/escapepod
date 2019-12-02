@@ -13,7 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 18
         versionName '0.8.0'
-        resConfigs "en", "de", "nb-rNO", "pt"
+        resConfigs "en", "de", "nl", "nb-rNO", "pt"
     }
 
     kotlinOptions {
