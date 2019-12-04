@@ -23,7 +23,7 @@
     <string name="dialog_generic_button_okay">Oké</string>
     <string name="dialog_generic_details_button">Informatie tonen</string>
     <string name="dialog_generic_details_default">Geen informatie beschikbaar</string>
-    <string name="dialog_yes_no_message_metered_network_download">Je bent niet verbonden met een Wi-Fi-netwerk. Wil je de aflevering tóch downloaden\?</string>
+    <string name="dialog_yes_no_message_non_wifi_download">Je bent niet verbonden met een Wi-Fi-netwerk. Wil je de aflevering tóch downloaden\?</string>
     <string name="dialog_opml_import_button_okay">Importeren</string>
     <string name="dialog_opml_import_details_button">Informatie tonen</string>
     <string name="dialog_opml_import_details_default">Geen informatie beschikbaar</string>
@@ -45,7 +45,7 @@
     <string name="dialog_yes_no_positive_button_delete_downloads">Alles verwijderen</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Verwijderen</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Markeren als afgespeeld</string>
-    <string name="dialog_yes_no_positive_button_metered_network_download">Tóch downloaden</string>
+    <string name="dialog_yes_no_positive_button_non_wifi_download">Tóch downloaden</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Verwijderen</string>
     <string name="dialog_yes_no_positive_button_update_collection">Bijwerken</string>
     <string name="dialog_yes_no_title_default">Maak een keuze</string>
@@ -110,4 +110,5 @@
     <string name="descr_player_podcast_cover">Kleine hoesafbeelding</string>
     <string name="onboarding_app_description">Podcast-app</string>
     <string name="onboarding_app_get_started">Aan de slag</string>
+    <string name="dialog_yes_no_positive_button_vpn_download">Tóch downloaden</string>
 </resources>

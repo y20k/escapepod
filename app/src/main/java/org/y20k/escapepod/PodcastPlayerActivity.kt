@@ -591,7 +591,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
             DownloadHelper.downloadEpisode(this, episode.getMediaId(), true, true)
         } else if (NetworkHelper.isConnectedToCellular(this)) {
-            YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_metered_network_download, yesButton = R.string.dialog_yes_no_positive_button_metered_network_download, payloadString = episode.getMediaId())
+            YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_non_wifi_download, yesButton = R.string.dialog_yes_no_positive_button_non_wifi_download, payloadString = episode.getMediaId())
+        } else if (NetworkHelper.isConnectedToVpn(this))  {
+            YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_vpn_download, yesButton = R.string.dialog_yes_no_positive_button_vpn_download, payloadString = episode.getMediaId())
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }

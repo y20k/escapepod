@@ -22,7 +22,7 @@
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Vis detaljer</string>
     <string name="dialog_generic_details_default">Ingen detaljer tilgjengelige</string>
-    <string name="dialog_yes_no_message_metered_network_download">Enheten din er ikke tilknyttet til et Wi-Fi-nettverk. Last ned episode uansett?</string>
+    <string name="dialog_yes_no_message_non_wifi_download">Enheten din er ikke tilknyttet til et Wi-Fi-nettverk. Last ned episode uansett?</string>
     <string name="dialog_opml_import_button_okay">Importer</string>
     <string name="dialog_opml_import_details_button">Vis detaljer</string>
     <string name="dialog_opml_import_details_default">Ingen detaljer tilgjengelige</string>
@@ -44,7 +44,7 @@
     <string name="dialog_yes_no_positive_button_delete_downloads">Slett alle</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Slett</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Merk som avspilt</string>
-    <string name="dialog_yes_no_positive_button_metered_network_download">Last ned uansett</string>
+    <string name="dialog_yes_no_positive_button_non_wifi_download">Last ned uansett</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Fjern</string>
     <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
     <string name="dialog_yes_no_title_default">Avgjør</string>
@@ -142,4 +142,5 @@
     <string name="dialog_find_podcast_no_results">Resultatløst søk.</string>
     <string name="dialog_find_podcast_title">Finn nettradioopptak</string>
     <string name="toast_message_error_feed_not_supported">Ustøttet informasjonskanal (program/Atom+XML).</string>
+    <string name="dialog_yes_no_positive_button_vpn_download">Last ned uansett</string>
 </resources>

@@ -14,8 +14,8 @@
     <string name="dialog_generic_button_cancel">Abbrechen</string>
     <string name="dialog_generic_details_button">Details anzeigen</string>
     <string name="dialog_generic_details_default">Keine Details verfügbar</string>
-    <string name="dialog_yes_no_positive_button_metered_network_download">Trotzdem herunterladen</string>
-    <string name="dialog_yes_no_message_metered_network_download">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du diese Episode trotzdem herunterladen\?</string>
+    <string name="dialog_yes_no_positive_button_non_wifi_download">Trotzdem herunterladen</string>
+    <string name="dialog_yes_no_message_non_wifi_download">Dein Gerät ist nicht mit einem WLAN-Netzwerk verbunden. Möchtest du diese Episode trotzdem herunterladen\?</string>
     <string name="app_name">Escapepod</string>
     <string name="dialog_error_title_no_network">Offline</string>
     <string name="dialog_generic_button_okay">OK</string>
@@ -110,4 +110,6 @@
     <string name="dialog_find_podcast_no_results">Keine Ergebnisse gefunden.</string>
     <string name="dialog_find_podcast_title">Podcast finden</string>
     <string name="toast_message_error_feed_not_supported">Feed wird nicht unterstützt (Anwendung/Atom+XML).</string>
+    <string name="dialog_yes_no_positive_button_vpn_download">Trotzdem herunterladen</string>
+    <string name="dialog_yes_no_message_vpn_download">Dein Gerät ist mit einem VPN verbunden. Möchtest du diese Episode trotzdem herunterladen?</string>
 </resources>

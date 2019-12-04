@@ -26,7 +26,6 @@
     <string name="dialog_generic_button_okay">OK</string>
     <string name="dialog_generic_details_button">Show details</string>
     <string name="dialog_generic_details_default">No details available</string>
-    <string name="dialog_yes_no_message_metered_network_download">Your device is not connected to Wi-Fi. Download episode anyway?</string>
     <string name="dialog_opml_import_button_okay">Import</string>
     <string name="dialog_opml_import_details_button">Show details</string>
     <string name="dialog_opml_import_details_default">No details available</string>
@@ -38,8 +37,10 @@
     <string name="dialog_yes_no_message_delete_downloads">Delete all downloaded episodes? You can re-download them afterwards.</string>
     <string name="dialog_yes_no_message_delete_episode">Delete this episode?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Mark this episode as played?</string>
+    <string name="dialog_yes_no_message_non_wifi_download">Your device is not connected to Wi-Fi. Download episode anyway?</string>
     <string name="dialog_yes_no_message_remove_podcast">Remove this podcast?</string>
     <string name="dialog_yes_no_message_update_collection">Look for new episodes?</string>
+    <string name="dialog_yes_no_message_vpn_download">Your device is connected via VPN. Download episode anyway?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Add to \'Up Next\'</string>
     <string name="dialog_yes_no_negative_button_cancel">Cancel</string>
     <string name="dialog_yes_no_negative_button_default">No</string>
@@ -48,9 +49,10 @@
     <string name="dialog_yes_no_positive_button_delete_downloads">Delete All</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Delete</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Mark as Played</string>
-    <string name="dialog_yes_no_positive_button_metered_network_download">Download anyway</string>
+    <string name="dialog_yes_no_positive_button_non_wifi_download">Download anyway</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
     <string name="dialog_yes_no_positive_button_update_collection">Update</string>
+    <string name="dialog_yes_no_positive_button_vpn_download">Download anyway</string>
     <string name="dialog_yes_no_title_default">Decide</string>
     <!-- Player -->
     <string name="player_up_next_headline">Up Next:</string>

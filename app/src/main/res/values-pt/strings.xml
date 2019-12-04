@@ -19,7 +19,7 @@
     <string name="dialog_generic_button_okay">Aceitar</string>
     <string name="dialog_generic_details_button">Mostrar detalhes</string>
     <string name="dialog_generic_details_default">Não existem detalhes</string>
-    <string name="dialog_yes_no_message_metered_network_download">O dispositivo não está conectado à Internet. Deseja, ainda assim, descarregar\?</string>
+    <string name="dialog_yes_no_message_non_wifi_download">O dispositivo não está conectado à Internet. Deseja, ainda assim, descarregar\?</string>
     <string name="dialog_opml_import_button_okay">Importar</string>
     <string name="dialog_opml_import_details_button">Mostrar detalhes</string>
     <string name="dialog_opml_import_details_default">Não existem detalhes</string>
@@ -41,7 +41,7 @@
     <string name="dialog_yes_no_positive_button_delete_downloads">Apagar tudo</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Apagar</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Marcar como reproduzido</string>
-    <string name="dialog_yes_no_positive_button_metered_network_download">Descarregar na mesma</string>
+    <string name="dialog_yes_no_positive_button_non_wifi_download">Descarregar na mesma</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remover</string>
     <string name="dialog_yes_no_positive_button_update_collection">Atualizar</string>
     <string name="dialog_yes_no_title_default">Decidir</string>
@@ -109,4 +109,5 @@
     <string name="dialog_find_podcast_no_results">Não existem resultados.</string>
     <string name="dialog_find_podcast_title">Encontrar podcast</string>
     <string name="toast_message_error_feed_not_supported">Fonte não suportada (application/atom+xml).</string>
+    <string name="dialog_yes_no_positive_button_vpn_download">Descarregar na mesma</string>
 </resources>

@@ -18,8 +18,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
-import android.net.NetworkCapabilities.TRANSPORT_WIFI
+import android.net.NetworkCapabilities.*
 import org.y20k.escapepod.Keys
 import java.net.HttpURLConnection
 import java.net.URL
@@ -68,6 +67,22 @@ object NetworkHelper {
             if (capabilities != null) {
                 // check if a cellular connection is active
                 result = capabilities.hasTransport(TRANSPORT_CELLULAR)
+            }
+        }
+        return result
+    }
+
+
+    /* Checks if the active network connection is over VPN */
+    fun isConnectedToVpn(context: Context): Boolean {
+        var result: Boolean = false
+        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: Network? = connMgr.activeNetwork
+        if (activeNetwork != null) {
+            val capabilities: NetworkCapabilities? = connMgr.getNetworkCapabilities(activeNetwork)
+            if (capabilities != null) {
+                // check if a VPN connection is active
+                result = capabilities.hasTransport(TRANSPORT_VPN)
             }
         }
         return result
