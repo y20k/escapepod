@@ -54,7 +54,7 @@
     <string name="toast_message_adding_podcasts">Bezig met toevoegen...</string>
     <string name="toast_message_collection_update_not_necessary">Je podcastverzameling is actueel.</string>
     <string name="toast_message_downloading_episode">Bezig met downloaden...</string>
-    <string name="toast_message_error_feed_not_supported">Feed wordt niet ondersteund (application/atom+xml).</string>
+    <string name="toast_message_error_feed_not_supported">Niet-ondersteunde feed (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Verleen de machtiging \'Opslag uitlezen\' om dit bestand te openen.</string>
     <string name="toast_message_error_refreshing_cover">De hoes kan niet worden bijgewerkt: de feed bevat geen hoesverwijzing.</string>
     <string name="toast_message_error_validation_audio_references">RSS-goedkeuring: de feed bevat geen audioverwijzingen.</string>
@@ -111,4 +111,5 @@
     <string name="onboarding_app_description">Podcast-app</string>
     <string name="onboarding_app_get_started">Aan de slag</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Tóch downloaden</string>
+    <string name="dialog_yes_no_message_vpn_download">Je apparaat is verbonden middels een VPN. Wil je de aflevering tóch downloaden\?</string>
 </resources>
