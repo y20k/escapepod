@@ -1,7 +1,5 @@
-# v0.8.0 - Gehen Die Leute
+# v0.8.1 - Gehen Die Leute
 
 **2019-12-08**
 
-- basic podcast search on the gpodder.net service
-- Portuguese language version
-- Dutch language version
+- prevents a crash caused by playback command issued via voice control, when podcast list is still empty
