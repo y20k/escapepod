@@ -17,7 +17,6 @@ package org.y20k.escapepod.collection
 
 import android.support.v4.media.MediaBrowserCompat
 import org.y20k.escapepod.core.Collection
-import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.helpers.CollectionHelper
 
 
@@ -69,25 +68,25 @@ class CollectionProvider {
 
 
     /* Get newest episode as media item */
-    fun getNewestEpisode(): MediaBrowserCompat.MediaItem {
+    fun getNewestEpisode(): MediaBrowserCompat.MediaItem? {
         when (isInitialized() && episodeListByDate.isNotEmpty()) {
             true -> return episodeListByDate.first()
-            false -> return CollectionHelper.buildEpisodeMediaMetaItem(Episode())
+            false -> return null
         }
     }
 
 
     /* Get oldest episode as media item */
-    fun getOldestEpisode(): MediaBrowserCompat.MediaItem {
+    fun getOldestEpisode(): MediaBrowserCompat.MediaItem? {
         when (isInitialized() && episodeListByDate.isNotEmpty()) {
             true -> return episodeListByDate.last()
-            false -> return CollectionHelper.buildEpisodeMediaMetaItem(Episode())
+            false -> return null
         }
     }
 
 
     /* Get next episode as media item */
-    fun getNextEpisode(mediaId: String): MediaBrowserCompat.MediaItem {
+    fun getNextEpisode(mediaId: String): MediaBrowserCompat.MediaItem? {
         episodeListByDate.forEachIndexed { index, mediaItem ->
             if (mediaItem.description.mediaId == mediaId) {
                 if (index + 1 > episodeListByDate.size) {
@@ -102,7 +101,7 @@ class CollectionProvider {
 
 
     /* Get previous episode as media item */
-    fun getPreviousEpisode(mediaId: String): MediaBrowserCompat.MediaItem {
+    fun getPreviousEpisode(mediaId: String): MediaBrowserCompat.MediaItem? {
         episodeListByDate.forEachIndexed { index, mediaItem ->
             if (mediaItem.description.mediaId == mediaId) {
                 if (index - 1 >= 0) {

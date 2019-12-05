@@ -560,8 +560,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
             if (query.isNullOrEmpty()) {
                 // user provided generic string e.g. 'Play music'
-                val mediaId = collectionProvider.getNewestEpisode().mediaId
-                onPlayFromMediaId(mediaId, null)
+                val episodeMediaItem: MediaBrowserCompat.MediaItem? = collectionProvider.getNewestEpisode()
+                if (episodeMediaItem != null) {
+                    onPlayFromMediaId(episodeMediaItem.mediaId, null)
+                }
             } else {
                 // try to match podcast name and voice query - and start newest episode of that podcast
                 collectionProvider.episodeListByDate.forEach { mediaItem ->
