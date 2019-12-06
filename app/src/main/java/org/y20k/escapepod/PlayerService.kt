@@ -580,6 +580,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     if (podcastName == query) {
                         // start playback of newest podcast episode
                         onPlayFromMediaId(mediaItem.description.mediaId, null)
+                        return
                     } else {
                         // SECOND: try to match parts of the query
                         val words: List<String> = query.split(" ")
@@ -590,12 +591,12 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                                 return
                             }
                         }
-                        // unable to match query - notify user
-                        Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_found, Toast.LENGTH_LONG).show()
-                        LogHelper.e(TAG, "Unable to find a podcast that matches your search query: $query")
                     }
                 }
             }
+            // NO MATCH: unable to match query - notify user
+            Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_matches_search, Toast.LENGTH_LONG).show()
+            LogHelper.e(TAG, "Unable to find a podcast that matches your search query: $query")
         }
 
 
