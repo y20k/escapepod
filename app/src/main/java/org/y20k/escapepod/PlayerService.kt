@@ -559,17 +559,20 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+            // SPECIAL CASE: Empty query - user provided generic string e.g. 'Play music'
             if (query.isNullOrEmpty()) {
-                // user provided generic string e.g. 'Play music'
+                // try to get newest episode
                 val episodeMediaItem: MediaBrowserCompat.MediaItem? = collectionProvider.getNewestEpisode()
                 if (episodeMediaItem != null) {
                     onPlayFromMediaId(episodeMediaItem.mediaId, null)
                 } else {
+                    // unable to get the first episode - notify user
                     Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_found, Toast.LENGTH_LONG).show()
                     LogHelper.e(TAG, "Unable to start playback. Please add a podcast and download an episode first.")
                 }
-            } else {
-                // try to match podcast name and voice query - and start newest episode of that podcast
+            }
+            // NORMAL CASE: Try to match podcast name and voice query
+            else {
                 collectionProvider.episodeListByDate.forEach { mediaItem ->
                     // get podcast name (here -> subtitle)
                     val podcastName: String = mediaItem.description.subtitle.toString().toLowerCase(Locale.getDefault())
@@ -577,16 +580,19 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     if (podcastName == query) {
                         // start playback of newest podcast episode
                         onPlayFromMediaId(mediaItem.description.mediaId, null)
-                        return
-                    }
-                    // SECOND: try to match parts of the query
-                    val words: List<String> = query.split(" ")
-                    words.forEach { word ->
-                        if (podcastName.contains(word)) {
-                            // start playback of newest podcast episode
-                            onPlayFromMediaId(mediaItem.description.mediaId, null)
-                            return
+                    } else {
+                        // SECOND: try to match parts of the query
+                        val words: List<String> = query.split(" ")
+                        words.forEach { word ->
+                            if (podcastName.contains(word)) {
+                                // start playback of newest podcast episode
+                                onPlayFromMediaId(mediaItem.description.mediaId, null)
+                                return
+                            }
                         }
+                        // unable to match query - notify user
+                        Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_found, Toast.LENGTH_LONG).show()
+                        LogHelper.e(TAG, "Unable to find a podcast that matches your search query: $query")
                     }
                 }
             }
