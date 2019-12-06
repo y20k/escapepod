@@ -31,6 +31,7 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -563,6 +564,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 val episodeMediaItem: MediaBrowserCompat.MediaItem? = collectionProvider.getNewestEpisode()
                 if (episodeMediaItem != null) {
                     onPlayFromMediaId(episodeMediaItem.mediaId, null)
+                } else {
+                    Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_found, Toast.LENGTH_LONG).show()
+                    LogHelper.e(TAG, "Unable to start playback. Please add a podcast and download an episode first.")
                 }
             } else {
                 // try to match podcast name and voice query - and start newest episode of that podcast
