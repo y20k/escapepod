@@ -593,10 +593,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                         }
                     }
                 }
+                // NO MATCH: unable to match query - notify user
+                Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_matches_search, Toast.LENGTH_LONG).show()
+                LogHelper.e(TAG, "Unable to find a podcast that matches your search query: $query")
             }
-            // NO MATCH: unable to match query - notify user
-            Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_matches_search, Toast.LENGTH_LONG).show()
-            LogHelper.e(TAG, "Unable to find a podcast that matches your search query: $query")
         }
 
 
