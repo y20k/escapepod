@@ -1,9 +1,11 @@
 package org.y20k.escapepod.dialogs
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
@@ -25,7 +27,7 @@ import org.y20k.escapepod.search.GpodderResultAdapter
 /*
  * FindPodcastDialog class
  */
-class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialogListener): GpodderResultAdapter.GpodderResultAdapterListener {
+class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.GpodderResultAdapterListener {
 
     /* Interface used to communicate back to activity */
     interface FindPodcastDialogListener {
@@ -58,16 +60,16 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
 
 
     /* Construct and show dialog */
-    fun show(context: Context) {
+    fun show() {
 
         // prepare dialog builder
-        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(activity)
 
         // set title
         builder.setTitle(R.string.dialog_find_podcast_title)
 
         // get views
-        val inflater = LayoutInflater.from(context)
+        val inflater = LayoutInflater.from(activity)
         val view = inflater.inflate(R.layout.dialog_find_podcast, null)
         podcastSearchBoxView = view.findViewById(R.id.podcast_search_box_view)
         searchRequestProgressIndicator = view.findViewById(R.id.search_request_progress_indicator)
@@ -76,12 +78,12 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         noSearchResultsTextView.visibility = View.GONE
 
         // set up list of search results
-        setupRecyclerView(context)
+        setupRecyclerView(activity)
 
         // add okay ("import") button
         builder.setPositiveButton(R.string.dialog_find_podcast_button_add) { _, _ ->
             // listen for click on add button
-            findPodcastDialogListener.onFindPodcastDialog(podcastFeedLocation)
+            (activity as FindPodcastDialogListener).onFindPodcastDialog(podcastFeedLocation)
         }
         // add cancel button
         builder.setNegativeButton(R.string.dialog_generic_button_cancel) { _, _ ->
@@ -100,11 +102,11 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         // listen for input
         podcastSearchBoxView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
-                handleSearchBoxLiveInput(context, query)
+                handleSearchBoxLiveInput(activity, query)
                 return true
             }
             override fun onQueryTextSubmit(query: String): Boolean {
-                handleSearchBoxInput(context, query)
+                handleSearchBoxInput(activity, query)
                 return true
             }
         })
@@ -182,6 +184,8 @@ class FindPodcastDialog (private var findPodcastDialogListener: FindPodcastDialo
         searchRequestProgressIndicator.visibility = View.GONE
         noSearchResultsTextView.visibility = View.GONE
         podcastFeedLocation = query
+        val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(podcastSearchBoxView.windowToken, 0)
     }
 
 

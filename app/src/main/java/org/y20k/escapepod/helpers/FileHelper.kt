@@ -129,7 +129,6 @@ object FileHelper {
             files.sortBy { it.lastModified() }
             for (fileNumber in files.indices) {
                 if (fileNumber < fileCount - keep) {
-                    LogHelper.e(TAG, "Deleting ${files[fileNumber].name}") // todo remove
                     files[fileNumber].delete()
                 }
             }

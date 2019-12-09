@@ -277,7 +277,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
     override fun onAddNewButtonTapped() {
 //        AddPodcastDialog(this).show(this)
-        FindPodcastDialog(this).show(this)
+        FindPodcastDialog(this).show()
     }
 
 

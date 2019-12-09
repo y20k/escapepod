@@ -423,7 +423,7 @@ object DownloadHelper {
             cursor.moveToFirst()
             downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
         }
-        return (downloadStatus == DownloadManager.STATUS_RUNNING)
+        return downloadStatus == DownloadManager.STATUS_RUNNING
     }
 
 
