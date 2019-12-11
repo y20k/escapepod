@@ -65,4 +65,19 @@ data class Podcast(@Expose var name: String = "",
         return remotePodcastFeedLocation
     }
 
+
+    /* Creates a deep copy of a podcast */
+    fun deepCopy(): Podcast {
+        val episodesCopy: MutableList<Episode> = mutableListOf<Episode>()
+        episodes.forEach { episodesCopy.add(it.deepCopy()) }
+        return Podcast(name,
+                description,
+                cover,
+                smallCover,
+                episodesCopy,
+                lastUpdate,
+                remoteImageFileLocation,
+                remotePodcastFeedLocation)
+    }
+
 }

@@ -314,7 +314,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     }
                     // user tapped cancel - for dev purposes: refresh the podcast list view // todo check if that can be helpful
                     false -> {
-                        collectionAdapter.notifyDataSetChanged()
+                        // collectionAdapter.notifyDataSetChanged() // can be removed
                     }
                 }
             }

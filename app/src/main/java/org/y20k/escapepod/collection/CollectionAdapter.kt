@@ -32,6 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.y20k.escapepod.Keys
@@ -332,49 +333,55 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
 
     /* Removes a podcast from collection */
     fun removePodcast(context: Context, position: Int) {
+        val newCollection = collection.deepCopy()
         // delete folders and assets
-        CollectionHelper.deletePodcastFolders(context, collection.podcasts[position])
+        CollectionHelper.deletePodcastFolders(context, newCollection.podcasts[position])
         // remove podcast from collection
-        collection.podcasts.removeAt(position)
+        newCollection.podcasts.removeAt(position)
+        // update list
+        notifyItemRemoved(position)
         // export collection as OPML
-        CollectionHelper.exportCollection(context, collection)
+        CollectionHelper.exportCollection(context, newCollection)
         // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, collection)
+        CollectionHelper.saveCollection(context, newCollection)
     }
 
 
     /* Deletes an episode download from collection */
     fun deleteEpisode(context: Context, mediaID: String) {
         LogHelper.v(TAG, "Deleting episode: $mediaID")
+        val newCollection = collection.deepCopy()
         // delete episode and update collection
-        collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, mediaID)
+        CollectionHelper.deleteEpisodeAudioFile(context, newCollection, mediaID)
         // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, collection)
+        PreferencesHelper.updatePlayerState(context, newCollection)
         // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, collection)
+        CollectionHelper.saveCollection(context, newCollection)
     }
 
 
     /* Deletes all episode audio files - deep clean */
     fun deleteAllEpisodes(context: Context) {
+        val newCollection = collection.deepCopy()
         // delete all episodes
-        collection = CollectionHelper.deleteAllAudioFile(context, collection)
+        CollectionHelper.deleteAllAudioFile(context, newCollection)
         // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, collection)
+        PreferencesHelper.updatePlayerState(context, newCollection)
         // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, collection)
+        CollectionHelper.saveCollection(context, newCollection)
     }
 
 
     /* Marks an episode as playedin collection */
     fun markEpisodePlayed(context: Context, mediaID: String) {
         LogHelper.v(TAG, "Marking as played episode: $mediaID")
+        val newCollection = collection.deepCopy()
         // mark episode als played and update collection
-        collection = CollectionHelper.markEpisodePlayed(collection, mediaID)
+        CollectionHelper.markEpisodePlayed(newCollection, mediaID)
         // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, collection)
+        PreferencesHelper.updatePlayerState(context, newCollection)
         // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, collection)
+        CollectionHelper.saveCollection(context, newCollection)
     }
 
 
@@ -385,20 +392,21 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     }
 
 
+    /* Updates the podcast list - redraws the views with changed content */
+    private fun updateRecyclerView(oldCollection: Collection, newCollection: Collection) {
+        // calculate differences between current collection and new collection
+        val diffResult = DiffUtil.calculateDiff(CollectionDiffCallback(oldCollection, newCollection), true)
+        // inform this adapter about the changes
+        diffResult.dispatchUpdatesTo(this@CollectionAdapter)
+        // update collection
+        collection = newCollection
+    }
+
+
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
-        collectionViewModel.collectionLiveData.observe(owner, Observer<Collection> { it ->
-            // update collection
-            collection = it
-
-//            // calculate differences between new station list and current station list
-//            val diffResult = DiffUtil.calculateDiff(CollectionAdapterDiffUtilCallback(mStationList, newStationList), true)
-//
-//            // inform this adapter about the changes
-//            diffResult.dispatchUpdatesTo(this@CollectionAdapter)
-
-            this@CollectionAdapter.notifyDataSetChanged() // todo remove
-
+        collectionViewModel.collectionLiveData.observe(owner, Observer<Collection> { newCollection ->
+            updateRecyclerView(collection, newCollection)
         })
     }
 
@@ -444,6 +452,67 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     /*
      * End of inner class
      */
+
+    /*
+     * Inner class: DiffUtil.Callback that determines changes in data - improves list performance
+     */
+    private inner class CollectionDiffCallback(val oldCollection: Collection, val newCollection: Collection): DiffUtil.Callback() {
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldPodcast: Podcast = oldCollection.podcasts[oldItemPosition]
+            val newPodcast: Podcast = newCollection.podcasts[newItemPosition]
+            return oldPodcast.getPodcastId() == newPodcast.getPodcastId()
+        }
+
+        override fun getOldListSize(): Int {
+            return oldCollection.podcasts.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newCollection.podcasts.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldPodcast: Podcast = oldCollection.podcasts[oldItemPosition]
+            val newPodcast: Podcast = newCollection.podcasts[newItemPosition]
+
+            // compare relevant contents of podcast
+            if (oldPodcast.episodes.size != newPodcast.episodes.size) return false
+            if (oldPodcast.name != newPodcast.name) return false
+            if (oldPodcast.description != newPodcast.description) return false
+            if (oldPodcast.cover != newPodcast.cover) return false
+            if (oldPodcast.smallCover != newPodcast.smallCover) return false
+            if (oldPodcast.remoteImageFileLocation != newPodcast.remoteImageFileLocation) return false
+            if (oldPodcast.remotePodcastFeedLocation != newPodcast.remotePodcastFeedLocation) return false
+
+            // compare relevant contents of episodes within podcast
+            oldPodcast.episodes.forEachIndexed { index, oldEpisode ->
+                val newEpisode: Episode = newPodcast.episodes[index]
+                // check most likely changes fist
+                if (oldEpisode.playbackState != newEpisode.playbackState) return false
+                if (oldEpisode.playbackPosition != newEpisode.playbackPosition) return false
+                if (oldEpisode.manuallyDownloaded != newEpisode.manuallyDownloaded) return false
+                if (oldEpisode.audio != newEpisode.audio) return false
+                // check the rest afterwards
+                if (oldEpisode.guid != newEpisode.guid) return false
+                if (oldEpisode.title != newEpisode.title) return false
+                if (oldEpisode.description != newEpisode.description) return false
+                if (oldEpisode.cover != newEpisode.cover) return false
+                if (oldEpisode.smallCover != newEpisode.smallCover) return false
+                if (oldEpisode.chapters != newEpisode.chapters) return false
+                if (oldEpisode.publicationDate != newEpisode.publicationDate) return false
+                if (oldEpisode.duration != newEpisode.duration) return false
+                if (oldEpisode.remoteCoverFileLocation != newEpisode.remoteCoverFileLocation) return false
+                if (oldEpisode.remoteAudioFileLocation != newEpisode.remoteAudioFileLocation) return false
+            }
+            // none of the above -> contents are the same
+            return true
+        }
+    }
+    /*
+     * End of inner class
+     */
+
 
     /*
      * Inner class: Adapter for an episode list

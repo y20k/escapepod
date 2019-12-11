@@ -42,5 +42,15 @@ data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_V
         return stringBuilder.toString()
     }
 
+
+    /* Creates a deep copy of a Collection */
+    fun deepCopy(): Collection {
+        val podcastsCopy: MutableList<Podcast> = mutableListOf<Podcast>()
+        podcasts.forEach { podcastsCopy.add(it.deepCopy()) }
+        return Collection(version,
+                podcastsCopy,
+                modificationDate)
+    }
+
 }
 

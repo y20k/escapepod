@@ -90,4 +90,24 @@ data class Episode (@Expose var guid: String = "",
         return playbackPosition >= duration
     }
 
+
+    /* Creates a deep copy of an Episode */
+    fun deepCopy(): Episode {
+        return Episode(guid,
+                title,
+                description,
+                audio,
+                cover,
+                smallCover,
+                chapters,
+                publicationDate,
+                playbackState,
+                playbackPosition,
+                duration,
+                manuallyDownloaded,
+                remoteCoverFileLocation,
+                remoteAudioFileLocation,
+                podcastName,
+                podcastFeedLocation)
+    }
 }

@@ -353,10 +353,9 @@ object CollectionHelper {
     /* Sends a broadcast containing the collection as parcel */
     private fun sendCollectionBroadcast(context: Context, modificationDate: Date) {
         LogHelper.v(TAG, "Broadcasting that collection has changed.")
-        val modificationDateString: String = DateTimeHelper.convertToRfc2822(modificationDate)
         val collectionChangedIntent = Intent()
         collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
-        collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, modificationDateString)
+        collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, modificationDate.time)
         LocalBroadcastManager.getInstance(context).sendBroadcast(collectionChangedIntent)
     }
 
@@ -526,14 +525,17 @@ object CollectionHelper {
         if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
             // episode is in Up Next queue
             return false
+        } else if (!episode.isFinished()) {
+            // episode not finished
+            return false
         } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED && !episode.isFinished()) {
             // episode is paused or playing
             return false
-        } else if (episode.audio.isEmpty()) {
-            // episode has no audio reference
-            return false
         } else if (episode.manuallyDownloaded) {
             // episode was manually downloaded
+            return false
+        } else if (episode.audio.isEmpty()) {
+            // episode has no audio reference
             return false
         } else {
             // episode may be deleted
