@@ -151,7 +151,10 @@ object CollectionHelper {
         }
         // Step 1: New episode check -> compare GUIDs of latest episode
         if (newPodcast.episodes[0].guid == oldPodcast.episodes[0].guid) {
-            return Keys.PODCAST_STATE_PODCAST_UNCHANGED
+            when (!oldPodcast.episodes[0].manuallyDeleted && oldPodcast.episodes[0].audio.isEmpty()) {
+                true -> return Keys.PODCAST_STATE_HAS_NEW_EPISODES     // same podcast - but first episode not downloaded yet
+                false -> return Keys.PODCAST_STATE_PODCAST_UNCHANGED   // same podcast
+            }
         }
         // Step 2: Not yet downloaded episode check -> test if audio field is empty
         if (getEpisode(collection, newPodcast.episodes[0].getMediaId()).audio.isEmpty()) {
@@ -498,7 +501,7 @@ object CollectionHelper {
 
 
     /* Deletes an episode - used when user presses the delete button */
-    fun deleteEpisodeAudioFile(context: Context, collection: Collection, mediaId: String): Collection {
+    fun deleteEpisodeAudioFile(context: Context, collection: Collection, mediaId: String, manuallyDeleted: Boolean = false): Collection {
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
                 if (episode.getMediaId() == mediaId) {
@@ -511,6 +514,8 @@ object CollectionHelper {
                     }
                     // remove audio reference
                     episode.audio = String()
+                    // store manually deleted state
+                    episode.manuallyDeleted = manuallyDeleted
                     // reset manually downloaded state
                     episode.manuallyDownloaded = false
                 }

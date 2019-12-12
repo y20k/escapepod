@@ -199,24 +199,26 @@ object DownloadHelper {
 
 
     /*  episode and podcast cover */
-    private fun enqueuePodcastMediaFiles(context: Context, podcast: Podcast, isNew: Boolean) {
-
+    private fun enqueuePodcastMediaFiles(context: Context, podcast: Podcast, isNew: Boolean, ignoreWifiRestriction: Boolean = false) {
+        // new podcast: first download the cover
         if (isNew && podcast.remoteImageFileLocation.isNotEmpty()) {
-            // new podcast: first download the cover
             CollectionHelper.clearImagesFolder(context, podcast)
             val coverUris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
         }
-
-        if (podcast.episodes.isNotEmpty()) {
-            // delete oldest audio file
-            if (podcast.episodes.size >= Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP) {
-                val oldestEpisode: Episode = podcast.episodes[Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP - 1]
-                if (oldestEpisode.audio.isNotBlank()) { collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, oldestEpisode.getMediaId()) }
+        // download audio files only when connected to wifi
+        if (ignoreWifiRestriction || NetworkHelper.isConnectedToWifi(context)) {
+            // download only if pocast has episodes
+            if (podcast.episodes.isNotEmpty()) {
+                // delete oldest audio file
+                if (podcast.episodes.size >= Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP) {
+                    val oldestEpisode: Episode = podcast.episodes[Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP - 1]
+                    if (oldestEpisode.audio.isNotBlank()) { collection = CollectionHelper.deleteEpisodeAudioFile(context, collection, oldestEpisode.getMediaId()) }
+                }
+                // start download of latest episode audio file
+                val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
+                enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
             }
-            // start download of latest episode audio file
-            val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
-            enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
         }
     }
 
@@ -229,7 +231,7 @@ object DownloadHelper {
                 saveCollection(context, opmlExport = true)
                 enqueuePodcastMediaFiles(context, podcast, isNew = true)
             }
-            Keys.PODCAST_STATE_HAS_NEW_EPISODES -> {
+            (Keys.PODCAST_STATE_HAS_NEW_EPISODES) -> {
                 collection = CollectionHelper.updatePodcast(collection, podcast)
                 saveCollection(context, opmlExport = false)
                 enqueuePodcastMediaFiles(context, podcast, isNew = false)

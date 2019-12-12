@@ -70,14 +70,14 @@ data class Podcast(@Expose var name: String = "",
     fun deepCopy(): Podcast {
         val episodesCopy: MutableList<Episode> = mutableListOf<Episode>()
         episodes.forEach { episodesCopy.add(it.deepCopy()) }
-        return Podcast(name,
-                description,
-                cover,
-                smallCover,
-                episodesCopy,
-                lastUpdate,
-                remoteImageFileLocation,
-                remotePodcastFeedLocation)
+        return Podcast(name = name,
+                description = description,
+                cover = cover,
+                smallCover = smallCover,
+                episodes = episodesCopy,
+                lastUpdate = lastUpdate,
+                remoteImageFileLocation = remoteImageFileLocation,
+                remotePodcastFeedLocation = remotePodcastFeedLocation)
     }
 
 }

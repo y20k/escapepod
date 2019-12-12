@@ -47,9 +47,9 @@ data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_V
     fun deepCopy(): Collection {
         val podcastsCopy: MutableList<Podcast> = mutableListOf<Podcast>()
         podcasts.forEach { podcastsCopy.add(it.deepCopy()) }
-        return Collection(version,
-                podcastsCopy,
-                modificationDate)
+        return Collection(version = version,
+                podcasts = podcastsCopy,
+                modificationDate = modificationDate)
     }
 
 }
