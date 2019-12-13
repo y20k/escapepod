@@ -80,6 +80,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private var playerServiceConnected: Boolean = false
     private var onboarding: Boolean = false
     private var playerState: PlayerState = PlayerState()
+    private var listLayoutState: Parcelable? = null
     private var opmlCreatedObserver: FileObserver? = null
     private var tempOpmlUriString: String = String()
     private val handler: Handler = Handler()
@@ -125,6 +126,25 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
+    /* Overrides onSaveInstanceState */
+    override fun onSaveInstanceState(outState: Bundle) {
+        // save current state of podcast list
+        listLayoutState = layout.layoutManager.onSaveInstanceState()
+        outState.putParcelable(Keys.KEY_SAVE_INSTANCE_STATE_PODCAST_LIST, listLayoutState)
+        // always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(outState)
+    }
+
+
+    /* Overrides onRestoreInstanceState */
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        // always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState)
+        // restore state of podcast list
+        listLayoutState = savedInstanceState.getParcelable(Keys.KEY_SAVE_INSTANCE_STATE_PODCAST_LIST)
+    }
+
+
     /* Overrides onResume */
     override fun onResume() {
         super.onResume()
@@ -132,8 +152,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         volumeControlStream = AudioManager.STREAM_MUSIC
         // try to recreate player state
         playerState = PreferencesHelper.loadPlayerState(this)
-        // setup player ui
+        // setup ui
         setupPlayer()
+        setupList()
         // start watching for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(this)
         // toggle download progress indicator
@@ -535,7 +556,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private fun setupPlayer() {
         // toggle player visibility
         if (layout.togglePlayerVisibility(this, playerState.playbackState)) {
-            // CASE: player is visible
+            // CASE: player is visible - update player views
             layout.togglePlayButtons(playerState.playbackState)
             if (playerState.episodeMediaId.isNotEmpty()) {
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
@@ -543,6 +564,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 layout.updateProgressbar(this@PodcastPlayerActivity, episode.playbackPosition, episode.duration)
                 layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
             }
+        }
+    }
+
+
+    /* Sets up state of list podcast list */
+    private fun setupList() {
+        if (listLayoutState != null) {
+            layout.layoutManager.onRestoreInstanceState(listLayoutState)
         }
     }
 

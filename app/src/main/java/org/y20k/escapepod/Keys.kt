@@ -52,6 +52,7 @@ object Keys {
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
+    const val KEY_SAVE_INSTANCE_STATE_PODCAST_LIST: String = "SAVE_INSTANCE_STATE_PODCAST_LIST"
 
     // custom MediaController commands
     const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"

@@ -17,6 +17,7 @@ package org.y20k.escapepod.ui
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
+import android.os.Parcelable
 import android.os.Vibrator
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
@@ -55,6 +56,7 @@ data class LayoutHolder(var activity: Activity) {
     /* Main class variables */
     var swipeRefreshLayout: SwipeRefreshLayout
     var recyclerView: RecyclerView
+    val layoutManager: LinearLayoutManager
     private var bottomSheet: ConstraintLayout
     private var playerViews: Group
     private var upNextViews: Group
@@ -120,9 +122,12 @@ data class LayoutHolder(var activity: Activity) {
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         displayTimeRemaining = false
 
+        // set up RecyclerView
+        layoutManager = CustomLayoutManager(activity)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.itemAnimator = DefaultItemAnimator()
 
-        // set layouts for list and player
-        setupRecyclerView()
+        // set layout for player
         setupBottomSheet()
     }
 
@@ -340,19 +345,6 @@ data class LayoutHolder(var activity: Activity) {
     }
 
 
-
-    /* Sets up list of podcasts (RecyclerView) */
-    private fun setupRecyclerView() {
-        val layoutManager: LinearLayoutManager = object: LinearLayoutManager(activity) {
-            override fun supportsPredictiveItemAnimations(): Boolean {
-                return true
-            }
-        }
-        recyclerView.layoutManager = layoutManager
-        recyclerView.itemAnimator = DefaultItemAnimator()
-    }
-
-
     /* Sets up the player (BottomSheet) */
     private fun setupBottomSheet() {
         // show / hide the small player
@@ -405,5 +397,27 @@ data class LayoutHolder(var activity: Activity) {
             else -> bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
+
+
+    /*
+     * Inner class: custom LinearLayoutManager
+     */
+    private inner class CustomLayoutManager(context: Context): LinearLayoutManager(context, VERTICAL, false) {
+        var listState: Parcelable? = null
+        override fun supportsPredictiveItemAnimations(): Boolean {
+            return true
+        }
+//        override fun onLayoutCompleted(state: RecyclerView.State?) {
+//            if (state == null) scrollToPosition(0)
+//        }
+//        override fun onRestoreInstanceState(state: Parcelable?) {
+//            listState = state
+//            super.onRestoreInstanceState(state)
+//        }
+    }
+    /*
+     * End of inner class
+     */
+
 
 }
