@@ -530,8 +530,8 @@ object CollectionHelper {
         if (episode.getMediaId() == PreferencesHelper.loadUpNextMediaId(context)) {
             // episode is in Up Next queue
             return false
-        } else if (!episode.isFinished()) {
-            // episode not finished
+        } else if (episode.hasBeenStarted() && !episode.isFinished()) {
+            // episode has been started but not finished
             return false
         } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED && !episode.isFinished()) {
             // episode is paused or playing

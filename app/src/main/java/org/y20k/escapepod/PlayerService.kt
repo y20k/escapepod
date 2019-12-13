@@ -91,7 +91,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
 
 
-    /* Overrides onCreate */
+    /* Overrides onCreate from Service */
     override fun onCreate() {
         super.onCreate()
 
@@ -138,7 +138,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Overrides onStartCommand */
+    /* Overrides onStartCommand from Service */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         MediaButtonReceiver.handleIntent(mediaSession, intent)
@@ -146,14 +146,14 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Overrides onTaskRemoved */
+    /* Overrides onTaskRemoved from Service */
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
         stopSelf()
     }
 
 
-    /* Overrides onDestroy */
+    /* Overrides onDestroy from Service */
     override fun onDestroy() {
         // stop playback
         stopPlayback()
@@ -172,7 +172,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Overrides onGetRoot */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
+    /* Overrides onGetRoot from MediaBrowserService */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
         // Credit: https://github.com/googlesamples/android-UniversalMusicPlayer (->  MusicService)
         // LogHelper.d(TAG, "OnGetRoot: clientPackageName=$clientPackageName; clientUid=$clientUid ; rootHints=$rootHints")
@@ -199,7 +199,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Overrides onLoadChildren */
+    /* Overrides onLoadChildren from MediaBrowserService */
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
@@ -218,7 +218,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
 
-    /* Overrides onPlayerStateChanged (Player.EventListener) */
+    /* Overrides onPlayerStateChanged from Player.EventListener */
     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
         when (playWhenReady) {
             // CASE: playWhenReady = true

@@ -86,9 +86,15 @@ data class Episode (@Expose var guid: String = "",
     }
 
 
-    /* Return if an eposide has been listened to end */
+    /* Return if an episode has been listened to end */
     fun isFinished(): Boolean {
         return playbackPosition >= duration
+    }
+
+
+    /* Return if an episode has been started listening to */
+    fun hasBeenStarted(): Boolean {
+        return playbackPosition > 0L
     }
 
 

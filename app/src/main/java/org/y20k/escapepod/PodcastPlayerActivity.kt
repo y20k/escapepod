@@ -90,7 +90,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
 
 
-    /* Overrides onCreate */
+    /* Overrides onCreate from Activity*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -118,7 +118,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onResume */
+    /* Overrides onResume from Activity */
     public override fun onStart() {
         super.onStart()
         // connect to PlayerService
@@ -126,7 +126,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onSaveInstanceState */
+    /* Overrides onSaveInstanceState from Activity */
     override fun onSaveInstanceState(outState: Bundle) {
         // save current state of podcast list
         listLayoutState = layout.layoutManager.onSaveInstanceState()
@@ -136,7 +136,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onRestoreInstanceState */
+    /* Overrides onRestoreInstanceState from Activity */
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         // always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState)
@@ -145,7 +145,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onResume */
+    /* Overrides onResume from Activity */
     override fun onResume() {
         super.onResume()
         // assign volume buttons to music volume
@@ -162,7 +162,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onPause */
+    /* Overrides onPause from Activity */
     override fun onPause() {
         super.onPause()
         // save player state
@@ -177,7 +177,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onStop */
+    /* Overrides onStop from Activity */
     public override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
@@ -187,7 +187,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onRequestPermissionsResult */
+    /* Overrides onRequestPermissionsResult from Activity */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -235,6 +235,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         } else {
             ErrorDialog().show(this, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
         }
+    }
+
+
+    /* Overrides onDataSetInitialized from CollectionAdapterListener */
+    override fun onDataSetInitialized() {
+        layout.recyclerView.scrollToPosition(0)
     }
 
 

@@ -70,6 +70,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         fun onDeleteButtonTapped(episode: Episode)
         fun onDeleteAllButtonTapped()
         fun onAddNewButtonTapped()
+        fun onDataSetInitialized()
     }
 
 
@@ -398,6 +399,10 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         val diffResult = DiffUtil.calculateDiff(CollectionDiffCallback(oldCollection, newCollection), true)
         // inform this adapter about the changes
         diffResult.dispatchUpdatesTo(this@CollectionAdapter)
+        // notify activity that data set has been initialized - and scroll to top in activity
+        if (oldCollection.podcasts.size == 0) {
+            collectionAdapterListener.onDataSetInitialized()
+        }
         // update collection
         collection = newCollection
     }

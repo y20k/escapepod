@@ -17,7 +17,6 @@ package org.y20k.escapepod.ui
 import android.app.Activity
 import android.content.Context
 import android.net.Uri
-import android.os.Parcelable
 import android.os.Vibrator
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
@@ -400,20 +399,12 @@ data class LayoutHolder(var activity: Activity) {
 
 
     /*
-     * Inner class: custom LinearLayoutManager
+     * Inner class: Custom LinearLayoutManager
      */
     private inner class CustomLayoutManager(context: Context): LinearLayoutManager(context, VERTICAL, false) {
-        var listState: Parcelable? = null
         override fun supportsPredictiveItemAnimations(): Boolean {
             return true
         }
-//        override fun onLayoutCompleted(state: RecyclerView.State?) {
-//            if (state == null) scrollToPosition(0)
-//        }
-//        override fun onRestoreInstanceState(state: Parcelable?) {
-//            listState = state
-//            super.onRestoreInstanceState(state)
-//        }
     }
     /*
      * End of inner class
