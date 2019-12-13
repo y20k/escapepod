@@ -238,12 +238,6 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
-    /* Overrides onDataSetInitialized from CollectionAdapterListener */
-    override fun onDataSetInitialized() {
-        layout.recyclerView.scrollToPosition(0)
-    }
-
-
     /* Overrides onPlayButtonTapped from CollectionAdapterListener */
     override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
         when (playerState.playbackState) {
