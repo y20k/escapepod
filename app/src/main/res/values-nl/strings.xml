@@ -112,4 +112,6 @@
     <string name="onboarding_app_get_started">Aan de slag</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Tóch downloaden</string>
     <string name="dialog_yes_no_message_vpn_download">Je apparaat is verbonden middels een VPN. Wil je de aflevering tóch downloaden\?</string>
+    <string name="toast_message_error_no_podcast_found">Er kan niet worden afgespeeld. Voeg een pocast toe.</string>
+    <string name="toast_message_error_no_podcast_matches_search">Er is geen podcast die overeenkomt met je zoekopdracht.</string>
 </resources>

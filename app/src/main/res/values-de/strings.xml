@@ -112,4 +112,6 @@
     <string name="toast_message_error_feed_not_supported">Feed wird nicht unterstützt (Anwendung/Atom+XML).</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Trotzdem herunterladen</string>
     <string name="dialog_yes_no_message_vpn_download">Dein Gerät ist mit einem VPN verbunden. Möchtest du diese Episode trotzdem herunterladen?</string>
+    <string name="toast_message_error_no_podcast_found">Die Wiedergabe kann nicht gestartet werden. Bitte füge zuerst einen Podcast hinzu.</string>
+    <string name="toast_message_error_no_podcast_matches_search">Es konnte kein Podcast gefunden werden, der deiner Suche entspricht.</string>
 </resources>
