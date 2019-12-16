@@ -257,7 +257,7 @@ object FileHelper {
 
 
     /* Suspend function: Wrapper for copyFile */
-    suspend fun saveCopyOfFileSuspended(context: Context, tempFileUri: Uri, targetFileUri: Uri): Boolean {
+    private suspend fun saveCopyOfFileSuspended(context: Context, tempFileUri: Uri, targetFileUri: Uri): Boolean {
         return suspendCoroutine { cont ->
             cont.resume(copyFile(context, tempFileUri, targetFileUri, deleteOriginal = true))
         }

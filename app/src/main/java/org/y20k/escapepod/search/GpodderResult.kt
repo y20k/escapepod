@@ -8,5 +8,4 @@ data class GpodderResult (val url: String,
                           val logo_url: String,
                           val scaled_logo_url: String,
                           val website: String,
-                          val mygpo_link: String) {
-}
+                          val mygpo_link: String)

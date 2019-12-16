@@ -340,7 +340,7 @@ object CollectionHelper {
 
 
     /* Extracts all audio file references from a collection */
-    fun getAllAudioFileReferences(collection: Collection): ArrayList<String> {
+    private fun getAllAudioFileReferences(collection: Collection): ArrayList<String> {
         val audioFileReferences: ArrayList<String> = arrayListOf()
         collection.podcasts.forEach { podcast ->
             podcast.episodes.forEach { episode ->
@@ -463,7 +463,7 @@ object CollectionHelper {
 
     /* Delete files in audio folder that are not referenced in collection - used for housekeeping */
     fun deleteUnReferencedAudioFiles(context: Context, collection: Collection) {
-        val audioFileReferences: ArrayList<String> = CollectionHelper.getAllAudioFileReferences(collection)
+        val audioFileReferences: ArrayList<String> = getAllAudioFileReferences(collection)
         val audioFolder: File? = context.getExternalFilesDir(Keys.FOLDER_AUDIO)
         if (audioFolder != null && audioFolder.exists()) {
             val subFolders: Array<File>? = audioFolder.listFiles()

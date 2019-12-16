@@ -335,7 +335,7 @@ object DownloadHelper {
     private fun readPodcastFeed(context: Context, localFileUri: Uri, remoteFileLocation: String) {
         val backgroundJob = Job()
         val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
-        uiScope.launch() {
+        uiScope.launch {
             LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
             LogHelper.save(context, TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}") // todo remove
             // async: readSuspended xml

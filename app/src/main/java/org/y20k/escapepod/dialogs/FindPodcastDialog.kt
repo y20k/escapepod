@@ -93,7 +93,7 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
             }
         }
         // handle outside-click as "no"
-        builder.setOnCancelListener(){
+        builder.setOnCancelListener {
             if (this::requestQueue.isInitialized) {
                 requestQueue.stop()
             }
@@ -166,11 +166,9 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
             // show progress indicator
             showProgressIndicator()
             // handle search string input - delay request to manage server load (not sure if necessary)
-            handler.postDelayed(object : Runnable {
-                override fun run() {
-                    // only start search if query is the same as one second ago
-                    if (currentSearchString == query) search(context, query)
-                }
+            handler.postDelayed({
+                // only start search if query is the same as one second ago
+                if (currentSearchString == query) search(context, query)
             }, 1000)
         } else if (query.isEmpty()) {
             resetLayout(clearAdapter = true)
@@ -222,7 +220,7 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
         val requestUrl = "https://gpodder.net/search.json?q=${query.replace(" ", "+")}"
 
         // request data from request URL
-        val stringRequest = object: StringRequest(Request.Method.GET, requestUrl, responseListener, errorListener) {
+        val stringRequest = object: StringRequest(Method.GET, requestUrl, responseListener, errorListener) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params = HashMap<String, String>()

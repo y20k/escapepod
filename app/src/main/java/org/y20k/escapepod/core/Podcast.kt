@@ -53,7 +53,7 @@ data class Podcast(@Expose var name: String = "",
         episodes.forEachIndexed { index, episode ->
             // print out three episodes
             if (index < 3) {
-                stringBuilder.append("${episode.toString()}")
+                stringBuilder.append(episode.toString())
             }
         }
         return stringBuilder.toString()

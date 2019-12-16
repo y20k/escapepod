@@ -379,7 +379,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 when (dialogResult) {
                     true -> {
                         Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-                        DownloadHelper.downloadEpisode(this, payloadString, true, true)
+                        DownloadHelper.downloadEpisode(this, payloadString, ignoreWifiRestriction = true, manuallyDownloaded = true)
                     }
                 }
             }
@@ -618,7 +618,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private fun downloadEpisode(episode: Episode) {
         if (NetworkHelper.isConnectedToWifi(this)) {
             Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-            DownloadHelper.downloadEpisode(this, episode.getMediaId(), true, true)
+            DownloadHelper.downloadEpisode(this, episode.getMediaId(), ignoreWifiRestriction = true, manuallyDownloaded = true)
         } else if (NetworkHelper.isConnectedToCellular(this)) {
             YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_non_wifi_download, yesButton = R.string.dialog_yes_no_positive_button_non_wifi_download, payloadString = episode.getMediaId())
         } else if (NetworkHelper.isConnectedToVpn(this))  {
@@ -807,7 +807,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // check if valid folder
         if (folder != null && folder.isDirectory) {
             // create the observer
-            fileObserver = object: FileObserver(folder.path, FileObserver.CREATE) {
+            fileObserver = object: FileObserver(folder, CREATE) {
                 override fun onEvent(event: Int, path: String?) {
                     // a file file was created in the collection folder
                     tryToOfferOpmlImport()

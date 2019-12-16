@@ -84,7 +84,7 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
         }
 
         // handle outside-click as "no"
-        builder.setOnCancelListener(){
+        builder.setOnCancelListener {
             yesNoDialogListener.onYesNoDialog(type, false, payload, payloadString)
         }
 

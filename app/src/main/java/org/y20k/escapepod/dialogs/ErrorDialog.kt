@@ -15,7 +15,6 @@
 package org.y20k.escapepod.dialogs
 
 import android.content.Context
-import android.content.DialogInterface
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -78,7 +77,7 @@ class ErrorDialog {
         errorMessageView.text = context.getString(errorMessage)
 
         // add okay button
-        builder.setPositiveButton(R.string.dialog_generic_button_okay, DialogInterface.OnClickListener { _, _ ->
+        builder.setPositiveButton(R.string.dialog_generic_button_okay, { _, _ ->
             // listen for click on okay button
             // do nothing
         })

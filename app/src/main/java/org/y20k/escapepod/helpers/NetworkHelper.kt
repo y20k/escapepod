@@ -38,7 +38,7 @@ object NetworkHelper {
 
 
     /* Data class: holder for content type information */
-    data class ContentType(var type: String = String(), var charset: String = String()) {    }
+    data class ContentType(var type: String = String(), var charset: String = String())
 
 
     /* Checks if the active network connection is over Wifi */

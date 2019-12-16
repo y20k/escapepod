@@ -20,7 +20,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
@@ -38,7 +37,10 @@ import androidx.core.os.bundleOf
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.MediaSource
@@ -82,7 +84,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private lateinit var userAgent: String
     private lateinit var modificationDate: Date
     private lateinit var collectionChangedReceiver: BroadcastReceiver
-    private lateinit var becomingNoisyReceiver: BecomingNoisyReceiver
     private lateinit var sleepTimer: CountDownTimer
     private var sleepTimerTimeRemaining: Long = 0L
 
@@ -130,9 +131,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         collectionChangedReceiver = createCollectionChangedReceiver()
         LocalBroadcastManager.getInstance(application).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
 
-        // initialize listener for unplugging of headphones
-        becomingNoisyReceiver = BecomingNoisyReceiver(this, mediaSession.sessionToken)
-
         // load collection
         loadCollection(this)
     }
@@ -162,8 +160,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             isActive = false
             release()
         }
-        // unregister headphone un-plug listener
-        becomingNoisyReceiver.unregister()
         // cancel background job
         backgroundJob.cancel()
         // release player
@@ -307,11 +303,14 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             player.removeAnalyticsListener(analyticsListener)
             player.release()
         }
-        val player = ExoPlayerFactory.newSimpleInstance(this).apply { addListener(this@PlayerService) }
         val audioAttributes: AudioAttributes = AudioAttributes.Builder()
                 .setContentType(C.CONTENT_TYPE_MUSIC)
                 .setUsage(C.USAGE_MEDIA)
                 .build()
+        val player = SimpleExoPlayer.Builder(this).build()
+        player.addListener(this@PlayerService)
+        player.setHandleAudioBecomingNoisy(true)
+        player.setHandleWakeLock(true)
         player.setAudioAttributes(audioAttributes, true)
         player.addAnalyticsListener(analyticsListener)
         player.seekTo(playerState.playbackPosition)
@@ -329,7 +328,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // set player position
         playerState.playbackPosition = episode.playbackPosition
         player.seekTo(playerState.playbackPosition)
-        player.playbackParameters = PlaybackParameters(playerState.playbackSpeed)
+        player.setPlaybackParameters(PlaybackParameters(playerState.playbackSpeed))
     }
 
 
@@ -448,7 +447,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Sets playback speed */
     private fun setPlaybackSpeed(speed: Float = 1f) {
         // update playback parameters - speed up playback
-        player.playbackParameters = PlaybackParameters(speed)
+        player.setPlaybackParameters(PlaybackParameters(speed))
         // save speed
         playerState.playbackSpeed = speed
         PreferencesHelper.savePlayerPlaybackSpeed(this, speed)
@@ -521,7 +520,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
      * Custom AnalyticsListener that enables AudioFX equalizer integration
      */
     private var analyticsListener = object: AnalyticsListener {
-        override fun onAudioSessionId(eventTime: AnalyticsListener.EventTime?, audioSessionId: Int) {
+        override fun onAudioSessionId(eventTime: AnalyticsListener.EventTime, audioSessionId: Int) {
             super.onAudioSessionId(eventTime, audioSessionId)
             // integrate with system equalizer (AudioFX)
             val intent: Intent = Intent(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION)
@@ -711,9 +710,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             when (state.isActive) {
                 // CASE: Playback has started
                 true -> {
-                    // start listening for unplugging of headphone
-                    becomingNoisyReceiver.register()
-
                     /**
                      * This may look strange, but the documentation for [Service.startForeground]
                      * notes that "calling this method does *not* put the service in the started
@@ -730,9 +726,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 }
                 // CASE: Playback has stopped
                 false -> {
-                    // stop listening for unplugging of headphone
-                    becomingNoisyReceiver.unregister()
-
                     if (isForegroundService) {
                         stopForeground(false)
                         isForegroundService = false
@@ -754,41 +747,5 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             }
         }
     }
-
-
-    /*
-     * Inner class: listening for when headphones are unplugged ("ACTION_AUDIO_BECOMING_NOISY")
-     */
-    private inner class BecomingNoisyReceiver(private val context: Context, sessionToken: MediaSessionCompat.Token): BroadcastReceiver() {
-
-        private val noisyIntentFilter = IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
-        private val controller = MediaControllerCompat(context, sessionToken)
-
-        private var registered = false
-
-        fun register() {
-            if (!registered) {
-                context.registerReceiver(this, noisyIntentFilter)
-                registered = true
-            }
-        }
-
-        fun unregister() {
-            if (registered) {
-                context.unregisterReceiver(this)
-                registered = false
-            }
-        }
-
-        override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == AudioManager.ACTION_AUDIO_BECOMING_NOISY) {
-                // stop playback
-                stopPlayback()
-            }
-        }
-    }
-    /*
-     * End of inner class
-     */
 
 }

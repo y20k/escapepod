@@ -26,7 +26,7 @@ import org.y20k.escapepod.helpers.LogHelper
 /*
  * GpodderResultAdapter class
  */
-class GpodderResultAdapter(val listener: GpodderResultAdapterListener, var searchResults: Array<GpodderResult>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class GpodderResultAdapter(private val listener: GpodderResultAdapterListener, var searchResults: Array<GpodderResult>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(GpodderResultAdapter::class.java)
