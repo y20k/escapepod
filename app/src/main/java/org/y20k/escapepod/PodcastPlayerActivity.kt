@@ -806,8 +806,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         var fileObserver: FileObserver? = null
         // check if valid folder
         if (folder != null && folder.isDirectory) {
-            // create the observer
-            fileObserver = object: FileObserver(folder, CREATE) {
+            // create the observer - Note: constructor is deprecated, but the one that it replaces is API 29+
+            fileObserver = object: FileObserver(folder.path, CREATE) {
                 override fun onEvent(event: Int, path: String?) {
                     // a file file was created in the collection folder
                     tryToOfferOpmlImport()
