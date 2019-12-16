@@ -143,4 +143,7 @@
     <string name="dialog_find_podcast_title">Finn nettradioopptak</string>
     <string name="toast_message_error_feed_not_supported">Ustøttet informasjonskanal (program/Atom+XML).</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Last ned uansett</string>
+    <string name="dialog_yes_no_message_vpn_download">Enheten din er tilkoblet via VPN. Last ned episode uansett\?</string>
+    <string name="toast_message_error_no_podcast_found">Kunne ikke starte avspilling. Legg til et nettradioopptak først.</string>
+    <string name="toast_message_error_no_podcast_matches_search">Fant ingen nettradioopptak som samsvarer med søket ditt.</string>
 </resources>
