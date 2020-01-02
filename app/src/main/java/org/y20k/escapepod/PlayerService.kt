@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-19 - Y20K.org
+ * Copyright (c) 2018-20 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -687,18 +687,14 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
      */
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            LogHelper.d(TAG, "onMetadataChanged called") // todo remove
             mediaController.playbackState?.let { updateNotification(it) }
         }
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            LogHelper.d(TAG, "onPlaybackStateChanged called") // todo remove
             state?.let { updateNotification(it) }
         }
 
         private fun updateNotification(state: PlaybackStateCompat) {
-            LogHelper.d(TAG, "updateNotification called") // todo remove
-
             // skip building a notification when state is "none" and metadata is null
             // val notification = if (mediaController.metadata != null && state.state != PlaybackStateCompat.STATE_NONE) {
             val notification = if (state.state != PlaybackStateCompat.STATE_NONE) {
@@ -730,7 +726,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                         stopForeground(false)
                         isForegroundService = false
 
-                        // If playback has ended, also stop the service.
+                        // if playback has ended, also stop the service.
                         if (state.state == PlaybackStateCompat.STATE_NONE) {
                             stopSelf()
                         }
@@ -738,7 +734,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                         if (notification != null) {
                             notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
                         } else {
-                            // removeNowPlayingNotification
+                            // remove notification
                             stopForeground(true)
                         }
                     }
