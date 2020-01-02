@@ -10,6 +10,8 @@ Dutch version: [Heimen Stoffels](https://hosted.weblate.org/user/vistaus/) | [we
 
 German version: [waweic](https://hosted.weblate.org/user/waweic/) | [weblate version history](https://hosted.weblate.org/changes/?lang=de&project=escapepod)
 
+Hebrew version: [Yaron Shahrabani](https://hosted.weblate.org/user/Yaron/) | [weblate version history](https://hosted.weblate.org/changes/?lang=he&project=escapepod)
+
 Norwegian version: [Allan Nordhøy](https://hosted.weblate.org/user/kingu/) | [weblate version history](https://hosted.weblate.org/changes/?lang=nb_NO&project=escapepod)
 
 Polish version: [Karol Kosek](https://hosted.weblate.org/user/krkk/) | [weblate version history](https://hosted.weblate.org/changes/?lang=pl&project=escapepod)
