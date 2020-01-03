@@ -26,7 +26,7 @@
     <string name="dialog_opml_import_details_default">Keine Details verfügbar</string>
     <string name="dialog_opml_import_message_error">Die OPML-Datei konnte nicht importiert werden. Keine Podcasts gefunden.</string>
     <string name="dialog_opml_import_message">Neue Podcasts hinzufügen\? Duplikate werden vor dem Import entfernt. Anzahl der gefundenen Podcasts:</string>
-    <string name="dialog_opml_import_title">OMPL-Import</string>
+    <string name="dialog_opml_import_title">OPML-Import</string>
     <string name="dialog_yes_no_message_add_up_next">Beginne sofort mit dem Hören dieser Episode\?</string>
     <string name="dialog_yes_no_message_default">Willst du das wirklich tun\?</string>
     <string name="dialog_yes_no_message_delete_downloads">Alle heruntergeladenen Episoden löschen\? Du kannst sie anschließend erneut herunterladen.</string>
