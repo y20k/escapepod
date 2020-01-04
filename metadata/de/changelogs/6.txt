@@ -1,0 +1,7 @@
+# v0.7.1 - Drüben Auf Dem Hügel
+
+**2019-10-02**
+
+- neue Taste für die Wiedergabegeschwindigkeit
+- Längere Episodenbeschreibungen werden in den Shownotizen angezeigt, falls im RSS-Feed verfügbar
+- Fehlerbehebungen

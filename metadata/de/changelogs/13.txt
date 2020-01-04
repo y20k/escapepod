@@ -1,0 +1,9 @@
+# v0.7.8 - Drüben Auf Dem Hügel
+
+**2019-10-30**
+
+- verbesserte Barrierefreiheit über TalkBack
+- Norwegische Sprachversion
+- Stabilitätsverbesserungen (*)
+
+(*) Audiodateien werden ab v0.7.8 auf eine etwas andere Art und Weise gespeichert. Sollte das Probleme verursachen (was es nicht sollte), schaue bitte in die Troubleshooting-Tipps nach (https://github.com/y20k/escapepod/wiki/Troubleshooting).

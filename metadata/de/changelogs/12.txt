@@ -1,0 +1,5 @@
+# v0.7.7 - Drüben Auf Dem Hügel
+
+**2019-10-16**
+
+- behebt einen Fehler, bei dem die Abspielposition nicht korrekt gespeichert wurde

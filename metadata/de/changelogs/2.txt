@@ -1,0 +1,7 @@
+# v0.4.1-alpha - An Diesen Langweiligen Tagen
+
+**2019-07-25**
+
+- behebt Probleme bei Podcasts, die FeedBurner nutzen
+- verbesserte Scroll-Performance
+- neue Fehlerprotokollfunktion

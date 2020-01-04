@@ -1,0 +1,7 @@
+# v0.8.3 - Gehen Die Leute
+
+**2019-12-06**
+
+- benachrichtigt den Benutzer, wenn die sprachgesteuerte Suche nicht erfolgreich war
+
+Hinweis: Sorry, Leute. Dies ist das dritte Update in zwei Tagen. Die Apps scheinen im Play Store abgelehnt zu werden, da der automatische Test auf Android Auto-Kompatibilität davon ausgeht, dass die App auf den Sprachbefehl "Musik abspielen" reagiert, auch wenn kein Podcast hinzugefügt wurde. Keine Ahnung, was ich tun soll. Eventuell verzichte ich auf Android-Auto.

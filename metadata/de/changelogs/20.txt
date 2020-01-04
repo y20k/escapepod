@@ -1,0 +1,5 @@
+# v0.8.2 - Gehen Die Leute
+
+**2019-12-06**
+
+- benachrichtigt den Benutzer, dass die sprachgesteuerte Wiedergabe nicht gelingen kann, wenn die Podcast-Liste leer ist.

@@ -1,0 +1,5 @@
+# v0.7.9 - Drüben Auf Dem Hügel
+
+**2019-11-06**
+
+- geringfügige Stabilitätsverbesserungen

@@ -1,0 +1,13 @@
+# v0.6.0-beta - Drei Schritte Vom Abgrund Entfernt
+
+**2019-08-14**
+
+- einfache Anzeige der Show-Notizen
+- geänderte Typographie (Material Design Komponenten)
+- Fehlerbehebungen
+
+
+Hinweis: Für das Problem, dass einzelne Episoden zweimal in der Liste erscheinen, gibt es leider nur eine Brute-Force-Lösung:
+1) OPML-Exportdatei speichern
+2) Alle Anwendungsdaten löschen
+3) OPML-Datei mit Escapepod öffnen und alle Podcasts erneut importieren.

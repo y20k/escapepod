@@ -1,0 +1,5 @@
+# v0.8.1 - Gehen Die Leute
+
+**2019-12-05**
+
+- verhindert einen Absturz, der durch einen Wiedergabebefehl per Sprachsteuerung verursacht wird, wenn die Podcast-Liste noch leer ist
