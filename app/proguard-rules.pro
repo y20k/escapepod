@@ -25,3 +25,5 @@
 -keep public class org.y20k.escapepod.core.**  { *; }
 
 -keep public class org.y20k.escapepod.PlayerService  { *; }
+
+-keep public class org.y20k.escapepod.search.GpodderResult  { *; }

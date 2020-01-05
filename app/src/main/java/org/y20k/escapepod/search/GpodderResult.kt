@@ -1,11 +1,13 @@
 package org.y20k.escapepod.search
 
-data class GpodderResult (val url: String,
-                          val title: String,
-                          val description: String,
-                          val subscribers: Int,
-                          val subscribers_last_week: Int,
-                          val logo_url: String,
-                          val scaled_logo_url: String,
-                          val website: String,
-                          val mygpo_link: String)
+import com.google.gson.annotations.Expose
+
+data class GpodderResult (@Expose val url: String,
+                          @Expose val title: String,
+                          @Expose val description: String,
+                          @Expose val subscribers: Int,
+                          @Expose val subscribers_last_week: Int,
+                          @Expose val logo_url: String,
+                          @Expose val scaled_logo_url: String,
+                          @Expose val website: String,
+                          @Expose val mygpo_link: String)
