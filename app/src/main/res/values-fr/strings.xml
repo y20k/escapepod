@@ -41,14 +41,14 @@
     <string name="dialog_yes_no_negative_button_add_up_next">Ajouter à « File d\'attente »</string>
     <string name="dialog_yes_no_negative_button_cancel">Annuler</string>
     <string name="dialog_yes_no_negative_button_default">Non</string>
-    <string name="dialog_yes_no_positive_button_add_up_next">Démarrer maintenant</string>
+    <string name="dialog_yes_no_positive_button_add_up_next">Lire maintenant</string>
     <string name="dialog_yes_no_positive_button_default">Oui</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Tout supprimer</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Supprimer</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Marquer comme lu</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Télécharger quand même</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Supprimer</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Mettre à jour</string>
+    <string name="dialog_yes_no_positive_button_update_collection">Actualiser</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Télécharger quand même</string>
     <string name="dialog_yes_no_title_default">Décider</string>
     <string name="player_up_next_headline">À suivre :</string>
