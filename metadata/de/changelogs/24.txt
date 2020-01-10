@@ -1,0 +1,6 @@
+# v0.8.6 - Gehen Die Leute
+
+**2020-01-05**
+
+- behebt einen Absturz im Suchdialog
+- Hebräische Sprachversion
