@@ -153,8 +153,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
-        // stop playback
-        stopPlayback()
+        // save state of player
+        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
         // release media session
         mediaSession.run {
             isActive = false
@@ -215,15 +215,15 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Overrides onPlayerStateChanged from Player.EventListener */
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playerState: Int) {
         when (playWhenReady) {
             // CASE: playWhenReady = true
             true -> {
-                if (playbackState == Player.STATE_READY) {
+                if (playerState == Player.STATE_READY) {
                     // active playback: update media session and save state
                     handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
-                } else if (playbackState == Player.STATE_ENDED) {
-                    // playback reached end
+                } else if (playerState == Player.STATE_ENDED) {
+                    // playback reached end: stop / end playback
                     handlePlaybackEnded()
                 } else {
                     // not playing because the player is buffering, stopped or failed - check playbackState and player.getPlaybackError for details)
@@ -231,11 +231,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             }
             // CASE: playWhenReady = false
             false -> {
-                if (playbackState == Player.STATE_READY) {
-                    // paused by app: update media session and save state
+                if (playerState == Player.STATE_READY) {
+                    // stopped by app: update media session and save state
                     handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
-                } else if (playbackState == Player.STATE_ENDED) {
-                    // paused by app: update media session and save state
+                } else if (playerState == Player.STATE_ENDED) {
+                    // ended by app: update media session and save state
                     handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
                 }
                 // stop sleep timer - if running
@@ -731,10 +731,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                             stopSelf()
                         }
 
-                        if (notification != null) {
+                        if (notification != null && state.state != PlaybackStateCompat.STATE_STOPPED) {
                             notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
                         } else {
-                            // remove notification
+                            // remove notification - playback ended (or buildNotification failed)
                             stopForeground(true)
                         }
                     }
