@@ -1,6 +1,7 @@
 package org.y20k.escapepod.dialogs
 
 import android.app.Activity
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Handler
 import android.view.LayoutInflater
@@ -51,6 +52,7 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
     private var result: Array<GpodderResult> = arrayOf()
     private val handler: Handler = Handler()
     private var podcastFeedLocation: String = String()
+    private var myClipboard: ClipboardManager? = null
 
 
     /* Overrides onSearchResultTapped from GpodderResultAdapterListener */
@@ -121,6 +123,15 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
 
         // initially disable "Add" button
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+
+        // prepare contents from the clipboard
+        myClipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        val clipContent = myClipboard?.getPrimaryClip()?.getItemAt(0)?.text.toString()
+
+        // if there is an actual feed add it to the field
+        if(clipContent.startsWith("http") && clipContent.endsWith(".rss")){
+            podcastSearchBoxView.setQuery(clipContent,true)
+        }
 
     }
 
