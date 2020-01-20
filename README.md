@@ -6,7 +6,7 @@ README
 
 **Version 0.8.x ("Gehen Die Leute")**
 
-Escapepod is a simple and lightweight app for listening to podcasts. It's bare bone approach may not be to everyone's taste: Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
+Escapepod is a simple and lightweight app for listening to podcasts. Escapepod is a podcast player with a minimalistic approach, that may not be to everyone's liking. The app has only a single screen. Playback controls and a list of podcasts that shows the five most recent episodes each. Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
 
 Escapepod is free and open source. It is published under the [MIT open source license](https://opensource.org/licenses/MIT). Want to help? Please check out the notes in [CONTRIBUTING.md](https://github.com/y20k/escapepod/blob/master/CONTRIBUTE.md) first.
 
