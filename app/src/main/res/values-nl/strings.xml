@@ -114,4 +114,5 @@
     <string name="dialog_yes_no_message_vpn_download">Je apparaat is verbonden middels een VPN. Wil je de aflevering tóch downloaden\?</string>
     <string name="toast_message_error_no_podcast_found">Er kan niet worden afgespeeld. Voeg een pocast toe.</string>
     <string name="toast_message_error_no_podcast_matches_search">Er is geen podcast die overeenkomt met je zoekopdracht.</string>
+    <string name="descr_card_settings_button">Instellingen</string>
 </resources>
