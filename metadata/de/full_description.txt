@@ -1,4 +1,5 @@
-Escapepod ist eine einfache und leichte App zum Hören von Podcasts. Der klare Ansatz ist vielleicht nicht jedermanns Geschmack: Escapepod hat keine Podcast-Entdeckungsfunktion. Es bietet nur eine sehr einfache Suchfunktion und öffnet RSS-Podcast-Links, wenn man sie in einem Webbrowser antippt.
+Escapepod ist ein Podcast-Player mit einem minimalistischen Ansatz, der vielleicht nicht jedem gefällt. Die App hat nur einen einzigen Bildschirm. Die Wiedergabesteuerung und eine Liste von Podcasts, die jeweils die fünf neuesten Episoden zeigt. Escapepod hat keine Podcast-Entdeckungsfunktion. Es bietet nur eine sehr einfache Suchfunktion und öffnet RSS-Podcast-Links, wenn man sie in einem Webbrowser antippt.
+
 
 HÄUFIGE FRAGEN
 
