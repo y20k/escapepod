@@ -100,6 +100,7 @@
     <string name="descr_card_delete_episode_button">Remove downloaded episode</string>
     <string name="descr_card_playback_indicator">Playback progress</string>
     <string name="descr_card_podcast_cover">Podcast cover image</string>
+    <string name="descr_card_settings_button">Settings</string>
     <string name="descr_card_small_download_button">Download</string>
     <string name="descr_card_small_playback_button">Play/pause</string>
     <string name="descr_expanded_episode_length">Episode length</string>

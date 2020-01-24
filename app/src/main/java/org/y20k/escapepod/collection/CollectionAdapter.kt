@@ -26,7 +26,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -419,7 +419,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
      * Inner class: ViewHolder for the Add New Podcast action
      */
     private inner class AddNewViewHolder (listItemAddNewLayout: View) : RecyclerView.ViewHolder(listItemAddNewLayout) {
-        val addNewPodcastView: ConstraintLayout = listItemAddNewLayout.findViewById(R.id.card_add_new_podcast)
+        val addNewPodcastView: CardView = listItemAddNewLayout.findViewById(R.id.card_add_new_podcast)
     }
     /*
      * End of inner class
