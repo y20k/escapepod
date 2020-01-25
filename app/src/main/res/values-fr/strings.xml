@@ -114,4 +114,5 @@
     <string name="descr_player_podcast_cover">Petite pochette de lecture</string>
     <string name="onboarding_app_description">Application de podcast</string>
     <string name="onboarding_app_get_started">Démarrer</string>
+    <string name="descr_card_settings_button">Paramètres</string>
 </resources>
