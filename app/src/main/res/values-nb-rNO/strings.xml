@@ -146,4 +146,12 @@
     <string name="dialog_yes_no_message_vpn_download">Enheten din er tilkoblet via VPN. Last ned episode uansett\?</string>
     <string name="toast_message_error_no_podcast_found">Kunne ikke starte avspilling. Legg til et nettradioopptak først.</string>
     <string name="toast_message_error_no_podcast_matches_search">Fant ingen nettradioopptak som samsvarer med søket ditt.</string>
+    <string name="descr_card_settings_button">Innstillinger</string>
+    <string name="pref_advanced_title">Avansert</string>
+    <string name="pref_general_title">Generelt</string>
+    <string name="pref_theme_selection_mode_dark">Mørkt modus</string>
+    <string name="pref_theme_selection_mode_device_default">Samme som enhet</string>
+    <string name="pref_theme_selection_mode_light">Lyst modus</string>
+    <string name="pref_theme_selection_summary">Nåværende drakt:</string>
+    <string name="pref_theme_selection_title">Programdrakt</string>
 </resources>
