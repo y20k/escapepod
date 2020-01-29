@@ -191,6 +191,11 @@ object Keys {
     const val PODCAST_STATE_HAS_NEW_EPISODES: Int = 1
     const val PODCAST_STATE_PODCAST_UNCHANGED: Int = 2
 
+    // theme states
+    const val STATE_THEME_FOLLOW_SYSTEM: String = "stateFollowSystem"
+    const val STATE_THEME_LIGHT_MODE: String = "stateLightMode"
+    const val STATE_THEME_DARK_MODE: String = "stateDarkMode"
+
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"
 

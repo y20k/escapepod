@@ -11,7 +11,7 @@
     app:behavior_hideable="true"
     app:behavior_peekHeight="72dp"
     app:layout_behavior="@string/bottom_sheet_behavior"
-    tools:showIn="@layout/activity_podcast_player">
+    tools:showIn="@layout/fragment_podcast_player">
 
     <ImageView
         android:id="@+id/sheet_large_podcast_cover"

@@ -14,7 +14,6 @@
 
 package org.y20k.escapepod.collection
 
-import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Vibrator
@@ -22,6 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -31,6 +31,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,7 +51,7 @@ import org.y20k.escapepod.helpers.PreferencesHelper
 /*
  * CollectionAdapter class
  */
-class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CollectionAdapter(private val context: Context, private val collectionAdapterListener: CollectionAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(CollectionAdapter::class.java)
@@ -58,7 +59,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
 
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
-    private lateinit var collectionAdapterListener: CollectionAdapterListener
+    // private lateinit var collectionAdapterListener: CollectionAdapterListener
     private var collection: Collection = Collection()
 
 
@@ -77,12 +78,9 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
 
-        // get reference to listener
-        collectionAdapterListener = activity as CollectionAdapterListener
-
         // create view model and observe changes in collection view model
-        collectionViewModel = ViewModelProviders.of(activity as AppCompatActivity).get(CollectionViewModel::class.java)
-        observeCollectionViewModel(activity as LifecycleOwner)
+        collectionViewModel = ViewModelProviders.of(context as AppCompatActivity).get(CollectionViewModel::class.java)
+        observeCollectionViewModel(context as LifecycleOwner)
 
     }
 
@@ -122,6 +120,9 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
                     collectionAdapterListener.onDeleteAllButtonTapped()
                     return@setOnLongClickListener true
                 }
+                addNewViewHolder.settingsButtonView.setOnClickListener {
+                    it.findNavController().navigate(R.id.settings_destination)
+                }
             }
 
             // CASE PODCAST CARD
@@ -158,8 +159,8 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     private fun setPodcastImage(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
         podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.smallCover))
         podcastViewHolder.podcastImageView.setOnLongClickListener {
-            DownloadHelper.refreshCover(activity, podcast)
-            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            DownloadHelper.refreshCover(context, podcast)
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             return@setOnLongClickListener true
@@ -171,16 +172,16 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
     private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
         episodeViewHolder.episodeDateView.text = episode.getDateString()
         episodeViewHolder.episodeDateView.setOnLongClickListener {
-            ShowNotesDialog().show(activity, episode)
-            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            ShowNotesDialog().show(context, episode)
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             return@setOnLongClickListener true
         }
         episodeViewHolder.episodeTitleView.text = episode.title
         episodeViewHolder.episodeTitleView.setOnLongClickListener {
-            ShowNotesDialog().show(activity, episode)
-            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            ShowNotesDialog().show(context, episode)
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             return@setOnLongClickListener true
@@ -210,7 +211,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
             collectionAdapterListener.onPlayButtonTapped(episode.getMediaId(), playbackState)
         }
         episodeViewHolder.episodePlayButtonView.setOnLongClickListener {
-            val v = activity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             collectionAdapterListener.onMarkListenedButtonTapped(episode.getMediaId())
@@ -235,7 +236,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
             // set up episode list
             val episodeListAdapter = EpisodeListAdapter(podcast)
             podcastViewHolder.olderEpisodesList.adapter = episodeListAdapter
-            podcastViewHolder.olderEpisodesList.layoutManager = LinearLayoutManager(activity)
+            podcastViewHolder.olderEpisodesList.layoutManager = LinearLayoutManager(context)
             podcastViewHolder.olderEpisodesList.itemAnimator = DefaultItemAnimator()
             // set up Older Episodes button
             setOlderEpisodesButton(podcastViewHolder)
@@ -268,11 +269,11 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
         when (podcastViewHolder.olderEpisodesList.visibility) {
             // CASE: older episode list is hidden -> set button to "show"
             View.GONE -> {
-                podcastViewHolder.olderEpisodesButtonView.text = activity.getString(R.string.podcast_list_button_toggle_show_older_episodes)
+                podcastViewHolder.olderEpisodesButtonView.text = context.getString(R.string.podcast_list_button_toggle_show_older_episodes)
             }
             // CASE: older episode list is visible -> set button to "hide"
             View.VISIBLE -> {
-                podcastViewHolder.olderEpisodesButtonView.text = activity.getString(R.string.podcast_list_button_toggle_hide_older_episodes)
+                podcastViewHolder.olderEpisodesButtonView.text = context.getString(R.string.podcast_list_button_toggle_hide_older_episodes)
             }
         }
     }
@@ -420,6 +421,7 @@ class CollectionAdapter(private val activity: Activity) : RecyclerView.Adapter<R
      */
     private inner class AddNewViewHolder (listItemAddNewLayout: View) : RecyclerView.ViewHolder(listItemAddNewLayout) {
         val addNewPodcastView: CardView = listItemAddNewLayout.findViewById(R.id.card_add_new_podcast)
+        val settingsButtonView: ImageButton = listItemAddNewLayout.findViewById(R.id.settings_button)
     }
     /*
      * End of inner class

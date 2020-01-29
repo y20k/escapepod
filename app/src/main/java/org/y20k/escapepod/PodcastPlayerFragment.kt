@@ -1,7 +1,7 @@
 /*
- * PodcastPlayerActivity.kt
- * Implements the PodcastPlayerActivity class
- * PodcastPlayerActivity is Escapepod's main activity that hosts a list of podcast and a player sheet
+ * PodcastPlayerFragment.kt
+ * Implements the PodcastPlayerFragment class
+ * PodcastPlayerFragment is the fragment that hosts Escapepod's list of podcasts and a player sheet
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -16,6 +16,7 @@ package org.y20k.escapepod
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -28,14 +29,16 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -56,9 +59,9 @@ import kotlin.coroutines.CoroutineContext
 
 
 /*
- * PodcastPlayerActivity class
+ * PodcastPlayerFragment class
  */
-class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
+class PodcastPlayerFragment: Fragment(), CoroutineScope,
         SharedPreferences.OnSharedPreferenceChangeListener,
         AddPodcastDialog.AddPodcastDialogListener,
         FindPodcastDialog.FindPodcastDialogListener,
@@ -67,7 +70,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         YesNoDialog.YesNoDialogListener {
 
     /* Define log tag */
-    private val TAG: String = LogHelper.makeLogTag(PodcastPlayerActivity::class.java)
+    private val TAG: String = LogHelper.makeLogTag(PodcastPlayerFragment::class.java)
 
 
     /* Main class variables */
@@ -101,14 +104,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
 
         // create collection adapter
-        collectionAdapter = CollectionAdapter(this)
+        collectionAdapter = CollectionAdapter(activity as Context, this as CollectionAdapter.CollectionAdapterListener)
 
         // Create MediaBrowserCompat
-        mediaBrowser = MediaBrowserCompat(this, ComponentName(this, PlayerService::class.java), mediaBrowserConnectionCallback, null)
-
-        // find views and set them up
-        layout = LayoutHolder(this)
-        initializeViews()
+        mediaBrowser = MediaBrowserCompat(activity as Context, ComponentName(activity as Context, PlayerService::class.java), mediaBrowserConnectionCallback, null)
 
         // Create an observer for OPML files in collection folder
         opmlCreatedObserver = createOpmlCreatedObserver(Keys.FOLDER_COLLECTION)
@@ -118,8 +117,18 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     }
 
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        // find views and set them up
+        val rootView: View = inflater.inflate(R.layout.fragment_podcast_player, container, false);
+        layout = LayoutHolder(rootView)
+        initializeViews()
+
+        return rootView
+    }
+
     /* Overrides onResume from Activity */
-    public override fun onStart() {
+    override fun onStart() {
         super.onStart()
         // connect to PlayerService
         mediaBrowser.connect()
@@ -137,11 +146,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
 
     /* Overrides onRestoreInstanceState from Activity */
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
         // always call the superclass so it can restore the view hierarchy
-        super.onRestoreInstanceState(savedInstanceState)
-        // restore state of podcast list
-        listLayoutState = savedInstanceState.getParcelable(Keys.KEY_SAVE_INSTANCE_STATE_PODCAST_LIST)
+        super.onActivityCreated(savedInstanceState)        // restore state of podcast list
+        listLayoutState = savedInstanceState?.getParcelable(Keys.KEY_SAVE_INSTANCE_STATE_PODCAST_LIST)
     }
 
 
@@ -149,16 +157,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override fun onResume() {
         super.onResume()
         // assign volume buttons to music volume
-        volumeControlStream = AudioManager.STREAM_MUSIC
+        activity?.volumeControlStream = AudioManager.STREAM_MUSIC
         // try to recreate player state
-        playerState = PreferencesHelper.loadPlayerState(this)
+        playerState = PreferencesHelper.loadPlayerState(activity as Context)
         // setup ui
         setupPlayer()
         setupList()
         // start watching for changes in shared preferences
-        PreferencesHelper.registerPreferenceChangeListener(this)
+        PreferencesHelper.registerPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
         // toggle download progress indicator
-        layout.toggleDownloadProgressIndicator(this)
+        layout.toggleDownloadProgressIndicator(activity as Context)
     }
 
 
@@ -166,13 +174,13 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     override fun onPause() {
         super.onPause()
         // save player state
-        PreferencesHelper.savePlayerState(this, playerState)
+        PreferencesHelper.savePlayerState(activity as Context, playerState)
         // stop receiving playback progress updates
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
         // stop watching for new opml files
         opmlCreatedObserver?.stopWatching()
         // stop watching for changes in shared preferences
-        PreferencesHelper.unregisterPreferenceChangeListener(this)
+        PreferencesHelper.unregisterPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
 
     }
 
@@ -181,7 +189,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     public override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
-        MediaControllerCompat.getMediaController(this)?.unregisterCallback(mediaControllerCallback)
+        MediaControllerCompat.getMediaController(activity as Activity)?.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
     }
@@ -199,7 +207,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     }
                 } else {
                     // permission denied
-                    Toast.makeText(this, R.string.toast_message_error_missing_storage_permission, Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity as Context, R.string.toast_message_error_missing_storage_permission, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -209,7 +217,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Overrides onSharedPreferenceChanged from OnSharedPreferenceChangeListener */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == Keys.PREF_ACTIVE_DOWNLOADS) {
-            layout.toggleDownloadProgressIndicator(this)
+            layout.toggleDownloadProgressIndicator(activity as Context)
         }
     }
 
@@ -221,7 +229,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         if (CollectionHelper.isNewPodcast(podcastUrl, collection)) {
             downloadPodcastFeed(podcastUrl)
         } else {
-            ErrorDialog().show(this, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
         }
     }
 
@@ -233,7 +241,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         if (CollectionHelper.isNewPodcast(podcastUrl, collection)) {
             downloadPodcastFeed(podcastUrl)
         } else {
-            ErrorDialog().show(this, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
         }
     }
 
@@ -259,7 +267,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                     else -> {
                         // ask user: playback or add to Up Next
                         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
-                        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId)
+                        YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId)
                     }
                 }
             }
@@ -275,9 +283,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Overrides onMarkListenedButtonTapped from CollectionAdapterListener */
     override fun onMarkListenedButtonTapped(mediaId: String) {
-        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_mark_episode_played)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
-        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId)
+        YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId)
     }
 
 
@@ -289,26 +297,26 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Overrides onDeleteButtonTapped from CollectionAdapterListener */
     override fun onDeleteButtonTapped(episode: Episode) {
-        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+        MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_delete_episode)}\n\n- ${episode.title}"
-        YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_DELETE_EPISODE, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_delete_episode, payloadString = episode.getMediaId())
+        YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_DELETE_EPISODE, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_delete_episode, payloadString = episode.getMediaId())
     }
 
 
     /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
     override fun onAddNewButtonTapped() {
 //        AddPodcastDialog(this).show(this)
-        FindPodcastDialog(this).show()
+        FindPodcastDialog(activity as Activity).show()
     }
 
 
     /* Overrides onDeleteAllButtonTapped from CollectionAdapterListener */
     override fun onDeleteAllButtonTapped() {
-        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
-        val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
+        val v = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         v.vibrate(50)
         // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-        YesNoDialog(this).show(context = this, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
+        YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
     }
 
 
@@ -327,10 +335,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 when (dialogResult) {
                     // user tapped update collection
                     true -> {
-                        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(this)) {
+                        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(activity as Context)) {
                             updateCollection()
                         } else {
-                            Toast.makeText(this, R.string.toast_message_collection_update_not_necessary, Toast.LENGTH_LONG).show()
+                            Toast.makeText(activity as Context, R.string.toast_message_collection_update_not_necessary, Toast.LENGTH_LONG).show()
                         }
                     }
                     // user tapped cancel - for dev purposes: refresh the podcast list view // todo check if that can be helpful
@@ -343,7 +351,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_REMOVE_PODCAST -> {
                 when (dialogResult) {
                     // user tapped remove podcast
-                    true -> collectionAdapter.removePodcast(this@PodcastPlayerActivity, payload)
+                    true -> collectionAdapter.removePodcast(activity as Context, payload)
                     // user tapped cancel
                     false -> collectionAdapter.notifyItemChanged(payload)
                 }
@@ -351,19 +359,19 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_DELETE_EPISODE -> {
                 when (dialogResult) {
                     // user tapped delete episode
-                    true -> collectionAdapter.deleteEpisode(this@PodcastPlayerActivity, payloadString)
+                    true -> collectionAdapter.deleteEpisode(activity as Context, payloadString)
                 }
             }
             Keys.DIALOG_DELETE_DOWNLOADS -> {
                 when (dialogResult) {
                     // user tapped: delete all downloads
-                    true -> collectionAdapter.deleteAllEpisodes(this@PodcastPlayerActivity)
+                    true -> collectionAdapter.deleteAllEpisodes(activity as Context)
                 }
             }
             Keys.DIALOG_MARK_EPISODE_PLAYED -> {
                 when (dialogResult) {
                     // user tapped: mark episode played
-                    true -> collectionAdapter.markEpisodePlayed(this@PodcastPlayerActivity, payloadString)
+                    true -> collectionAdapter.markEpisodePlayed(activity as Context, payloadString)
                 }
             }
             Keys.DIALOG_ADD_UP_NEXT -> {
@@ -378,8 +386,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
                 when (dialogResult) {
                     true -> {
-                        Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-                        DownloadHelper.downloadEpisode(this, payloadString, ignoreWifiRestriction = true, manuallyDownloaded = true)
+                        Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
+                        DownloadHelper.downloadEpisode(activity as Context, payloadString, ignoreWifiRestriction = true, manuallyDownloaded = true)
                     }
                 }
             }
@@ -393,12 +401,12 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         layout.recyclerView.adapter = collectionAdapter
 
         // enable swipe to delete
-        val swipeHandler = object : UiHelper.SwipeToDeleteCallback(this) {
+        val swipeHandler = object : UiHelper.SwipeToDeleteCallback(activity as Context) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // ask user
                 val adapterPosition: Int = viewHolder.adapterPosition
                 val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n\n- ${collection.podcasts[adapterPosition].name}"
-                YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
+                YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
@@ -407,38 +415,38 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // enable for swipe to refresh
         layout.swipeRefreshLayout.setOnRefreshListener {
             // ask user to confirm update
-            YesNoDialog(this@PodcastPlayerActivity as YesNoDialog.YesNoDialogListener).show(context = this@PodcastPlayerActivity, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
+            YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
             layout.swipeRefreshLayout.isRefreshing = false
         }
 
         // set up sleep timer start button
         layout.sheetSleepTimerStartButtonView.setOnClickListener {
-            val playbackState: PlaybackStateCompat = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).playbackState
+            val playbackState: PlaybackStateCompat = MediaControllerCompat.getMediaController(activity as Activity).playbackState
             when (playbackState.isActive) {
-                true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_START_SLEEP_TIMER, null, null)
-                false -> Toast.makeText(this, R.string.toast_message_sleep_timer_unable_to_start, Toast.LENGTH_LONG).show()
+                true -> MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_START_SLEEP_TIMER, null, null)
+                false -> Toast.makeText(activity as Context, R.string.toast_message_sleep_timer_unable_to_start, Toast.LENGTH_LONG).show()
             }
         }
 
         // set up sleep timer start button - long press (night mode switch)
         layout.sheetSleepTimerStartButtonView.setOnLongClickListener {
-            val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val v = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-            NightModeHelper.switchMode(this)
-            recreate()
+            NightModeHelper.switchMode(activity as Activity)
+            activity?.recreate()
             return@setOnLongClickListener true
         }
 
         // set up sleep timer cancel button
         layout.sheetSleepTimerCancelButtonView.setOnClickListener {
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_CANCEL_SLEEP_TIMER, null, null)
+            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_CANCEL_SLEEP_TIMER, null, null)
             layout.sleepTimerRunningViews.visibility = View.GONE
         }
 
         // set up the debug log toggle switch
         layout.sheetDebugToggleButtonView.setOnClickListener {
-            LogHelper.toggleDebugLogFileCreation(this@PodcastPlayerActivity)
+            LogHelper.toggleDebugLogFileCreation(activity as Context)
         }
 
     }
@@ -449,10 +457,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private fun buildPlaybackControls() {
 
         // get player state
-        playerState = PreferencesHelper.loadPlayerState(this)
+        playerState = PreferencesHelper.loadPlayerState(activity as Context)
 
         // get reference to media controller
-        val mediaController = MediaControllerCompat.getMediaController(this@PodcastPlayerActivity)
+        val mediaController = MediaControllerCompat.getMediaController(activity as Activity)
 
         // main play/pause button
         layout.playButtonView.setOnClickListener {
@@ -471,7 +479,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         layout.sheetSkipBackButtonView.setOnClickListener {
             when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
                 true -> mediaController.transportControls.rewind()
-                false -> Toast.makeText(this, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
+                false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -479,7 +487,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         layout.sheetSkipForwardButtonView.setOnClickListener {
             when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
                 true -> mediaController.transportControls.fastForward()
-                false -> Toast.makeText(this, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
+                false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
             }
         }
 
@@ -491,7 +499,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 position = progress
             }
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.seekTo(position.toLong())
+                MediaControllerCompat.getMediaController(activity as Activity).transportControls.seekTo(position.toLong())
             }
         })
 
@@ -502,7 +510,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 MotionEvent.ACTION_DOWN -> {
                     // show time remaining while touching the time played view
                     layout.displayTimeRemaining = true
-                    MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+                    MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
                 }
                 MotionEvent.ACTION_UP -> {
                     // show episode duration when not touching the time played view anymore
@@ -519,30 +527,30 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         // bottom sheet start button for Up Next queue
         layout.sheetUpNextName.setOnClickListener {
             // start episode in up next queue
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(playerState.upNextEpisodeMediaId, null)
-            Toast.makeText(this, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
+            MediaControllerCompat.getMediaController(activity as Activity).transportControls.playFromMediaId(playerState.upNextEpisodeMediaId, null)
+            Toast.makeText(activity as Context, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
         }
 
         // bottom sheet clear button for Up Next queue
         layout.sheetUpNextClearButton.setOnClickListener {
             // clear up next
             updateUpNext()
-            Toast.makeText(this, R.string.toast_message_up_next_removed_episode, Toast.LENGTH_LONG).show()
+            Toast.makeText(activity as Context, R.string.toast_message_up_next_removed_episode, Toast.LENGTH_LONG).show()
         }
 
         // bottom sheet playback speed button
         layout.sheetPlaybackSpeedButtonView.setOnClickListener {
             // request playback speed change
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_CHANGE_PLAYBACK_SPEED, null, resultReceiver)
+            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_CHANGE_PLAYBACK_SPEED, null, resultReceiver)
         }
         layout.sheetPlaybackSpeedButtonView.setOnLongClickListener {
             if (playerState.playbackSpeed != 1f) {
-                val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                val v = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
                 v.vibrate(50)
                 // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-                Toast.makeText(this, R.string.toast_message_playback_speed_reset, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity as Context, R.string.toast_message_playback_speed_reset, Toast.LENGTH_LONG).show()
                 // request playback speed reset
-                MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_RESET_PLAYBACK_SPEED, null, resultReceiver)
+                MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_RESET_PLAYBACK_SPEED, null, resultReceiver)
             }
             return@setOnLongClickListener true
         }
@@ -555,14 +563,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Sets up the player */
     private fun setupPlayer() {
         // toggle player visibility
-        if (layout.togglePlayerVisibility(this, playerState.playbackState)) {
+        if (layout.togglePlayerVisibility(activity as Context, playerState.playbackState)) {
             // CASE: player is visible - update player views
             layout.togglePlayButtons(playerState.playbackState)
             if (playerState.episodeMediaId.isNotEmpty()) {
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-                layout.updatePlayerViews(this, episode)
-                layout.updateProgressbar(this@PodcastPlayerActivity, episode.playbackPosition, episode.duration)
-                layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
+                layout.updatePlayerViews(activity as Context, episode)
+                layout.updateProgressbar(activity as Context, episode.playbackPosition, episode.duration)
+                layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
             }
         }
     }
@@ -582,11 +590,11 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         playerState.playbackState = playbackState // = current state BEFORE desired startPlayback action
         // setup ui
         val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-        layout.updatePlayerViews(this, episode)
+        layout.updatePlayerViews(activity as Context, episode)
         // start / pause playback
         when (startPlayback) {
-            true -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.playFromMediaId(mediaId, null)
-            false -> MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).transportControls.pause()
+            true -> MediaControllerCompat.getMediaController(activity as Activity).transportControls.playFromMediaId(mediaId, null)
+            false -> MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         }
     }
 
@@ -596,35 +604,35 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         playerState.upNextEpisodeMediaId = episode.getMediaId()
         layout.updateUpNextViews(episode)
         if (episode.getMediaId().isNotEmpty()) {
-            Toast.makeText(this, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
+            Toast.makeText(activity as Context, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
         }
-        PreferencesHelper.savePlayerState(this, playerState)
-        MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_RELOAD_PLAYER_STATE, null, null)
+        PreferencesHelper.savePlayerState(activity as Context, playerState)
+        MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_RELOAD_PLAYER_STATE, null, null)
     }
 
 
     /* Updates podcast collection */
     private fun updateCollection() {
-        if (NetworkHelper.isConnectedToNetwork(this)) {
-            Toast.makeText(this, R.string.toast_message_updating_collection, Toast.LENGTH_LONG).show()
-            DownloadHelper.updateCollection(this)
+        if (NetworkHelper.isConnectedToNetwork(activity as Context)) {
+            Toast.makeText(activity as Context, R.string.toast_message_updating_collection, Toast.LENGTH_LONG).show()
+            DownloadHelper.updateCollection(activity as Context)
         } else {
-            ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
 
     /* Updates podcast collection */
     private fun downloadEpisode(episode: Episode) {
-        if (NetworkHelper.isConnectedToWifi(this)) {
-            Toast.makeText(this, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-            DownloadHelper.downloadEpisode(this, episode.getMediaId(), ignoreWifiRestriction = true, manuallyDownloaded = true)
-        } else if (NetworkHelper.isConnectedToCellular(this)) {
-            YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_non_wifi_download, yesButton = R.string.dialog_yes_no_positive_button_non_wifi_download, payloadString = episode.getMediaId())
-        } else if (NetworkHelper.isConnectedToVpn(this))  {
-            YesNoDialog(this).show(context = this, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_vpn_download, yesButton = R.string.dialog_yes_no_positive_button_vpn_download, payloadString = episode.getMediaId())
+        if (NetworkHelper.isConnectedToWifi(activity as Context)) {
+            Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
+            DownloadHelper.downloadEpisode(activity as Context, episode.getMediaId(), ignoreWifiRestriction = true, manuallyDownloaded = true)
+        } else if (NetworkHelper.isConnectedToCellular(activity as Context)) {
+            YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_non_wifi_download, yesButton = R.string.dialog_yes_no_positive_button_non_wifi_download, payloadString = episode.getMediaId())
+        } else if (NetworkHelper.isConnectedToVpn(activity as Context))  {
+            YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_vpn_download, yesButton = R.string.dialog_yes_no_positive_button_vpn_download, payloadString = episode.getMediaId())
         } else {
-            ErrorDialog().show(this, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
@@ -632,37 +640,37 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* Download podcast feed using async co-routine */
     private fun downloadPodcastFeed(feedUrl: String) {
         if (!feedUrl.startsWith("http")) {
-            ErrorDialog().show(this, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
-        } else if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+        } else if (NetworkHelper.isConnectedToNetwork(activity as Context)) {
             launch {
                 // detect content type on background thread
                 val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }
                 // wait for result
                 val contentType: NetworkHelper.ContentType = deferred.await()
                 if ((contentType.type in Keys.MIME_TYPES_RSS) || (contentType.type in Keys.MIME_TYPES_ATOM)) {
-                    Toast.makeText(this@PodcastPlayerActivity, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
-                    DownloadHelper.downloadPodcasts(this@PodcastPlayerActivity, arrayOf(feedUrl))
+                    Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
+                    DownloadHelper.downloadPodcasts(activity as Context, arrayOf(feedUrl))
                 } else {
-                    ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+                    ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
                 }
             }
         } else {
-            ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
 
     /* Download podcast feed using async co-routine */
     private fun downloadPodcastFeedsFromOpml(feedUrls: Array<String>) {
-        if (NetworkHelper.isConnectedToNetwork(this@PodcastPlayerActivity)) {
+        if (NetworkHelper.isConnectedToNetwork(activity as Context)) {
             val urls = CollectionHelper.removeDuplicates(collection, feedUrls)
             if (urls.isNotEmpty()) {
-                Toast.makeText(this@PodcastPlayerActivity, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
-                DownloadHelper.downloadPodcasts(this, CollectionHelper.removeDuplicates(collection, feedUrls))
-                PreferencesHelper.saveLastUpdateCollection(this)
+                Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
+                DownloadHelper.downloadPodcasts(activity as Context, CollectionHelper.removeDuplicates(collection, feedUrls))
+                PreferencesHelper.saveLastUpdateCollection(activity as Context)
             }
         } else {
-            ErrorDialog().show(this@PodcastPlayerActivity, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
@@ -672,11 +680,11 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         when (permissionCheckNeeded) {
             true -> {
                 // permission check
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     // save uri for later use in onRequestPermissionsResult
                     tempOpmlUriString = opmlUri.toString()
                     // permission is not granted - request it
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
+                    ActivityCompat.requestPermissions(activity as Activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
                 } else {
                     // permission granted - call readOpmlFile again
                     readOpmlFile(opmlUri, false)
@@ -688,10 +696,10 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
                 // read opml
                 launch {
                     // readSuspended OPML on background thread
-                    val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper().readSuspended(this@PodcastPlayerActivity, opmlUri) }
+                    val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper().readSuspended(activity as Context, opmlUri) }
                     // wait for result and update collection
                     val feedUrls: Array<String> = deferred.await()
-                    OpmlImportDialog(this@PodcastPlayerActivity).show(this@PodcastPlayerActivity, feedUrls)
+                    OpmlImportDialog(this@PodcastPlayerFragment).show(activity as Context, feedUrls)
                 }
             }
         }
@@ -700,14 +708,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Handles this activity's start intent */
     private fun handleStartIntent() {
-        if (intent.action != null) {
-            when (intent.action) {
+        if ((activity as Activity).intent.action != null) {
+            when ((activity as Activity).intent.action) {
                 Keys.ACTION_SHOW_PLAYER -> handleShowPlayer()
                 Intent.ACTION_VIEW -> handleViewIntent()
             }
         }
         // clear intent action to prevent double calls
-        intent.action = ""
+        (activity as Activity).intent.action = ""
     }
 
 
@@ -720,7 +728,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Handles ACTION_VIEW request to add Podcast or import OPML */
     private fun handleViewIntent() {
-        val contentUri: Uri? = intent.data
+        val contentUri: Uri? = (activity as Activity).intent.data
         if (contentUri != null) {
             val scheme: String = contentUri.scheme ?: String()
             when {
@@ -756,14 +764,14 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // update collection
             collection = it
             // updates current episode in player views
-            playerState = PreferencesHelper.loadPlayerState(this@PodcastPlayerActivity)
+            playerState = PreferencesHelper.loadPlayerState(activity as Context)
             // toggle onboarding layout
             toggleOnboarding()
             // toggle visibility of player
-            if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playerState.playbackState)) {
+            if (layout.togglePlayerVisibility(activity as Context, playerState.playbackState)) {
                 // update player view, if player is visible
                 val episode: Episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
-                layout.updatePlayerViews(this@PodcastPlayerActivity, episode)
+                layout.updatePlayerViews(activity as Context, episode)
             }
             // updates the up next queue in player views
             val upNextEpisode: Episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
@@ -777,7 +785,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     /* toggle onboarding layou on/off and try to offer an OPML import */
     private fun toggleOnboarding() {
         // toggle onboading layout
-        onboarding = layout.toggleOnboarding(this@PodcastPlayerActivity, collection.podcasts.size)
+        onboarding = layout.toggleOnboarding(activity as Context, collection.podcasts.size)
         // start / stop watching for OPML
         if (onboarding) {
             // try to offer import
@@ -792,8 +800,8 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Offers to import podcasts if an OPML file was found in collection folder (probably from a restore via Play Services) */
     private fun tryToOfferOpmlImport() {
-        val opmlFile: File? = File(getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_OPML_FILE)
-        if (FileHelper.getCollectionFolderSize(this) == 1 && opmlFile!= null && opmlFile.exists() && opmlFile.length() > 0L) {
+        val opmlFile: File? = File((activity as Context).getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_OPML_FILE)
+        if (FileHelper.getCollectionFolderSize(activity as Context) == 1 && opmlFile!= null && opmlFile.exists() && opmlFile.length() > 0L) {
             LogHelper.i(TAG, "Found an OPML file in the otherwise empty Collection folder. Size: ${opmlFile.length()} bytes")
             readOpmlFile(opmlFile.toUri(), permissionCheckNeeded = false)
         }
@@ -802,7 +810,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
 
     /* Creates an observer for OPML files in collection folder */
     private fun createOpmlCreatedObserver(folderString: String): FileObserver? {
-        val folder: File? = getExternalFilesDir(folderString)
+        val folder: File? = (activity as Context).getExternalFilesDir(folderString)
         var fileObserver: FileObserver? = null
         // check if valid folder
         if (folder != null && folder.isDirectory) {
@@ -826,9 +834,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             // get the token for the MediaSession
             mediaBrowser.sessionToken.also { token ->
                 // create a MediaControllerCompat
-                val mediaController = MediaControllerCompat(this@PodcastPlayerActivity, token)
+                val mediaController = MediaControllerCompat(activity as Context, token)
                 // save the controller
-                MediaControllerCompat.setMediaController(this@PodcastPlayerActivity, mediaController)
+                MediaControllerCompat.setMediaController(activity as Activity, mediaController)
             }
             playerServiceConnected = true
 
@@ -838,7 +846,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             buildPlaybackControls()
 
             // request current playback position
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
 
             // start requesting position updates if playback is running
             if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
@@ -898,9 +906,9 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
         override fun onPlaybackStateChanged(playbackState: PlaybackStateCompat) {
             LogHelper.d(TAG, "Playback State changed. Update UI.")
             playerState.playbackState = playbackState.state
-            if (layout.togglePlayerVisibility(this@PodcastPlayerActivity, playbackState.state)) {
+            if (layout.togglePlayerVisibility(activity as Context, playbackState.state)) {
                 // CASE: Player is visible
-                layout.animatePlaybackButtonStateTransition(this@PodcastPlayerActivity, playbackState.state)
+                layout.animatePlaybackButtonStateTransition(activity as Context, playbackState.state)
             }
             togglePeriodicProgressUpdateRequest(playbackState)
         }
@@ -921,7 +929,7 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
     private val periodicProgressUpdateRequestRunnable: Runnable = object : Runnable {
         override fun run() {
             // request current playback position
-            MediaControllerCompat.getMediaController(this@PodcastPlayerActivity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
             // use the handler to start runnable again after specified delay
             handler.postDelayed(this, 500)
         }
@@ -940,16 +948,16 @@ class PodcastPlayerActivity: AppCompatActivity(), CoroutineScope,
             when (resultCode) {
                 Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_PROGRESS)) {
-                        layout.updateProgressbar(this@PodcastPlayerActivity, resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
+                        layout.updateProgressbar(activity as Context, resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
-                        layout.updateSleepTimer(this@PodcastPlayerActivity, resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
+                        layout.updateSleepTimer(activity as Context, resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
                     }
                 }
                 Keys.RESULT_CODE_PLAYBACK_SPEED -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_SPEED)) {
                         playerState.playbackSpeed = resultData.getFloat(Keys.RESULT_DATA_PLAYBACK_SPEED, 1f)
-                        layout.updatePlaybackSpeedView(this@PodcastPlayerActivity, playerState.playbackSpeed)
+                        layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
                     }
                 }
             }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph.xml"
+    app:startDestination="@id/podcast_player_destination">
+
+    <!-- PLAYER -->
+    <fragment
+        android:id="@+id/podcast_player_destination"
+        android:name="org.y20k.escapepod.PodcastPlayerFragment"
+        android:label="Player"
+        tools:layout="@layout/fragment_podcast_player">
+        <action
+            android:id="@+id/action_map_fragment_to_settings_fragment"
+            app:destination="@id/settings_destination" />
+    </fragment>
+
+    <!-- SETTINGS -->
+    <fragment
+        android:id="@+id/settings_destination"
+        android:name="org.y20k.escapepod.SettingsFragment"
+        android:label="Settings"/>
+
+</navigation>

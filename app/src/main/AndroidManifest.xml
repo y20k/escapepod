@@ -32,7 +32,7 @@
 
         <!-- Main activity for podcast playback on phone -->
         <activity
-            android:name=".PodcastPlayerActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
 
             <!-- react to main intents -->

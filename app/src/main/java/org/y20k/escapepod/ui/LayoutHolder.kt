@@ -14,7 +14,6 @@
 
 package org.y20k.escapepod.ui
 
-import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import android.os.Vibrator
@@ -46,7 +45,7 @@ import org.y20k.escapepod.helpers.UiHelper
 /*
  * LayoutHolder class
  */
-data class LayoutHolder(var activity: Activity) {
+data class LayoutHolder(var rootView: View) {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(LayoutHolder::class.java)
@@ -89,40 +88,39 @@ data class LayoutHolder(var activity: Activity) {
     /* Init block */
     init {
         // find views
-        activity.setContentView(R.layout.activity_podcast_player)
-        swipeRefreshLayout = activity.findViewById(R.id.swipe_refresh_layout)
-        recyclerView = activity.findViewById(R.id.podcast_list)
-        bottomSheet = activity.findViewById(R.id.bottom_sheet)
-        playerViews = activity.findViewById(R.id.player_views)
-        upNextViews = activity.findViewById(R.id.up_next_views)
-        topButtonViews = activity.findViewById(R.id.top_button_views)
-        sleepTimerRunningViews = activity.findViewById(R.id.sleep_timer_running_views)
-        downloadProgressIndicator = activity.findViewById(R.id.download_progress_indicator)
-        coverView = activity.findViewById(R.id.player_podcast_cover)
-        podcastNameView = activity.findViewById(R.id.player_podcast_name)
-        episodeTitleView = activity.findViewById(R.id.player_episode_title)
-        playButtonView = activity.findViewById(R.id.player_play_button)
-        sheetCoverView = activity.findViewById(R.id.sheet_large_podcast_cover)
-        sheetProgressBarView = activity.findViewById(R.id.sheet_playback_seek_bar)
-        sheetTimePlayedView = activity.findViewById(R.id.sheet_time_played_view)
-        sheetDurationView = activity.findViewById(R.id.sheet_duration_view)
-        sheetEpisodeTitleView = activity.findViewById(R.id.sheet_episode_title)
-        sheetPlayButtonView = activity.findViewById(R.id.sheet_play_button)
-        sheetSkipBackButtonView = activity.findViewById(R.id.sheet_skip_back_button)
-        sheetSkipForwardButtonView = activity.findViewById(R.id.sheet_skip_forward_button)
-        sheetSleepTimerStartButtonView = activity.findViewById(R.id.sleep_timer_start_button)
-        sheetSleepTimerCancelButtonView = activity.findViewById(R.id.sleep_timer_cancel_button)
-        sheetSleepTimerRemainingTimeView = activity.findViewById(R.id.sleep_timer_remaining_time)
-        sheetDebugToggleButtonView = activity.findViewById(R.id.debug_log_toggle_button)
-        sheetPlaybackSpeedButtonView = activity.findViewById(R.id.playback_speed_button)
-        sheetUpNextName = activity.findViewById(R.id.sheet_up_next_name)
-        sheetUpNextClearButton = activity.findViewById(R.id.sheet_up_next_clear_button)
-        onboardingLayout = activity.findViewById(R.id.onboarding_layout)
+        swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
+        recyclerView = rootView.findViewById(R.id.podcast_list)
+        bottomSheet = rootView.findViewById(R.id.bottom_sheet)
+        playerViews = rootView.findViewById(R.id.player_views)
+        upNextViews = rootView.findViewById(R.id.up_next_views)
+        topButtonViews = rootView.findViewById(R.id.top_button_views)
+        sleepTimerRunningViews = rootView.findViewById(R.id.sleep_timer_running_views)
+        downloadProgressIndicator = rootView.findViewById(R.id.download_progress_indicator)
+        coverView = rootView.findViewById(R.id.player_podcast_cover)
+        podcastNameView = rootView.findViewById(R.id.player_podcast_name)
+        episodeTitleView = rootView.findViewById(R.id.player_episode_title)
+        playButtonView = rootView.findViewById(R.id.player_play_button)
+        sheetCoverView = rootView.findViewById(R.id.sheet_large_podcast_cover)
+        sheetProgressBarView = rootView.findViewById(R.id.sheet_playback_seek_bar)
+        sheetTimePlayedView = rootView.findViewById(R.id.sheet_time_played_view)
+        sheetDurationView = rootView.findViewById(R.id.sheet_duration_view)
+        sheetEpisodeTitleView = rootView.findViewById(R.id.sheet_episode_title)
+        sheetPlayButtonView = rootView.findViewById(R.id.sheet_play_button)
+        sheetSkipBackButtonView = rootView.findViewById(R.id.sheet_skip_back_button)
+        sheetSkipForwardButtonView = rootView.findViewById(R.id.sheet_skip_forward_button)
+        sheetSleepTimerStartButtonView = rootView.findViewById(R.id.sleep_timer_start_button)
+        sheetSleepTimerCancelButtonView = rootView.findViewById(R.id.sleep_timer_cancel_button)
+        sheetSleepTimerRemainingTimeView = rootView.findViewById(R.id.sleep_timer_remaining_time)
+        sheetDebugToggleButtonView = rootView.findViewById(R.id.debug_log_toggle_button)
+        sheetPlaybackSpeedButtonView = rootView.findViewById(R.id.playback_speed_button)
+        sheetUpNextName = rootView.findViewById(R.id.sheet_up_next_name)
+        sheetUpNextClearButton = rootView.findViewById(R.id.sheet_up_next_clear_button)
+        onboardingLayout = rootView.findViewById(R.id.onboarding_layout)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         displayTimeRemaining = false
 
         // set up RecyclerView
-        layoutManager = CustomLayoutManager(activity)
+        layoutManager = CustomLayoutManager(rootView.context)
         recyclerView.layoutManager = layoutManager
         recyclerView.itemAnimator = DefaultItemAnimator()
 

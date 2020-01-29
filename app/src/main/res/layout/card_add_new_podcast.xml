@@ -47,7 +47,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:baselineAlignBottom="false"
             android:contentDescription="@string/descr_card_settings_button"
-            android:padding="4dp"
+            android:padding="8dp"
             android:src="@drawable/ic_settings_24dp" />
 
     </androidx.cardview.widget.CardView>

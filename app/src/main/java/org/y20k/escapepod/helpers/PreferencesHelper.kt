@@ -209,14 +209,14 @@ object PreferencesHelper {
 
 
     /* Start watching for changes in shared preferences - context must implement OnSharedPreferenceChangeListener */
-    fun registerPreferenceChangeListener(context: Context) {
-        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(context as SharedPreferences.OnSharedPreferenceChangeListener)
+    fun registerPreferenceChangeListener(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        PreferenceManager.getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(listener)
     }
 
 
     /* Stop watching for changes in shared preferences - context must implement OnSharedPreferenceChangeListener */
-    fun unregisterPreferenceChangeListener(context: Context) {
-        PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(context as SharedPreferences.OnSharedPreferenceChangeListener)
+    fun unregisterPreferenceChangeListener(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        PreferenceManager.getDefaultSharedPreferences(context).unregisterOnSharedPreferenceChangeListener(listener)
     }
 
 
