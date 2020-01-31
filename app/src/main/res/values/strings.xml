@@ -2,6 +2,8 @@
 <resources>
     <!-- App Name -->
     <string name="app_name">Escapepod</string>
+    <!-- Fragment -->
+    <string name="fragment_settings_title">Settings</string>
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Add</string>
     <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for a RSS symbol on the homepage of the respective podcast.</string>

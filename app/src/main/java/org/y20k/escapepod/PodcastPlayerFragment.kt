@@ -35,6 +35,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -93,7 +94,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
 
 
-    /* Overrides onCreate from Activity*/
+    /* Overrides onCreate from Fragment*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -117,6 +118,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
+    /* Overrides onCreate from Fragment*/
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         // find views and set them up
@@ -124,10 +126,13 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
         layout = LayoutHolder(rootView)
         initializeViews()
 
+        // hide action bar
+        (activity as AppCompatActivity).supportActionBar?.hide()
+
         return rootView
     }
 
-    /* Overrides onResume from Activity */
+    /* Overrides onResume from Fragment */
     override fun onStart() {
         super.onStart()
         // connect to PlayerService
@@ -135,7 +140,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
-    /* Overrides onSaveInstanceState from Activity */
+    /* Overrides onSaveInstanceState from Fragment */
     override fun onSaveInstanceState(outState: Bundle) {
         // save current state of podcast list
         listLayoutState = layout.layoutManager.onSaveInstanceState()
@@ -153,7 +158,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
-    /* Overrides onResume from Activity */
+    /* Overrides onResume from Fragment */
     override fun onResume() {
         super.onResume()
         // assign volume buttons to music volume
@@ -170,7 +175,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
-    /* Overrides onPause from Activity */
+    /* Overrides onPause from Fragment */
     override fun onPause() {
         super.onPause()
         // save player state
@@ -185,7 +190,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
-    /* Overrides onStop from Activity */
+    /* Overrides onStop from Fragment */
     public override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
@@ -195,7 +200,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
-    /* Overrides onRequestPermissionsResult from Activity */
+    /* Overrides onRequestPermissionsResult from Fragment */
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
@@ -426,16 +431,6 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
                 true -> MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_START_SLEEP_TIMER, null, null)
                 false -> Toast.makeText(activity as Context, R.string.toast_message_sleep_timer_unable_to_start, Toast.LENGTH_LONG).show()
             }
-        }
-
-        // set up sleep timer start button - long press (night mode switch)
-        layout.sheetSleepTimerStartButtonView.setOnLongClickListener {
-            val v = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            v.vibrate(50)
-            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-            NightModeHelper.switchMode(activity as Activity)
-            activity?.recreate()
-            return@setOnLongClickListener true
         }
 
         // set up sleep timer cancel button
