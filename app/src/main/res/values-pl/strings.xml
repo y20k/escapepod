@@ -99,4 +99,16 @@
     <string name="descr_expanded_player_time_remaining">Pozostały czas</string>
     <string name="descr_player_podcast_cover">Mały obraz okładki podcastu</string>
     <string name="onboarding_app_get_started">Rozpocznij</string>
+    <string name="notification_pause">Wstrzymaj</string>
+    <string name="notification_play">Odtwarzaj</string>
+    <string name="notification_skip_forward">Przejdź do przodu</string>
+    <string name="descr_card_settings_button">Ustawienia</string>
+    <string name="pref_advanced_title">Zaawansowane</string>
+    <string name="pref_general_title">Ogólne</string>
+    <string name="pref_theme_selection_mode_dark">Ciemny motyw</string>
+    <string name="pref_theme_selection_mode_device_default">Określone przez urządzenie</string>
+    <string name="pref_theme_selection_mode_light">Jasny motyw</string>
+    <string name="pref_theme_selection_summary">Obecny motyw:</string>
+    <string name="pref_theme_selection_title">Motyw aplikacji</string>
+    <string name="fragment_settings_title">Ustawienia</string>
 </resources>
