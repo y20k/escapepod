@@ -123,4 +123,8 @@
     <string name="pref_theme_selection_summary">Aktuelles Design:</string>
     <string name="pref_theme_selection_title">App-Design</string>
     <string name="fragment_settings_title">Einstellungen</string>
+    <string name="pref_delete_all_summary">Löscht alle heruntergeladenen Episoden, um Speicherplatz freizugeben. Du kannst sie anschließend erneut herunterladen.</string>
+    <string name="pref_delete_all_title">Downloads löschen</string>
+    <string name="pref_opml_summary">Exportiert alle Podcasts in einer OPML-Datei, die in andere Podcast-Player importiert werden können.</string>
+    <string name="pref_opml_title">OPML exportieren</string>
 </resources>
