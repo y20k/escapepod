@@ -6,6 +6,9 @@
     <color name="status_bar_background">@color/escapepod_white</color>
     <color name="app_onboarding_icons">@color/escapepod_grey_dark</color>
 
+    <color name="toolbar_background">@color/escapepod_white</color>
+    <color name="toolbar_text">@color/text_default</color>
+
     <color name="text_default">@color/escapepod_grey_dark</color>
     <color name="text_lightweight">@color/escapepod_grey</color>
 

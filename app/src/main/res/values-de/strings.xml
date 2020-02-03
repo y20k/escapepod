@@ -115,7 +115,7 @@
     <string name="toast_message_error_no_podcast_found">Die Wiedergabe kann nicht gestartet werden. Bitte füge zuerst einen Podcast hinzu.</string>
     <string name="toast_message_error_no_podcast_matches_search">Es konnte kein Podcast gefunden werden, der deiner Suche entspricht.</string>
     <string name="descr_card_settings_button">Einstellungen</string>
-    <string name="pref_advanced_title">Erweitert</string>
+    <string name="pref_maintenance_title">Erweitert</string>
     <string name="pref_general_title">Allgemein</string>
     <string name="pref_theme_selection_mode_dark">Dunkler Modus</string>
     <string name="pref_theme_selection_mode_device_default">Identisch zum Gerät</string>

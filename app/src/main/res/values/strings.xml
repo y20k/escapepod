@@ -97,8 +97,12 @@
     <string name="notification_skip_back">Skip back</string>
     <string name="notification_skip_forward">Skip forward</string>
     <!-- Settings -->
-    <string name="pref_advanced_title">Advanced</string>
+    <string name="pref_delete_all_summary">Delete all downloaded episodes to free up some space. You can re-download them afterwards.</string>
+    <string name="pref_delete_all_title">Delete Downloads</string>
     <string name="pref_general_title">General</string>
+    <string name="pref_maintenance_title">Maintenance</string>
+    <string name="pref_opml_summary">Export all podcasts in an OPML file that can be imported in other podcast players.</string>
+    <string name="pref_opml_title">Export OPML</string>
     <string name="pref_theme_selection_mode_dark">Dark mode</string>
     <string name="pref_theme_selection_mode_device_default">Same as device</string>
     <string name="pref_theme_selection_mode_light">Light mode</string>

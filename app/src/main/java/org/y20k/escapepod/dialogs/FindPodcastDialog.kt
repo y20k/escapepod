@@ -27,7 +27,7 @@ import org.y20k.escapepod.search.GpodderResultAdapter
 /*
  * FindPodcastDialog class
  */
-class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.GpodderResultAdapterListener {
+class FindPodcastDialog (private var context: Context, private var listener: FindPodcastDialogListener): GpodderResultAdapter.GpodderResultAdapterListener {
 
     /* Interface used to communicate back to activity */
     interface FindPodcastDialogListener {
@@ -63,13 +63,13 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
     fun show() {
 
         // prepare dialog builder
-        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(activity)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
 
         // set title
         builder.setTitle(R.string.dialog_find_podcast_title)
 
         // get views
-        val inflater = LayoutInflater.from(activity)
+        val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.dialog_find_podcast, null)
         podcastSearchBoxView = view.findViewById(R.id.podcast_search_box_view)
         searchRequestProgressIndicator = view.findViewById(R.id.search_request_progress_indicator)
@@ -78,12 +78,12 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
         noSearchResultsTextView.visibility = View.GONE
 
         // set up list of search results
-        setupRecyclerView(activity)
+        setupRecyclerView(context)
 
         // add okay ("import") button
         builder.setPositiveButton(R.string.dialog_find_podcast_button_add) { _, _ ->
             // listen for click on add button
-            (activity as FindPodcastDialogListener).onFindPodcastDialog(podcastFeedLocation)
+            (listener).onFindPodcastDialog(podcastFeedLocation)
         }
         // add cancel button
         builder.setNegativeButton(R.string.dialog_generic_button_cancel) { _, _ ->
@@ -102,11 +102,11 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
         // listen for input
         podcastSearchBoxView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String): Boolean {
-                handleSearchBoxLiveInput(activity, query)
+                handleSearchBoxLiveInput(context, query)
                 return true
             }
             override fun onQueryTextSubmit(query: String): Boolean {
-                handleSearchBoxInput(activity, query)
+                handleSearchBoxInput(context, query)
                 return true
             }
         })
@@ -182,7 +182,7 @@ class FindPodcastDialog (private var activity: Activity): GpodderResultAdapter.G
         searchRequestProgressIndicator.visibility = View.GONE
         noSearchResultsTextView.visibility = View.GONE
         podcastFeedLocation = query
-        val imm: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm: InputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(podcastSearchBoxView.windowToken, 0)
     }
 

@@ -25,4 +25,18 @@
 
     </style>
 
+
+
+    <style name="ToolbarTheme" parent="Widget.MaterialComponents.Toolbar.PrimarySurface">
+        <item name="android:textColorPrimary">@color/toolbar_text</item>
+        <item name="colorPrimary">@color/toolbar_background</item>
+        <item name="colorOnPrimary">@color/toolbar_text</item>
+        <!-- Enable these below if you want clicking icons to trigger a ripple effect -->
+        <!--
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
+        -->
+    </style>
+
+
 </resources>

@@ -142,9 +142,11 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
 
     /* Overrides onSaveInstanceState from Fragment */
     override fun onSaveInstanceState(outState: Bundle) {
-        // save current state of podcast list
-        listLayoutState = layout.layoutManager.onSaveInstanceState()
-        outState.putParcelable(Keys.KEY_SAVE_INSTANCE_STATE_PODCAST_LIST, listLayoutState)
+        if (this::layout.isInitialized) {
+            // save current state of podcast list
+            listLayoutState = layout.layoutManager.onSaveInstanceState()
+            outState.putParcelable(Keys.KEY_SAVE_INSTANCE_STATE_PODCAST_LIST, listLayoutState)
+        }
         // always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(outState)
     }
@@ -311,7 +313,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
     override fun onAddNewButtonTapped() {
 //        AddPodcastDialog(this).show(this)
-        FindPodcastDialog(activity as Activity).show()
+        FindPodcastDialog(activity as Activity, this as FindPodcastDialog.FindPodcastDialogListener).show()
     }
 
 
