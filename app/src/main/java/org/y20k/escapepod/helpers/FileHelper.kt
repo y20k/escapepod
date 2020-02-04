@@ -249,7 +249,7 @@ object FileHelper {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Exporting collection as OPML - Thread: ${Thread.currentThread().name}")
             // create OPML string
-            val opmlString: String = OpmlHelper().createOpmlString(collection)
+            val opmlString: String = OpmlHelper.createOpmlString(collection)
             // save OPML as text file
             cont.resume(writeTextFile(context, opmlString, Keys.FOLDER_COLLECTION, Keys.COLLECTION_OPML_FILE))
         }

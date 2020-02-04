@@ -34,6 +34,7 @@
     <string name="dialog_opml_import_message_error">Could not import OPML file. No podcasts found.</string>
     <string name="dialog_opml_import_message">Add new podcasts? Duplicates will be removed before importing. Number of podcasts found:</string>
     <string name="dialog_opml_import_title">OPML Import</string>
+    <string name="dialog_opml_share">Share OMPL file with</string>
     <string name="dialog_yes_no_message_add_up_next">Start listening to this episode right away?</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
     <string name="dialog_yes_no_message_delete_downloads">Delete all downloaded episodes? You can re-download them afterwards.</string>
@@ -72,6 +73,7 @@
     <string name="toast_message_error_validation_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
     <string name="toast_message_debug_logging_to_file_started">Debug: Start writing to a local log file.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Stop writing to a local log file.</string>
+    <string name="toast_message_install_file_helper">Please install a file manager or a GPX track viewer first.</string>
     <string name="toast_message_playback_speed_reset">Playback speed reset.</string>
     <string name="toast_message_podcast_feed_address_copied">Feed address copied to clipboard.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>

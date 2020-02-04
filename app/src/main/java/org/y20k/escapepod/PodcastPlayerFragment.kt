@@ -693,7 +693,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
                 // read opml
                 launch {
                     // readSuspended OPML on background thread
-                    val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper().readSuspended(activity as Context, opmlUri) }
+                    val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper.readSuspended(activity as Context, opmlUri) }
                     // wait for result and update collection
                     val feedUrls: Array<String> = deferred.await()
                     OpmlImportDialog(this@PodcastPlayerFragment).show(activity as Context, feedUrls)

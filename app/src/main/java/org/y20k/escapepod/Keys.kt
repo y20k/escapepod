@@ -44,8 +44,9 @@ object Keys {
     const val NOTIFICATION_NOW_PLAYING_CHANNEL: String = "notificationChannelIdPlaybackChannel"
 
     // intent actions
-    const val ACTION_SHOW_PLAYER: String = "org.y20k.escapepod.action.HOW_PLAYER"
+    const val ACTION_SHOW_PLAYER: String = "org.y20k.escapepod.action.SHOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepod.action.COLLECTION_CHANGED"
+    const val ACTION_STOP: String = "org.y20k.escapepod.action.STOP"
 
     // intent extras
     const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"

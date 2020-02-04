@@ -14,12 +14,18 @@
 
 package org.y20k.escapepod.xml
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Xml
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.y20k.escapepod.Keys
+import org.y20k.escapepod.R
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.helpers.LogHelper
@@ -30,9 +36,9 @@ import kotlin.coroutines.suspendCoroutine
 
 
 /*
- * OpmlHelper helper
+ * OpmlHelper object
  */
-class OpmlHelper {
+object OpmlHelper {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(OpmlHelper::class.java)
@@ -40,6 +46,40 @@ class OpmlHelper {
 
     /* Main class variables */
     private var feedUrlList: ArrayList<String> = arrayListOf()
+
+
+    /* Share podcast collection as OPML file via share sheet */
+    fun shareOpml(context: Activity) {
+        val opmlFile = FileHelper.getOpmlFile(context)
+        val opmlShareUri = FileProvider.getUriForFile(context, "${context.applicationContext.packageName}.provider", opmlFile)
+        val shareIntent: Intent = Intent.createChooser(Intent().apply {
+            action = Intent.ACTION_SEND
+            data = opmlShareUri
+            type = "text/*"
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            putExtra(Intent.EXTRA_STREAM, opmlShareUri)
+            putExtra(Intent.EXTRA_TITLE, context.getString(R.string.dialog_opml_share))
+        }, null)
+
+
+        // https://medium.com/androiddevelopers/sharing-content-between-android-apps-2e6db9d1368b
+//        val shareIntent2: Intent = ShareCompat.IntentBuilder.from(context)
+//                .setChooserTitle(R.string.dialog_opml_share)
+//                .setType("text/*")
+//                .setStream(opmlShareUri)
+//                .intent
+//        shareIntent2.setData(opmlShareUri)
+//        shareIntent2.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+
+        // show share sheet - if file helper is available
+        val packageManager: PackageManager? = context.packageManager
+        if (packageManager != null && shareIntent.resolveActivity(packageManager) != null) {
+            context.startActivity(shareIntent)
+        } else {
+            Toast.makeText(context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
+        }
+    }
 
 
     /* Suspend function: Read OPML feed from given input stream - async using coroutine */

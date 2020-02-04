@@ -16,14 +16,15 @@ package org.y20k.escapepod
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.media.session.MediaControllerCompat
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.helpers.*
+import org.y20k.escapepod.xml.OpmlHelper
 
 
 /*
@@ -82,7 +83,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceOpmlExport.setIcon(R.drawable.ic_share_24dp)
         preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
         preferenceOpmlExport.setOnPreferenceClickListener{
-            // todo
+            OpmlHelper.shareOpml(activity as Activity)
             return@setOnPreferenceClickListener true
         }
 
@@ -93,7 +94,11 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceDeleteAll.setIcon(R.drawable.ic_delete_24dp)
         preferenceDeleteAll.summary = getString(R.string.pref_delete_all_summary)
         preferenceDeleteAll.setOnPreferenceClickListener{
-            MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause() // todo -> getMediaController can return null after theme change
+            // stop playback using intent (we have no media controller reference here)
+            val intent = Intent(activity, PlayerService::class.java)
+            intent.action = Keys.ACTION_STOP
+            (activity as Context).startService(intent)
+            // show dialog
             YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
             return@setOnPreferenceClickListener true
         }

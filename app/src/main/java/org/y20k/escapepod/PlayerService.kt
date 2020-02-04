@@ -139,6 +139,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Overrides onStartCommand from Service */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        if (intent != null && intent.action == Keys.ACTION_STOP) {
+            stopPlayback()
+        }
+
         MediaButtonReceiver.handleIntent(mediaSession, intent)
         return Service.START_STICKY
     }
