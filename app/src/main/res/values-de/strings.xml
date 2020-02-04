@@ -127,4 +127,6 @@
     <string name="pref_delete_all_title">Downloads löschen</string>
     <string name="pref_opml_summary">Exportiert alle Podcasts in einer OPML-Datei, die in andere Podcast-Player importiert werden können.</string>
     <string name="pref_opml_title">OPML exportieren</string>
+    <string name="dialog_opml_share">OMPL-Datei teilen mit</string>
+    <string name="toast_message_install_file_helper">Bitte installiere zuerst einen Dateimanager oder einen GPX-Track-Viewer.</string>
 </resources>
