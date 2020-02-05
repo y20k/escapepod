@@ -54,11 +54,9 @@ object OpmlHelper {
         val opmlShareUri = FileProvider.getUriForFile(context, "${context.applicationContext.packageName}.provider", opmlFile)
         val shareIntent: Intent = Intent.createChooser(Intent().apply {
             action = Intent.ACTION_SEND
-            data = opmlShareUri
-            type = "text/*"
+            type = "text/xml"
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
             putExtra(Intent.EXTRA_STREAM, opmlShareUri)
-            putExtra(Intent.EXTRA_TITLE, context.getString(R.string.dialog_opml_share))
         }, null)
 
 
