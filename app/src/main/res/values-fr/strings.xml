@@ -123,4 +123,10 @@
     <string name="pref_theme_selection_summary">Thème actuel :</string>
     <string name="pref_theme_selection_title">Thème de l\'application</string>
     <string name="fragment_settings_title">Paramètres</string>
+    <string name="pref_delete_all_summary">Supprime tous les épisodes téléchargés pour libérer de l\'espace. Vous pouvez les télécharger à nouveau par la suite.</string>
+    <string name="pref_delete_all_title">Supprimer les téléchargements</string>
+    <string name="pref_opml_summary">Exporte tous les podcasts dans un fichier OPML pouvant être importé dans d\'autres lecteurs de podcast.</string>
+    <string name="pref_opml_title">Exporter au format OPML</string>
+    <string name="dialog_opml_share">Partager le fichier OMPL avec</string>
+    <string name="toast_message_install_file_helper">Veuillez d\'abord installer un gestionnaire de fichiers ou visualiseur de piste GPX.</string>
 </resources>
