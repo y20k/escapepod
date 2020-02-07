@@ -155,4 +155,9 @@
     <string name="pref_theme_selection_summary">Nåværende drakt:</string>
     <string name="pref_theme_selection_title">Programdrakt</string>
     <string name="fragment_settings_title">Innstillinger</string>
+    <string name="pref_delete_all_summary">Slett alle nedlastede episoder for å frigjøre plass. Du kan laste dem ned igjen etterpå.</string>
+    <string name="pref_delete_all_title">Slett nedlastinger</string>
+    <string name="pref_opml_summary">Eksporter alle nettradioopptak til en OPML-fil som kan importeres i andre avspillere.</string>
+    <string name="pref_opml_title">Eksporter OPML</string>
+    <string name="toast_message_install_file_helper">Installer en filbehandler eller GPX-sporviser først.</string>
 </resources>
