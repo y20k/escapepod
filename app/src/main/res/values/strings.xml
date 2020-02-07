@@ -72,7 +72,7 @@
     <string name="toast_message_error_validation_missing_cover">RSS validation: Feed does not contain a cover reference.</string>
     <string name="toast_message_debug_logging_to_file_started">Debug: Start writing to a local log file.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Stop writing to a local log file.</string>
-    <string name="toast_message_install_file_helper">Please install a file manager or a GPX track viewer first.</string>
+    <string name="toast_message_install_file_helper">Please install a file manager or a podcast player first.</string>
     <string name="toast_message_playback_speed_reset">Playback speed reset.</string>
     <string name="toast_message_podcast_feed_address_copied">Feed address copied to clipboard.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>

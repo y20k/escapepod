@@ -49,33 +49,25 @@ object OpmlHelper {
 
 
     /* Share podcast collection as OPML file via share sheet */
-    fun shareOpml(context: Activity) {
-        val opmlFile = FileHelper.getOpmlFile(context)
-        val opmlShareUri = FileProvider.getUriForFile(context, "${context.applicationContext.packageName}.provider", opmlFile)
-        val shareIntent: Intent = Intent.createChooser(Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/xml"
-            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            putExtra(Intent.EXTRA_STREAM, opmlShareUri)
-        }, null)
+    fun shareOpml(activity: Activity) {
+        // get OPML content Uri
+        val opmlFile = FileHelper.getOpmlFile(activity)
+        val opmlShareUri = FileProvider.getUriForFile(activity, "${activity.applicationContext.packageName}.provider", opmlFile)
 
+        // create share intent
+        val shareIntent: Intent = Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/xml"
+        shareIntent.data = opmlShareUri
+        shareIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        shareIntent.putExtra(Intent.EXTRA_STREAM, opmlShareUri)
 
-        // https://medium.com/androiddevelopers/sharing-content-between-android-apps-2e6db9d1368b
-//        val shareIntent2: Intent = ShareCompat.IntentBuilder.from(context)
-//                .setChooserTitle(R.string.dialog_opml_share)
-//                .setType("text/*")
-//                .setStream(opmlShareUri)
-//                .intent
-//        shareIntent2.setData(opmlShareUri)
-//        shareIntent2.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-
-        // show share sheet - if file helper is available
-        val packageManager: PackageManager? = context.packageManager
+        // check if file helper is available
+        val packageManager: PackageManager? = activity.packageManager
         if (packageManager != null && shareIntent.resolveActivity(packageManager) != null) {
-            context.startActivity(shareIntent)
+            // show share sheet
+            activity.startActivity(Intent.createChooser(shareIntent, null))
         } else {
-            Toast.makeText(context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
         }
     }
 
