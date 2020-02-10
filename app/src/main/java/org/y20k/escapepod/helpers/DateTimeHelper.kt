@@ -39,13 +39,9 @@ object DateTimeHelper {
             // parse date string using standard pattern
             date = dateFormat.parse((dateString)) ?: Keys.DEFAULT_DATE
         } catch (e: Exception) {
-            try {
-                // try to parse without seconds - if first attempt failed
-                date = SimpleDateFormat("EEE, dd MMM yyyy HH:mm Z", Locale.ENGLISH).parse((dateString)) ?: Keys.DEFAULT_DATE
-                LogHelper.w(TAG, "Unable to parse. Trying an alternative Date format. $e")
-            } catch (e: Exception) {
-                LogHelper.e(TAG, "Unable to parse. Returning a default date. $e")
-            }
+            LogHelper.w(TAG, "Unable to parse. Trying an alternative Date format. $e")
+            // try alternative parsing patterns
+            date = tryAlternativeRfc2822Parsing(dateString)
         }
         return date
     }
@@ -69,6 +65,25 @@ object DateTimeHelper {
             timeString = "-$timeString"
         }
         return timeString
+    }
+
+
+    /* Converts RFC 2822 string representation of a date to DATE - using alternative patterns */
+    private fun tryAlternativeRfc2822Parsing(dateString: String): Date {
+        var date: Date = Keys.DEFAULT_DATE
+        try {
+            // try to parse without seconds
+            date = SimpleDateFormat("EEE, dd MMM yyyy HH:mm Z", Locale.ENGLISH).parse((dateString)) ?: Keys.DEFAULT_DATE
+        } catch (e: Exception) {
+            try {
+                LogHelper.w(TAG, "Unable to parse. Trying an alternative Date format. $e")
+                // try to parse without time zone
+                date = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss", Locale.ENGLISH).parse((dateString)) ?: Keys.DEFAULT_DATE
+            } catch (e: Exception) {
+                LogHelper.e(TAG, "Unable to parse. Returning a default date. $e")
+            }
+        }
+        return date
     }
 
 }
