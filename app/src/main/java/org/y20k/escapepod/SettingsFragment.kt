@@ -15,10 +15,13 @@
 package org.y20k.escapepod
 
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import org.y20k.escapepod.core.Collection
@@ -81,7 +84,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceOpmlExport.setIcon(R.drawable.ic_share_24dp)
         preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
         preferenceOpmlExport.setOnPreferenceClickListener{
-            OpmlHelper.shareOpml(activity as Activity)
+            openSaveOpmlDialog()
             return@setOnPreferenceClickListener true
         }
 
@@ -142,6 +145,26 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     }
 
 
+    /* Overrides onActivityResult from Activity */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            // save OPML file to result file location
+            Keys.REQUEST_SAVE_OPML -> {
+                if (resultCode == RESULT_OK && data != null) {
+                    val sourceUri: Uri = OpmlHelper.getOpmlUri(activity as Activity)
+                    val targetUri: Uri? = data.data
+                    if (targetUri != null) {
+                        FileHelper.saveCopyOfFile(activity as Context, sourceUri, targetUri)
+                        Toast.makeText(activity as Context, R.string.toast_message_save_opml, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            // let activity handle result
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+
     /* Deletes all episode audio files - deep clean */
     private fun deleteAllEpisodes(context: Context, collection: Collection) {
         val newCollection = collection.deepCopy()
@@ -151,6 +174,18 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         PreferencesHelper.updatePlayerState(context, newCollection)
         // save collection and broadcast changes
         CollectionHelper.saveCollection(context, newCollection)
+    }
+
+
+    /* Opens up a file picker to select the save location */
+    private fun openSaveOpmlDialog() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = Keys.MIME_TYPES_RSS[0] // = text/xml
+            putExtra(Intent.EXTRA_TITLE, Keys.COLLECTION_OPML_FILE)
+        }
+        // file gets saved in onActivityResult
+        startActivityForResult(intent, Keys.REQUEST_SAVE_OPML)
     }
 
 }

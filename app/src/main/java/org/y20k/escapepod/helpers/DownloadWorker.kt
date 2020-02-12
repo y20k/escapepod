@@ -47,7 +47,11 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
 
     /* Updates podcast collection */
     private fun updateCollection() {
-        DownloadHelper.updateCollection(applicationContext)
+        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(applicationContext)) {
+            DownloadHelper.updateCollection(applicationContext)
+        } else {
+            LogHelper.w(TAG, "Update not initiated: not enough time has passed since last update.")
+        }
     }
 
 

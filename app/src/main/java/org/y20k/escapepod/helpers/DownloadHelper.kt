@@ -30,6 +30,8 @@ import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.extensions.copy
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 /*
@@ -97,15 +99,12 @@ object DownloadHelper {
         // initialize main class variables, if necessary
         initialize(context)
         // re-download all podcast xml episode lists
-        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(context)) {
-            PreferencesHelper.saveLastUpdateCollection(context)
-            val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
-                collection.podcasts[it].remotePodcastFeedLocation.toUri()
-            }
-            enqueueDownload(context, uris, Keys.FILE_TYPE_RSS)
-        } else {
-            LogHelper.v(TAG, "Update not initiated: not enough time has passed since last update.")
+        PreferencesHelper.saveLastUpdateCollection(context)
+        val uris: Array<Uri> = Array(collection.podcasts.size) { it ->
+            collection.podcasts[it].remotePodcastFeedLocation.toUri()
         }
+        // enqueue downloads to DownloadManager (= fire & forget - no return value needed)
+        GlobalScope.launch { enqueueDownloadSuspended(context, uris, Keys.FILE_TYPE_RSS) }
     }
 
 
@@ -195,6 +194,14 @@ object DownloadHelper {
             }
         }
         setActiveDownloads(context, activeDownloads)
+    }
+
+
+    /* Suspend function: Wrapper for enqueueDownload */
+    suspend fun enqueueDownloadSuspended(context: Context, uris: Array<Uri>, type: Int, podcastName: String = String(), ignoreWifiRestriction: Boolean = false) {
+        return suspendCoroutine { cont ->
+            cont.resume(enqueueDownload(context, uris, type, podcastName, ignoreWifiRestriction))
+        }
     }
 
 

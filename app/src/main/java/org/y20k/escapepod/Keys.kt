@@ -50,6 +50,7 @@ object Keys {
 
     // intent extras
     const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
+    const val EXTRA_SOURCE_URI: String = "_OURCE_URI"
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
@@ -174,6 +175,7 @@ object Keys {
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
+    const val REQUEST_SAVE_OPML: Int = 2
     const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: Int = 23
 
     // results

@@ -76,6 +76,7 @@
     <string name="toast_message_playback_speed_reset">Playback speed reset.</string>
     <string name="toast_message_podcast_feed_address_copied">Feed address copied to clipboard.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
+    <string name="toast_message_save_opml">Saving podcast collection as OPML.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is turned off.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Please start listening to an episode first.</string>
     <string name="toast_message_theme_day">Switching to \'Day mode\' (long press detected)</string>
@@ -98,11 +99,11 @@
     <string name="notification_skip_back">Skip back</string>
     <string name="notification_skip_forward">Skip forward</string>
     <!-- Settings -->
-    <string name="pref_delete_all_summary">Delete all downloaded episodes to free up some space. You can re-download them afterwards.</string>
+    <string name="pref_delete_all_summary">Delete all downloaded episodes to free up space on your device. You can re-download them afterwards.</string>
     <string name="pref_delete_all_title">Delete Downloads</string>
     <string name="pref_general_title">General</string>
     <string name="pref_maintenance_title">Maintenance</string>
-    <string name="pref_opml_summary">Export all podcasts to an OPML file that can be imported in other players.</string>
+    <string name="pref_opml_summary">Save all podcasts to an OPML file that can be imported in other players.</string>
     <string name="pref_opml_title">Export OPML</string>
     <string name="pref_theme_selection_mode_dark">Dark mode</string>
     <string name="pref_theme_selection_mode_device_default">Same as device</string>

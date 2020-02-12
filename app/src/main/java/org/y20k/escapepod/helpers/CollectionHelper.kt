@@ -335,7 +335,7 @@ object CollectionHelper {
     fun exportCollection(context: Context, collection: Collection) {
         LogHelper.v(TAG, "Exporting podcast collection as OPML")
         // export collection as OPML - launch = fire & forget (no return value from save collection)
-        GlobalScope.launch { FileHelper.exportCollectionSuspended(context, collection) }
+        GlobalScope.launch { FileHelper.backupCollectionAsOpmlSuspended(context, collection) }
     }
 
 

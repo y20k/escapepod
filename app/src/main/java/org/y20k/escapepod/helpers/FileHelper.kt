@@ -14,6 +14,7 @@
 
 package org.y20k.escapepod.helpers
 
+import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
@@ -139,7 +140,7 @@ object FileHelper {
     }
 
 
-    /* Creates a copy of a given uri */
+    /* Creates a copy of a given uri from downloadmanager - goal is to provide stable Uris */
     fun saveCopyOfFile(context: Context, podcastName: String, tempFileUri: Uri, fileType: Int, fileName: String, async: Boolean = false): Uri {
         val targetFile: File = File(context.getExternalFilesDir(determineDestinationFolderPath(fileType, podcastName)), fileName)
         if (targetFile.exists()) targetFile.delete()
@@ -154,6 +155,21 @@ object FileHelper {
             }
         }
         return targetFile.toUri()
+    }
+
+
+    /* Creates a copy of file a given uri and saves it to the target uri */
+    fun saveCopyOfFile(context: Context, originalFileUri: Uri, targetFileUri: Uri, async: Boolean = false) {
+        when (async) {
+            true -> {
+                // copy file async (= fire & forget - no return value needed)
+                GlobalScope.launch { saveCopyOfFileSuspended(context, originalFileUri, targetFileUri) }
+            }
+            false -> {
+                // copy file
+                copyFile(context, originalFileUri, targetFileUri)
+            }
+        }
     }
 
 
@@ -244,10 +260,10 @@ object FileHelper {
     }
 
 
-    /* Suspend function: Exports podcast collection as OPML file */
-    suspend fun exportCollectionSuspended(context: Context, collection: Collection) {
+    /* Suspend function: Exports podcast collection as OPML file - local backup copy */
+    suspend fun backupCollectionAsOpmlSuspended(context: Context, collection: Collection) {
         return suspendCoroutine { cont ->
-            LogHelper.v(TAG, "Exporting collection as OPML - Thread: ${Thread.currentThread().name}")
+            LogHelper.v(TAG, "Backing up collection as OPML - Thread: ${Thread.currentThread().name}")
             // create OPML string
             val opmlString: String = OpmlHelper.createOpmlString(collection)
             // save OPML as text file
@@ -257,9 +273,9 @@ object FileHelper {
 
 
     /* Suspend function: Wrapper for copyFile */
-    private suspend fun saveCopyOfFileSuspended(context: Context, tempFileUri: Uri, targetFileUri: Uri): Boolean {
+    private suspend fun saveCopyOfFileSuspended(context: Context, originalFileUri: Uri, targetFileUri: Uri): Boolean {
         return suspendCoroutine { cont ->
-            cont.resume(copyFile(context, tempFileUri, targetFileUri, deleteOriginal = true))
+            cont.resume(copyFile(context, originalFileUri, targetFileUri, deleteOriginal = true))
         }
     }
 
@@ -363,6 +379,15 @@ object FileHelper {
     private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
         File(context.getExternalFilesDir(folder), fileName).writeText(text)
     }
+
+
+    /* Writes given text to file specified by destinationUri */
+    private fun writeTextToUri(context: Context, text: String, destinationUri: Uri) {
+        val resolver: ContentResolver = context.contentResolver
+        val outputStream: OutputStream? = resolver.openOutputStream(destinationUri)
+        outputStream?.write(text.toByteArray(Charsets.UTF_8))
+    }
+
 
 
     /* Writes given bitmap as image file to storage */

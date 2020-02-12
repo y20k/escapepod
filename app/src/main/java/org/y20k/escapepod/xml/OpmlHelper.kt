@@ -51,12 +51,11 @@ object OpmlHelper {
     /* Share podcast collection as OPML file via share sheet */
     fun shareOpml(activity: Activity) {
         // get OPML content Uri
-        val opmlFile = FileHelper.getOpmlFile(activity)
-        val opmlShareUri = FileProvider.getUriForFile(activity, "${activity.applicationContext.packageName}.provider", opmlFile)
+        val opmlShareUri = getOpmlUri(activity)
 
         // create share intent
         val shareIntent: Intent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = "text/xml"
+        shareIntent.type = Keys.MIME_TYPES_RSS[0] // = text/xml
         shareIntent.data = opmlShareUri
         shareIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         shareIntent.putExtra(Intent.EXTRA_STREAM, opmlShareUri)
@@ -69,6 +68,12 @@ object OpmlHelper {
         } else {
             Toast.makeText(activity, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
         }
+    }
+
+    /* Get content Uri for OPML file */
+    fun getOpmlUri(activity: Activity): Uri {
+        val opmlFile = FileHelper.getOpmlFile(activity)
+        return FileProvider.getUriForFile(activity, "${activity.applicationContext.packageName}.provider", opmlFile)
     }
 
 
