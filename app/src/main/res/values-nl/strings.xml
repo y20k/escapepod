@@ -32,7 +32,7 @@
     <string name="dialog_opml_import_title">OPML importeren</string>
     <string name="dialog_yes_no_message_add_up_next">Wil je deze aflevering direct afspelen\?</string>
     <string name="dialog_yes_no_message_default">Weet je zeker dat je dit wilt doen\?</string>
-    <string name="dialog_yes_no_message_delete_downloads">Wil je alle gedownloade afleveringen verwijderen\? Je kunt ze achteraf opnieuw downloaden.</string>
+    <string name="dialog_yes_no_message_delete_downloads">Wil je de gedownloade afleveringen verwijderen\? Je kunt ze altijd opnieuw downloaden.</string>
     <string name="dialog_yes_no_message_delete_episode">Wil je deze aflevering verwijderen\?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Wil je deze aflevering markeren als afgespeeld\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Wil je deze podcast verwijderen\?</string>
@@ -123,9 +123,9 @@
     <string name="pref_theme_selection_summary">Huidig thema:</string>
     <string name="pref_theme_selection_title">App-thema</string>
     <string name="fragment_settings_title">Instellingen</string>
-    <string name="pref_delete_all_summary">Maak ruimte vrij door alle gedownloade afleveringen te verwijderen - je kunt ze naderhand opnieuw downloaden.</string>
+    <string name="pref_delete_all_summary">Maak ruimte vrij door alle gedownloade afleveringen te verwijderen - je kunt ze altijd opnieuw downloaden.</string>
     <string name="pref_delete_all_title">Downloads verwijderen</string>
-    <string name="pref_opml_summary">Sla alle podcasts op in een OPML-bestand zodat je ze kunt importeren in andere spelers.</string>
+    <string name="pref_opml_summary">Sla al je podcasts op in een OPML-bestand zodat je ze kunt importeren in andere spelers.</string>
     <string name="pref_opml_title">OPML-bestand exporteren</string>
     <string name="toast_message_install_file_helper">Installeer eerst een bestandsbeheerder of podcastspeler.</string>
     <string name="toast_message_save_opml">Bezig met opslaan van verzameling als OPML.</string>
