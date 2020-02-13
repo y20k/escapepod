@@ -158,21 +158,6 @@ object FileHelper {
     }
 
 
-    /* Creates a copy of file a given uri and saves it to the target uri */
-    fun saveCopyOfFile(context: Context, originalFileUri: Uri, targetFileUri: Uri, async: Boolean = false) {
-        when (async) {
-            true -> {
-                // copy file async (= fire & forget - no return value needed)
-                GlobalScope.launch { saveCopyOfFileSuspended(context, originalFileUri, targetFileUri) }
-            }
-            false -> {
-                // copy file
-                copyFile(context, originalFileUri, targetFileUri)
-            }
-        }
-    }
-
-
     /* Creates and save a smaller version of the podcast cover - used by the list of podcasts view */
     fun saveSmallCover(context: Context, podcastName: String, tempFileUri: Uri): Uri {
         val smallCoverBitmap: Bitmap = ImageHelper.getPodcastCover(context, tempFileUri, Keys.SIZE_COVER_PODCAST_CARD)
@@ -273,7 +258,7 @@ object FileHelper {
 
 
     /* Suspend function: Wrapper for copyFile */
-    private suspend fun saveCopyOfFileSuspended(context: Context, originalFileUri: Uri, targetFileUri: Uri): Boolean {
+    suspend fun saveCopyOfFileSuspended(context: Context, originalFileUri: Uri, targetFileUri: Uri): Boolean {
         return suspendCoroutine { cont ->
             cont.resume(copyFile(context, originalFileUri, targetFileUri, deleteOriginal = true))
         }

@@ -24,6 +24,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.helpers.*
@@ -81,7 +83,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         // set up "OPML Export" preference
         val preferenceOpmlExport: Preference = Preference(activity as Context)
         preferenceOpmlExport.title = getString(R.string.pref_opml_title)
-        preferenceOpmlExport.setIcon(R.drawable.ic_share_24dp)
+        preferenceOpmlExport.setIcon(R.drawable.ic_save_24dp)
         preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
         preferenceOpmlExport.setOnPreferenceClickListener{
             openSaveOpmlDialog()
@@ -145,7 +147,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     }
 
 
-    /* Overrides onActivityResult from Activity */
+    /* Overrides onActivityResult from Fragment */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             // save OPML file to result file location
@@ -154,7 +156,8 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
                     val sourceUri: Uri = OpmlHelper.getOpmlUri(activity as Activity)
                     val targetUri: Uri? = data.data
                     if (targetUri != null) {
-                        FileHelper.saveCopyOfFile(activity as Context, sourceUri, targetUri)
+                        // copy file async (= fire & forget - no return value needed)
+                        GlobalScope.launch { FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri) }
                         Toast.makeText(activity as Context, R.string.toast_message_save_opml, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -181,7 +184,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     private fun openSaveOpmlDialog() {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = Keys.MIME_TYPES_RSS[0] // = text/xml
+            type = Keys.MIME_TYPE_XML
             putExtra(Intent.EXTRA_TITLE, Keys.COLLECTION_OPML_FILE)
         }
         // file gets saved in onActivityResult

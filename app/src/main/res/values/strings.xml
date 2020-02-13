@@ -36,7 +36,7 @@
     <string name="dialog_opml_import_title">OPML Import</string>
     <string name="dialog_yes_no_message_add_up_next">Start listening to this episode right away?</string>
     <string name="dialog_yes_no_message_default">Do you really want to do this?</string>
-    <string name="dialog_yes_no_message_delete_downloads">Delete all downloaded episodes? You can re-download them afterwards.</string>
+    <string name="dialog_yes_no_message_delete_downloads">Delete downloaded episodes? You can download them again at any time.</string>
     <string name="dialog_yes_no_message_delete_episode">Delete this episode?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Mark this episode as played?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Your device is not connected to Wi-Fi. Download episode anyway?</string>
@@ -99,11 +99,11 @@
     <string name="notification_skip_back">Skip back</string>
     <string name="notification_skip_forward">Skip forward</string>
     <!-- Settings -->
-    <string name="pref_delete_all_summary">Delete all downloaded episodes to free up space on your device. You can re-download them afterwards.</string>
+    <string name="pref_delete_all_summary">Delete downloaded episodes to free up space on your device. You can download them again at any time.</string>
     <string name="pref_delete_all_title">Delete Downloads</string>
     <string name="pref_general_title">General</string>
     <string name="pref_maintenance_title">Maintenance</string>
-    <string name="pref_opml_summary">Save all podcasts to an OPML file that can be imported in other players.</string>
+    <string name="pref_opml_summary">Save your podcasts feeds to an OPML file that can be imported into other players.</string>
     <string name="pref_opml_title">Export OPML</string>
     <string name="pref_theme_selection_mode_dark">Dark mode</string>
     <string name="pref_theme_selection_mode_device_default">Same as device</string>

@@ -55,7 +55,7 @@ object OpmlHelper {
 
         // create share intent
         val shareIntent: Intent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = Keys.MIME_TYPES_RSS[0] // = text/xml
+        shareIntent.type = Keys.MIME_TYPE_XML
         shareIntent.data = opmlShareUri
         shareIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         shareIntent.putExtra(Intent.EXTRA_STREAM, opmlShareUri)
