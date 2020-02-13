@@ -125,7 +125,8 @@
     <string name="fragment_settings_title">Instellingen</string>
     <string name="pref_delete_all_summary">Maak ruimte vrij door alle gedownloade afleveringen te verwijderen - je kunt ze naderhand opnieuw downloaden.</string>
     <string name="pref_delete_all_title">Downloads verwijderen</string>
-    <string name="pref_opml_summary">Exporteer alle podcasts naar een OPML-bestand zodat je ze kunt importeren in andere spelers.</string>
+    <string name="pref_opml_summary">Sla alle podcasts op in een OPML-bestand zodat je ze kunt importeren in andere spelers.</string>
     <string name="pref_opml_title">OPML-bestand exporteren</string>
     <string name="toast_message_install_file_helper">Installeer eerst een bestandsbeheerder of podcastspeler.</string>
+    <string name="toast_message_save_opml">Bezig met opslaan van verzameling als OPML.</string>
 </resources>
