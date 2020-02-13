@@ -29,7 +29,7 @@
     <string name="dialog_opml_import_title">OPML-Import</string>
     <string name="dialog_yes_no_message_add_up_next">Beginne sofort mit dem Hören dieser Episode\?</string>
     <string name="dialog_yes_no_message_default">Willst du das wirklich tun\?</string>
-    <string name="dialog_yes_no_message_delete_downloads">Alle heruntergeladenen Episoden löschen\? Du kannst sie anschließend erneut herunterladen.</string>
+    <string name="dialog_yes_no_message_delete_downloads">Heruntergeladenen Episoden löschen\? Du kannst sie jederzeit wieder herunterladen.</string>
     <string name="dialog_yes_no_message_delete_episode">Diese Episode löschen\?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Diese Episode als gespielt markieren\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Diesen Podcast entfernen\?</string>
@@ -123,10 +123,11 @@
     <string name="pref_theme_selection_summary">Aktuelles Design:</string>
     <string name="pref_theme_selection_title">App-Design</string>
     <string name="fragment_settings_title">Einstellungen</string>
-    <string name="pref_delete_all_summary">Löscht alle heruntergeladenen Episoden, um Speicherplatz freizugeben. Du kannst sie anschließend erneut herunterladen.</string>
+    <string name="pref_delete_all_summary">Löscht heruntergeladenen Episoden, um Speicherplatz auf deinem Gerät freizugeben. Du kannst sie jederzeit wieder herunterladen.</string>
     <string name="pref_delete_all_title">Downloads löschen</string>
-    <string name="pref_opml_summary">Exportiert alle Podcasts in eine OPML-Datei, die in andere Player importiert werden kann.</string>
+    <string name="pref_opml_summary">Speichert deine Podcast-Feeds in eine OPML-Datei, die in andere Player importiert werden kann.</string>
     <string name="pref_opml_title">OPML exportieren</string>
     <string name="dialog_opml_share">OMPL-Datei teilen mit</string>
     <string name="toast_message_install_file_helper">Bitte installiere zuerst einen Dateimanager oder einen Podcast-Player.</string>
+    <string name="toast_message_save_opml">Speichern der Podcast-Sammlung als OPML.</string>
 </resources>
