@@ -31,7 +31,7 @@
     <string name="dialog_opml_import_title">Importer un fichier OPML</string>
     <string name="dialog_yes_no_message_add_up_next">Démarrer la lecture de cet épisode maintenant \?</string>
     <string name="dialog_yes_no_message_default">Êtes-vous sûr de vouloir effectuer cette action \?</string>
-    <string name="dialog_yes_no_message_delete_downloads">Supprimer tous les épisodes téléchargés \? Vous pourrez les télécharger à nouveau par la suite.</string>
+    <string name="dialog_yes_no_message_delete_downloads">Supprimer les épisodes téléchargés \? Vous pourrez les télécharger à nouveau par la suite.</string>
     <string name="dialog_yes_no_message_delete_episode">Supprimer cet épisode \?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Marquer cet épisode comme lu \?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Votre appareil n\'est pas connecté au Wi-Fi. Télécharger l\'épisode quand même \?</string>
@@ -123,9 +123,9 @@
     <string name="pref_theme_selection_summary">Thème actuel :</string>
     <string name="pref_theme_selection_title">Thème de l\'application</string>
     <string name="fragment_settings_title">Paramètres</string>
-    <string name="pref_delete_all_summary">Supprime tous les épisodes téléchargés pour libérer de l\'espace sur votre appareil. Vous pouvez les télécharger à nouveau par la suite.</string>
+    <string name="pref_delete_all_summary">Supprime les épisodes téléchargés pour libérer de l\'espace sur votre appareil. Vous pouvez les télécharger à nouveau par la suite.</string>
     <string name="pref_delete_all_title">Supprimer les téléchargements</string>
-    <string name="pref_opml_summary">Enregistre tous les podcasts dans un fichier OPML pouvant être importé dans d\'autres lecteurs.</string>
+    <string name="pref_opml_summary">Enregistre les flux de podcasts dans un fichier OPML pouvant être importé dans d\'autres lecteurs.</string>
     <string name="pref_opml_title">Exporter au format OPML</string>
     <string name="dialog_opml_share">Partager le fichier OMPL avec</string>
     <string name="toast_message_install_file_helper">Veuillez d\'abord installer un gestionnaire de fichiers ou un lecteur de podcast.</string>
