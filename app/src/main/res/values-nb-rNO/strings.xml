@@ -31,7 +31,7 @@
     <string name="dialog_opml_import_title">OMPL-import</string>
     <string name="dialog_yes_no_message_add_up_next">Lytt til epiosde umiddelbart?</string>
     <string name="dialog_yes_no_message_default">Ønsker du virkelig å gjøre dette?</string>
-    <string name="dialog_yes_no_message_delete_downloads">Slett alle nedlastede episoder? Du kan laste dem ned igjen etterpå.</string>
+    <string name="dialog_yes_no_message_delete_downloads">Slett nedlastede episoder\? Du kan laste dem ned igjen etterpå.</string>
     <string name="dialog_yes_no_message_delete_episode">Slett denne episoden?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Merk denne episoden som avspilt?</string>
     <string name="dialog_yes_no_message_remove_podcast">Fjern dette nettradioopptaket?</string>
@@ -155,7 +155,7 @@
     <string name="pref_theme_selection_summary">Nåværende drakt:</string>
     <string name="pref_theme_selection_title">Programdrakt</string>
     <string name="fragment_settings_title">Innstillinger</string>
-    <string name="pref_delete_all_summary">Slett alle nedlastede episoder for å frigjøre plass. Du kan laste dem ned igjen etterpå.</string>
+    <string name="pref_delete_all_summary">Slett nedlastede episoder for å frigjøre plass på enheten din. Du kan laste dem ned igjen etterpå.</string>
     <string name="pref_delete_all_title">Slett nedlastinger</string>
     <string name="pref_opml_summary">Eksporter alle nettradioopptak til en OPML-fil som kan importeres i andre avspillere.</string>
     <string name="pref_opml_title">Eksporter OPML</string>
