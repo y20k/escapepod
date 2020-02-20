@@ -27,10 +27,10 @@
     <string name="dialog_opml_import_details_default">Brak dostępnych szczegółów</string>
     <string name="dialog_opml_import_message_error">Nie można było zaimportować pliku OPML. Nie znaleziono podcastów.</string>
     <string name="dialog_opml_import_message">Dodać nowe podcasty\? Duplikaty zostaną usunięte przed zaimportowaniem. Liczba znalezionych podcastów:</string>
-    <string name="dialog_opml_import_title">Import OMPL</string>
+    <string name="dialog_opml_import_title">Import OPML</string>
     <string name="dialog_yes_no_message_add_up_next">Zacząć słuchanie tego odcinka teraz\?</string>
     <string name="dialog_yes_no_message_default">Czy naprawdę chcesz to zrobić\?</string>
-    <string name="dialog_yes_no_message_delete_downloads">Usunąć wszystkie pobrane odcinki\? Możesz je później pobrać ponownie.</string>
+    <string name="dialog_yes_no_message_delete_downloads">Usunąć pobrane odcinki\? Możesz je pobrać ponownie w dowolnym momencie.</string>
     <string name="dialog_yes_no_message_delete_episode">Usunąć ten odcinek\?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Oznaczyć ten odcinek jako odtworzony\?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Urządzenie nie jest podłączone do sieci Wi-Fi. Pobrać odcinek mimo to\?</string>
@@ -111,4 +111,9 @@
     <string name="pref_theme_selection_summary">Obecny motyw:</string>
     <string name="pref_theme_selection_title">Motyw aplikacji</string>
     <string name="fragment_settings_title">Ustawienia</string>
+    <string name="toast_message_save_opml">Zapisywanie kolekcji podcastów jako OPML.</string>
+    <string name="dialog_episode_shownotes_feed">Kanał</string>
+    <string name="dialog_episode_shownotes_website">Strona internetowa</string>
+    <string name="dialog_yes_no_message_update_covers">Pobrać najnowszą wersję wszystkich okładek podcastów\?</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Zaktualizuj</string>
 </resources>
