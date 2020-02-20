@@ -61,7 +61,7 @@
     <string name="toast_message_error_no_podcast_found">Impossible de démarrer le lecture. Veuillez d\'abord ajouter un podcast.</string>
     <string name="toast_message_error_no_podcast_matches_search">Impossible de trouver un podcast correspondant à votre recherche.</string>
     <string name="toast_message_error_refreshing_cover">Impossible d\'actualiser la pochette. Le flux ne contient pas de référence de pochette.</string>
-    <string name="toast_message_error_validation_audio_references">Validation RSS : Le flux ne contient aucune référence audio.</string>
+    <string name="toast_message_error_validation_no_valid_episodes">Validation RSS : Le flux ne contient aucune référence audio.</string>
     <string name="toast_message_error_validation_missing_cover">Validation RSS : Le flux ne contient pas de référence de pochette.</string>
     <string name="toast_message_debug_logging_to_file_started">Débogage : Début de l\'écriture d\'un fichier de journal local.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Débogage : Arrêt de l\'écriture d\'un fichier de journal local.</string>

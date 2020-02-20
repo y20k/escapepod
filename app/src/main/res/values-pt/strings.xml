@@ -52,7 +52,7 @@
     <string name="toast_message_downloading_episode">A descarregar episódio.</string>
     <string name="toast_message_error_missing_storage_permission">Tem que conceder a permissão \'Read Storage\' para abrir este ficheiro.</string>
     <string name="toast_message_error_refreshing_cover">Não foi possível atualizar a imagem. A fonte não possui qualquer referência à imagem.</string>
-    <string name="toast_message_error_validation_audio_references">Validação de RSS: a fonte não possui quaisquer referências áudio.</string>
+    <string name="toast_message_error_validation_no_valid_episodes">Validação de RSS: a fonte não possui quaisquer referências áudio.</string>
     <string name="toast_message_error_validation_missing_cover">Validação de RSS: a fonte não possui quaisquer referências à imagem.</string>
     <string name="toast_message_debug_logging_to_file_started">Depuração: a iniciar escrita do ficheiro local.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Depuração: a parar escrita do ficheiro local.</string>

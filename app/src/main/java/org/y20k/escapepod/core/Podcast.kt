@@ -27,14 +27,15 @@ import java.util.*
  */
 @Keep
 @Parcelize
-data class Podcast(@Expose var name: String = "",
-                   @Expose var description: String = "",
+data class Podcast(@Expose var name: String = String(),
+                   @Expose var description: String = String(),
+                   @Expose var website: String = String(),
                    @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
                    @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
                    @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
                    @Expose var lastUpdate: Date = Calendar.getInstance().time,
-                   @Expose var remoteImageFileLocation: String = "",
-                   @Expose var remotePodcastFeedLocation: String = ""): Parcelable {
+                   @Expose var remoteImageFileLocation: String = String(),
+                   @Expose var remotePodcastFeedLocation: String = String()): Parcelable {
 
 
     /* overrides toString method */

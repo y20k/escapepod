@@ -61,7 +61,7 @@
     <string name="toast_message_error_no_podcast_found">לא ניתן להתחיל את הנגינה. נא להוסיף פודקאסט תחילה.</string>
     <string name="toast_message_error_no_podcast_matches_search">לא ניתן למצוא פודקאסט שתואם לחיפוש שלך.</string>
     <string name="toast_message_error_refreshing_cover">לא ניתן לרענן את תמונת השער. ההזנה אינה מכילה הפניה לתמונת שער.</string>
-    <string name="toast_message_error_validation_audio_references">אימות RSS: ההזנה אינה מכילה הפניות לקובצי שמע.</string>
+    <string name="toast_message_error_validation_no_valid_episodes">אימות RSS: ההזנה אינה מכילה הפניות לקובצי שמע.</string>
     <string name="toast_message_error_validation_missing_cover">אימות RSS: ההזנה אינה מכילה הפניה לתמונת שער.</string>
     <string name="toast_message_debug_logging_to_file_started">ניפוי שגיאות: התחילה כתיבה לקובץ יומן מקומי.</string>
     <string name="toast_message_debug_logging_to_file_stopped">ניפוי שגיאות: נפסקה כתיבה לקובץ יומן מקומי.</string>

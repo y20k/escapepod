@@ -90,6 +90,16 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             return@setOnPreferenceClickListener true
         }
 
+        // set up "Update Covers" preference
+        val preferenceUpdateCovers: Preference = Preference(activity as Context)
+        preferenceUpdateCovers.title = getString(R.string.pref_update_covers_title)
+        preferenceUpdateCovers.setIcon(R.drawable.ic_image_24dp)
+        preferenceUpdateCovers.summary = getString(R.string.pref_update_covers_summary)
+        preferenceUpdateCovers.setOnPreferenceClickListener {
+            // show dialog
+            YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COVERS, message = R.string.dialog_yes_no_message_update_covers, yesButton = R.string.dialog_yes_no_positive_button_update_covers)
+            return@setOnPreferenceClickListener true
+        }
 
         // set up "Delete All" preference
         val preferenceDeleteAll: Preference = Preference(activity as Context)
@@ -115,6 +125,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
         preferenceCategoryMaintenance.contains(preferenceOpmlExport)
+        preferenceCategoryMaintenance.contains(preferenceUpdateCovers)
         preferenceCategoryMaintenance.contains(preferenceDeleteAll)
 
 
@@ -123,6 +134,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         screen.addPreference(preferenceThemeSelection)
         screen.addPreference(preferenceCategoryMaintenance)
         screen.addPreference(preferenceOpmlExport)
+        screen.addPreference(preferenceUpdateCovers)
         screen.addPreference(preferenceDeleteAll)
         preferenceScreen = screen
     }
@@ -142,6 +154,16 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
                     }
                 }
             }
+
+            Keys.DIALOG_UPDATE_COVERS -> {
+                when (dialogResult) {
+                    // user tapped: refresh podcast covers
+                    true -> {
+                        DownloadHelper.updateCovers(activity as Context)
+                    }
+                }
+            }
+
         }
 
     }

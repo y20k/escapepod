@@ -50,7 +50,7 @@
     <string name="toast_message_downloading_episode">Episode wird heruntergeladen.</string>
     <string name="toast_message_error_missing_storage_permission">Erteile die Berechtigung \"Speicher lesen\", um diese Datei zu öffnen.</string>
     <string name="toast_message_error_refreshing_cover">Titelbild kann nicht aktualisiert werden. Der Feed enthält keinen Verweis dazu.</string>
-    <string name="toast_message_error_validation_audio_references">RSS-Überprüfung: Der Feed enthält keine Audioinhalte.</string>
+    <string name="toast_message_error_validation_no_valid_episodes">RSS-Überprüfung: Der Feed enthält keine Audioinhalte.</string>
     <string name="toast_message_error_validation_missing_cover">RSS-Überprüfung: Der Feed enthält kein Titelbild.</string>
     <string name="toast_message_debug_logging_to_file_started">Debuggen: Beginne mit dem Schreiben einer lokalen Protokolldatei.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debuggen: Beende das Schreiben einer lokalen Protokolldatei.</string>

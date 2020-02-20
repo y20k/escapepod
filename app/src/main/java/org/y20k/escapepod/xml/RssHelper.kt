@@ -114,6 +114,8 @@ class RssHelper {
                 Keys.RSS_PODCAST_NAME -> podcast.name = readPodcastName(parser, Keys.XML_NAME_SPACE)
                 // found a podcast description
                 Keys.RSS_PODCAST_DESCRIPTION -> podcast.description = readPodcastDescription(parser, Keys.XML_NAME_SPACE)
+                // found a podcast website
+                Keys.RSS_PODCAST_WEBSITE -> podcast.website = readPodcastWebsite(parser, Keys.XML_NAME_SPACE)
                 // found a podcast remoteImageFileLocation
                 Keys.RSS_PODCAST_COVER_ITUNES -> podcast.remoteImageFileLocation = readPodcastCoverItunes(parser, Keys.XML_NAME_SPACE)
                 Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = readPodcastCover(parser, Keys.XML_NAME_SPACE)
@@ -139,6 +141,7 @@ class RssHelper {
         val episode: Episode = Episode()
         episode.podcastName = podcast.name
         episode.podcastFeedLocation = podcast.remotePodcastFeedLocation
+        episode.podcastWebsite = podcast.website
         episode.cover = podcast.cover
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -186,6 +189,18 @@ class RssHelper {
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_DESCRIPTION)
         return summary
     }
+
+
+    /* PODCAST: readSuspended website */
+    @Throws(IOException::class, XmlPullParserException::class)
+    private fun readPodcastWebsite(parser: XmlPullParser, nameSpace: String?): String {
+        parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_WEBSITE)
+        val website = XmlHelper.readText(parser)
+        parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_WEBSITE)
+        return website
+    }
+
+
 
 
     /* EPISODE: readSuspended GUID */

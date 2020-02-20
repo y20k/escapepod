@@ -29,10 +29,10 @@ import java.util.*
  */
 @Keep
 @Parcelize
-data class Episode (@Expose var guid: String = "",
-                    @Expose var title: String = "",
-                    @Expose var description: String = "",
-                    @Expose var audio: String = "",
+data class Episode (@Expose var guid: String = String(),
+                    @Expose var title: String = String(),
+                    @Expose var description: String = String(),
+                    @Expose var audio: String = String(),
                     @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
                     @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
                     @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
@@ -42,10 +42,11 @@ data class Episode (@Expose var guid: String = "",
                     @Expose var duration: Long = 0L,
                     @Expose var manuallyDownloaded: Boolean = false,
                     @Expose var manuallyDeleted: Boolean = false,
-                    @Expose var remoteCoverFileLocation: String = "",
-                    @Expose var remoteAudioFileLocation: String = "",
-                    @Expose var podcastName: String = "",
-                    @Expose var podcastFeedLocation: String = ""): Parcelable {
+                    @Expose var remoteCoverFileLocation: String = String(),
+                    @Expose var remoteAudioFileLocation: String = String(),
+                    @Expose var podcastName: String = String(),
+                    @Expose var podcastFeedLocation: String = String(),
+                    @Expose var podcastWebsite: String = String()): Parcelable {
 
 
     /* overrides toString method */

@@ -57,7 +57,7 @@
     <string name="toast_message_error_feed_not_supported">Niet-ondersteunde feed (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Verleen de machtiging \'Opslag uitlezen\' om dit bestand te openen.</string>
     <string name="toast_message_error_refreshing_cover">De hoes kan niet worden bijgewerkt: de feed bevat geen hoesverwijzing.</string>
-    <string name="toast_message_error_validation_audio_references">RSS-goedkeuring: de feed bevat geen audioverwijzingen.</string>
+    <string name="toast_message_error_validation_no_valid_episodes">RSS-goedkeuring: de feed bevat geen audioverwijzingen.</string>
     <string name="toast_message_error_validation_missing_cover">RSS-goedkeuring: de feed bevat geen hoesverwijzing.</string>
     <string name="toast_message_debug_logging_to_file_started">Foutopsporing: gebeurtenissen wegschrijven naar een logbestand.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Foutopsporing: gebeurtenissen niet langer wegschrijven naar een logbestand.</string>

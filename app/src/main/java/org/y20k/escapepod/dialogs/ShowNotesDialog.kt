@@ -17,16 +17,21 @@ package org.y20k.escapepod.dialogs
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepod.R
 import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.helpers.LogHelper
+
 
 class ShowNotesDialog () {
 
@@ -43,7 +48,9 @@ class ShowNotesDialog () {
         val inflater: LayoutInflater = LayoutInflater.from(context)
         val view: View = inflater.inflate(R.layout.dialog_show_notes, null)
         val podcastNameView: TextView = view.findViewById(R.id.result_podcast_name)
-        val podcastFeedXmlView: TextView = view.findViewById(R.id.podcast_feed_xml)
+        val podcastWebsiteView: TextView = view.findViewById(R.id.podcast_website)
+        val podcastWebsiteOpenView: ImageView = view.findViewById(R.id.open_website_icon)
+        val podcastFeedView: TextView = view.findViewById(R.id.podcast_feed)
         val episodeDateView: TextView = view.findViewById(R.id.episode_date)
         val episodeTitleView: TextView = view.findViewById(R.id.episode_title)
         val episodeShowNotesView: TextView = view.findViewById(R.id.episodes_show_notes_view)
@@ -53,15 +60,23 @@ class ShowNotesDialog () {
 
         // set views
         podcastNameView.text = episode.podcastName
-        podcastFeedXmlView.text = episode.podcastFeedLocation
         episodeDateView.text = episode.getDateString()
         episodeTitleView.text = episode.title
         episodeTitleView.isSelected = true // triggers the marquee
         episodeShowNotesView.text = Html.fromHtml(episode.description.replace(Regex("<img.+?>"), ""), Html.FROM_HTML_MODE_COMPACT) // regex removes placeholder images
         episodeShowNotesView.movementMethod = LinkMovementMethod.getInstance() // make link tapable
 
-        // set up clipboard copy
-        podcastFeedXmlView.setOnClickListener {
+        // podcast website: set up open browser
+        if (episode.podcastWebsite.isNotEmpty()) {
+            podcastWebsiteView.visibility = View.VISIBLE
+            podcastWebsiteOpenView.visibility = View.VISIBLE
+            podcastWebsiteView.setOnClickListener {
+                startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(episode.podcastWebsite)), null)
+            }
+        }
+
+        // podcast feed: set up clipboard copy
+        podcastFeedView.setOnClickListener {
             val clip: ClipData = ClipData.newPlainText("simple text", episode.podcastFeedLocation)
             val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(clip)

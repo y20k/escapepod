@@ -159,7 +159,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
         // remove notification
-        stopForeground(true)
+        // stopForeground(true) // todo check if necessary
         // release media session
         mediaSession.run {
             isActive = false

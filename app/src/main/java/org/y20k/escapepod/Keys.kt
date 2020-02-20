@@ -117,7 +117,8 @@ object Keys {
     const val DIALOG_DELETE_EPISODE: Int = 4
     const val DIALOG_ADD_UP_NEXT: Int = 5
     const val DIALOG_DELETE_DOWNLOADS: Int = 6
-    const val DIALOG_MARK_EPISODE_PLAYED: Int = 7
+    const val DIALOG_UPDATE_COVERS: Int = 7
+    const val DIALOG_MARK_EPISODE_PLAYED: Int = 8
 
     // dialog results
     const val DIALOG_RESULT_DEFAULT: Int = -1
@@ -188,7 +189,7 @@ object Keys {
     // podcast validation states
     const val PODCAST_VALIDATION_SUCESS: Int = 0
     const val PODCAST_VALIDATION_MISSING_COVER: Int = 1
-    const val PODCAST_VALIDATION_NO_AUDIO_FILES: Int = 2
+    const val PODCAST_VALIDATION_NO_VALID_EPISODES: Int = 2
 
     // podcast states
     const val PODCAST_STATE_NEW_PODCAST: Int = 0
@@ -209,6 +210,7 @@ object Keys {
     const val RSS_PODCAST = "channel"
     const val RSS_PODCAST_NAME = "title"
     const val RSS_PODCAST_DESCRIPTION = "description"
+    const val RSS_PODCAST_WEBSITE = "link"
     const val RSS_PODCAST_COVER = "image"
     const val RSS_PODCAST_COVER_URL = "url"
     const val RSS_PODCAST_COVER_ITUNES = "itunes:image"

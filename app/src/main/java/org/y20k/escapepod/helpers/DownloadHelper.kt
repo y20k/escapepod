@@ -119,7 +119,6 @@ object DownloadHelper {
         }
         enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE)
         LogHelper.i(TAG, "Updating all covers.")
-        LogHelper.save(context, TAG, "Updating all covers.") // todo remove
     }
 
 
@@ -215,7 +214,7 @@ object DownloadHelper {
         }
         // download audio files only when connected to wifi
         if (ignoreWifiRestriction || NetworkHelper.isConnectedToWifi(context)) {
-            // download only if pocast has episodes
+            // download only if podcast has episodes
             if (podcast.episodes.isNotEmpty()) {
                 // delete oldest audio file
                 if (podcast.episodes.size >= Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP) {
@@ -357,8 +356,8 @@ object DownloadHelper {
                     addPodcast(context, podcast)
                     Toast.makeText(context, context.getString(R.string.toast_message_error_validation_missing_cover), Toast.LENGTH_LONG).show()
                 }
-                Keys.PODCAST_VALIDATION_NO_AUDIO_FILES -> {
-                    Toast.makeText(context, context.getString(R.string.toast_message_error_validation_audio_references), Toast.LENGTH_LONG).show()
+                Keys.PODCAST_VALIDATION_NO_VALID_EPISODES -> {
+                    Toast.makeText(context, context.getString(R.string.toast_message_error_validation_no_valid_episodes), Toast.LENGTH_LONG).show()
                 }
             }
             CollectionHelper.trimPodcastEpisodeLists(context, collection)

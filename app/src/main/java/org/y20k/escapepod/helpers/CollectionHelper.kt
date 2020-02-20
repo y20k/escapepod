@@ -60,7 +60,7 @@ object CollectionHelper {
         }
         // check for audio files
         if (podcast.episodes.isEmpty()) {
-            result = Keys.PODCAST_VALIDATION_NO_AUDIO_FILES
+            result = Keys.PODCAST_VALIDATION_NO_VALID_EPISODES
         }
         return result
     }
@@ -135,6 +135,8 @@ object CollectionHelper {
                 }
                 // add all new episodes
                 podcast.episodes.addAll(newEpisodes)
+                // update podcast website
+                podcast.website = newPodcast.website
             }
         }
         return sortCollectionByDate(collection)

@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/podcast_feed_xml"
+        app:layout_constraintTop_toBottomOf="@+id/podcast_feed"
         app:srcCompat="@color/list_card_episode_background" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -69,21 +69,64 @@
         tools:text="@string/sample_text_episode_0_title" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/podcast_feed_xml"
-        android:layout_width="0dp"
+        android:id="@+id/podcast_website"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:paddingStart="24dp"
-        android:paddingEnd="24dp"
         android:paddingBottom="4dp"
         android:singleLine="true"
+        android:text="@string/dialog_episode_shownotes_website"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/escapepod_red"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/result_podcast_name"
-        tools:text="@string/sample_text_podcast_xml" />
+        app:layout_constraintTop_toBottomOf="@+id/result_podcast_name" />
+
+    <ImageView
+        android:id="@+id/open_website_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_shownotes_website"
+        android:paddingStart="2dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/podcast_website"
+        app:layout_constraintStart_toEndOf="@+id/podcast_website"
+        app:layout_constraintTop_toTopOf="@+id/podcast_website"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_open_in_new_red_14dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/podcast_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:paddingStart="24dp"
+        android:paddingBottom="4dp"
+        android:singleLine="true"
+        android:text="@string/dialog_episode_shownotes_feed"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/escapepod_red"
+        app:layout_constraintStart_toEndOf="@+id/open_website_icon"
+        app:layout_constraintTop_toBottomOf="@+id/result_podcast_name" />
+
+    <ImageView
+        android:id="@+id/copy_feed_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_shownotes_feed"
+        android:paddingStart="2dp"
+        android:paddingTop="3dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/podcast_feed"
+        app:layout_constraintStart_toEndOf="@+id/podcast_feed"
+        app:layout_constraintTop_toTopOf="@+id/podcast_feed"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/ic_rss_feed_16dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/show_notes_title"
@@ -121,7 +164,7 @@
             android:textColor="@color/text_default"
             android:textColorLink="@color/escapepod_red"
             android:textIsSelectable="true"
-            tools:text="@string/sample_text_show_notes" />
+            tools:text="@string/sample_text_shownotes" />
 
     </ScrollView>
 

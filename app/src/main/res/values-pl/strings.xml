@@ -59,7 +59,7 @@
     <string name="toast_message_error_no_podcast_found">Nie można rozpocząć odtwarzania. Proszę najpierw dodać podcast.</string>
     <string name="toast_message_error_no_podcast_matches_search">Nie można znaleźć podcastu, który pasuje do Twojego wyszukiwania.</string>
     <string name="toast_message_error_refreshing_cover">Nie można odświeżyć okładki. Kanał nie zawiera odniesienia do okładki.</string>
-    <string name="toast_message_error_validation_audio_references">Walidacja RSS: Kanał nie zawiera żadnych odniesień do plików dźwiękowych.</string>
+    <string name="toast_message_error_validation_no_valid_episodes">Walidacja RSS: Kanał nie zawiera żadnych odniesień do plików dźwiękowych.</string>
     <string name="toast_message_error_validation_missing_cover">Walidacja RSS: Kanał nie zawiera odniesienia do okładki.</string>
     <string name="toast_message_debug_logging_to_file_started">Debug: Rozpoczęto zapisywać do lokalnego pliku dziennika.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Zakończono zapisywać do lokalnego pliku dziennika.</string>
