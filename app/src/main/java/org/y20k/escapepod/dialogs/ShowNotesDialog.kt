@@ -49,7 +49,7 @@ class ShowNotesDialog () {
         val view: View = inflater.inflate(R.layout.dialog_show_notes, null)
         val podcastNameView: TextView = view.findViewById(R.id.result_podcast_name)
         val podcastWebsiteView: TextView = view.findViewById(R.id.podcast_website)
-        val podcastWebsiteOpenView: ImageView = view.findViewById(R.id.open_website_icon)
+        val podcastLinksDivider: ImageView = view.findViewById(R.id.divider_centered_dot)
         val podcastFeedView: TextView = view.findViewById(R.id.podcast_feed)
         val episodeDateView: TextView = view.findViewById(R.id.episode_date)
         val episodeTitleView: TextView = view.findViewById(R.id.episode_title)
@@ -69,10 +69,13 @@ class ShowNotesDialog () {
         // podcast website: set up open browser
         if (episode.podcastWebsite.isNotEmpty()) {
             podcastWebsiteView.visibility = View.VISIBLE
-            podcastWebsiteOpenView.visibility = View.VISIBLE
+            podcastLinksDivider.visibility = View.VISIBLE
             podcastWebsiteView.setOnClickListener {
                 startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(episode.podcastWebsite)), null)
             }
+        } else {
+            podcastWebsiteView.visibility = View.GONE
+            podcastLinksDivider.visibility = View.GONE
         }
 
         // podcast feed: set up clipboard copy

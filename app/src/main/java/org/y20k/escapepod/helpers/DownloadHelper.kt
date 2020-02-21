@@ -30,6 +30,7 @@ import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.extensions.copy
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
+import kotlin.concurrent.schedule
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -105,6 +106,19 @@ object DownloadHelper {
         }
         // enqueue downloads to DownloadManager (= fire & forget - no return value needed)
         GlobalScope.launch { enqueueDownloadSuspended(context, uris, Keys.FILE_TYPE_RSS) }
+
+
+        // TODO REMOVE AFTER NEXT RELEASE
+        if (PreferencesHelper.isHouseKeepingNecessary(context)) {
+            val timer = Timer("wait_for_house_keeping_to_finish", true)
+            // delay for two minutes
+            timer.schedule(120000) {
+                LogHelper.w(TAG, "House keeping finished.")
+                PreferencesHelper.saveHouseKeepingNecessaryState(context, state = false)
+            }
+        }
+        // TODO REMOVE AFTER NEXT RELEASE
+
     }
 
 
@@ -313,7 +327,7 @@ object DownloadHelper {
     }
 
 
-    /* Savely remove given download IDs from activeDownloads and delete download if requested */
+    /* Safely remove given download IDs from activeDownloads and delete download if requested */
     private fun removeFromActiveDownloads(context: Context, downloadIds: Array<Long>, deleteDownload: Boolean = false): Boolean {
         // remove download ids from activeDownloads
         val success: Boolean = activeDownloads.removeAll { downloadId -> downloadIds.contains(downloadId) }
@@ -343,11 +357,23 @@ object DownloadHelper {
         val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
         uiScope.launch {
             LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
-            LogHelper.save(context, TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}") // todo remove
             // async: readSuspended xml
             val deferred: Deferred<Podcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }
             // wait for result and create podcast
             val podcast: Podcast = deferred.await()
+
+
+
+            // TODO REMOVE AFTER NEXT RELEASE
+            // update podcast website in each episode (one-time house keeping action)
+            if (PreferencesHelper.isHouseKeepingNecessary(context)) {
+                LogHelper.w(TAG, "one-time house keeping for ${podcast.name}: updating website address for all episodes")
+                CollectionHelper.addPodcastWebsiteToEpisodes(context, collection, podcast)
+            }
+            // TODO REMOVE AFTER NEXT RELEASE
+
+
+
             when (CollectionHelper.validatePodcast(podcast)) {
                 Keys.PODCAST_VALIDATION_SUCESS -> {
                     addPodcast(context, podcast)

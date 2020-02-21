@@ -341,6 +341,22 @@ object CollectionHelper {
     }
 
 
+    /* todo remove with next version update - only needed for one-time house keeping */
+    /* Adds the website of an updated podcast to all of the episodes of its counterpart in collection */
+    fun addPodcastWebsiteToEpisodes(context: Context, collection: Collection, newPodcast: Podcast) {
+        collection.podcasts.forEach { oldPodcast ->
+            if (oldPodcast.getPodcastId() == newPodcast.getPodcastId()) {
+                oldPodcast.episodes.forEach { oldEpisode ->
+                    oldEpisode.podcastWebsite = newPodcast.website
+                }
+            }
+        }
+        val currentDate: Date =  Calendar.getInstance().time
+        FileHelper.saveCollection(context, collection, currentDate)
+        sendCollectionBroadcast(context,currentDate)
+    }
+
+
     /* Extracts all audio file references from a collection */
     private fun getAllAudioFileReferences(collection: Collection): ArrayList<String> {
         val audioFileReferences: ArrayList<String> = arrayListOf()

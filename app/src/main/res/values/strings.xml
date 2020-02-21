@@ -143,8 +143,6 @@
     <string name="descr_expanded_player_up_next_clear_button">Clear \'Up Next\' queue</string>
     <string name="descr_player_playback_button">Play/pause</string>
     <string name="descr_player_podcast_cover">Small podcast cover image</string>
-    <string name="descr_shownotes_feed">RSS Feed</string>
-    <string name="descr_shownotes_website">Open in browser</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Podcast App</string>
     <string name="onboarding_app_get_started">Get Started</string>

@@ -65,7 +65,7 @@ object Keys {
     const val CMD_RESET_PLAYBACK_SPEED: String = "RESET_PLAYBACK_SPEED"
 
     // preferences
-    const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_17" // increment to current app version code to trigger housekeeping that runs only once
+    const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_22" // increment to current app version code to trigger housekeeping that runs only once // todo increase to 25
     const val PREF_THEME_SELECTION: String= "THEME_SELECTION"
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val PREF_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
