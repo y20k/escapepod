@@ -130,4 +130,12 @@
     <string name="dialog_opml_share">Partager le fichier OMPL avec</string>
     <string name="toast_message_install_file_helper">Veuillez d\'abord installer un gestionnaire de fichiers ou un lecteur de podcast.</string>
     <string name="toast_message_save_opml">Enregistrement de la collection de podcasts au format OPML.</string>
+    <string name="dialog_episode_shownotes_feed">Flux</string>
+    <string name="dialog_episode_shownotes_website">Site Web</string>
+    <string name="dialog_yes_no_message_update_covers">Télécharger la dernière version de toutes les pochettes de podcast \?</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Mettre à jour</string>
+    <string name="pref_update_covers_summary">Télécharge la dernière version de toutes les pochettes de podcast dans votre collection.</string>
+    <string name="pref_update_covers_title">Mettre à jour les pochettes</string>
+    <string name="descr_shownotes_feed">Flux RSS</string>
+    <string name="descr_shownotes_website">Ouvrir dans le navigateur</string>
 </resources>
