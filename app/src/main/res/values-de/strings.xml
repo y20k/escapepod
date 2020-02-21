@@ -130,4 +130,12 @@
     <string name="dialog_opml_share">OMPL-Datei teilen mit</string>
     <string name="toast_message_install_file_helper">Bitte installiere zuerst einen Dateimanager oder einen Podcast-Player.</string>
     <string name="toast_message_save_opml">Speichern der Podcast-Sammlung als OPML.</string>
+    <string name="dialog_episode_shownotes_feed">Feed</string>
+    <string name="dialog_episode_shownotes_website">Webseite</string>
+    <string name="dialog_yes_no_message_update_covers">Aktuelle Version aller Podcast-Cover herunterladen\?</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Aktualisieren</string>
+    <string name="pref_update_covers_summary">Lade die neueste Version aller Podcast-Cover in deiner Sammlung herunter.</string>
+    <string name="pref_update_covers_title">Cover aktualisieren</string>
+    <string name="descr_shownotes_feed">RSS-Feed</string>
+    <string name="descr_shownotes_website">Im Browser öffnen</string>
 </resources>
