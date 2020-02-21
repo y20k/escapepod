@@ -129,4 +129,12 @@
     <string name="pref_opml_title">OPML-bestand exporteren</string>
     <string name="toast_message_install_file_helper">Installeer eerst een bestandsbeheerder of podcastspeler.</string>
     <string name="toast_message_save_opml">Bezig met opslaan van verzameling als OPML.</string>
+    <string name="dialog_episode_shownotes_feed">Feed</string>
+    <string name="dialog_episode_shownotes_website">Website</string>
+    <string name="dialog_yes_no_message_update_covers">Wil je de nieuwste versie downloaden van alle podcasthoezen\?</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Bijwerken</string>
+    <string name="pref_update_covers_summary">Download de nieuwste versie van alle podcasthoezen uit je verzameling.</string>
+    <string name="pref_update_covers_title">Hoezen bijwerken</string>
+    <string name="descr_shownotes_feed">RSS-feed</string>
+    <string name="descr_shownotes_website">Openen in browser</string>
 </resources>
