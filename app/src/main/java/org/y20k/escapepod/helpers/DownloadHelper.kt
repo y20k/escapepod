@@ -368,7 +368,7 @@ object DownloadHelper {
             // update podcast website in each episode (one-time house keeping action)
             if (PreferencesHelper.isHouseKeepingNecessary(context)) {
                 LogHelper.w(TAG, "one-time house keeping for ${podcast.name}: updating website address for all episodes")
-                CollectionHelper.addPodcastWebsiteToEpisodes(context, collection, podcast)
+                collection = CollectionHelper.addPodcastWebsiteToEpisodes(context, collection, podcast)
             }
             // TODO REMOVE AFTER NEXT RELEASE
 

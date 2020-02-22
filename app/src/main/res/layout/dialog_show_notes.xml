@@ -75,7 +75,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:padding="4dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="4dp"
         android:singleLine="true"
         android:text="@string/dialog_episode_shownotes_website"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
@@ -83,24 +85,27 @@
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/result_podcast_name"
         app:layout_constraintTop_toBottomOf="@+id/result_podcast_name"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/divider_centered_dot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
         app:layout_constraintBottom_toBottomOf="@+id/podcast_website"
         app:layout_constraintStart_toEndOf="@+id/podcast_website"
         app:layout_constraintTop_toTopOf="@+id/podcast_website"
         app:srcCompat="@drawable/ic_centered_dot_16dp"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_feed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:padding="4dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="4dp"
         android:singleLine="true"
         android:text="@string/dialog_episode_shownotes_feed"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
