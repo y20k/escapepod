@@ -161,4 +161,10 @@
     <string name="pref_opml_title">Eksporter OPML</string>
     <string name="toast_message_install_file_helper">Installer en filbehandler eller nettradioopptaksspiller først.</string>
     <string name="toast_message_save_opml">Lagrer nettradioopptakssamling som OPML.</string>
+    <string name="dialog_episode_shownotes_feed">Informasjonskanal</string>
+    <string name="dialog_episode_shownotes_website">Nettside</string>
+    <string name="dialog_yes_no_message_update_covers">Last ned siste versjon av alle nettradioopptaksomslag\?</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Oppdater</string>
+    <string name="pref_update_covers_summary">Last ned siste versjon av alle nettradioopptaksomslag i samlingen din.</string>
+    <string name="pref_update_covers_title">Oppdater omslag</string>
 </resources>
