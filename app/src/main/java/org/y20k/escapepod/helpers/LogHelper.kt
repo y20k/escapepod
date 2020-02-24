@@ -27,7 +27,7 @@ import java.util.*
  */
 object LogHelper {
 
-    private const val TESTING: Boolean = false // set to "false"
+    private const val TESTING: Boolean = false // set to "false" for release builds
     private const val LOG_PREFIX: String = "escapepod_"
     private const val MAX_LOG_TAG_LENGTH: Int = 64
     private const val LOG_PREFIX_LENGTH: Int = LOG_PREFIX.length

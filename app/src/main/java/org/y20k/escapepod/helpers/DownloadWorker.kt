@@ -60,7 +60,7 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
             /* add whatever housekeeping is necessary here */
 
             // housekeeping finished - save state
-            // PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext) // todo: uncomment if you need to do housekeeping here
+            // PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext) // TODO uncomment if you need to do housekeeping here
         }
     }
 

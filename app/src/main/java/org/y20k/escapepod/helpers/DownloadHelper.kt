@@ -167,9 +167,6 @@ object DownloadHelper {
             val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadId)
             // determine what to
             val fileType = FileHelper.getFileType(context, localFileUri)
-            // Log completed download // todo remove
-            LogHelper.v(TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri))} | $fileType") // todo remove
-            LogHelper.save(context, TAG, "Download complete: ${FileHelper.getFileName(context, localFileUri)} | ${FileHelper.getReadableByteCount(FileHelper.getFileSize(context, localFileUri))} | $fileType") // todo remove
             if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
             if (fileType in Keys.MIME_TYPES_ATOM) Toast.makeText(context, context.getString(R.string.toast_message_error_feed_not_supported), Toast.LENGTH_LONG).show()
             if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
@@ -207,7 +204,6 @@ object DownloadHelper {
         val newIds = LongArray(uris.size)
         for (i in uris.indices) {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
-            LogHelper.save(context, TAG, "DownloadManager enqueue: ${uris[i]}") // todo remove
             // check if valid url and prevent double download
             val scheme: String = uris[i].scheme ?: String()
             if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {

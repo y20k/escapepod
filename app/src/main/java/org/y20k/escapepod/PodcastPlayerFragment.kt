@@ -714,11 +714,11 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
             val scheme: String = contentUri.scheme ?: String()
             when {
                 // download new podcast
-                scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString()) // todo implement podcast download + dialog and stuff
+                scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString())
                 // readSuspended opml from content uri
-                scheme.startsWith("content") -> readOpmlFile(contentUri, false) // todo implement OPML readSuspended + dialog and stuff
+                scheme.startsWith("content") -> readOpmlFile(contentUri, false)
                 // readSuspended opml from file uri
-                scheme.startsWith("file") -> readOpmlFile(contentUri, true) // todo implement OPML readSuspended + dialog and stuff
+                scheme.startsWith("file") -> readOpmlFile(contentUri, true)
             }
         }
     }

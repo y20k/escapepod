@@ -214,7 +214,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
 
     /* Initiates podcast search on gpodder.net */
     private fun search(context: Context, query: String) {
-        LogHelper.e(TAG, "Searching for: $query")
+        LogHelper.v(TAG, "Search - Querying gepodder.net for: $query")
         // create queue and request
         requestQueue = Volley.newRequestQueue(context)
         val requestUrl = "https://gpodder.net/search.json?q=${query.replace(" ", "+")}"
