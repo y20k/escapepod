@@ -4,7 +4,7 @@ README
 # Escapepod - Podcast Player for Android
 <img src="https://raw.githubusercontent.com/y20k/escapepod/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="192" />
 
-**Version 0.8.x ("Gehen Die Leute")**
+**Version 0.9.x ("Aber Hier Leben, Nein Danke")**
 
 Escapepod is a simple and lightweight app for listening to podcasts. Escapepod is a podcast player with a minimalistic approach, that may not be to everyone's liking. The app has only a single screen. Playback controls and a list of podcasts that shows the five most recent episodes each. Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
 
@@ -22,15 +22,11 @@ You can install Escapepod via F-Froid and Google Play - or you can go and grab t
 ### Where can I download Escapepod?
 Escapepod will be released on F-Droid and Google Play. You can also get an APK installer on [GitHub](https://github.com/y20k/escapepod/releases).
 
-### I can not add podcast X.
-The podcast import feature needs some testing. It works with most of my favorite podcasts, but problems are to be expected. Please head over to the [Wiki](https://github.com/y20k/escapepod/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
-
-### Where are the settings?
-Escapepod has no settings screen. It tries to rely on sensible defaults.
+### Does Escapepod have playback queue?
+Escapepod has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
 
 ### What are the default settings?
 - Auto-update does not download files over cellular network
-- Dark mode is handled by the Android system
 - Escapepod by default only keeps two episodes
 
 ### Escapepod keeps more than two episodes.
@@ -40,20 +36,14 @@ Escapepod tries to reduce the number of episodes it keeps. Here are the rules fo
 - Episodes, that have been started, or that have been downloaded manually, are kept, too
 - the maximum number of episodes available (and kept) is five
 
-### Why make simplicity a high priority?
-Escapepod is a one-person fun project. Simplicity helps maintaining the app.
-
-### Does Escapepod have playback queue?
-Escapepod has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
-
-### I really miss feature X.
-For the foreseeable future the development of Escapepod will focus on stability and user interface polish. Do not expect new features anytime soon.
-
 ### Does Escapepod support OMPL?
-You can import an [OPML](https://en.wikipedia.org/wiki/OPML) formatted podcast list. Open the list in a file browser and choose Escapepod as a handler. Escapepod does not have an explicit export feature, but it keeps an up-to-date OPML file in the following folder on your device `/Android/data/org.y20k.escapepod/files/collection/`.
+You can import a podcast list using the [OPML](https://en.wikipedia.org/wiki/OPML) exchange format. Just open an OPML file using a file manager and choose Escapepod as the handler. The current podcast collection can be exported via Settings. Addionally Escapepod keeps an up-to-date OPML file in the folder `/Android/data/org.y20k.escapepod/files/collection/`.
+
+### I cannot add podcast X.
+Please head over to the [Wiki](https://github.com/y20k/escapepod/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
 
 ### Where do the podcast search results come from?
-Escapepod searches the [gpodder.net](https://gpodder.net/directory/) online database. Gpodder.net is a great page, if you are looking for new stuff to listen to, btw.
+Escapepod searches the [gpodder.net](https://gpodder.net/directory/) online database. Gpodder.net is a great service, if you are looking for new stuff to listen to, btw.
 
 
 ## Screenshots (v0.8)
