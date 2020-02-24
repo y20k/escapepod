@@ -353,7 +353,6 @@ object CollectionHelper {
         }
         val currentDate: Date =  Calendar.getInstance().time
         FileHelper.saveCollection(context, collection, currentDate)
-        sendCollectionBroadcast(context,currentDate)
         return collection
     }
 

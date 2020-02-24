@@ -16,11 +16,14 @@ package org.y20k.escapepod.helpers
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
+import androidx.work.*
 import kotlinx.coroutines.*
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
@@ -30,7 +33,7 @@ import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.extensions.copy
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
-import kotlin.concurrent.schedule
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -110,16 +113,28 @@ object DownloadHelper {
 
         // TODO REMOVE AFTER NEXT RELEASE
         if (PreferencesHelper.isHouseKeepingNecessary(context)) {
-            val timer = Timer("wait_for_house_keeping_to_finish", true)
-            // delay for two minutes
-            timer.schedule(120000) {
-                LogHelper.w(TAG, "House keeping finished.")
-                PreferencesHelper.saveHouseKeepingNecessaryState(context, state = false)
-            }
+            val finishHouseKeepingWorkRequest = OneTimeWorkRequestBuilder<FinishHouseKeepingWorker>().setInitialDelay(2, TimeUnit.MINUTES).build()
+            WorkManager.getInstance().enqueueUniqueWork("FinishHouseKeepingWork", ExistingWorkPolicy.KEEP, finishHouseKeepingWorkRequest)
         }
         // TODO REMOVE AFTER NEXT RELEASE
 
+
     }
+
+
+    // TODO REMOVE AFTER NEXT RELEASE
+    class FinishHouseKeepingWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+        override fun doWork(): Result {
+            LogHelper.w(TAG, "House keeping finished.")
+            PreferencesHelper.saveHouseKeepingNecessaryState(context= applicationContext, state = false)
+            val collectionChangedIntent = Intent()
+            collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
+            collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, Calendar.getInstance().time.time)
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(collectionChangedIntent)
+            return Result.success()
+        }
+    }
+    // TODO REMOVE AFTER NEXT RELEASE
 
 
     /* Updates all podcast covers */
@@ -362,18 +377,6 @@ object DownloadHelper {
             // wait for result and create podcast
             val podcast: Podcast = deferred.await()
 
-
-
-            // TODO REMOVE AFTER NEXT RELEASE
-            // update podcast website in each episode (one-time house keeping action)
-            if (PreferencesHelper.isHouseKeepingNecessary(context)) {
-                LogHelper.w(TAG, "one-time house keeping for ${podcast.name}: updating website address for all episodes")
-                collection = CollectionHelper.addPodcastWebsiteToEpisodes(context, collection, podcast)
-            }
-            // TODO REMOVE AFTER NEXT RELEASE
-
-
-
             when (CollectionHelper.validatePodcast(podcast)) {
                 Keys.PODCAST_VALIDATION_SUCESS -> {
                     addPodcast(context, podcast)
@@ -386,6 +389,15 @@ object DownloadHelper {
                     Toast.makeText(context, context.getString(R.string.toast_message_error_validation_no_valid_episodes), Toast.LENGTH_LONG).show()
                 }
             }
+
+            // TODO REMOVE AFTER NEXT RELEASE
+            // update podcast website in each episode (one-time house keeping action)
+            if (PreferencesHelper.isHouseKeepingNecessary(context)) {
+                LogHelper.w(TAG, "one-time house keeping for ${podcast.name}: updating website address for all episodes")
+                collection = CollectionHelper.addPodcastWebsiteToEpisodes(context, collection, podcast)
+            }
+            // TODO REMOVE AFTER NEXT RELEASE
+
             CollectionHelper.trimPodcastEpisodeLists(context, collection)
             backgroundJob.cancel()
         }

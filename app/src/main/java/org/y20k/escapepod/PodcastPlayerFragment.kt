@@ -317,16 +317,6 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     }
 
 
-    /* Overrides onDeleteAllButtonTapped from CollectionAdapterListener */
-    override fun onDeleteAllButtonTapped() {
-        MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
-        val v = activity?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        v.vibrate(50)
-        // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-        YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
-    }
-
-
     /* Overrides onOpmlImportDialog from OpmlImportDialogListener */
     override fun onOpmlImportDialog(feedUrls: Array<String>) {
         super.onOpmlImportDialog(feedUrls)
@@ -367,12 +357,6 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
                 when (dialogResult) {
                     // user tapped delete episode
                     true -> collectionAdapter.deleteEpisode(activity as Context, payloadString)
-                }
-            }
-            Keys.DIALOG_DELETE_DOWNLOADS -> {
-                when (dialogResult) {
-                    // user tapped: delete all downloads
-                    true -> collectionAdapter.deleteAllEpisodes(activity as Context)
                 }
             }
             Keys.DIALOG_MARK_EPISODE_PLAYED -> {

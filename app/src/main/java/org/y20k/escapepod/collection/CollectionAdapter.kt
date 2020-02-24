@@ -69,7 +69,6 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
         fun onMarkListenedButtonTapped(mediaId: String)
         fun onDownloadButtonTapped(episode: Episode)
         fun onDeleteButtonTapped(episode: Episode)
-        fun onDeleteAllButtonTapped()
         fun onAddNewButtonTapped()
     }
 
@@ -115,10 +114,6 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
                 addNewViewHolder.addNewPodcastView.setOnClickListener {
                     // show the add podcast dialog
                     collectionAdapterListener.onAddNewButtonTapped()
-                }
-                addNewViewHolder.addNewPodcastView.setOnLongClickListener {
-                    collectionAdapterListener.onDeleteAllButtonTapped()
-                    return@setOnLongClickListener true
                 }
                 addNewViewHolder.settingsButtonView.setOnClickListener {
                     it.findNavController().navigate(R.id.settings_destination)
@@ -354,18 +349,6 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
         val newCollection = collection.deepCopy()
         // delete episode and update collection
         CollectionHelper.deleteEpisodeAudioFile(context, newCollection, mediaID, manuallyDeleted = true)
-        // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, newCollection)
-        // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, newCollection)
-    }
-
-
-    /* Deletes all episode audio files - deep clean */
-    fun deleteAllEpisodes(context: Context) {
-        val newCollection = collection.deepCopy()
-        // delete all episodes
-        CollectionHelper.deleteAllAudioFile(context, newCollection)
         // update player state if necessary
         PreferencesHelper.updatePlayerState(context, newCollection)
         // save collection and broadcast changes
