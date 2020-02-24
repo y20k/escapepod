@@ -41,7 +41,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
@@ -102,7 +102,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
         backgroundJob = Job()
 
         // create view model and observe changes in collection view model
-        collectionViewModel = ViewModelProviders.of(this).get(CollectionViewModel::class.java)
+        collectionViewModel = ViewModelProvider(this).get(CollectionViewModel::class.java)
 
         // create collection adapter
         collectionAdapter = CollectionAdapter(activity as Context, this as CollectionAdapter.CollectionAdapterListener)

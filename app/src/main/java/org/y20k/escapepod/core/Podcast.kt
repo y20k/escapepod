@@ -62,9 +62,7 @@ data class Podcast(@Expose var name: String = String(),
 
 
     /* Returns a unique podcast id - currently just the remotePodcastFeedLocation */
-    fun getPodcastId(): String {
-        return remotePodcastFeedLocation
-    }
+    fun getPodcastId(): String = remotePodcastFeedLocation
 
 
     /* Creates a deep copy of a podcast */
@@ -72,13 +70,13 @@ data class Podcast(@Expose var name: String = String(),
         val episodesCopy: MutableList<Episode> = mutableListOf<Episode>()
         episodes.forEach { episodesCopy.add(it.deepCopy()) }
         return Podcast(name = name,
-                description = description,
-                cover = cover,
-                smallCover = smallCover,
-                episodes = episodesCopy,
-                lastUpdate = lastUpdate,
-                remoteImageFileLocation = remoteImageFileLocation,
-                remotePodcastFeedLocation = remotePodcastFeedLocation)
+                       description = description,
+                       cover = cover,
+                       smallCover = smallCover,
+                       episodes = episodesCopy,
+                       lastUpdate = lastUpdate,
+                       remoteImageFileLocation = remoteImageFileLocation,
+                       remotePodcastFeedLocation = remotePodcastFeedLocation)
     }
 
 }

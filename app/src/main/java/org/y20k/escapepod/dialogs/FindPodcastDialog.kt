@@ -1,3 +1,17 @@
+/*
+ * FindPodcastDialog.kt
+ * Implements the FindPodcastDialog class
+ * A FindPodcastDialog shows a dialog with search box and list of results
+ *
+ * This file is part of
+ * ESCAPEPOD - Free and Open Podcast App
+ *
+ * Copyright (c) 2018-20 - Y20K.org
+ * Licensed under the MIT-License
+ * http://opensource.org/licenses/MIT
+ */
+
+
 package org.y20k.escapepod.dialogs
 
 import android.app.Activity
@@ -214,7 +228,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
 
     /* Initiates podcast search on gpodder.net */
     private fun search(context: Context, query: String) {
-        LogHelper.v(TAG, "Search - Querying gepodder.net for: $query")
+        LogHelper.v(TAG, "Search - Querying gpodder.net for: $query")
         // create queue and request
         requestQueue = Volley.newRequestQueue(context)
         val requestUrl = "https://gpodder.net/search.json?q=${query.replace(" ", "+")}"

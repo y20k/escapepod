@@ -30,7 +30,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
@@ -78,7 +78,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
         super.onAttachedToRecyclerView(recyclerView)
 
         // create view model and observe changes in collection view model
-        collectionViewModel = ViewModelProviders.of(context as AppCompatActivity).get(CollectionViewModel::class.java)
+        collectionViewModel = ViewModelProvider(context as AppCompatActivity).get(CollectionViewModel::class.java)
         observeCollectionViewModel(context as LifecycleOwner)
 
     }

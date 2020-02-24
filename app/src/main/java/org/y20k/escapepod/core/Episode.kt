@@ -69,54 +69,43 @@ data class Episode (@Expose var guid: String = String(),
 
 
     /* Creates a readable date string */
-    fun getDateString(dateStyle: Int = DateFormat.MEDIUM): String {
-        return DateFormat.getDateInstance(dateStyle, Locale.getDefault()).format(publicationDate)
-    }
+    fun getDateString(dateStyle: Int = DateFormat.MEDIUM): String = DateFormat.getDateInstance(dateStyle, Locale.getDefault()).format(publicationDate)
 
 
     /* Return a unique media id - currently just the remoteAudioFileLocation */
-    fun getMediaId(): String {
-        return remoteAudioFileLocation
-        // return (remoteAudioFileLocation + guid).hashCode().toString() // hash value of remoteAudioFileLocation and guid
-    }
+    fun getMediaId(): String = remoteAudioFileLocation
+        // = (remoteAudioFileLocation + guid).hashCode().toString() // hash value of remoteAudioFileLocation and guid
 
 
     /* Checks if episode has the minimum required elements / data */
-    fun isValid(): Boolean {
-        return title.isNotEmpty() && remoteAudioFileLocation.isNotEmpty() && publicationDate != Keys.DEFAULT_DATE
-    }
+    fun isValid(): Boolean = title.isNotEmpty() && remoteAudioFileLocation.isNotEmpty() && publicationDate != Keys.DEFAULT_DATE
 
 
     /* Return if an episode has been listened to end */
-    fun isFinished(): Boolean {
-        return playbackPosition >= duration
-    }
+    fun isFinished(): Boolean = playbackPosition >= duration
 
 
     /* Return if an episode has been started listening to */
-    fun hasBeenStarted(): Boolean {
-        return playbackPosition > 0L
-    }
+    fun hasBeenStarted(): Boolean = playbackPosition > 0L
 
 
     /* Creates a deep copy of an Episode */
-    fun deepCopy(): Episode {
-        return Episode(guid = guid,
-                title = title,
-                description = description,
-                audio = audio,
-                cover = cover,
-                smallCover = smallCover,
-                chapters = chapters,
-                publicationDate = publicationDate,
-                playbackState = playbackState,
-                playbackPosition = playbackPosition,
-                duration = duration,
-                manuallyDownloaded = manuallyDownloaded,
-                manuallyDeleted = manuallyDeleted,
-                remoteCoverFileLocation = remoteCoverFileLocation,
-                remoteAudioFileLocation = remoteAudioFileLocation,
-                podcastName = podcastName,
-                podcastFeedLocation = podcastFeedLocation)
-    }
+    fun deepCopy(): Episode = Episode(guid = guid,
+                                      title = title,
+                                      description = description,
+                                      audio = audio,
+                                      cover = cover,
+                                      smallCover = smallCover,
+                                      chapters = chapters,
+                                      publicationDate = publicationDate,
+                                      playbackState = playbackState,
+                                      playbackPosition = playbackPosition,
+                                      duration = duration,
+                                      manuallyDownloaded = manuallyDownloaded,
+                                      manuallyDeleted = manuallyDeleted,
+                                      remoteCoverFileLocation = remoteCoverFileLocation,
+                                      remoteAudioFileLocation = remoteAudioFileLocation,
+                                      podcastName = podcastName,
+                                      podcastFeedLocation = podcastFeedLocation)
+
 }
