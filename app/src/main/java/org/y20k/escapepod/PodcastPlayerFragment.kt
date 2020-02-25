@@ -49,7 +49,10 @@ import org.y20k.escapepod.collection.CollectionAdapter
 import org.y20k.escapepod.collection.CollectionViewModel
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
-import org.y20k.escapepod.dialogs.*
+import org.y20k.escapepod.dialogs.ErrorDialog
+import org.y20k.escapepod.dialogs.FindPodcastDialog
+import org.y20k.escapepod.dialogs.OpmlImportDialog
+import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.LayoutHolder
@@ -64,7 +67,6 @@ import kotlin.coroutines.CoroutineContext
  */
 class PodcastPlayerFragment: Fragment(), CoroutineScope,
         SharedPreferences.OnSharedPreferenceChangeListener,
-        AddPodcastDialog.AddPodcastDialogListener,
         FindPodcastDialog.FindPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
         OpmlImportDialog.OpmlImportDialogListener,
@@ -225,18 +227,6 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         if (key == Keys.PREF_ACTIVE_DOWNLOADS) {
             layout.toggleDownloadProgressIndicator(activity as Context)
-        }
-    }
-
-
-    /* Overrides onAddPodcastDialog from AddPodcastDialogListener */
-    override fun onAddPodcastDialog(textInput: String) {
-        super.onAddPodcastDialog(textInput)
-        val podcastUrl = textInput.trim()
-        if (CollectionHelper.isNewPodcast(podcastUrl, collection)) {
-            downloadPodcastFeed(podcastUrl)
-        } else {
-            ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
         }
     }
 

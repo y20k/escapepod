@@ -158,8 +158,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
-        // save playback state
-        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
+        // set playback state
+        if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
+            handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+        }
         // release media session
         mediaSession.run {
             isActive = false

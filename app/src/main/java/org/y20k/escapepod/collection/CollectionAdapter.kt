@@ -469,6 +469,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
             if (oldPodcast.episodes.size != newPodcast.episodes.size) return false
             if (oldPodcast.name != newPodcast.name) return false
             if (oldPodcast.description != newPodcast.description) return false
+            if (oldPodcast.website != newPodcast.website) return false
             if (oldPodcast.cover != newPodcast.cover) return false
             if (oldPodcast.smallCover != newPodcast.smallCover) return false
             if (oldPodcast.remoteImageFileLocation != newPodcast.remoteImageFileLocation) return false
@@ -493,6 +494,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
                 if (oldEpisode.duration != newEpisode.duration) return false
                 if (oldEpisode.remoteCoverFileLocation != newEpisode.remoteCoverFileLocation) return false
                 if (oldEpisode.remoteAudioFileLocation != newEpisode.remoteAudioFileLocation) return false
+                if (oldEpisode.podcastWebsite != newEpisode.podcastWebsite) return false         // TODO REMOVE AFTER NEXT RELEASE
             }
             // none of the above -> contents are the same
             return true

@@ -126,10 +126,12 @@ object DownloadHelper {
     class FinishHouseKeepingWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
         override fun doWork(): Result {
             LogHelper.w(TAG, "House keeping finished.")
+            val modificationDate: Date = Calendar.getInstance().time
             PreferencesHelper.saveHouseKeepingNecessaryState(context= applicationContext, state = false)
+            FileHelper.saveCollection(applicationContext, collection, modificationDate)
             val collectionChangedIntent = Intent()
             collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
-            collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, Calendar.getInstance().time.time)
+            collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, modificationDate.time)
             LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(collectionChangedIntent)
             return Result.success()
         }
