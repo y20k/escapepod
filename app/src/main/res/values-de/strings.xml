@@ -127,7 +127,6 @@
     <string name="pref_delete_all_title">Downloads löschen</string>
     <string name="pref_opml_summary">Speichert deine Podcast-Feeds in eine OPML-Datei, die in andere Player importiert werden kann.</string>
     <string name="pref_opml_title">OPML exportieren</string>
-    <string name="dialog_opml_share">OMPL-Datei teilen mit</string>
     <string name="toast_message_install_file_helper">Bitte installiere zuerst einen Dateimanager oder einen Podcast-Player.</string>
     <string name="toast_message_save_opml">Speichern der Podcast-Sammlung als OPML.</string>
     <string name="dialog_episode_shownotes_feed">Feed</string>
@@ -136,6 +135,4 @@
     <string name="dialog_yes_no_positive_button_update_covers">Aktualisieren</string>
     <string name="pref_update_covers_summary">Lade die neueste Version aller Podcast-Cover in deiner Sammlung herunter.</string>
     <string name="pref_update_covers_title">Cover aktualisieren</string>
-    <string name="descr_shownotes_feed">RSS-Feed</string>
-    <string name="descr_shownotes_website">Im Browser öffnen</string>
 </resources>
