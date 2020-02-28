@@ -121,10 +121,17 @@
     <string name="pref_theme_selection_summary">Tema atual:</string>
     <string name="pref_theme_selection_title">Tema da aplicação</string>
     <string name="fragment_settings_title">Definições</string>
-    <string name="pref_delete_all_summary">Elimine alguns episódios para ganhar espaço. Pode-os descarregar mais tarde.</string>
+    <string name="pref_delete_all_summary">Elimine alguns episódios para ganhar espaço no dispositivo. Pode descarregar os episódios posteriormente.</string>
     <string name="pref_delete_all_title">Apagar descargas</string>
     <string name="pref_maintenance_title">Manutenção</string>
-    <string name="pref_opml_summary">Exportar todos os podcasts para um ficheiro OPML.</string>
+    <string name="pref_opml_summary">Guardar fontes de podcasts para um ficheiro OPML para o importar em outras aplicações.</string>
     <string name="pref_opml_title">Exportação OPML</string>
     <string name="toast_message_install_file_helper">Primeiro tem que instalar um gestor de ficheiros ou uma aplicação de podcast.</string>
+    <string name="toast_message_save_opml">A guardar podcasts para ficheiro OPML.</string>
+    <string name="dialog_episode_shownotes_feed">Fonte</string>
+    <string name="dialog_episode_shownotes_website">Site</string>
+    <string name="dialog_yes_no_message_update_covers">Descarregar última versão das imagens dos podcasts\?</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Atualizar</string>
+    <string name="pref_update_covers_summary">Descarregar a última versão de todas as imagens da sua coleção.</string>
+    <string name="pref_update_covers_title">Atualizar imagens</string>
 </resources>
