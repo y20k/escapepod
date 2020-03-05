@@ -58,9 +58,9 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
     private fun doOneTimeHousekeeping() {
         if (PreferencesHelper.isHouseKeepingNecessary(applicationContext)) {
             /* add whatever housekeeping is necessary here */
-
+            DownloadHelper.updateCovers(applicationContext)
             // housekeeping finished - save state
-            // PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext) // TODO uncomment if you need to do housekeeping here
+            PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext)
         }
     }
 

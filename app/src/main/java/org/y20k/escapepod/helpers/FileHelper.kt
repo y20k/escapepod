@@ -158,11 +158,11 @@ object FileHelper {
     }
 
 
-    /* Creates and save a smaller version of the podcast cover - used by the list of podcasts view */
-    fun saveSmallCover(context: Context, podcastName: String, tempFileUri: Uri): Uri {
-        val smallCoverBitmap: Bitmap = ImageHelper.getPodcastCover(context, tempFileUri, Keys.SIZE_COVER_PODCAST_CARD)
-        val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcastName)), Keys.PODCAST_SMALL_COVER_FILE)
-        writeImageFile(context, smallCoverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
+    /* Creates and save a scaled version of the podcast cover */
+    fun saveCover(context: Context, podcastName: String, sourceImageUri: Uri, size: Int, fileName: String): Uri {
+        val coverBitmap: Bitmap = ImageHelper.getPodcastCover(context, sourceImageUri, size)
+        val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcastName)), fileName)
+        writeImageFile(context, coverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
         return file.toUri()
     }
 

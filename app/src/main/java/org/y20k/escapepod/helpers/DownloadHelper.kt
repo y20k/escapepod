@@ -16,14 +16,11 @@ package org.y20k.escapepod.helpers
 
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.PreferenceManager
-import androidx.work.*
 import kotlinx.coroutines.*
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
@@ -33,7 +30,6 @@ import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.extensions.copy
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -78,7 +74,7 @@ object DownloadHelper {
         }
         // enqueue episode
         val uris = Array(1) { episode.remoteAudioFileLocation.toUri() }
-        enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, episode.podcastName, ignoreWifiRestriction)
+        enqueueDownload(context, uris, Keys.FILE_TYPE_AUDIO, ignoreWifiRestriction)
     }
 
 
@@ -91,7 +87,7 @@ object DownloadHelper {
             Toast.makeText(context, context.getString(R.string.toast_message_refreshing_cover), Toast.LENGTH_LONG).show()
             CollectionHelper.clearImagesFolder(context, podcast)
             val uris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
-            enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE, podcast.name)
+            enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE)
         } else {
             Toast.makeText(context, context.getString(R.string.toast_message_error_refreshing_cover), Toast.LENGTH_LONG).show()
         }
@@ -109,34 +105,7 @@ object DownloadHelper {
         }
         // enqueue downloads to DownloadManager (= fire & forget - no return value needed)
         GlobalScope.launch { enqueueDownloadSuspended(context, uris, Keys.FILE_TYPE_RSS) }
-
-
-        // TODO REMOVE AFTER NEXT RELEASE
-        if (PreferencesHelper.isHouseKeepingNecessary(context)) {
-            val finishHouseKeepingWorkRequest = OneTimeWorkRequestBuilder<FinishHouseKeepingWorker>().setInitialDelay(2, TimeUnit.MINUTES).build()
-            WorkManager.getInstance().enqueueUniqueWork("FinishHouseKeepingWork", ExistingWorkPolicy.KEEP, finishHouseKeepingWorkRequest)
-        }
-        // TODO REMOVE AFTER NEXT RELEASE
-
-
     }
-
-
-    // TODO REMOVE AFTER NEXT RELEASE
-    class FinishHouseKeepingWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
-        override fun doWork(): Result {
-            LogHelper.w(TAG, "House keeping finished.")
-            val modificationDate: Date = Calendar.getInstance().time
-            PreferencesHelper.saveHouseKeepingNecessaryState(context= applicationContext, state = false)
-            FileHelper.saveCollection(applicationContext, collection, modificationDate)
-            val collectionChangedIntent = Intent()
-            collectionChangedIntent.action = Keys.ACTION_COLLECTION_CHANGED
-            collectionChangedIntent.putExtra(Keys.EXTRA_COLLECTION_MODIFICATION_DATE, modificationDate.time)
-            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(collectionChangedIntent)
-            return Result.success()
-        }
-    }
-    // TODO REMOVE AFTER NEXT RELEASE
 
 
     /* Updates all podcast covers */
@@ -199,7 +168,7 @@ object DownloadHelper {
 
 
     /* Enqueues an Array of files in DownloadManager */
-    private fun enqueueDownload(context: Context, uris: Array<Uri>, type: Int, podcastName: String = String(), ignoreWifiRestriction: Boolean = false) {
+    private fun enqueueDownload(context: Context, uris: Array<Uri>, type: Int, ignoreWifiRestriction: Boolean = false) {
         // determine allowed network types
         val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
         // enqueue downloads
@@ -226,7 +195,7 @@ object DownloadHelper {
     /* Suspend function: Wrapper for enqueueDownload */
     suspend fun enqueueDownloadSuspended(context: Context, uris: Array<Uri>, type: Int, podcastName: String = String(), ignoreWifiRestriction: Boolean = false) {
         return suspendCoroutine { cont ->
-            cont.resume(enqueueDownload(context, uris, type, podcastName, ignoreWifiRestriction))
+            cont.resume(enqueueDownload(context, uris, type, ignoreWifiRestriction))
         }
     }
 
@@ -237,7 +206,7 @@ object DownloadHelper {
         if (isNew && podcast.remoteImageFileLocation.isNotEmpty()) {
             CollectionHelper.clearImagesFolder(context, podcast)
             val coverUris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
-            enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE, podcast.name)
+            enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE)
         }
         // download audio files only when connected to wifi
         if (ignoreWifiRestriction || NetworkHelper.isConnectedToWifi(context)) {
@@ -250,7 +219,7 @@ object DownloadHelper {
                 }
                 // start download of latest episode audio file
                 val episodeUris: Array<Uri> = Array(1) { podcast.episodes[0].remoteAudioFileLocation.toUri() }
-                enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO, podcast.name)
+                enqueueDownload(context, episodeUris, Keys.FILE_TYPE_AUDIO)
             }
         }
     }
@@ -277,8 +246,8 @@ object DownloadHelper {
     private fun setPodcastImage(context: Context, tempFileUri: Uri, remoteFileLocation: String) {
         collection.podcasts.forEach { podcast ->
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
-                podcast.smallCover = FileHelper.saveSmallCover(context, podcast.name, tempFileUri).toString()
-                podcast.cover = FileHelper.saveCopyOfFile(context, podcast.name, tempFileUri, Keys.FILE_TYPE_IMAGE, Keys.PODCAST_COVER_FILE).toString()
+                podcast.smallCover = FileHelper.saveCover(context, podcast.name, tempFileUri, Keys.SIZE_COVER_PODCAST_CARD, Keys.PODCAST_SMALL_COVER_FILE).toString()
+                podcast.cover = FileHelper.saveCover(context, podcast.name, tempFileUri, Keys.SIZE_COVER_MAXIMUM, Keys.PODCAST_COVER_FILE).toString()
                 podcast.episodes.forEach { episode ->
                     episode.cover = podcast.cover
                     episode.smallCover = podcast.smallCover
@@ -387,14 +356,6 @@ object DownloadHelper {
                     Toast.makeText(context, context.getString(R.string.toast_message_error_validation_no_valid_episodes), Toast.LENGTH_LONG).show()
                 }
             }
-
-            // TODO REMOVE AFTER NEXT RELEASE
-            // update podcast website in each episode (one-time house keeping action)
-            if (PreferencesHelper.isHouseKeepingNecessary(context)) {
-                LogHelper.w(TAG, "one-time house keeping for ${podcast.name}: updating website address for all episodes")
-                collection = CollectionHelper.addPodcastWebsiteToEpisodes(context, collection, podcast)
-            }
-            // TODO REMOVE AFTER NEXT RELEASE
 
             CollectionHelper.trimPodcastEpisodeLists(context, collection)
             backgroundJob.cancel()

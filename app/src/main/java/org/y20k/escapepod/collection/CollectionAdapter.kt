@@ -494,7 +494,6 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
                 if (oldEpisode.duration != newEpisode.duration) return false
                 if (oldEpisode.remoteCoverFileLocation != newEpisode.remoteCoverFileLocation) return false
                 if (oldEpisode.remoteAudioFileLocation != newEpisode.remoteAudioFileLocation) return false
-                if (oldEpisode.podcastWebsite != newEpisode.podcastWebsite) return false         // TODO REMOVE AFTER NEXT RELEASE
             }
             // none of the above -> contents are the same
             return true
