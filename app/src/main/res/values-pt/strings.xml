@@ -134,4 +134,5 @@
     <string name="dialog_yes_no_positive_button_update_covers">Atualizar</string>
     <string name="pref_update_covers_summary">Descarregar a última versão de todas as imagens da sua coleção.</string>
     <string name="pref_update_covers_title">Atualizar imagens</string>
+    <string name="descr_app_icon">Ícone da aplicação que representa uma cápsula de fuga no espaço</string>
 </resources>
