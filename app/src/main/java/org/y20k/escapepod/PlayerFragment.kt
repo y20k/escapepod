@@ -1,7 +1,7 @@
 /*
- * PodcastPlayerFragment.kt
- * Implements the PodcastPlayerFragment class
- * PodcastPlayerFragment is the fragment that hosts Escapepod's list of podcasts and a player sheet
+ * PlayerFragment.kt
+ * Implements the PlayerFragment class
+ * PlayerFragment is the fragment that hosts Escapepod's list of podcasts and a player sheet
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -63,9 +63,9 @@ import kotlin.coroutines.CoroutineContext
 
 
 /*
- * PodcastPlayerFragment class
+ * PlayerFragment class
  */
-class PodcastPlayerFragment: Fragment(), CoroutineScope,
+class PlayerFragment: Fragment(), CoroutineScope,
         SharedPreferences.OnSharedPreferenceChangeListener,
         FindPodcastDialog.FindPodcastDialogListener,
         CollectionAdapter.CollectionAdapterListener,
@@ -73,7 +73,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
         YesNoDialog.YesNoDialogListener {
 
     /* Define log tag */
-    private val TAG: String = LogHelper.makeLogTag(PodcastPlayerFragment::class.java)
+    private val TAG: String = LogHelper.makeLogTag(PlayerFragment::class.java)
 
 
     /* Main class variables */
@@ -195,7 +195,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
 
 
     /* Overrides onStop from Fragment */
-    public override fun onStop() {
+    override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
         MediaControllerCompat.getMediaController(activity as Activity)?.unregisterCallback(mediaControllerCallback)
@@ -264,7 +264,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
                     else -> {
                         // ask user: playback or add to Up Next
                         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
-                        YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId)
+                        YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId)
                     }
                 }
             }
@@ -282,7 +282,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     override fun onMarkListenedButtonTapped(mediaId: String) {
         MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_mark_episode_played)}\n\n- ${CollectionHelper.getEpisode(collection, mediaId).title}"
-        YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId)
+        YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId)
     }
 
 
@@ -296,7 +296,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
     override fun onDeleteButtonTapped(episode: Episode) {
         MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_delete_episode)}\n\n- ${episode.title}"
-        YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_DELETE_EPISODE, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_delete_episode, payloadString = episode.getMediaId())
+        YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_DELETE_EPISODE, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_delete_episode, payloadString = episode.getMediaId())
     }
 
 
@@ -387,7 +387,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
                 // ask user
                 val adapterPosition: Int = viewHolder.adapterPosition
                 val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n\n- ${collection.podcasts[adapterPosition].name}"
-                YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
+                YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
@@ -396,7 +396,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
         // enable for swipe to refresh
         layout.swipeRefreshLayout.setOnRefreshListener {
             // ask user to confirm update
-            YesNoDialog(this@PodcastPlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
+            YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
             layout.swipeRefreshLayout.isRefreshing = false
         }
 
@@ -670,7 +670,7 @@ class PodcastPlayerFragment: Fragment(), CoroutineScope,
                     val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper.readSuspended(activity as Context, opmlUri) }
                     // wait for result and update collection
                     val feedUrls: Array<String> = deferred.await()
-                    OpmlImportDialog(this@PodcastPlayerFragment).show(activity as Context, feedUrls)
+                    OpmlImportDialog(this@PlayerFragment).show(activity as Context, feedUrls)
                 }
             }
         }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/result_podcast_name"
+        android:id="@+id/podcast_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -83,8 +83,8 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/escapepod_red"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/result_podcast_name"
-        app:layout_constraintTop_toBottomOf="@+id/result_podcast_name"
+        app:layout_constraintStart_toStartOf="@+id/podcast_name"
+        app:layout_constraintTop_toBottomOf="@+id/podcast_name"
         tools:visibility="visible" />
 
     <ImageView
@@ -111,7 +111,7 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/escapepod_red"
         app:layout_constraintStart_toEndOf="@+id/divider_centered_dot"
-        app:layout_constraintTop_toBottomOf="@+id/result_podcast_name" />
+        app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/show_notes_title"

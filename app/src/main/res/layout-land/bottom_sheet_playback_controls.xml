@@ -256,7 +256,7 @@
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/player_podcast_name"
+        android:id="@+id/podcast_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -286,7 +286,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/player_podcast_cover"
         app:layout_constraintEnd_toStartOf="@+id/player_play_button"
         app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
-        app:layout_constraintTop_toBottomOf="@+id/player_podcast_name"
+        app:layout_constraintTop_toBottomOf="@+id/podcast_name"
         tools:text="@string/sample_text_episode_0_title" />
 
     <ImageView
@@ -398,7 +398,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="visible"
-        app:constraint_referenced_ids="player_background,player_podcast_cover,player_podcast_name,player_episode_title,player_play_button" />
+        app:constraint_referenced_ids="player_background,player_podcast_cover,podcast_name,player_episode_title,player_play_button" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/chapter_views"

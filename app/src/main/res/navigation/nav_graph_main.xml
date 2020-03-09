@@ -8,7 +8,7 @@
     <!-- PLAYER -->
     <fragment
         android:id="@+id/podcast_player_destination"
-        android:name="org.y20k.escapepod.PodcastPlayerFragment"
+        android:name="org.y20k.escapepod.PlayerFragment"
         android:label="Player"
         tools:layout="@layout/fragment_podcast_player">
         <action

@@ -104,7 +104,7 @@ class GpodderResultAdapter(private val listener: GpodderResultAdapterListener, v
      * Inner class: ViewHolder for a podcast search result
      */
     private inner class SearchResultViewHolder (var searchResultLayout: View): RecyclerView.ViewHolder(searchResultLayout) {
-        val podcastNameView: MaterialTextView = searchResultLayout.findViewById(R.id.result_podcast_name)
+        val podcastNameView: MaterialTextView = searchResultLayout.findViewById(R.id.podcast_name)
         val podcastDescriptionView: MaterialTextView = searchResultLayout.findViewById(R.id.result_podcast_description)
     }
     /*

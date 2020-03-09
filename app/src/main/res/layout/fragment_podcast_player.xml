@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/app_window_background"
-        tools:context="org.y20k.escapepod.PodcastPlayerFragment">
+        tools:context="org.y20k.escapepod.PlayerFragment">
 
 
         <!-- PODCAST LIST -->

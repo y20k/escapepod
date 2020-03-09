@@ -416,7 +416,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
      */
     private inner class PodcastViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
         val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.player_podcast_cover)
-        val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.result_podcast_name)
+        val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val currentEpisodeViews: EpisodeViewHolder = EpisodeViewHolder(podcastCardLayout)
         val olderEpisodesButtonView: TextView = podcastCardLayout.findViewById(R.id.older_episodes_toggle)
         val olderEpisodesList: RecyclerView = podcastCardLayout.findViewById(R.id.older_episode_list)

@@ -1,3 +1,17 @@
+/*
+ * MainActivity.kt
+ * Implements the MainActivity class
+ * The Main Activity hosts the PlayerFragment and the SettingsFragment
+ *
+ * This file is part of
+ * ESCAPEPOD - Free and Open Podcast App
+ *
+ * Copyright (c) 2018-20 - Y20K.org
+ * Licensed under the MIT-License
+ * http://opensource.org/licenses/MIT
+ */
+
+
 package org.y20k.escapepod
 
 import android.content.Context

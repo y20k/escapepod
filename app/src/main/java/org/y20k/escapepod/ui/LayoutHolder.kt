@@ -97,7 +97,7 @@ data class LayoutHolder(var rootView: View) {
         sleepTimerRunningViews = rootView.findViewById(R.id.sleep_timer_running_views)
         downloadProgressIndicator = rootView.findViewById(R.id.download_progress_indicator)
         coverView = rootView.findViewById(R.id.player_podcast_cover)
-        podcastNameView = rootView.findViewById(R.id.player_podcast_name)
+        podcastNameView = rootView.findViewById(R.id.podcast_name)
         episodeTitleView = rootView.findViewById(R.id.player_episode_title)
         playButtonView = rootView.findViewById(R.id.player_play_button)
         sheetCoverView = rootView.findViewById(R.id.sheet_large_podcast_cover)
