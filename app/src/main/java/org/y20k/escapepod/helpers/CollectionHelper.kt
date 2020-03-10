@@ -137,6 +137,7 @@ object CollectionHelper {
                 podcast.episodes.addAll(newEpisodes)
                 // update podcast website
                 podcast.website = newPodcast.website
+                podcast.episodes.forEach { episode -> episode.podcastWebsite = podcast.website } // todo remove again in a couple of month ^o^
             }
         }
         return sortCollectionByDate(collection)
@@ -341,7 +342,6 @@ object CollectionHelper {
     }
 
 
-    /* todo remove with next version update - only needed for one-time house keeping */
     /* Adds the website of an updated podcast to all of the episodes of its counterpart in collection */
     fun addPodcastWebsiteToEpisodes(context: Context, collection: Collection, newPodcast: Podcast): Collection {
         collection.podcasts.forEach { oldPodcast ->
@@ -351,8 +351,6 @@ object CollectionHelper {
                 }
             }
         }
-        val currentDate: Date =  Calendar.getInstance().time
-        FileHelper.saveCollection(context, collection, currentDate)
         return collection
     }
 
