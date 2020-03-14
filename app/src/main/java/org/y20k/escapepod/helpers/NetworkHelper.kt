@@ -106,14 +106,18 @@ object NetworkHelper {
             val connection: HttpURLConnection? = createConnection(urlString)
 
             if (connection != null) {
-                // extract content type from connection
-                val contentTypeHeader: String = connection.contentType
-                val matcher = CONTENT_TYPE_PATTERN.matcher(contentTypeHeader.trim().toLowerCase(Locale.ENGLISH))
-                if (matcher.matches()) {
-                    val contentTypeString: String = matcher.group (1) ?: Keys.MIME_TYPE_UNSUPPORTED
-                    val charsetString: String = matcher.group (3) ?: Keys.CHARSET_UNDEFINDED
-                    contentType.type = contentTypeString.trim()
-                    contentType.charset = charsetString.trim()
+                try {
+                    // extract content type from connection
+                    val contentTypeHeader: String = connection.contentType
+                    val matcher = CONTENT_TYPE_PATTERN.matcher(contentTypeHeader.trim().toLowerCase(Locale.ENGLISH))
+                    if (matcher.matches()) {
+                        val contentTypeString: String = matcher.group (1) ?: Keys.MIME_TYPE_UNSUPPORTED
+                        val charsetString: String = matcher.group (3) ?: Keys.CHARSET_UNDEFINDED
+                        contentType.type = contentTypeString.trim()
+                        contentType.charset = charsetString.trim()
+                    }
+                } catch (e: Exception) {
+                    LogHelper.e(TAG, "e")
                 }
                 connection.disconnect()
             }

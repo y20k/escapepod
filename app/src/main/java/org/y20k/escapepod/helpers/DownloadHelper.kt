@@ -177,8 +177,9 @@ object DownloadHelper {
             LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
             // check if valid url and prevent double download
             val scheme: String = uris[i].scheme ?: String()
-            if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString())) {
-                val fileName: String = uris[i].pathSegments.last() ?: String()
+            val pathSegments: List<String> = uris[i].pathSegments
+            if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString()) && pathSegments.isNotEmpty()) {
+                val fileName: String = uris[i].pathSegments.last()
                 val request: DownloadManager.Request = DownloadManager.Request(uris[i])
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(fileName)
