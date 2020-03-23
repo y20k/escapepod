@@ -40,7 +40,7 @@ Escapepod tries to reduce the number of episodes it keeps. Here are the rules fo
 You can import a podcast list using the [OPML](https://en.wikipedia.org/wiki/OPML) exchange format. Just open an OPML file using a file manager and choose Escapepod as the handler. The current podcast collection can be exported via Settings. Addionally Escapepod keeps an up-to-date OPML file in the folder `/Android/data/org.y20k.escapepod/files/collection/`.
 
 ### I cannot add podcast X.
-Please head over to the [Wiki](https://github.com/y20k/escapepod/wiki/Podcasts-feeds-that-are-not-working-yet) and add the podcast that failed to import.
+Please report any podcast feeds, that are currently not working, using the GitHub Issue template [Feed Issue](https://github.com/y20k/escapepod/issues/new?assignees=&labels=feed+issue&template=feed-issue.md&title=%5BFeed%5D). Note: Escapepod does not support video podcasts.
 
 ### Where do the podcast search results come from?
 Escapepod searches the [gpodder.net](https://gpodder.net/directory/) online database. Gpodder.net is a great service, if you are looking for new stuff to listen to, btw.
