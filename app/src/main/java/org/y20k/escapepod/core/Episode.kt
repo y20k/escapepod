@@ -106,6 +106,7 @@ data class Episode (@Expose var guid: String = String(),
                                       remoteCoverFileLocation = remoteCoverFileLocation,
                                       remoteAudioFileLocation = remoteAudioFileLocation,
                                       podcastName = podcastName,
-                                      podcastFeedLocation = podcastFeedLocation)
+                                      podcastFeedLocation = podcastFeedLocation,
+                                      podcastWebsite = podcastWebsite)
 
 }

@@ -117,7 +117,7 @@ object NetworkHelper {
                         contentType.charset = charsetString.trim()
                     }
                 } catch (e: Exception) {
-                    LogHelper.e(TAG, "e")
+                    LogHelper.e(TAG, e)
                 }
                 connection.disconnect()
             }

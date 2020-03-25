@@ -71,6 +71,7 @@ data class Podcast(@Expose var name: String = String(),
         episodes.forEach { episodesCopy.add(it.deepCopy()) }
         return Podcast(name = name,
                        description = description,
+                       website = website,
                        cover = cover,
                        smallCover = smallCover,
                        episodes = episodesCopy,
