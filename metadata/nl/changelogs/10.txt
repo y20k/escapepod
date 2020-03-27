@@ -1,0 +1,7 @@
+# v0.7.5 - Drüben Auf Dem Hügel
+
+**2019-10-16**
+
+- German language version
+- support for Android's Auto-Backup feature
+- several bug fixes

@@ -1,0 +1,7 @@
+# v0.7.1 - Drüben Auf Dem Hügel
+
+**2019-10-02**
+
+- new playback speed switch 
+- longer episode descriptions are displayed in show notes, if available in RSS feed
+- bug fixes
