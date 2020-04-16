@@ -43,7 +43,6 @@
     <string name="dialog_yes_no_message_mark_episode_played">Mark this episode as played?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Your device is not connected to Wi-Fi. Download episode anyway?</string>
     <string name="dialog_yes_no_message_remove_podcast">Remove this podcast?</string>
-    <string name="dialog_yes_no_message_update_collection">Look for new episodes?</string>
     <string name="dialog_yes_no_message_update_covers">Download latest version of all podcast covers?</string>
     <string name="dialog_yes_no_message_vpn_download">Your device is connected via VPN. Download episode anyway?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Add to \'Up Next\'</string>
@@ -56,7 +55,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Mark as Played</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Download anyway</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remove</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Update</string>
     <string name="dialog_yes_no_positive_button_update_covers">Update</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Download anyway</string>
     <string name="dialog_yes_no_title_default">Decide</string>

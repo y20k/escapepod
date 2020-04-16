@@ -33,7 +33,6 @@
     <string name="dialog_yes_no_message_delete_episode">Diese Episode löschen\?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Diese Episode als gespielt markieren\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Diesen Podcast entfernen\?</string>
-    <string name="dialog_yes_no_message_update_collection">Nach neuen Episoden suchen\?</string>
     <string name="dialog_yes_no_negative_button_cancel">Abbrechen</string>
     <string name="dialog_yes_no_negative_button_default">Nein</string>
     <string name="dialog_yes_no_positive_button_add_up_next">Jetzt starten</string>
@@ -42,7 +41,6 @@
     <string name="dialog_yes_no_positive_button_delete_episode">Löschen</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Als abgespielt markieren</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Entfernen</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Aktualisieren</string>
     <string name="dialog_yes_no_title_default">Entscheiden</string>
     <string name="toast_message_adding_podcast">Podcast hinzufügen.</string>
     <string name="toast_message_adding_podcasts">Podcasts hinzufügen.</string>

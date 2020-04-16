@@ -111,7 +111,6 @@ object Keys {
     const val HOLDER_UPDATE_PLAYBACK_PROGRESS: Int = 4
 
     // dialog types
-    const val DIALOG_UPDATE_COLLECTION: Int = 1
     const val DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI: Int = 2
     const val DIALOG_REMOVE_PODCAST: Int = 3
     const val DIALOG_DELETE_EPISODE: Int = 4

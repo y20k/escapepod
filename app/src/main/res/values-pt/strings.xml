@@ -32,7 +32,6 @@
     <string name="dialog_yes_no_message_delete_episode">Apagar este episódio\?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Marcar episódio como reproduzido\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Remover este podcast\?</string>
-    <string name="dialog_yes_no_message_update_collection">Procurar novos episódios\?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Adicionar à fila</string>
     <string name="dialog_yes_no_negative_button_cancel">Cancelar</string>
     <string name="dialog_yes_no_negative_button_default">Não</string>
@@ -43,7 +42,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Marcar como reproduzido</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Descarregar na mesma</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Remover</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Atualizar</string>
     <string name="dialog_yes_no_title_default">Decidir</string>
     <string name="player_up_next_headline">Seguinte:</string>
     <string name="toast_message_adding_podcast">A adicionar podcast.</string>

@@ -36,7 +36,6 @@
     <string name="dialog_yes_no_message_delete_episode">Wil je deze aflevering verwijderen\?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Wil je deze aflevering markeren als afgespeeld\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Wil je deze podcast verwijderen\?</string>
-    <string name="dialog_yes_no_message_update_collection">Wil je zoeken naar nieuwe afleveringen\?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Toevoegen aan wachtrij</string>
     <string name="dialog_yes_no_negative_button_cancel">Annuleren</string>
     <string name="dialog_yes_no_negative_button_default">Nee</string>
@@ -47,7 +46,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Markeren als afgespeeld</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Tóch downloaden</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Verwijderen</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Bijwerken</string>
     <string name="dialog_yes_no_title_default">Maak een keuze</string>
     <string name="player_up_next_headline">Hierna:</string>
     <string name="toast_message_adding_podcast">Bezig met toevoegen…</string>

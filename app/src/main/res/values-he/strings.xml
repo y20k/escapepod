@@ -36,7 +36,6 @@
     <string name="dialog_yes_no_message_mark_episode_played">לסמן שכבר ניגנת את הפרק הזה\?</string>
     <string name="dialog_yes_no_message_non_wifi_download">המכשיר שלך לא מחובר לרשת אלחוטית. להוריד את הפרק בכל זאת\?</string>
     <string name="dialog_yes_no_message_remove_podcast">להסיר את הפודקאסט הזה\?</string>
-    <string name="dialog_yes_no_message_update_collection">לחפש פרקים חדשים\?</string>
     <string name="dialog_yes_no_message_vpn_download">המכשיר שלך מחובר דרך חיבור מוצפן (VPN). להוריד את הפרק בכל זאת\?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">הוספה ל‚באים בתור’</string>
     <string name="dialog_yes_no_negative_button_cancel">ביטול</string>
@@ -48,7 +47,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">לסמן כהתנגן</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">להוריד בכל זאת</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">להסיר</string>
-    <string name="dialog_yes_no_positive_button_update_collection">לעדכן</string>
     <string name="dialog_yes_no_positive_button_vpn_download">להוריד בכל זאת</string>
     <string name="dialog_yes_no_title_default">החלטה</string>
     <string name="player_up_next_headline">באים בתור:</string>

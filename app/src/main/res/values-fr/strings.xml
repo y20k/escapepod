@@ -36,7 +36,6 @@
     <string name="dialog_yes_no_message_mark_episode_played">Marquer cet épisode comme lu \?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Votre appareil n\'est pas connecté au Wi-Fi. Télécharger l\'épisode quand même \?</string>
     <string name="dialog_yes_no_message_remove_podcast">Supprimer ce podcast \?</string>
-    <string name="dialog_yes_no_message_update_collection">Rechercher de nouveaux épisodes \?</string>
     <string name="dialog_yes_no_message_vpn_download">Votre périphérique est connecté via un VPN. Télécharger l\'épisode quand même \?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Ajouter à « File d\'attente »</string>
     <string name="dialog_yes_no_negative_button_cancel">Annuler</string>
@@ -48,7 +47,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Marquer comme lu</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Télécharger quand même</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Supprimer</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Actualiser</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Télécharger quand même</string>
     <string name="dialog_yes_no_title_default">Décider</string>
     <string name="player_up_next_headline">À suivre :</string>

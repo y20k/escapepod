@@ -35,7 +35,6 @@
     <string name="dialog_yes_no_message_mark_episode_played">Oznaczyć ten odcinek jako odtworzony\?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Urządzenie nie jest podłączone do sieci Wi-Fi. Pobrać odcinek mimo to\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Usunąć ten podcast\?</string>
-    <string name="dialog_yes_no_message_update_collection">Poszukać nowych odcinków\?</string>
     <string name="dialog_yes_no_message_vpn_download">Urządzenie jest podłączone poprzez sieć VPN. Pobrać odcinek mimo to\?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Dodaj jako \'następny\'</string>
     <string name="dialog_yes_no_negative_button_cancel">Anuluj</string>
@@ -47,7 +46,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Oznacz jako odtwarzane</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Pobierz mimo to</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Usuń</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Zaktualizuj</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Pobierz mimo to</string>
     <string name="player_up_next_headline">Następny:</string>
     <string name="toast_message_adding_podcast">Dodawanie podcastu.</string>

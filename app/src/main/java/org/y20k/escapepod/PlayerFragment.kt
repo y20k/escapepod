@@ -318,22 +318,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
     override fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String) {
         super.onYesNoDialog(type, dialogResult, payload, payloadString)
         when (type) {
-            Keys.DIALOG_UPDATE_COLLECTION -> {
-                when (dialogResult) {
-                    // user tapped update collection
-                    true -> {
-                        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(activity as Context)) {
-                            updateCollection()
-                        } else {
-                            Toast.makeText(activity as Context, R.string.toast_message_collection_update_not_necessary, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                    // user tapped cancel - for dev purposes: refresh the podcast list view // todo check if that can be helpful
-                    false -> {
-                        // collectionAdapter.notifyDataSetChanged() // can be removed
-                    }
-                }
-            }
             // handle result of remove dialog
             Keys.DIALOG_REMOVE_PODCAST -> {
                 when (dialogResult) {
@@ -395,8 +379,12 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
         // enable for swipe to refresh
         layout.swipeRefreshLayout.setOnRefreshListener {
-            // ask user to confirm update
-            YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COLLECTION, message = R.string.dialog_yes_no_message_update_collection, yesButton = R.string.dialog_yes_no_positive_button_update_collection)
+            if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(activity as Context)) {
+                updateCollection()
+            } else {
+                Toast.makeText(activity as Context, R.string.toast_message_collection_update_not_necessary, Toast.LENGTH_LONG).show()
+            }
+
             layout.swipeRefreshLayout.isRefreshing = false
         }
 

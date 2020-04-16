@@ -38,7 +38,6 @@
     <string name="dialog_yes_no_message_mark_episode_played">Markatu pasarte hau erreproduzitutako gisa\?</string>
     <string name="dialog_yes_no_message_non_wifi_download">Zure gailua ez dago WiFira konektatuta. Deskargatu pasartea hala ere\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Podcast hau kendu\?</string>
-    <string name="dialog_yes_no_message_update_collection">Pasarte berriak bilatu\?</string>
     <string name="dialog_yes_no_message_update_covers">Deskargatu podcast azal guztien azkenengo bertsioa\?</string>
     <string name="dialog_yes_no_message_vpn_download">Zure gailua VPN baten bitartez konektatuta dago. Deskargatu pasartea hala ere\?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Gehitu \'Hurrengoa\'-ra</string>
@@ -51,7 +50,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Markatu erreproduzitutako bezala</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Deskargatu hala ere</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Kendu</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Eguneratu</string>
     <string name="dialog_yes_no_positive_button_update_covers">Eguneratu</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Deskargatu hala ere</string>
     <string name="dialog_yes_no_title_default">Erabaki</string>

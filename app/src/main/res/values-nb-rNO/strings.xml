@@ -35,7 +35,6 @@
     <string name="dialog_yes_no_message_delete_episode">Slett denne episoden?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Merk denne episoden som avspilt?</string>
     <string name="dialog_yes_no_message_remove_podcast">Fjern dette nettradioopptaket?</string>
-    <string name="dialog_yes_no_message_update_collection">Se etter nye episoder?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Legg til i \'Spilles etterpå\'</string>
     <string name="dialog_yes_no_negative_button_cancel">Avbryt</string>
     <string name="dialog_yes_no_negative_button_default">Nei</string>
@@ -46,7 +45,6 @@
     <string name="dialog_yes_no_positive_button_mark_episode_played">Merk som avspilt</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Last ned uansett</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Fjern</string>
-    <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
     <string name="dialog_yes_no_title_default">Avgjør</string>
     <!-- Player -->
     <string name="player_up_next_headline">Spilles etterpå:</string>
