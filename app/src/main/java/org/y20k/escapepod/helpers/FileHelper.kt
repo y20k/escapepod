@@ -91,6 +91,7 @@ object FileHelper {
     fun getFileType(context: Context, uri: Uri): String {
         // get file type from content resolver
         val fileType: String = context.contentResolver.getType(uri) ?: Keys.MIME_TYPE_UNSUPPORTED
+        LogHelper.v(TAG, "${getFileName(context, uri)} ==> file type: $fileType")
         if (fileType != Keys.MIME_TYPE_UNSUPPORTED) {
             // return the found file type
             return fileType

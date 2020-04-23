@@ -95,7 +95,7 @@
     <string name="podcast_list_button_toggle_hide_older_episodes">Hide older episodes</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
     <!-- Notification -->
-    <string name="notification_now_playing_channel_description">Playback controls, episode name and logo.</string>
+    <string name="notification_now_playing_channel_description">Playback controls, episode name and cover.</string>
     <string name="notification_now_playing_channel_name">Playback Controls</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Play</string>

@@ -27,11 +27,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.*
-import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.GsonBuilder
+import org.json.JSONArray
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.search.GpodderResult
@@ -234,7 +235,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
         val requestUrl = "https://gpodder.net/search.json?q=${query.replace(" ", "+")}"
 
         // request data from request URL
-        val stringRequest = object: StringRequest(Method.GET, requestUrl, responseListener, errorListener) {
+        val jsonArrayRequest = object: JsonArrayRequest(Method.GET, requestUrl, null, responseListener, errorListener) {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params = HashMap<String, String>()
@@ -244,7 +245,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
         }
 
         // override retry policy
-        stringRequest.retryPolicy = object : RetryPolicy {
+        jsonArrayRequest.retryPolicy = object : RetryPolicy {
             override fun getCurrentTimeout(): Int {
                 return 30000
             }
@@ -258,15 +259,14 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
         }
 
         // add to RequestQueue.
-        requestQueue.add(stringRequest)
+        requestQueue.add(jsonArrayRequest)
     }
 
 
-
     /* Listens for (positive) server responses to search requests */
-    private val responseListener: Response.Listener<String> = Response.Listener<String> { response ->
+    private val responseListener: Response.Listener<JSONArray> = Response.Listener<JSONArray> { response ->
         if (response != null) {
-            result = createGpodderResult(response)
+            result = createGpodderResult(response.toString())
             if (result.isNotEmpty()) {
                 searchResultAdapter.searchResults = result
                 searchResultAdapter.notifyDataSetChanged()
