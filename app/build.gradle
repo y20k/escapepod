@@ -13,7 +13,7 @@ android {
         targetSdkVersion 29
         versionCode 26
         versionName '0.9.1'
-        resConfigs "de", "en", "fr", "he", "nb-rNO", "nl", "pl", "pt"
+        resConfigs "de", "en", "eu", "fr", "he", "nb-rNO", "nl", "pl", "pt"
     }
 
     kotlinOptions {
