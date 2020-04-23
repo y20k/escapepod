@@ -1,0 +1,7 @@
+# v0.8.3 - Gehen Die Leute
+
+**2019-12-06**
+
+- notifies user when voice initiated search did not succeed.
+
+Note: Sorry folks. This is the third update in two days. The apps seems to get rejected in the Play Store, because the automated testing for Android Auto compatibility assumes that the app reacts to the voice command "Play music", even if no podcast has been added. I am not sure what to do. I might just drop Android Auto support altogether.

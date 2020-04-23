@@ -1,0 +1,7 @@
+# v0.8.4 - Gehen Die Leute
+
+**2019-12-18**
+
+- Polish language version
+- small bug fixes
+- small performance enhancements

@@ -1,0 +1,26 @@
+Escapepod is een podcastspeler met een minimalistisch uiterlijk, wat niet iedereen zal waarderen. De app bestaat slechts uit 1 scherm: afspeelbediening en een lijst met podcasts die de 5 recentste afleveringen toont. Escapepod heeft geen functie om nieuwe podcasts te ontdekken. Wel is er een eenvoudige zoekfunctie en ondersteuning voor het openen van RSS-podcastlinks vanuit een webbrowser.
+
+
+VEELGESTELDE VRAGEN
+
+IS ER EEN AFSPEELWACHTRIJ IN ESCAPEPOD?
+Escapepod toont alleen de volgende aflevering in de wachtrij. Druk tijdens het luisteren op een andere aflevering om deze toe te voegen aan de wachtrij.
+
+WAT ZIJN DE STANDAARDINSTELLINGEN?
+- Automatisch bijwerken downloadt geen bestanden via mobiel internet
+- Escapepod bewaart slechts twee afleveringen
+
+ESCAPEPOD BEWAART SLECHTS TWEE AFLEVERINGEN?!
+Escapepod probeert het aantal opgeslagen afleveringen te beperken. Zó werkt dat:
+- Escapepod bewaart de twee recentste afleveringen
+- Afleveringen die je aan het beluisteren bent en handmatig gedownloade afleveringen worden ook opgeslagen
+- Het maximale aantal beschikbare afleveringen is 5
+
+ONDERSTEUNT ESCAPEPOD OMPL?
+Ja. Druk op een OPML-bestand in een bestandsbeheerder en kies Escapepod. De huidige podcastverzameling kan worden geëxporteerd middels de instellingen. Daarnaast kan Escapepod een bijgewerkt OPML-bestand opslaan in /Android/data/org.y20k.escapepod/files/collection/.
+
+IK KAN PODCAST X NIET TOEVOEGEN; WAT NU?
+Geef dit aan mij door op GitHub middels het issuesjabloon 'Feed Issue' (https://github.com/y20k/escapepod/issues/). Let op: Escapepod heeft geen ondersteuning voor videopodcasts.
+
+WAAR KOMEN DE ZOEKRESULTATEN VANDAAN?
+Escapepod doorzoekt de databank van gpodder.net (https://gpodder.net/directory/). Gpodder.net is tevens een geweldige site voor het ontdekken van nieuwe podcats.

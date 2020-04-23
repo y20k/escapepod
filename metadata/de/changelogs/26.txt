@@ -1,0 +1,6 @@
+# v0.9.1 - Aber Hier Leben, Nein Danke
+
+**2020-03-25**
+
+- Korrigiert das Parsen der Podcast-Homepage-Adresse
+- aktualisierte Übersetzungen
