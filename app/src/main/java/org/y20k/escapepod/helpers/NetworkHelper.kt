@@ -22,8 +22,6 @@ import android.net.NetworkCapabilities.*
 import org.y20k.escapepod.Keys
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.*
-import java.util.regex.Pattern
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -101,26 +99,17 @@ object NetworkHelper {
     suspend fun detectContentTypeSuspended(urlString: String): ContentType {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Determining content type - Thread: ${Thread.currentThread().name}")
-            val CONTENT_TYPE_PATTERN:  Pattern  = Pattern.compile("([^;]*)(; ?.*?=([^;]+))?")
             val contentType: ContentType = ContentType(Keys.MIME_TYPE_UNSUPPORTED, Keys.CHARSET_UNDEFINDED)
             val connection: HttpURLConnection? = createConnection(urlString)
-
             if (connection != null) {
-                try {
-                    // extract content type from connection
-                    val contentTypeHeader: String = connection.contentType
-                    val matcher = CONTENT_TYPE_PATTERN.matcher(contentTypeHeader.trim().toLowerCase(Locale.ENGLISH))
-                    if (matcher.matches()) {
-                        val contentTypeString: String = matcher.group(1) ?: Keys.MIME_TYPE_UNSUPPORTED
-                        contentType.type = contentTypeString.trim()
-                        if (matcher.groupCount() >= 3) {
-                            val charsetString: String = matcher.group(3) ?: Keys.CHARSET_UNDEFINDED
-                            contentType.charset = charsetString.trim()
-                        }
+                val contentTypeHeader: String = connection.contentType ?: String()
+                val contentTypeHeaderParts: List<String> = contentTypeHeader.split(";")
+                contentTypeHeaderParts.forEachIndexed { index, part ->
+                    if (index == 0 && part.isNotEmpty()) {
+                        contentType.type = part
+                    } else if (part.contains("charset=")) {
+                        contentType.charset = part.substringAfter("charset=")
                     }
-
-                } catch (e: Exception) {
-                    LogHelper.e(TAG, e)
                 }
                 connection.disconnect()
             }
