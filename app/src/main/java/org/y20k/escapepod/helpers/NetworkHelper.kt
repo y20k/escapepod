@@ -101,7 +101,7 @@ object NetworkHelper {
     suspend fun detectContentTypeSuspended(urlString: String): ContentType {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Determining content type - Thread: ${Thread.currentThread().name}")
-            val CONTENT_TYPE_PATTERN:  Pattern  = Pattern.compile("([^;]*)(; ?charset=([^;]+))?")
+            val CONTENT_TYPE_PATTERN:  Pattern  = Pattern.compile("([^;]*)(; ?.*?=([^;]+))?")
             val contentType: ContentType = ContentType(Keys.MIME_TYPE_UNSUPPORTED, Keys.CHARSET_UNDEFINDED)
             val connection: HttpURLConnection? = createConnection(urlString)
 
@@ -111,11 +111,14 @@ object NetworkHelper {
                     val contentTypeHeader: String = connection.contentType
                     val matcher = CONTENT_TYPE_PATTERN.matcher(contentTypeHeader.trim().toLowerCase(Locale.ENGLISH))
                     if (matcher.matches()) {
-                        val contentTypeString: String = matcher.group (1) ?: Keys.MIME_TYPE_UNSUPPORTED
-                        val charsetString: String = matcher.group (3) ?: Keys.CHARSET_UNDEFINDED
+                        val contentTypeString: String = matcher.group(1) ?: Keys.MIME_TYPE_UNSUPPORTED
                         contentType.type = contentTypeString.trim()
-                        contentType.charset = charsetString.trim()
+                        if (matcher.groupCount() >= 3) {
+                            val charsetString: String = matcher.group(3) ?: Keys.CHARSET_UNDEFINDED
+                            contentType.charset = charsetString.trim()
+                        }
                     }
+
                 } catch (e: Exception) {
                     LogHelper.e(TAG, e)
                 }
