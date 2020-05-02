@@ -71,7 +71,7 @@
     <string name="podcast_list_button_add_new_podcast">Neuen Podcast hinzufügen</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Ältere Episoden verbergen</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Ältere Episoden</string>
-    <string name="notification_now_playing_channel_description">Wiedergabesteuerung, Name der Episode und Logo.</string>
+    <string name="notification_now_playing_channel_description">Wiedergabesteuerung, Name der Episode und Cover.</string>
     <string name="notification_now_playing_channel_name">Wiedergabesteuerung</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Wiedergabe</string>
