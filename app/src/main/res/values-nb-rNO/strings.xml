@@ -78,7 +78,7 @@
     <string name="podcast_list_button_toggle_hide_older_episodes">Skjul eldre episoder</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Eldre episoder</string>
     <!-- Notification -->
-    <string name="notification_now_playing_channel_description">Avspillingskontroller, episodenavn og logo.</string>
+    <string name="notification_now_playing_channel_description">Avspillingskontroller, episodenavn og omslag.</string>
     <string name="notification_now_playing_channel_name">Avspillingskontroller</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Spill av</string>
@@ -92,12 +92,12 @@
     <string name="descr_card_playback_indicator">Avspillingsframdrift</string>
     <string name="descr_card_podcast_cover">Omslagsbilde for nettradioopptak</string>
     <string name="descr_card_small_download_button">Last ned</string>
-    <string name="descr_card_small_playback_button">Spill av / pause</string>
+    <string name="descr_card_small_playback_button">Spill av/pause</string>
     <string name="descr_expanded_episode_length">Episodelengde</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Veksling av feilrettingsfil</string>
     <string name="descr_expanded_player_forward_button">Forover 30 sekunder</string>
     <string name="descr_expanded_player_next_chapter_button">Neste kapittel</string>
-    <string name="descr_expanded_player_playback_button">Spill av / sett på pause</string>
+    <string name="descr_expanded_player_playback_button">Spill av/sett på pause</string>
     <string name="descr_expanded_player_playback_speed_button">Øk avspillingshastighet</string>
     <string name="descr_expanded_player_podcast_cover">Stort nettradioopptaksomslag</string>
     <string name="descr_expanded_player_previous_chapter_button">Forrige kapittel</string>
@@ -157,7 +157,7 @@
     <string name="fragment_settings_title">Innstillinger</string>
     <string name="pref_delete_all_summary">Slett nedlastede episoder for å frigjøre plass på enheten din. Du kan laste dem ned igjen etterpå.</string>
     <string name="pref_delete_all_title">Slett nedlastinger</string>
-    <string name="pref_opml_summary">Eksporter alle nettradioopptak til en OPML-fil som kan importeres i andre avspillere.</string>
+    <string name="pref_opml_summary">Lagre dine nettradioopptaksinformasjonskanaler til en OPML-fil som kan importeres til andre avspillere.</string>
     <string name="pref_opml_title">Eksporter OPML</string>
     <string name="toast_message_install_file_helper">Installer en filbehandler eller nettradioopptaksspiller først.</string>
     <string name="toast_message_save_opml">Lagrer nettradioopptakssamling som OPML.</string>
