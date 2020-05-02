@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="dialog_add_podcast_button">যুক্ত করুন</string>
+    <string name="fragment_settings_title">সেটিংস</string>
+    <string name="app_name">ইসকেপপোড</string>
+</resources>
