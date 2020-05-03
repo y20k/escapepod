@@ -76,7 +76,7 @@
     <string name="podcast_list_button_add_new_podcast">Podcast toevoegen</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Oudere afleveringen verbergen</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Oudere afleveringen</string>
-    <string name="notification_now_playing_channel_description">Afspeelbediening, naam van aflevering en logo.</string>
+    <string name="notification_now_playing_channel_description">Afspeelbediening, naam van aflevering en hoes.</string>
     <string name="notification_now_playing_channel_name">Afspeelbediening</string>
     <string name="notification_pause">Pauzeren</string>
     <string name="notification_play">Afspelen</string>
