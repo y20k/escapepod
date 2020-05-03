@@ -80,7 +80,7 @@
     <string name="podcast_list_button_add_new_podcast">Ajouter un nouveau podcast</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Masquer les anciens épisodes</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Anciens épisodes</string>
-    <string name="notification_now_playing_channel_description">Contrôles de lecture, nom de l\'épisode et logo.</string>
+    <string name="notification_now_playing_channel_description">Contrôles de lecture, nom de l\'épisode et pochette.</string>
     <string name="notification_now_playing_channel_name">Contrôles de lecture</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Lecture</string>
