@@ -4,4 +4,11 @@
     <string name="dialog_add_podcast_input_hint">Ingrese el enlace de alimentación del podcast</string>
     <string name="dialog_add_podcast_title">Añadir un nuevo podcast</string>
     <string name="dialog_episode_shownotes_close">Cerrar</string>
+    <string name="dialog_episode_shownotes_title"></string>
+    <string name="dialog_error_message_default">Ha ocurrido un error</string>
+    <string name="dialog_episode_shownotes_website">Página web</string>
+    <string name="dialog_episode_shownotes_feed">Feed</string>
+    <string name="dialog_add_podcast_button">Añadir</string>
+    <string name="fragment_settings_title">Ajustes</string>
+    <string name="app_name">Escapepod</string>
 </resources>
