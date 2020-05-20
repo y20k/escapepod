@@ -10,6 +10,8 @@ Basque version: [beriain](https://hosted.weblate.org/user/beriain/) | [weblate v
 
 Dutch version: [Heimen Stoffels](https://hosted.weblate.org/user/vistaus/) | [weblate version history](https://hosted.weblate.org/changes/?lang=nl&project=escapepod)
 
+Finnish version [Riku Viitanen](https://hosted.weblate.org/user/RiksuRaksu/) | [weblate version history](https://hosted.weblate.org/changes/?lang=fi&project=escapepod)
+
 French version: [Nathan](https://hosted.weblate.org/user/NathanBnm/) | [weblate version history](https://hosted.weblate.org/changes/?lang=fr&project=escapepod)
 
 German version: [waweic](https://hosted.weblate.org/user/waweic/) | [weblate version history](https://hosted.weblate.org/changes/?lang=de&project=escapepod)
