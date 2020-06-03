@@ -816,13 +816,13 @@ class PlayerFragment: Fragment(), CoroutineScope,
             // finish building the UI
             buildPlaybackControls()
 
-            // request current playback position
-            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
-
-            // start requesting position updates if playback is running
             if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
+                // start requesting continuous position updates
                 handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
                 handler.postDelayed(periodicProgressUpdateRequestRunnable, 0)
+            } else {
+                // request current playback position once
+                MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
             }
 
             // begin looking for changes in collection

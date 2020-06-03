@@ -580,17 +580,19 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             }
             // NORMAL CASE: Try to match podcast name and voice query
             else {
+                val queryLowercase: String = query.toLowerCase()
                 collectionProvider.episodeListByDate.forEach { mediaItem ->
                     // get podcast name (here -> subtitle)
                     val podcastName: String = mediaItem.description.subtitle.toString().toLowerCase(Locale.getDefault())
                     // FIRST: try to match the whole query
-                    if (podcastName == query) {
+                    if (podcastName == queryLowercase) {
                         // start playback of newest podcast episode
                         onPlayFromMediaId(mediaItem.description.mediaId, null)
                         return
-                    } else {
-                        // SECOND: try to match parts of the query
-                        val words: List<String> = query.split(" ")
+                    }
+                    // SECOND: try to match parts of the query
+                    else {
+                        val words: List<String> = queryLowercase.split(" ")
                         words.forEach { word ->
                             if (podcastName.contains(word)) {
                                 // start playback of newest podcast episode

@@ -1,6 +1,6 @@
 ---
 name: Feed Issue
-about: Enter name of podcast here
+about: Provide information on podcasts that currently do not work
 title: "[Feed]"
 labels: feed issue
 assignees: ''

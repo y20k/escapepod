@@ -399,7 +399,7 @@ object CollectionHelper {
         mediaDescriptionBuilder.setTitle(episode.title)
         mediaDescriptionBuilder.setSubtitle(episode.podcastName)
         mediaDescriptionBuilder.setDescription(episode.podcastName)
-        mediaDescriptionBuilder.setIconUri(Uri.parse(episode.cover))
+        //mediaDescriptionBuilder.setIconUri(Uri.parse(episode.cover))
         return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }
 

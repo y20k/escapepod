@@ -74,6 +74,9 @@ class GpodderResultAdapter(private val listener: GpodderResultAdapterListener, v
         searchResultViewHolder.podcastDescriptionView.text = searchResult.description
         // mark selected if necessary
         searchResultViewHolder.searchResultLayout.isSelected = selectedPosition == position
+        // toggle text scrolling (marquee) if necessary
+        searchResultViewHolder.podcastNameView.isSelected = selectedPosition == position
+        searchResultViewHolder.podcastDescriptionView.isSelected = selectedPosition == position
         // attach touch listener
         searchResultViewHolder.searchResultLayout.setOnClickListener {
             // move marked position
