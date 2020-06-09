@@ -76,7 +76,7 @@
     <string name="podcast_list_button_add_new_podcast">Dodaj nowy podcast</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Ukryj starsze odcinki</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Starsze odcinki</string>
-    <string name="notification_now_playing_channel_description">Elementy sterujące odtwarzaniem, nazwa odcinka i logo.</string>
+    <string name="notification_now_playing_channel_description">Sterowanie odtwarzaniem, nazwa odcinka i okładka.</string>
     <string name="notification_now_playing_channel_name">Elementy sterujące odtwarzaniem</string>
     <string name="notification_playing">Odtwarzanie</string>
     <string name="descr_app_icon">Ikona aplikacji przedstawiająca kapsułę ratunkową w kosmosie</string>
@@ -106,7 +106,7 @@
     <string name="pref_maintenance_title">Zaawansowane</string>
     <string name="pref_general_title">Ogólne</string>
     <string name="pref_theme_selection_mode_dark">Ciemny motyw</string>
-    <string name="pref_theme_selection_mode_device_default">Określone przez urządzenie</string>
+    <string name="pref_theme_selection_mode_device_default">Określony przez urządzenie</string>
     <string name="pref_theme_selection_mode_light">Jasny motyw</string>
     <string name="pref_theme_selection_summary">Obecny motyw:</string>
     <string name="pref_theme_selection_title">Motyw aplikacji</string>
@@ -116,4 +116,23 @@
     <string name="dialog_episode_shownotes_website">Strona internetowa</string>
     <string name="dialog_yes_no_message_update_covers">Pobrać najnowszą wersję wszystkich okładek podcastów\?</string>
     <string name="dialog_yes_no_positive_button_update_covers">Zaktualizuj</string>
+    <string name="notification_skip_back">Przejdź z powrotem</string>
+    <string name="toast_message_up_next_removed_episode">Usunięto odcinek z kolejki „w następnym”.</string>
+    <string name="toast_message_up_next_added_episode">Dodano odcinek do kolejki „W następnym”.</string>
+    <string name="dialog_yes_no_title_default">Zdecyduj</string>
+    <string name="onboarding_app_description">Aplikacja Podcast</string>
+    <string name="descr_player_playback_button">Odtwórz/zatrzymaj</string>
+    <string name="descr_expanded_player_up_next_clear_button">Wyczyść kolejkę \"W przyszłym\"</string>
+    <string name="descr_expanded_player_time_played">Czas odtwarzania</string>
+    <string name="descr_expanded_player_playback_button">Odtwórz/zatrzymaj</string>
+    <string name="descr_expanded_player_debug_log_toggle_button">Przełącz plik dziennika debugowania</string>
+    <string name="descr_card_small_playback_button">Odtwórz/zatrzymaj</string>
+    <string name="pref_update_covers_title">Aktualizuj okładki</string>
+    <string name="pref_update_covers_summary">Pobierz najnowszą wersję wszystkich okładek podcastów ze swojej kolekcji.</string>
+    <string name="pref_opml_title">Eksportuj OPML</string>
+    <string name="pref_opml_summary">Zapisz kanały podcastów w pliku OPML, który można zaimportować do innych odtwarzaczy.</string>
+    <string name="pref_delete_all_title">Usuń pobrane</string>
+    <string name="pref_delete_all_summary">Usuń pobrane odcinki, aby zwolnić miejsce na urządzeniu. Możesz pobrać je ponownie w każdej chwili.</string>
+    <string name="toast_message_install_file_helper">Najpierw zainstaluj menedżera plików lub odtwarzacz podcastów.</string>
+    <string name="dialog_episode_shownotes_title">Pokaż notatki</string>
 </resources>
