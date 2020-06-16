@@ -580,7 +580,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             }
             // NORMAL CASE: Try to match podcast name and voice query
             else {
-                val queryLowercase: String = query.toLowerCase()
+                val queryLowercase: String = query.toLowerCase(Locale.getDefault())
                 collectionProvider.episodeListByDate.forEach { mediaItem ->
                     // get podcast name (here -> subtitle)
                     val podcastName: String = mediaItem.description.subtitle.toString().toLowerCase(Locale.getDefault())

@@ -67,6 +67,7 @@
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection up-to-date.</string>
     <string name="toast_message_downloading_episode">Downloading Episode.</string>
+    <string name="toast_message_error_download_error">Download error</string>
     <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Grant \"Read Storage\" permission to open this file.</string>
     <string name="toast_message_error_no_podcast_found">Unable to start playback. Please add a podcast first.</string>

@@ -129,7 +129,9 @@ object DownloadHelper {
         // get local Uri in content://downloads/all_downloads/ for download ID
         val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadId)
         if (downloadResult == null) {
-            LogHelper.w(TAG, "Download not successful. Error code = ${getDownloadError(downloadId)}")
+            val downloadError: Int = getDownloadError(downloadId)
+            Toast.makeText(context, "${context.getString(R.string.toast_message_error_download_error)} ($downloadError)", Toast.LENGTH_LONG).show()
+            LogHelper.w(TAG, "Download not successful. Error code = $downloadError")
             removeFromActiveDownloads(context, arrayOf(downloadId), deleteDownload = true)
             return
         } else {
