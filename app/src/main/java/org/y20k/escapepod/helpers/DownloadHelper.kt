@@ -129,9 +129,10 @@ object DownloadHelper {
         // get local Uri in content://downloads/all_downloads/ for download ID
         val downloadResult: Uri? = downloadManager.getUriForDownloadedFile(downloadId)
         if (downloadResult == null) {
-            val downloadError: Int = getDownloadError(downloadId)
-            Toast.makeText(context, "${context.getString(R.string.toast_message_error_download_error)} ($downloadError)", Toast.LENGTH_LONG).show()
-            LogHelper.w(TAG, "Download not successful. Error code = $downloadError")
+            val downloadErrorCode: Int = getDownloadError(downloadId)
+            val downloadErrorFileName: String = getDownloadFileName(downloadManager, downloadId)
+            Toast.makeText(context, "${context.getString(R.string.toast_message_error_download_error)}: $downloadErrorFileName ($downloadErrorCode)", Toast.LENGTH_LONG).show()
+            LogHelper.w(TAG, "Download not successful: File name = $downloadErrorFileName Error code = $downloadErrorCode")
             removeFromActiveDownloads(context, arrayOf(downloadId), deleteDownload = true)
             return
         } else {
@@ -406,6 +407,18 @@ object DownloadHelper {
         if (cursor.count > 0) {
             cursor.moveToFirst()
             remoteFileLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))
+        }
+        return remoteFileLocation
+    }
+
+
+    /* Determines the file name for given download id (the original URL) */
+    private fun getDownloadFileName(downloadManager: DownloadManager, downloadId: Long): String {
+        var remoteFileLocation: String = ""
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            remoteFileLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
         }
         return remoteFileLocation
     }
