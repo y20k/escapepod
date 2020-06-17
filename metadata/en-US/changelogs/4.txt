@@ -7,9 +7,7 @@
 - bug fixes
 
 
-Note: For the problem that single episodes appear twice in the list, there is unfortunately only a brute force solution: 
-1) Save the OPML export file 
---> /Android/data/org.y20k.escapepod/files/collection/collection_opml.xml
+Note: To fix the single episodes appearing twice in the list:
+1) Save the OPML export file (/Android/data/org.y20k.escapepod/files/collection/collection_opml.xml)
 2) Delete all application data
---> Settings > Apps & notifications > See all apps > Escapepod > Storage > Clear storage
 3) Open the OPML file with Escapepod and re-import all podcasts.
