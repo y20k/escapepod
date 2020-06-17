@@ -135,4 +135,5 @@
     <string name="dialog_yes_no_positive_button_update_covers">Mettre à jour</string>
     <string name="pref_update_covers_summary">Télécharge la dernière version de toutes les pochettes de podcast dans votre collection.</string>
     <string name="pref_update_covers_title">Mettre à jour les pochettes</string>
+    <string name="toast_message_error_download_error">Erreur de téléchargement</string>
 </resources>
