@@ -1,0 +1,5 @@
+# v0.7.11 - Drüben Auf Dem Hügel (Stuttgart Edition)
+
+**2019-11-23**
+
+- Correction du nettoyage automatique (une autre partie)

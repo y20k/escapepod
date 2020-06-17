@@ -1,0 +1,7 @@
+# v0.7.4 - Drüben Auf Dem Hügel
+
+**2019-10-10**
+
+- Retour de la prise en charge de base d'Android Auto
+- Retour de l'intégration de l'égaliseur AudioFX
+- Corrections de bugs

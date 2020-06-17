@@ -1,0 +1,7 @@
+# v0.8.3 - Gehen Die Leute
+
+**2019-12-06**
+
+- Les utilisateurs sont désormais informés si la recherche vocale n'a pas abouti
+
+Remarque : Désolé, c'est la troisième mise à jour en deux jours. L'application semble être rejetée par le Play Store, car les tests automatiques de compatibilité avec Android Auto supposent que l'application réagisse à la commande vocale « Mets de la musique », même si aucun podcast n'a été ajouté. Je pourrais bien laisser tomber la prise en charge d'Android Auto.

@@ -1,0 +1,6 @@
+# v0.8.6 - Gehen Die Leute
+
+**2020-01-05**
+
+- Correction d'un plantage avec la boîte de dialogue de recherche
+- Ajout de l'hébreu

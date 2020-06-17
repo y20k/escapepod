@@ -1,0 +1,5 @@
+# v0.7.12 - Drüben Auf Dem Hügel
+
+**2019-11-25**
+
+- Correction du bouton de suppression d'un épisode

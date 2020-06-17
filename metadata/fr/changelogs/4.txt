@@ -1,0 +1,13 @@
+# v0.6.0-beta - Drei Schritte Vom Abgrund Entfernt
+
+**2019-08-14**
+
+- Affichage de base des notes du podcast
+- Mise à jour de la typographie (Composants Material Design)
+- Corrections de bugs
+
+
+Remarque : Pour corriger le problème des épisodes en double :
+1) Sauvegardez le fichier OPML (/Android/data/org.y20k.escapepod/files/collection/collection_opml.xml)
+2) Supprimez tous les données de l'application
+3) Ouvrez le fichier OPML avec Escapepod et réimportez tous les podcasts.

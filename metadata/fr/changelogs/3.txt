@@ -1,0 +1,8 @@
+# v0.5.0-beta - Der Cousin
+
+**2019-08-02**
+
+- Minuteur de sommeil
+- Prise en charge de base pour Android Auto et Wear OS
+- Fonctionnalité de fichier journal de débogage
+- Corrections de bugs

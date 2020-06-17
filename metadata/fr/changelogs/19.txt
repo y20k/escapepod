@@ -1,0 +1,5 @@
+# v0.8.1 - Gehen Die Leute
+
+**2019-12-05**
+
+- Nous avons fait en sorte d'empêcher un plantage causé par les commandes de contrôle de lecture par commande vocale, lorsque la liste des podcasts est encore vide

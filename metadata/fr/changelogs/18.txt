@@ -1,0 +1,7 @@
+# v0.8.0 - Gehen Die Leute
+
+**2019-12-05**
+
+- Recherche de podcasts simple via le service gpodder.net
+- Ajout du portugais
+- Ajout du néerlandais

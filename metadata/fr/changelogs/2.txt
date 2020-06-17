@@ -1,0 +1,7 @@
+# v0.4.1-alpha - An Diesen Langweiligen Tagen
+
+**2019-07-25**
+
+- Correction des problèmes avec les podcasts utilisant feedburner
+- Amélioration des performances du défilement
+- Nouvelle fonctionnalité de fichier journal de débogage

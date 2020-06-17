@@ -1,0 +1,5 @@
+# v0.7.2 - Drüben Auf Dem Hügel
+
+**2019-10-02**
+
+- Retrait de l'intégration de l'égaliseur AudioFX en raison d'un bug

@@ -1,0 +1,5 @@
+# v0.7.3 - Drüben Auf Dem Hügel
+
+**2019-10-03**
+
+- Retrait temporaire de la prise en charge d'Android Auto (mise à jour rejetée par Google Play en raison du manque de prise en charge des commandes vocales)
