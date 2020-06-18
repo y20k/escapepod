@@ -16,7 +16,7 @@ Escapepod probeert het aantal opgeslagen afleveringen te beperken. Zó werkt dat
 - Afleveringen die je aan het beluisteren bent en handmatig gedownloade afleveringen worden ook opgeslagen
 - Het maximale aantal beschikbare afleveringen is 5
 
-ONDERSTEUNT ESCAPEPOD OMPL?
+ONDERSTEUNT ESCAPEPOD OPML?
 Ja. Druk op een OPML-bestand in een bestandsbeheerder en kies Escapepod. De huidige podcastverzameling kan worden geëxporteerd middels de instellingen. Daarnaast kan Escapepod een bijgewerkt OPML-bestand opslaan in /Android/data/org.y20k.escapepod/files/collection/.
 
 IK KAN PODCAST X NIET TOEVOEGEN; WAT NU?
