@@ -225,6 +225,7 @@ object FileHelper {
         }
     }
 
+
     /* Checks if enough ( = more than 512mb) free space is available */
     fun enoughFreeSpaceAvailable(context: Context): Boolean {
         val usableSpace: Long = context.getExternalFilesDir(Keys.FOLDER_COLLECTION)?.usableSpace ?: 0L
@@ -305,9 +306,18 @@ object FileHelper {
 
 
     /* Create nomedia file in given folder to prevent media scanning */
-    fun createNomediaFile(folder: File) {
-        val noMediaOutStream: FileOutputStream = FileOutputStream(getNoMediaFile(folder))
-        noMediaOutStream.write(0)
+    fun createNomediaFile(folder: File?) {
+        if (folder != null && folder.exists() && folder.isDirectory) {
+            val nomediaFile: File = getNoMediaFile(folder)
+            if (!nomediaFile.exists()) {
+                val noMediaOutStream: FileOutputStream = FileOutputStream(getNoMediaFile(folder))
+                noMediaOutStream.write(0)
+            } else {
+                LogHelper.v(TAG, ".nomedia file exists already in given folder.")
+            }
+        } else  {
+            LogHelper.w(TAG, "Unable to create .nomedia file. Given folder is not valid.")
+        }
     }
 
 
@@ -409,7 +419,6 @@ object FileHelper {
             return -1
         }
     }
-
 
 
     /* Returns a nomedia file object */
