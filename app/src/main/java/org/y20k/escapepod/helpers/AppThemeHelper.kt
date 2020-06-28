@@ -20,7 +20,6 @@ import android.content.res.Configuration
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import org.y20k.escapepod.Keys
-import org.y20k.escapepod.R
 
 
 /*
@@ -72,16 +71,6 @@ object AppThemeHelper {
     }
 
 
-    /* Returns a readable String for currently selected App Theme */
-    fun getCurrentTheme(context: Context): String {
-        return when (PreferencesHelper.loadThemeSelection(context)) {
-            Keys.STATE_THEME_LIGHT_MODE -> context.getString(R.string.pref_theme_selection_mode_light)
-            Keys.STATE_THEME_DARK_MODE -> context.getString(R.string.pref_theme_selection_mode_dark)
-            else -> context.getString(R.string.pref_theme_selection_mode_device_default)
-        }
-    }
-
-
     /* Displays the default status bar */
     private fun displayDefaultStatusBar(activity: Activity) {
         val decorView = activity.window.decorView
@@ -94,8 +83,5 @@ object AppThemeHelper {
         val decorView = activity.window.decorView
         decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
     }
-
-
-
 
 }

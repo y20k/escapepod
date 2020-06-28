@@ -598,6 +598,9 @@ class PlayerFragment: Fragment(), CoroutineScope,
         if (NetworkHelper.isConnectedToWifi(activity as Context)) {
             Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
             DownloadHelper.downloadEpisode(activity as Context, episode.getMediaId(), ignoreWifiRestriction = true, manuallyDownloaded = true)
+        } else if (NetworkHelper.isConnectedToCellular(activity as Context) && PreferencesHelper.loadDownloadOverMobileAllowed(activity as Context)) {
+            Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
+            DownloadHelper.downloadEpisode(activity as Context, episode.getMediaId(), ignoreWifiRestriction = true, manuallyDownloaded = true)
         } else if (NetworkHelper.isConnectedToCellular(activity as Context)) {
             YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI, message = R.string.dialog_yes_no_message_non_wifi_download, yesButton = R.string.dialog_yes_no_positive_button_non_wifi_download, payloadString = episode.getMediaId())
         } else if (NetworkHelper.isConnectedToVpn(activity as Context))  {

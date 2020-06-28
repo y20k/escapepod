@@ -20,7 +20,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.*
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
@@ -468,8 +467,8 @@ object DownloadHelper {
         var allowedNetworkTypes: Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         // restrict download of audio files to WiFi if necessary
         if (type == Keys.FILE_TYPE_AUDIO) {
-            val downloadOverMobile = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Keys.PREF_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_DOWNLOAD_OVER_MOBILE)
-            if (!ignoreWifiRestriction && !downloadOverMobile) {
+            val downloadOverMobileAllowed: Boolean = PreferencesHelper.loadDownloadOverMobileAllowed(context)
+            if (!ignoreWifiRestriction && !downloadOverMobileAllowed) {
                 allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
             }
         }

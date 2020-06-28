@@ -42,10 +42,7 @@ import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.dialogs.ShowNotesDialog
-import org.y20k.escapepod.helpers.CollectionHelper
-import org.y20k.escapepod.helpers.DownloadHelper
-import org.y20k.escapepod.helpers.LogHelper
-import org.y20k.escapepod.helpers.PreferencesHelper
+import org.y20k.escapepod.helpers.*
 
 
 /*
@@ -470,10 +467,10 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
             if (oldPodcast.name != newPodcast.name) return false
             if (oldPodcast.description != newPodcast.description) return false
             if (oldPodcast.website != newPodcast.website) return false
-            if (oldPodcast.cover != newPodcast.cover) return false
-            if (oldPodcast.smallCover != newPodcast.smallCover) return false
             if (oldPodcast.remoteImageFileLocation != newPodcast.remoteImageFileLocation) return false
             if (oldPodcast.remotePodcastFeedLocation != newPodcast.remotePodcastFeedLocation) return false
+            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.cover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.cover))) return false
+            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.smallCover))) return false
 
             // compare relevant contents of episodes within podcast
             oldPodcast.episodes.forEachIndexed { index, oldEpisode ->
@@ -487,13 +484,13 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
                 if (oldEpisode.guid != newEpisode.guid) return false
                 if (oldEpisode.title != newEpisode.title) return false
                 if (oldEpisode.description != newEpisode.description) return false
-                if (oldEpisode.cover != newEpisode.cover) return false
-                if (oldEpisode.smallCover != newEpisode.smallCover) return false
                 if (oldEpisode.chapters != newEpisode.chapters) return false
                 if (oldEpisode.publicationDate != newEpisode.publicationDate) return false
                 if (oldEpisode.duration != newEpisode.duration) return false
                 if (oldEpisode.remoteCoverFileLocation != newEpisode.remoteCoverFileLocation) return false
                 if (oldEpisode.remoteAudioFileLocation != newEpisode.remoteAudioFileLocation) return false
+                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.cover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.cover))) return false
+                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.smallCover))) return false
             }
             // none of the above -> contents are the same
             return true

@@ -19,9 +19,6 @@ You can install Escapepod via F-Froid and Google Play - or you can go and grab t
 
 ## Frequent Questions
 
-### Where can I download Escapepod?
-Escapepod will be released on F-Droid and Google Play. You can also get an APK installer on [GitHub](https://github.com/y20k/escapepod/releases).
-
 ### Does Escapepod have playback queue?
 Escapepod has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
 

@@ -65,7 +65,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceThemeSelection.title = getString(R.string.pref_theme_selection_title)
         preferenceThemeSelection.setIcon(R.drawable.ic_smartphone_24dp)
         preferenceThemeSelection.key = Keys.PREF_THEME_SELECTION
-        preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${AppThemeHelper.getCurrentTheme(activity as Context)}"
+        preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${PreferencesHelper.getCurrentTheme(activity as Context)}"
         preferenceThemeSelection.entries = arrayOf(getString(R.string.pref_theme_selection_mode_device_default), getString(R.string.pref_theme_selection_mode_light), getString(R.string.pref_theme_selection_mode_dark))
         preferenceThemeSelection.entryValues = arrayOf(Keys.STATE_THEME_FOLLOW_SYSTEM, Keys.STATE_THEME_LIGHT_MODE, Keys.STATE_THEME_DARK_MODE)
         preferenceThemeSelection.setDefaultValue(Keys.STATE_THEME_FOLLOW_SYSTEM)
@@ -80,12 +80,32 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         }
 
 
+        // set up "Background Download" preference
+        val preferenceBackgroundDownload: ListPreference = ListPreference(activity as Context)
+        preferenceBackgroundDownload.title = getString(R.string.pref_background_download_title)
+        preferenceBackgroundDownload.setIcon(R.drawable.ic_cloud_download_24dp)
+        preferenceBackgroundDownload.key = Keys.PREF_BACKGROUND_DOWNLOAD
+        preferenceBackgroundDownload.summary = "${getString(R.string.pref_background_download_summary)} ${PreferencesHelper.getCurrentBackGroundDownloadMode(activity as Context)}"
+        preferenceBackgroundDownload.entries = arrayOf(getString(R.string.pref_background_download_mode_default), getString(R.string.pref_background_download_mode_unrestricted), getString(R.string.pref_background_download_mode_manual))
+        preferenceBackgroundDownload.entryValues = arrayOf(Keys.BACKGROUND_DOWNLOAD_DEFAULT, Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED, Keys.BACKGROUND_DOWNLOAD_MANUAL)
+        preferenceBackgroundDownload.setDefaultValue(Keys.BACKGROUND_DOWNLOAD_DEFAULT)
+        preferenceBackgroundDownload.setOnPreferenceChangeListener { preference, newValue ->
+            if (preference is ListPreference) {
+                val index: Int = preference.entryValues.indexOf(newValue)
+                preferenceBackgroundDownload.summary = "${getString(R.string.pref_background_download_summary)} ${preference.entries.get(index)}"
+                return@setOnPreferenceChangeListener true
+            } else {
+                return@setOnPreferenceChangeListener false
+            }
+        }
+
+
         // set up "OPML Export" preference
         val preferenceOpmlExport: Preference = Preference(activity as Context)
         preferenceOpmlExport.title = getString(R.string.pref_opml_title)
         preferenceOpmlExport.setIcon(R.drawable.ic_save_24dp)
         preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
-        preferenceOpmlExport.setOnPreferenceClickListener{
+        preferenceOpmlExport.setOnPreferenceClickListener {
             openSaveOpmlDialog()
             return@setOnPreferenceClickListener true
         }
@@ -106,7 +126,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceDeleteAll.title = getString(R.string.pref_delete_all_title)
         preferenceDeleteAll.setIcon(R.drawable.ic_delete_24dp)
         preferenceDeleteAll.summary = getString(R.string.pref_delete_all_summary)
-        preferenceDeleteAll.setOnPreferenceClickListener{
+        preferenceDeleteAll.setOnPreferenceClickListener {
             // stop playback using intent (we have no media controller reference here)
             val intent = Intent(activity, PlayerService::class.java)
             intent.action = Keys.ACTION_STOP
@@ -121,6 +141,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         val preferenceCategoryGeneral: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
         preferenceCategoryGeneral.contains(preferenceThemeSelection)
+        preferenceCategoryGeneral.contains(preferenceBackgroundDownload)
 
         val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
@@ -132,6 +153,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         // setup preference screen
         screen.addPreference(preferenceCategoryGeneral)
         screen.addPreference(preferenceThemeSelection)
+        screen.addPreference(preferenceBackgroundDownload)
         screen.addPreference(preferenceCategoryMaintenance)
         screen.addPreference(preferenceOpmlExport)
         screen.addPreference(preferenceUpdateCovers)

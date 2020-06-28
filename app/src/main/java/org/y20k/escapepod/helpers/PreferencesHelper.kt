@@ -20,6 +20,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepod.Keys
+import org.y20k.escapepod.R
 import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.ui.PlayerState
 import java.util.*
@@ -148,6 +149,37 @@ object PreferencesHelper {
     }
 
 
+    /* Loads user preference how download in background should be handled */
+    fun loadBackgroundDownloadMode(context: Context): String  {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getString(Keys.PREF_BACKGROUND_DOWNLOAD, Keys.BACKGROUND_DOWNLOAD_DEFAULT) ?: Keys.BACKGROUND_DOWNLOAD_DEFAULT
+    }
+
+
+    /* Returns if download over mobile network is allowed */
+    fun loadDownloadOverMobileAllowed(context: Context): Boolean {
+        val backgroundDownloadMode: String = loadBackgroundDownloadMode(context)
+        return backgroundDownloadMode == Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED
+    }
+
+
+    /* Returns if background download is allowed */
+    fun loadBackgroundDownloadAllowed(context: Context): Boolean {
+        val backgroundDownloadMode: String = loadBackgroundDownloadMode(context)
+        return backgroundDownloadMode != Keys.BACKGROUND_DOWNLOAD_MANUAL
+    }
+
+
+    /* Returns a readable String for currently selected Background Download mode */
+    fun getCurrentBackGroundDownloadMode(context: Context): String {
+        return when (loadBackgroundDownloadMode(context)) {
+            Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED -> context.getString(R.string.pref_background_download_mode_unrestricted)
+            Keys.BACKGROUND_DOWNLOAD_MANUAL -> context.getString(R.string.pref_background_download_mode_manual)
+            else -> context.getString(R.string.pref_background_download_mode_default)
+        }
+    }
+
+
     /* Loads active downloads from shared preferences */
     fun loadActiveDownloads(context: Context): String {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
@@ -238,5 +270,16 @@ object PreferencesHelper {
     fun loadThemeSelection(context: Context): String {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(Keys.PREF_THEME_SELECTION, Keys.STATE_THEME_FOLLOW_SYSTEM) ?: Keys.STATE_THEME_FOLLOW_SYSTEM
     }
+
+
+    /* Returns a readable String for currently selected App Theme */
+    fun getCurrentTheme(context: Context): String {
+        return when (loadThemeSelection(context)) {
+            Keys.STATE_THEME_LIGHT_MODE -> context.getString(R.string.pref_theme_selection_mode_light)
+            Keys.STATE_THEME_DARK_MODE -> context.getString(R.string.pref_theme_selection_mode_dark)
+            else -> context.getString(R.string.pref_theme_selection_mode_device_default)
+        }
+    }
+
 
 }

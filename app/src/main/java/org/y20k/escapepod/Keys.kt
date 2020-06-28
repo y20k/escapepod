@@ -50,7 +50,6 @@ object Keys {
 
     // intent extras
     const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
-    const val EXTRA_SOURCE_URI: String = "_OURCE_URI"
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
@@ -73,10 +72,9 @@ object Keys {
     const val PREF_CURRENT_PLAYBACK_STATE: String = "CURRENT_PLAYBACK_STATE"
     const val PREF_UP_NEXT_MEDIA_ID: String = "UP_NEXT_MEDIA_ID"
     const val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"
-    const val PREF_DOWNLOAD_OVER_MOBILE: String = "DOWNLOAD_OVER_MOBILE"
+    const val PREF_BACKGROUND_DOWNLOAD: String = "BACKGROUND_DOWNLOAD"
     const val PREF_NUMBER_OF_EPISODES_TO_KEEP: String = "NUMBER_OF_EPISODES_TO_KEEP"
     const val PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP: String = "NUMBER_OF_AUDIO_FILES_TO_KEEP"
-    const val PREF_NIGHT_MODE_STATE: String = "NIGHT_MODE_STATE"
     const val PREF_KEEP_DEBUG_LOG: String = "KEEP_DEBUG_LOG"
     const val PREF_PLAYER_STATE_EPISODE_MEDIA_ID: String = "PLAYER_STATE_EPISODE_MEDIA_ID"
     const val PREF_PLAYER_STATE_PLAYBACK_STATE: String = "PLAYER_STATE_PLAYBACK_STATE"
@@ -92,7 +90,6 @@ object Keys {
     // default const values
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
-    const val DEFAULT_DOWNLOAD_OVER_MOBILE: Boolean = false
     const val ACTIVE_DOWNLOADS_EMPTY: String = "zero"
 
     // media browser
@@ -201,6 +198,11 @@ object Keys {
     const val STATE_THEME_FOLLOW_SYSTEM: String = "stateFollowSystem"
     const val STATE_THEME_LIGHT_MODE: String = "stateLightMode"
     const val STATE_THEME_DARK_MODE: String = "stateDarkMode"
+
+    // background download options
+    const val BACKGROUND_DOWNLOAD_DEFAULT: String = "backgroundDownloadDefault"
+    const val BACKGROUND_DOWNLOAD_MANUAL: String = "backgroundDownloadManual"
+    const val BACKGROUND_DOWNLOAD_UNRESTRICTED: String = "backgroundDownloadUnrestricted"
 
     // unique names
     const val NAME_PERIODIC_COLLECTION_UPDATE_WORK: String = "PERIODIC_COLLECTION_UPDATE_WORK"
