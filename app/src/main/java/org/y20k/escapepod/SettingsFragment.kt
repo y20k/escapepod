@@ -85,14 +85,14 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceBackgroundDownload.title = getString(R.string.pref_background_download_title)
         preferenceBackgroundDownload.setIcon(R.drawable.ic_cloud_download_24dp)
         preferenceBackgroundDownload.key = Keys.PREF_BACKGROUND_DOWNLOAD
-        preferenceBackgroundDownload.summary = "${getString(R.string.pref_background_download_summary)} ${PreferencesHelper.getCurrentBackGroundDownloadMode(activity as Context)}"
+        preferenceBackgroundDownload.summary = PreferencesHelper.getCurrentBackGroundDownloadMode(activity as Context)
         preferenceBackgroundDownload.entries = arrayOf(getString(R.string.pref_background_download_mode_default), getString(R.string.pref_background_download_mode_unrestricted), getString(R.string.pref_background_download_mode_manual))
         preferenceBackgroundDownload.entryValues = arrayOf(Keys.BACKGROUND_DOWNLOAD_DEFAULT, Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED, Keys.BACKGROUND_DOWNLOAD_MANUAL)
         preferenceBackgroundDownload.setDefaultValue(Keys.BACKGROUND_DOWNLOAD_DEFAULT)
         preferenceBackgroundDownload.setOnPreferenceChangeListener { preference, newValue ->
             if (preference is ListPreference) {
                 val index: Int = preference.entryValues.indexOf(newValue)
-                preferenceBackgroundDownload.summary = "${getString(R.string.pref_background_download_summary)} ${preference.entries.get(index)}"
+                preferenceBackgroundDownload.summary = preference.entries.get(index)
                 return@setOnPreferenceChangeListener true
             } else {
                 return@setOnPreferenceChangeListener false

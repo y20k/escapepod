@@ -107,7 +107,6 @@
     <string name="pref_background_download_mode_default">Episodes over Wi-Fi only (default)</string>
     <string name="pref_background_download_mode_manual">No background updates</string>
     <string name="pref_background_download_mode_unrestricted">Unrestricted background download over Wi-Fi and mobile</string>
-    <string name="pref_background_download_summary">Currently:</string>
     <string name="pref_background_download_title">Background Download</string>
     <string name="pref_delete_all_summary">Delete downloaded episodes to free up space on your device. You can download them again at any time.</string>
     <string name="pref_delete_all_title">Delete Downloads</string>
