@@ -136,4 +136,8 @@
     <string name="pref_update_covers_summary">Lade die neueste Version aller Podcast-Cover in deiner Sammlung herunter.</string>
     <string name="pref_update_covers_title">Cover aktualisieren</string>
     <string name="toast_message_error_download_error">Downloadfehler</string>
+    <string name="pref_background_download_title">Hintergrund-Download</string>
+    <string name="pref_background_download_mode_unrestricted">Uneingeschränkter Hintergrund-Download über WLAN und Mobilfunk</string>
+    <string name="pref_background_download_mode_manual">Keine Hintergrundupdates</string>
+    <string name="pref_background_download_mode_default">Episoden nur über WLAN (Standard)</string>
 </resources>
