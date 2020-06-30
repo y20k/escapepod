@@ -64,7 +64,7 @@
     <string name="toast_message_debug_logging_to_file_started">Debug: Rozpoczęto zapisywać do lokalnego pliku dziennika.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Zakończono zapisywać do lokalnego pliku dziennika.</string>
     <string name="toast_message_playback_speed_reset">Zresetowano prędkość odtwarzania.</string>
-    <string name="toast_message_podcast_feed_address_copied">Adres kanału skopiowany do schowka.</string>
+    <string name="toast_message_copied_to_clipboard">Adres kanału skopiowany do schowka.</string>
     <string name="toast_message_refreshing_cover">Odświeżanie okładki podcastu.</string>
     <string name="toast_message_skipping_disabled">Odtwarzanie nie jest uruchomione. Pomijanie jest wyłączone.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Zacznij najpierw słuchać odcinka.</string>

@@ -66,7 +66,7 @@
     <string name="toast_message_debug_logging_to_file_started">ניפוי שגיאות: התחילה כתיבה לקובץ יומן מקומי.</string>
     <string name="toast_message_debug_logging_to_file_stopped">ניפוי שגיאות: נפסקה כתיבה לקובץ יומן מקומי.</string>
     <string name="toast_message_playback_speed_reset">איפוס מהירות הנגינה.</string>
-    <string name="toast_message_podcast_feed_address_copied">כתובת ההזנה הועתקה ללוח הגזירים.</string>
+    <string name="toast_message_copied_to_clipboard">כתובת ההזנה הועתקה ללוח הגזירים.</string>
     <string name="toast_message_refreshing_cover">תמונת השער של הפודקאסט מתעדכנת.</string>
     <string name="toast_message_skipping_disabled">לא מתנגן כלום. הדילוג כבוי.</string>
     <string name="toast_message_sleep_timer_unable_to_start">ראשית נא להתחיל להאזין לפודקאסט.</string>

@@ -62,7 +62,7 @@
     <string name="toast_message_debug_logging_to_file_started">Feilretting: Start skriving til lokal loggfil.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Feilretting: Stopp skriving til lokal loggfil.</string>
     <string name="toast_message_playback_speed_reset">Avspillingshastighet tilbakestilt.</string>
-    <string name="toast_message_podcast_feed_address_copied">Informasjonskanalsadresse kopiert til utklippstavle.</string>
+    <string name="toast_message_copied_to_clipboard">Informasjonskanalsadresse kopiert til utklippstavle.</string>
     <string name="toast_message_refreshing_cover">Oppdaterer nettradioopptaksomslag.</string>
     <string name="toast_message_skipping_disabled">Ingenting spilles av. Sporveksling er avskrudd.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Start en episode først.</string>

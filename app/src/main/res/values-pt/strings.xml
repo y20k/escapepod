@@ -57,7 +57,7 @@
     <string name="toast_message_debug_logging_to_file_started">Depuração: a iniciar escrita do ficheiro local.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Depuração: a parar escrita do ficheiro local.</string>
     <string name="toast_message_playback_speed_reset">Velocidade de reprodução reposta.</string>
-    <string name="toast_message_podcast_feed_address_copied">Endereço copiado para a área de transferência.</string>
+    <string name="toast_message_copied_to_clipboard">Endereço copiado para a área de transferência.</string>
     <string name="toast_message_refreshing_cover">A recarregar imagem do podcast.</string>
     <string name="toast_message_skipping_disabled">Reprodução ainda não iniciada. Não é possível ignorar.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Deve iniciar a reprodução de um episódio.</string>

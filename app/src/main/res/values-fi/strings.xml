@@ -42,7 +42,7 @@
     <string name="dialog_yes_no_positive_button_add_up_next">Aloita nyt</string>
     <string name="toast_message_updating_collection">Päivitetään podcast-kokoelmaa.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Aloita jakson kuuntelu ensin.</string>
-    <string name="toast_message_podcast_feed_address_copied">Syötteen osoite kopioitu leikepöydälle.</string>
+    <string name="toast_message_copied_to_clipboard">Syötteen osoite kopioitu leikepöydälle.</string>
     <string name="toast_message_debug_logging_to_file_started">Virheenkorjaus: Aloita paikalliseen lokitiedostoon kirjoittaminen.</string>
     <string name="toast_message_error_no_podcast_matches_search">Hakuasi vastaavaa podcastia ei löydy.</string>
     <string name="toast_message_downloading_episode">Ladataan jaksoa.</string>

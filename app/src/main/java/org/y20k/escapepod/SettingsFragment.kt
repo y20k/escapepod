@@ -16,6 +16,8 @@ package org.y20k.escapepod
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -61,11 +63,11 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
 
         // set up "App Theme" preference
-        val preferenceThemeSelection: ListPreference = ListPreference(activity as Context)
+        val preferenceThemeSelection: ListPreference = ListPreference(context)
         preferenceThemeSelection.title = getString(R.string.pref_theme_selection_title)
         preferenceThemeSelection.setIcon(R.drawable.ic_smartphone_24dp)
         preferenceThemeSelection.key = Keys.PREF_THEME_SELECTION
-        preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${PreferencesHelper.getCurrentTheme(activity as Context)}"
+        preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${PreferencesHelper.getCurrentTheme(context)}"
         preferenceThemeSelection.entries = arrayOf(getString(R.string.pref_theme_selection_mode_device_default), getString(R.string.pref_theme_selection_mode_light), getString(R.string.pref_theme_selection_mode_dark))
         preferenceThemeSelection.entryValues = arrayOf(Keys.STATE_THEME_FOLLOW_SYSTEM, Keys.STATE_THEME_LIGHT_MODE, Keys.STATE_THEME_DARK_MODE)
         preferenceThemeSelection.setDefaultValue(Keys.STATE_THEME_FOLLOW_SYSTEM)
@@ -81,11 +83,11 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
 
         // set up "Background Download" preference
-        val preferenceBackgroundDownload: ListPreference = ListPreference(activity as Context)
+        val preferenceBackgroundDownload: ListPreference = ListPreference(context)
         preferenceBackgroundDownload.title = getString(R.string.pref_background_download_title)
         preferenceBackgroundDownload.setIcon(R.drawable.ic_cloud_download_24dp)
         preferenceBackgroundDownload.key = Keys.PREF_BACKGROUND_DOWNLOAD
-        preferenceBackgroundDownload.summary = PreferencesHelper.getCurrentBackGroundDownloadMode(activity as Context)
+        preferenceBackgroundDownload.summary = PreferencesHelper.getCurrentBackGroundDownloadMode(context)
         preferenceBackgroundDownload.entries = arrayOf(getString(R.string.pref_background_download_mode_default), getString(R.string.pref_background_download_mode_unrestricted), getString(R.string.pref_background_download_mode_manual))
         preferenceBackgroundDownload.entryValues = arrayOf(Keys.BACKGROUND_DOWNLOAD_DEFAULT, Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED, Keys.BACKGROUND_DOWNLOAD_MANUAL)
         preferenceBackgroundDownload.setDefaultValue(Keys.BACKGROUND_DOWNLOAD_DEFAULT)
@@ -101,7 +103,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
 
         // set up "OPML Export" preference
-        val preferenceOpmlExport: Preference = Preference(activity as Context)
+        val preferenceOpmlExport: Preference = Preference(context)
         preferenceOpmlExport.title = getString(R.string.pref_opml_title)
         preferenceOpmlExport.setIcon(R.drawable.ic_save_24dp)
         preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
@@ -111,18 +113,18 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         }
 
         // set up "Update Covers" preference
-        val preferenceUpdateCovers: Preference = Preference(activity as Context)
+        val preferenceUpdateCovers: Preference = Preference(context)
         preferenceUpdateCovers.title = getString(R.string.pref_update_covers_title)
         preferenceUpdateCovers.setIcon(R.drawable.ic_image_24dp)
         preferenceUpdateCovers.summary = getString(R.string.pref_update_covers_summary)
         preferenceUpdateCovers.setOnPreferenceClickListener {
             // show dialog
-            YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_UPDATE_COVERS, message = R.string.dialog_yes_no_message_update_covers, yesButton = R.string.dialog_yes_no_positive_button_update_covers)
+            YesNoDialog(this).show(context = context, type = Keys.DIALOG_UPDATE_COVERS, message = R.string.dialog_yes_no_message_update_covers, yesButton = R.string.dialog_yes_no_positive_button_update_covers)
             return@setOnPreferenceClickListener true
         }
 
         // set up "Delete All" preference
-        val preferenceDeleteAll: Preference = Preference(activity as Context)
+        val preferenceDeleteAll: Preference = Preference(context)
         preferenceDeleteAll.title = getString(R.string.pref_delete_all_title)
         preferenceDeleteAll.setIcon(R.drawable.ic_delete_24dp)
         preferenceDeleteAll.summary = getString(R.string.pref_delete_all_summary)
@@ -130,24 +132,58 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             // stop playback using intent (we have no media controller reference here)
             val intent = Intent(activity, PlayerService::class.java)
             intent.action = Keys.ACTION_STOP
-            (activity as Context).startService(intent)
+            (context).startService(intent)
             // show dialog
-            YesNoDialog(this).show(context = activity as Context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
+            YesNoDialog(this).show(context = context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
+            return@setOnPreferenceClickListener true
+        }
+
+        // set up "App Version" preference
+        val preferenceAppVersion: Preference = Preference(context)
+        preferenceAppVersion.title = getString(R.string.pref_app_version_title)
+        preferenceAppVersion.setIcon(R.drawable.ic_info_24dp)
+        preferenceAppVersion.summary = "${getString(R.string.pref_app_version_summary)} ${BuildConfig.VERSION_NAME} (${getString(R.string.app_version_name)})"
+        preferenceAppVersion.setOnPreferenceClickListener {
+            // copy to clipboard
+            val clip: ClipData = ClipData.newPlainText("simple text", preferenceAppVersion.summary)
+            val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            cm.setPrimaryClip(clip)
+            Toast.makeText(activity as Context, R.string.toast_message_copied_to_clipboard, Toast.LENGTH_LONG).show()
+            return@setOnPreferenceClickListener true
+        }
+
+        // set up "Report Issue" preference
+        val preferenceReportIssue: Preference = Preference(context)
+        preferenceReportIssue.title = getString(R.string.pref_report_issue_title)
+        preferenceReportIssue.setIcon(R.drawable.ic_bug_report_24dp)
+        preferenceReportIssue.summary = getString(R.string.pref_report_issue_summary)
+        preferenceReportIssue.setOnPreferenceClickListener {
+            // open web browser
+            val intent = Intent().apply {
+                action = Intent.ACTION_VIEW
+                data = Uri.parse("https://github.com/y20k/escapepod/issues")
+            }
+            startActivity(intent)
             return@setOnPreferenceClickListener true
         }
 
 
         // set preference categories
-        val preferenceCategoryGeneral: PreferenceCategory = PreferenceCategory(activity as Context)
+        val preferenceCategoryGeneral: PreferenceCategory = PreferenceCategory(context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
         preferenceCategoryGeneral.contains(preferenceThemeSelection)
         preferenceCategoryGeneral.contains(preferenceBackgroundDownload)
 
-        val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(activity as Context)
+        val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
         preferenceCategoryMaintenance.contains(preferenceOpmlExport)
         preferenceCategoryMaintenance.contains(preferenceUpdateCovers)
         preferenceCategoryMaintenance.contains(preferenceDeleteAll)
+
+        val preferenceCategoryAbout: PreferenceCategory = PreferenceCategory(context)
+        preferenceCategoryAbout.title = getString(R.string.pref_about_title)
+        preferenceCategoryAbout.contains(preferenceAppVersion)
+        preferenceCategoryAbout.contains(preferenceReportIssue)
 
 
         // setup preference screen
@@ -158,6 +194,9 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         screen.addPreference(preferenceOpmlExport)
         screen.addPreference(preferenceUpdateCovers)
         screen.addPreference(preferenceDeleteAll)
+        screen.addPreference(preferenceCategoryAbout)
+        screen.addPreference(preferenceAppVersion)
+        screen.addPreference(preferenceReportIssue)
         preferenceScreen = screen
     }
 

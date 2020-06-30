@@ -2,6 +2,7 @@
 <resources>
     <!-- App Name -->
     <string name="app_name">Escapepod</string>
+    <string name="app_version_name" translatable="false">\"Aber Hier Leben, Nein Danke\"</string>
     <!-- Fragment -->
     <string name="fragment_settings_title">Settings</string>
     <!-- Dialogs -->
@@ -66,6 +67,7 @@
     <string name="toast_message_adding_podcast">Adding podcast.</string>
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection up-to-date.</string>
+    <string name="toast_message_copied_to_clipboard">Copied to clipboard.</string>
     <string name="toast_message_downloading_episode">Downloading Episode.</string>
     <string name="toast_message_error_download_error">Download error</string>
     <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
@@ -79,7 +81,6 @@
     <string name="toast_message_debug_logging_to_file_stopped">Debug: Stop writing to a local log file.</string>
     <string name="toast_message_install_file_helper">Please install a file manager or a podcast player first.</string>
     <string name="toast_message_playback_speed_reset">Playback speed reset.</string>
-    <string name="toast_message_podcast_feed_address_copied">Feed address copied to clipboard.</string>
     <string name="toast_message_refreshing_cover">Refreshing podcast cover.</string>
     <string name="toast_message_save_opml">Saving podcast collection as OPML.</string>
     <string name="toast_message_skipping_disabled">Playback is not running. Skipping is turned off.</string>
@@ -104,6 +105,9 @@
     <string name="notification_skip_back">Skip back</string>
     <string name="notification_skip_forward">Skip forward</string>
     <!-- Settings -->
+    <string name="pref_about_title">About</string>
+    <string name="pref_app_version_summary">Version</string>
+    <string name="pref_app_version_title">App Version</string>
     <string name="pref_background_download_mode_default">Episodes over Wi-Fi only (default)</string>
     <string name="pref_background_download_mode_manual">No background updates</string>
     <string name="pref_background_download_mode_unrestricted">Unrestricted background download over Wi-Fi and mobile</string>
@@ -114,6 +118,8 @@
     <string name="pref_maintenance_title">Maintenance</string>
     <string name="pref_opml_summary">Save your podcasts feeds to an OPML file that can be imported into other players.</string>
     <string name="pref_opml_title">Export OPML</string>
+    <string name="pref_report_issue_summary">Report bugs and suggest improvements on GitHub.</string>
+    <string name="pref_report_issue_title">Report Issue</string>
     <string name="pref_update_covers_summary">Download the latest version of all podcast covers in your collection.</string>
     <string name="pref_update_covers_title">Update Covers</string>
     <string name="pref_theme_selection_mode_dark">Dark mode</string>

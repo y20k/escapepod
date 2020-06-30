@@ -83,7 +83,7 @@ class ShowNotesDialog () {
             val clip: ClipData = ClipData.newPlainText("simple text", episode.podcastFeedLocation)
             val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(clip)
-            Toast.makeText(context, R.string.toast_message_podcast_feed_address_copied, Toast.LENGTH_LONG).show()
+            Toast.makeText(context, R.string.toast_message_copied_to_clipboard, Toast.LENGTH_LONG).show()
         }
 
         // add close button

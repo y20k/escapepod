@@ -62,7 +62,7 @@
     <string name="toast_message_debug_logging_to_file_started">Foutopsporing: gebeurtenissen wegschrijven naar een logbestand.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Foutopsporing: gebeurtenissen niet langer wegschrijven naar een logbestand.</string>
     <string name="toast_message_playback_speed_reset">Afspeelsnelheid hersteld.</string>
-    <string name="toast_message_podcast_feed_address_copied">Het feedadres is gekopieerd naar het klembord.</string>
+    <string name="toast_message_copied_to_clipboard">Het feedadres is gekopieerd naar het klembord.</string>
     <string name="toast_message_refreshing_cover">Bezig met vernieuwen van podcasthoes…</string>
     <string name="toast_message_skipping_disabled">Er wordt niks afgespeeld - overslaan is uitgeschakeld.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Begin met het afspelen van een aflevering.</string>

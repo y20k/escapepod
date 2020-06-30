@@ -47,6 +47,7 @@
     <string name="toast_message_adding_podcast">Podcast hinzufügen.</string>
     <string name="toast_message_adding_podcasts">Podcasts hinzufügen.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast-Sammlung ist aktuell.</string>
+    <string name="toast_message_copied_to_clipboard">In die Zwischenablage kopiert.</string>
     <string name="toast_message_downloading_episode">Episode wird heruntergeladen.</string>
     <string name="toast_message_error_missing_storage_permission">Erteile die Berechtigung \"Speicher lesen\", um diese Datei zu öffnen.</string>
     <string name="toast_message_error_refreshing_cover">Titelbild kann nicht aktualisiert werden. Der Feed enthält keinen Verweis dazu.</string>
@@ -55,7 +56,6 @@
     <string name="toast_message_debug_logging_to_file_started">Debuggen: Beginne mit dem Schreiben einer lokalen Protokolldatei.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Debuggen: Beende das Schreiben einer lokalen Protokolldatei.</string>
     <string name="toast_message_playback_speed_reset">Wiedergabegeschwindigkeit zurückgesetzt.</string>
-    <string name="toast_message_podcast_feed_address_copied">Feed-Adresse in die Zwischenablage kopiert.</string>
     <string name="toast_message_refreshing_cover">Podcast-Titelbild wird aktualisiert.</string>
     <string name="toast_message_skipping_disabled">Die Wiedergabe läuft nicht. Das Überspringen ist deaktiviert.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Bitte starte zunächst die Wiedergabe einer Episode.</string>

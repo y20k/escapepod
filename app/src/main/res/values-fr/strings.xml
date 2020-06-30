@@ -66,7 +66,7 @@
     <string name="toast_message_debug_logging_to_file_started">Débogage : Début de l\'écriture d\'un fichier de journal local.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Débogage : Arrêt de l\'écriture d\'un fichier de journal local.</string>
     <string name="toast_message_playback_speed_reset">Réinitialisation de la vitesse de lecture.</string>
-    <string name="toast_message_podcast_feed_address_copied">Adresse du flux copiée dans le presse-papiers.</string>
+    <string name="toast_message_copied_to_clipboard">Adresse du flux copiée dans le presse-papiers.</string>
     <string name="toast_message_refreshing_cover">Actualisation de la pochette du podcast.</string>
     <string name="toast_message_skipping_disabled">Pas de lecture en cours. Passage au suivant désactivé.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Veuillez d\'abord démarrer la lecture d\'un épisode.</string>
