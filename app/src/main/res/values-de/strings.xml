@@ -136,4 +136,15 @@
     <string name="pref_update_covers_summary">Lade die neueste Version aller Podcast-Cover in deiner Sammlung herunter.</string>
     <string name="pref_update_covers_title">Cover aktualisieren</string>
     <string name="toast_message_error_download_error">Downloadfehler</string>
+    <string name="pref_report_issue_title">Fehler melden</string>
+    <string name="pref_report_issue_summary">Fehler melden und Verbesserungen vorschlagen auf GitHub.</string>
+    <string name="pref_episode_download_over_mobile_title">Download über Mobilfunknetz</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Herunterladen von Podcast-Episoden nur über WLAN.</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Herunterladen von Podcast-Episoden über WLAN und Mobilfunknetz. Für das Herunterladen von Daten können Gebühren anfallen.</string>
+    <string name="pref_background_refresh_title">Hintergrundaktualisierung</string>
+    <string name="pref_background_refresh_summary_disabled">Keine Suche nach Podcast-Episoden im Hintergrund.</string>
+    <string name="pref_background_refresh_summary_enabled">Suche nach Podcast-Episoden im Hintergrund.</string>
+    <string name="pref_app_version_title">App-Version</string>
+    <string name="pref_app_version_summary">Version</string>
+    <string name="pref_about_title">Über</string>
 </resources>
