@@ -2,6 +2,7 @@
 <resources>
     <!-- App Name -->
     <string name="app_name">Escapepod</string>
+    <!-- please do not translate app_name - transcription into different alphabet types is fine though -->
     <string name="app_version_name" translatable="false">\"Aber Hier Leben, Nein Danke\"</string>
     <!-- Fragment -->
     <string name="fragment_settings_title">Settings</string>
@@ -108,12 +109,14 @@
     <string name="pref_about_title">About</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App Version</string>
-    <string name="pref_background_download_mode_default">Episodes over Wi-Fi only (default)</string>
-    <string name="pref_background_download_mode_manual">No background updates</string>
-    <string name="pref_background_download_mode_unrestricted">Unrestricted background download over Wi-Fi and mobile</string>
-    <string name="pref_background_download_title">Background Download</string>
+    <string name="pref_background_refresh_summary_enabled">Periodically searching for new podcast episodes.</string>
+    <string name="pref_background_refresh_summary_disabled">Search for new podcast episodes needs to be triggered manually.</string>
+    <string name="pref_background_refresh_title">Background Refresh</string>
     <string name="pref_delete_all_summary">Delete downloaded episodes to free up space on your device. You can download them again at any time.</string>
     <string name="pref_delete_all_title">Delete Downloads</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Downloading podcast episodes over Wi-Fi and mobile network connections. This may result in additional costs.</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Downloading podcast episodes over Wi-Fi only.</string>
+    <string name="pref_episode_download_over_mobile_title">Downloads Over Mobile Network</string>
     <string name="pref_general_title">General</string>
     <string name="pref_maintenance_title">Maintenance</string>
     <string name="pref_opml_summary">Save your podcasts feeds to an OPML file that can be imported into other players.</string>

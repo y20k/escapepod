@@ -136,8 +136,4 @@
     <string name="pref_update_covers_summary">Download de nieuwste versie van alle podcasthoezen uit je verzameling.</string>
     <string name="pref_update_covers_title">Hoezen bijwerken</string>
     <string name="toast_message_error_download_error">Downloadfout</string>
-    <string name="pref_background_download_title">Achtergronddownloads</string>
-    <string name="pref_background_download_mode_unrestricted">Onbeperkt downloaden via Wi-Fi en mobiel netwerk</string>
-    <string name="pref_background_download_mode_manual">Geen achtergrondupdates</string>
-    <string name="pref_background_download_mode_default">Afleveringen alleen downloaden via Wi-Fi (standaard)</string>
 </resources>

@@ -73,6 +73,8 @@ object Keys {
     const val PREF_UP_NEXT_MEDIA_ID: String = "UP_NEXT_MEDIA_ID"
     const val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"
     const val PREF_BACKGROUND_DOWNLOAD: String = "BACKGROUND_DOWNLOAD"
+    const val PREF_BACKGROUND_REFRESH: String = "BACKGROUND_REFRESH"
+    const val PREF_EPISODE_DOWNLOAD_OVER_MOBILE: String = "EPISODE_DOWNLOAD_OVER_MOBILE"
     const val PREF_NUMBER_OF_EPISODES_TO_KEEP: String = "NUMBER_OF_EPISODES_TO_KEEP"
     const val PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP: String = "NUMBER_OF_AUDIO_FILES_TO_KEEP"
     const val PREF_KEEP_DEBUG_LOG: String = "KEEP_DEBUG_LOG"
@@ -91,6 +93,8 @@ object Keys {
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
     const val ACTIVE_DOWNLOADS_EMPTY: String = "zero"
+    const val DEFAULT_BACKGROUND_REFRESH_MODE: Boolean = true
+    const val DEFAULT_EPISODE_DOWNLOAD_OVER_MOBILE_MODE: Boolean = false
 
     // media browser
     const val MEDIA_ID_ROOT = "__ROOT__"

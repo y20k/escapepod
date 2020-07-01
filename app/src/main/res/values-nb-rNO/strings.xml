@@ -168,8 +168,4 @@
     <string name="pref_update_covers_summary">Last ned siste versjon av alle nettradioopptaksomslag i samlingen din.</string>
     <string name="pref_update_covers_title">Oppdater omslag</string>
     <string name="toast_message_error_download_error">Nedlastingsfeil</string>
-    <string name="pref_background_download_title">Bakgrunnsnedlasting</string>
-    <string name="pref_background_download_mode_unrestricted">Ubegrenset bakgrunnsnedlsatinger over Wi-Fi og mobilnett</string>
-    <string name="pref_background_download_mode_manual">Ingen bakgrunnsoppdateringer</string>
-    <string name="pref_background_download_mode_default">Episoder over Wi-Fi (forvalg)</string>
 </resources>

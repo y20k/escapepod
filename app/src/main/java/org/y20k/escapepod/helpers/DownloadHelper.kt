@@ -467,7 +467,7 @@ object DownloadHelper {
         var allowedNetworkTypes: Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         // restrict download of audio files to WiFi if necessary
         if (type == Keys.FILE_TYPE_AUDIO) {
-            val downloadOverMobileAllowed: Boolean = PreferencesHelper.loadDownloadOverMobileAllowed(context)
+            val downloadOverMobileAllowed: Boolean = PreferencesHelper.loadEpisodeDownloadOverMobile(context)
             if (!ignoreWifiRestriction && !downloadOverMobileAllowed) {
                 allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
             }

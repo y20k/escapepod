@@ -47,10 +47,11 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
     /* Updates podcast collection */
     private fun updateCollection() {
         if (!CollectionHelper.hasEnoughTimePassedSinceLastUpdate(applicationContext)) {
-            LogHelper.w(TAG, "Update not initiated: not enough time has passed since last update.")
-        } else if (!PreferencesHelper.loadBackgroundDownloadAllowed(applicationContext)) {
-            LogHelper.w(TAG, "Update not initiated: Background Download has been restricted to manual.")
+            LogHelper.w(TAG, "Background update not initiated: not enough time has passed since last update.")
+        } else if (!PreferencesHelper.loadBackgroundRefresh(applicationContext)) {
+            LogHelper.w(TAG, "Background update not initiated: Background refresh has been set to manual.")
         } else {
+            LogHelper.w(TAG, "Background update initiated.") // todo remove
             DownloadHelper.updateCollection(applicationContext)
         }
     }

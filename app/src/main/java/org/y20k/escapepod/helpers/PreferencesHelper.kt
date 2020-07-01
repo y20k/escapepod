@@ -149,34 +149,17 @@ object PreferencesHelper {
     }
 
 
-    /* Loads user preference how download in background should be handled */
-    fun loadBackgroundDownloadMode(context: Context): String  {
+    /* Returns if background refresh is allowed */
+    fun loadBackgroundRefresh(context: Context): Boolean  {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        return settings.getString(Keys.PREF_BACKGROUND_DOWNLOAD, Keys.BACKGROUND_DOWNLOAD_DEFAULT) ?: Keys.BACKGROUND_DOWNLOAD_DEFAULT
+        return settings.getBoolean(Keys.PREF_BACKGROUND_REFRESH, Keys.DEFAULT_BACKGROUND_REFRESH_MODE)
     }
 
 
     /* Returns if download over mobile network is allowed */
-    fun loadDownloadOverMobileAllowed(context: Context): Boolean {
-        val backgroundDownloadMode: String = loadBackgroundDownloadMode(context)
-        return backgroundDownloadMode == Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED
-    }
-
-
-    /* Returns if background download is allowed */
-    fun loadBackgroundDownloadAllowed(context: Context): Boolean {
-        val backgroundDownloadMode: String = loadBackgroundDownloadMode(context)
-        return backgroundDownloadMode != Keys.BACKGROUND_DOWNLOAD_MANUAL
-    }
-
-
-    /* Returns a readable String for currently selected Background Download mode */
-    fun getCurrentBackGroundDownloadMode(context: Context): String {
-        return when (loadBackgroundDownloadMode(context)) {
-            Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED -> context.getString(R.string.pref_background_download_mode_unrestricted)
-            Keys.BACKGROUND_DOWNLOAD_MANUAL -> context.getString(R.string.pref_background_download_mode_manual)
-            else -> context.getString(R.string.pref_background_download_mode_default)
-        }
+    fun loadEpisodeDownloadOverMobile(context: Context): Boolean {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getBoolean(Keys.PREF_EPISODE_DOWNLOAD_OVER_MOBILE, Keys.DEFAULT_EPISODE_DOWNLOAD_OVER_MOBILE_MODE)
     }
 
 

@@ -81,26 +81,23 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             }
         }
 
+        // set up "Background Refresh" preference
+        val preferenceBackgroundRefresh: SwitchPreferenceCompat = SwitchPreferenceCompat(activity as Context)
+        preferenceBackgroundRefresh.title = getString(R.string.pref_background_refresh_title)
+        preferenceBackgroundRefresh.setIcon(R.drawable.ic_cloud_download_24dp)
+        preferenceBackgroundRefresh.key = Keys.PREF_BACKGROUND_REFRESH
+        preferenceBackgroundRefresh.summaryOn = getString(R.string.pref_background_refresh_summary_enabled)
+        preferenceBackgroundRefresh.summaryOff = getString(R.string.pref_background_refresh_summary_disabled)
+        preferenceBackgroundRefresh.setDefaultValue(Keys.DEFAULT_BACKGROUND_REFRESH_MODE)
 
-        // set up "Background Download" preference
-        val preferenceBackgroundDownload: ListPreference = ListPreference(context)
-        preferenceBackgroundDownload.title = getString(R.string.pref_background_download_title)
-        preferenceBackgroundDownload.setIcon(R.drawable.ic_cloud_download_24dp)
-        preferenceBackgroundDownload.key = Keys.PREF_BACKGROUND_DOWNLOAD
-        preferenceBackgroundDownload.summary = PreferencesHelper.getCurrentBackGroundDownloadMode(context)
-        preferenceBackgroundDownload.entries = arrayOf(getString(R.string.pref_background_download_mode_default), getString(R.string.pref_background_download_mode_unrestricted), getString(R.string.pref_background_download_mode_manual))
-        preferenceBackgroundDownload.entryValues = arrayOf(Keys.BACKGROUND_DOWNLOAD_DEFAULT, Keys.BACKGROUND_DOWNLOAD_UNRESTRICTED, Keys.BACKGROUND_DOWNLOAD_MANUAL)
-        preferenceBackgroundDownload.setDefaultValue(Keys.BACKGROUND_DOWNLOAD_DEFAULT)
-        preferenceBackgroundDownload.setOnPreferenceChangeListener { preference, newValue ->
-            if (preference is ListPreference) {
-                val index: Int = preference.entryValues.indexOf(newValue)
-                preferenceBackgroundDownload.summary = preference.entries.get(index)
-                return@setOnPreferenceChangeListener true
-            } else {
-                return@setOnPreferenceChangeListener false
-            }
-        }
-
+        // set up "Episode Download over mobile" preference
+        val preferenceEpisodeDownloadOverMobile: SwitchPreferenceCompat = SwitchPreferenceCompat(activity as Context)
+        preferenceEpisodeDownloadOverMobile.title = getString(R.string.pref_episode_download_over_mobile_title)
+        preferenceEpisodeDownloadOverMobile.setIcon(R.drawable.ic_signal_cellular_24dp)
+        preferenceEpisodeDownloadOverMobile.key = Keys.PREF_EPISODE_DOWNLOAD_OVER_MOBILE
+        preferenceEpisodeDownloadOverMobile.summaryOn = getString(R.string.pref_episode_download_over_mobile_summary_enabled)
+        preferenceEpisodeDownloadOverMobile.summaryOff = getString(R.string.pref_episode_download_over_mobile_summary_disabled)
+        preferenceEpisodeDownloadOverMobile.setDefaultValue(Keys.DEFAULT_EPISODE_DOWNLOAD_OVER_MOBILE_MODE)
 
         // set up "OPML Export" preference
         val preferenceOpmlExport: Preference = Preference(context)
@@ -172,7 +169,8 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         val preferenceCategoryGeneral: PreferenceCategory = PreferenceCategory(context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
         preferenceCategoryGeneral.contains(preferenceThemeSelection)
-        preferenceCategoryGeneral.contains(preferenceBackgroundDownload)
+        preferenceCategoryGeneral.contains(preferenceBackgroundRefresh)
+        preferenceCategoryGeneral.contains(preferenceEpisodeDownloadOverMobile)
 
         val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
@@ -189,7 +187,8 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         // setup preference screen
         screen.addPreference(preferenceCategoryGeneral)
         screen.addPreference(preferenceThemeSelection)
-        screen.addPreference(preferenceBackgroundDownload)
+        screen.addPreference(preferenceBackgroundRefresh)
+        screen.addPreference(preferenceEpisodeDownloadOverMobile)
         screen.addPreference(preferenceCategoryMaintenance)
         screen.addPreference(preferenceOpmlExport)
         screen.addPreference(preferenceUpdateCovers)
