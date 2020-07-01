@@ -116,7 +116,7 @@
     <string name="pref_delete_all_title">Delete Downloads</string>
     <string name="pref_episode_download_over_mobile_summary_enabled">Downloading podcast episodes over Wi-Fi and mobile network connections. This may result in additional costs.</string>
     <string name="pref_episode_download_over_mobile_summary_disabled">Downloading podcast episodes over Wi-Fi only.</string>
-    <string name="pref_episode_download_over_mobile_title">Downloads Over Mobile Network</string>
+    <string name="pref_episode_download_over_mobile_title">Download Over Mobile Network</string>
     <string name="pref_general_title">General</string>
     <string name="pref_maintenance_title">Maintenance</string>
     <string name="pref_opml_summary">Save your podcasts feeds to an OPML file that can be imported into other players.</string>
