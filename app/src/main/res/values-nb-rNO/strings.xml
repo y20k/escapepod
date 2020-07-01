@@ -168,4 +168,15 @@
     <string name="pref_update_covers_summary">Last ned siste versjon av alle nettradioopptaksomslag i samlingen din.</string>
     <string name="pref_update_covers_title">Oppdater omslag</string>
     <string name="toast_message_error_download_error">Nedlastingsfeil</string>
+    <string name="pref_report_issue_summary">Innrapporter feil og foreslå forebedringer på GitHub.</string>
+    <string name="pref_report_issue_title">Meld inn feil</string>
+    <string name="pref_episode_download_over_mobile_title">Last ned over mobilnettverk</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Laster ned nettradioopptak kun over Wi-Fi.</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Laster ned nettradioopptak over Wi-Fi og mobilnettverk. Datakostnader kan tilkomme.</string>
+    <string name="pref_background_refresh_title">Bakgrunnsoppdatering</string>
+    <string name="pref_background_refresh_summary_disabled">Ser ikke etter nettradioopptak.</string>
+    <string name="pref_background_refresh_summary_enabled">Ser etter nettradioopptak i bakgrunnen.</string>
+    <string name="pref_app_version_title">Programversjon</string>
+    <string name="pref_app_version_summary">Versjon</string>
+    <string name="pref_about_title">Om</string>
 </resources>
