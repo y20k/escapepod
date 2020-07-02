@@ -136,4 +136,15 @@
     <string name="pref_update_covers_summary">Download de nieuwste versie van alle podcasthoezen uit je verzameling.</string>
     <string name="pref_update_covers_title">Hoezen bijwerken</string>
     <string name="toast_message_error_download_error">Downloadfout</string>
+    <string name="pref_report_issue_title">Probleem melden</string>
+    <string name="pref_report_issue_summary">Meld bugs en deel je ideeën op GitHub.</string>
+    <string name="pref_episode_download_over_mobile_title">Downloaden via mobiel internet</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Podcastafleveringen worden alleen via Wi-Fi gedownload.</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Podcastafleveringen worden gedownload via zowel Wi-Fi als mobiel internet. Je provider kan hier kosten voor rekenen.</string>
+    <string name="pref_background_refresh_title">Verversen op achtegrond</string>
+    <string name="pref_background_refresh_summary_disabled">Niet op achtergrond zoeken naar podcastafleveringen.</string>
+    <string name="pref_background_refresh_summary_enabled">Op achtergrond zoeken naar podcastafleveringen.</string>
+    <string name="pref_app_version_title">Appversie</string>
+    <string name="pref_app_version_summary">Versie</string>
+    <string name="pref_about_title">Over</string>
 </resources>
