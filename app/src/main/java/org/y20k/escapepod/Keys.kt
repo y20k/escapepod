@@ -138,6 +138,7 @@ object Keys {
     const val MIME_TYPE_PNG = "image/png"
     const val MIME_TYPE_MP3 = "audio/mpeg"
     const val MIME_TYPE_XML = "text/xml"
+    const val MIME_TYPE_OCTET_STREAM = "application/octet-stream"
     const val MIME_TYPE_UNSUPPORTED = "unsupported"
     val MIME_TYPES_IMAGE = arrayOf("image/png", "image/jpeg")
     val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3")

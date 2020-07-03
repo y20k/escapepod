@@ -84,7 +84,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         // set up "Background Refresh" preference
         val preferenceBackgroundRefresh: SwitchPreferenceCompat = SwitchPreferenceCompat(activity as Context)
         preferenceBackgroundRefresh.title = getString(R.string.pref_background_refresh_title)
-        preferenceBackgroundRefresh.setIcon(R.drawable.ic_cloud_download_24dp)
+        preferenceBackgroundRefresh.setIcon(R.drawable.ic_autorenew_24dp)
         preferenceBackgroundRefresh.key = Keys.PREF_BACKGROUND_REFRESH
         preferenceBackgroundRefresh.summaryOn = getString(R.string.pref_background_refresh_summary_enabled)
         preferenceBackgroundRefresh.summaryOff = getString(R.string.pref_background_refresh_summary_disabled)

@@ -138,8 +138,8 @@ object DownloadHelper {
             val localFileUri: Uri = downloadResult
             // get remote URL for download ID
             val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadId)
-            // determine what to
-            val fileType = FileHelper.getFileType(context, localFileUri)
+            // determine what to do
+            val fileType = FileHelper.getContentType(context, localFileUri)
             if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
             if (fileType in Keys.MIME_TYPES_ATOM) Toast.makeText(context, context.getString(R.string.toast_message_error_feed_not_supported), Toast.LENGTH_LONG).show()
             if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
@@ -211,8 +211,8 @@ object DownloadHelper {
             val coverUris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE)
         }
-        // download audio files only when connected to wifi
-        if (ignoreWifiRestriction || NetworkHelper.isConnectedToWifi(context)) {
+        // download audio files only when connected to wifi - or if user chose otherwise
+        if (ignoreWifiRestriction || PreferencesHelper.loadEpisodeDownloadOverMobile(context) || NetworkHelper.isConnectedToWifi(context)) {
             // download only if podcast has episodes
             if (podcast.episodes.isNotEmpty()) {
                 // delete oldest audio file
