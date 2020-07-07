@@ -136,4 +136,15 @@
     <string name="pref_update_covers_summary">Télécharge la dernière version de toutes les pochettes de podcast dans votre collection.</string>
     <string name="pref_update_covers_title">Mettre à jour les pochettes</string>
     <string name="toast_message_error_download_error">Erreur de téléchargement</string>
+    <string name="pref_report_issue_title">Signaler un problème</string>
+    <string name="pref_report_issue_summary">Signalez des problèmes ou proposez des améliorations sur GitHub.</string>
+    <string name="pref_episode_download_over_mobile_title">Télécharger via les données mobiles</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Téléchargement des épisodes de podcast via le réseau Wi-Fi seulement.</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Téléchargement des épisodes de podcast via le réseau Wi-Fi et les données mobiles. Des frais d\'utilisation des données peuvent s\'appliquer.</string>
+    <string name="pref_background_refresh_title">Recherche en arrière-plan</string>
+    <string name="pref_background_refresh_summary_disabled">Recherche en arrière-plan désactivée.</string>
+    <string name="pref_background_refresh_summary_enabled">Recherche d\'épisodes de podcast en arrière-plan.</string>
+    <string name="pref_app_version_title">Version de l\'application</string>
+    <string name="pref_app_version_summary">Version</string>
+    <string name="pref_about_title">À propos</string>
 </resources>
