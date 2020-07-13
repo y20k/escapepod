@@ -30,11 +30,11 @@
     <string name="dialog_opml_import_message">Ajouter de nouveaux podcasts \? Les doublons seront supprimés avant l\'importation. Nombre de podcasts trouvés :</string>
     <string name="dialog_opml_import_title">Importer un fichier OPML</string>
     <string name="dialog_yes_no_message_add_up_next">Démarrer la lecture de cet épisode maintenant \?</string>
-    <string name="dialog_yes_no_message_default">Êtes-vous sûr de vouloir effectuer cette action \?</string>
+    <string name="dialog_yes_no_message_default">Êtes-vous sûr·e de vouloir effectuer cette action \?</string>
     <string name="dialog_yes_no_message_delete_downloads">Supprimer les épisodes téléchargés \? Vous pourrez les télécharger à nouveau par la suite.</string>
     <string name="dialog_yes_no_message_delete_episode">Supprimer cet épisode \?</string>
     <string name="dialog_yes_no_message_mark_episode_played">Marquer cet épisode comme lu \?</string>
-    <string name="dialog_yes_no_message_non_wifi_download">Votre appareil n\'est pas connecté au Wi-Fi. Télécharger l\'épisode quand même \?</string>
+    <string name="dialog_yes_no_message_non_wifi_download">Votre appareil n\'est pas connecté au Wi-Fi. Télécharger l\'épisode quand même \?</string>
     <string name="dialog_yes_no_message_remove_podcast">Supprimer ce podcast \?</string>
     <string name="dialog_yes_no_message_update_collection">Rechercher de nouveaux épisodes \?</string>
     <string name="dialog_yes_no_message_vpn_download">Votre périphérique est connecté via un VPN. Télécharger l\'épisode quand même \?</string>
