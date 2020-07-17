@@ -1,0 +1,26 @@
+Escapepod je podcast player s minimalističkim pristupom, koji možda nije svima po volji. Aplikacija ima samo jedan ekran. Kontrole za reprodukciju i popis podcasta koji prikazuje pet najnovijih epizoda. Escapepod nema funkciju otkrivanja podcasta. Nudi vrlo jednostavnu opciju pretraživanja i otvara poveznice RSS podcasta kad se dodirnu u web-pregledniku.
+
+
+ČESTO POSTAVLJENA PITANJA
+
+OMOGUĆUJE LI ESCAPEPOD POSTAVLJANJE SLIJEDA REPRODUKCIJA?
+Escapepod ima jednostavnu funkciju za postavljanje slijeda reprodukcija. Dodirni gumb za sviranje željene epizode dok slušaš jednu drugu. Imat ćeš mogućnost dodati tu epizodu kao sljedeću.
+
+KOJE SU STANDARDNE POSTAVKE?
+- Automatsko aktualiziranje ne preuzima datoteke putem mobilne mreže
+- Escapepod standardno čuva samo dvije epizode
+
+MOŽE LI ESCAPEPOD ČUVATI VIŠE OD DVIJE EPIZODE?
+Escapepod pokušava smanjiti broj epizoda koje čuva. Pravila su sljedeća:
+- Escapepod čuva zadnje dvije epizode
+- Epizode, koje su pokrenute ili preuzete ručno, također se čuvaju
+- Maksimalan broj dostupnih epizoda (i zadržanih) je pet
+
+JE LI ESCAPEPOD PODRŽAVA OPML?
+Popis podcasta je moguće uvesti pomoću OPML formata za razmjenu podataka. Jednostavno otvori OPML datoteku pomoću upravljača datoteka i odaberi Escapepod za baratanje tim formatom. Trenutačna zbirka podcasta može se izvesti u postavkama. Pored toga, Escapepod održava aktualnu OPML datoteku u mapi /Android/data/org.y20k.escapepod/files/collection/.
+
+NE MOGU DODATI PODCAST X. ZAŠTO?
+Prijavi sve feedove podcasta koji trenutačno ne rade, pomoću GitHub predloška za prijavu problema „Feed Issue“ (https://github.com/y20k/escapepod/issues/). Napomena: Escapepod ne podržava video podcaste.
+
+OTKUDA DOLAZE REZULTATI TRAŽENJA PODCASTA?
+Escapepod pretražuje internetsku bazu podataka gpodder.net (https://gpodder.net/directory/). Gpodder.net je sjajna stranica ako tražiš nove stvari za slušanje.

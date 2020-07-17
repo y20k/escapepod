@@ -7,7 +7,7 @@
 - Fehlerbehebungen
 
 
-Hinweis: Für das Problem, dass einzelne Episoden zweimal in der Liste erscheinen, gibt es leider nur eine Brute-Force-Lösung:
-1) OPML-Exportdatei speichern
+Hinweis: Damit einzelne Episoden nicht zweimal in der Liste erscheinen:
+1) OPML-Exportdatei speichern (/Android/data/org.y20k.escapepod/files/collection/collectio
 2) Alle Anwendungsdaten löschen
 3) OPML-Datei mit Escapepod öffnen und alle Podcasts erneut importieren.
