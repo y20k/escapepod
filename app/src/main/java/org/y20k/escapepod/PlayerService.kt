@@ -317,7 +317,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         val player = SimpleExoPlayer.Builder(this).build()
         player.addListener(this@PlayerService)
         player.setHandleAudioBecomingNoisy(true)
-        player.setHandleWakeLock(true)
+        player.setWakeMode(C.WAKE_MODE_LOCAL)
         player.setAudioAttributes(audioAttributes, true)
         player.addAnalyticsListener(analyticsListener)
         player.seekTo(playerState.playbackPosition)

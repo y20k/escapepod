@@ -1,4 +1,4 @@
-package org.y20k.escapepod.core
+package org.y20k.escapepod.database
 
 import androidx.room.*
 
@@ -13,10 +13,13 @@ interface EpisodeDao {
     @Query("SELECT * FROM episode WHERE episode_title LIKE :title LIMIT 1")
     fun findByTitle(title: String): EpisodeEntity
 
-    @Insert
+    @Query("SELECT * FROM episode WHERE episode_guid IS :guid LIMIT 1")
+    fun findByGuid(guid: String): EpisodeEntity
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(episode: EpisodeEntity)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(vararg episodes: EpisodeEntity)
 
     @Update

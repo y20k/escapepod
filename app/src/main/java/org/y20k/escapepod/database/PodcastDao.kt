@@ -1,4 +1,4 @@
-package org.y20k.escapepod.core
+package org.y20k.escapepod.database
 
 import androidx.room.*
 
@@ -17,11 +17,16 @@ interface PodcastDao {
     fun insert(podcast: PodcastEntity)
 
     @Insert
-    fun insertAll(vararg podcasts: PodcastEntity)
+    fun insertAll(podcasts: List<PodcastEntity>)
 
     @Update
     fun add(podcast: PodcastEntity)
 
     @Delete
     fun delete(user: PodcastEntity)
+
+    @Transaction
+    @Query("SELECT * FROM podcast")
+    fun getPodcastsWithEpisodes(): List<PodcastWithEpisodesEntity>
+
 }

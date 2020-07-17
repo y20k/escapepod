@@ -1,16 +1,14 @@
-package org.y20k.escapepod.core
+package org.y20k.escapepod.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "episode",
-        foreignKeys = [ForeignKey(entity = PodcastEntity::class, parentColumns = ["pid"], childColumns = ["podcast_id"])])
+@Entity(tableName = "episode")
 data class EpisodeEntity (
 
-        @PrimaryKey val eid: Int,
-        @ColumnInfo (name = "podcast_id") val podcastId: Int,
+        @PrimaryKey (autoGenerate = true) val eid: Long,
+        @ColumnInfo (name = "podcast_id") val podcastId: Long,
         @ColumnInfo (name = "episode_guid") val guid: String,
         @ColumnInfo (name = "episode_title") val title: String,
         @ColumnInfo (name = "episode_description") val description: String,

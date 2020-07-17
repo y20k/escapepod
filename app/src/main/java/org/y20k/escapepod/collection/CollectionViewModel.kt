@@ -45,6 +45,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     private var collectionChangedReceiver: BroadcastReceiver
     private val backgroundJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
+    //private var collectionDatabase: CollectionDatabase
 
 
     /* Init constructor */
@@ -54,6 +55,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         // create and register collection changed receiver
         collectionChangedReceiver = createCollectionChangedReceiver()
         LocalBroadcastManager.getInstance(application).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
+        // get instance of collection database // todo remove: just a database test
+        //collectionDatabase = CollectionDatabase.getInstance(application)
     }
 
 
@@ -94,7 +97,19 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             modificationDateViewModel = collection.modificationDate
             // update collection view model
             collectionLiveData.value = collection
-        }
+            // Todo remove: just a database test
+            //insertPodcasts(collection)
     }
+}
+
+
+///* Todo remove: just a database test */
+//private fun insertPodcasts(collection: Collection) {
+//    GlobalScope.launch {
+//        collectionDatabase.podcastDao().insertAll(DatabaseHelper.convertToPodcastEntityList(collection))
+//
+//        LogHelper.e(TAG, "${collectionDatabase.podcastDao().findByName("Subnet").pid}")
+//    }
+//}
 
 }
