@@ -152,7 +152,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Overrides onTaskRemoved from Service */
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
-        stopSelf()
+        // kill service, if MainActivity was canceled through task switcher
+        //stopSelf()
     }
 
 
@@ -279,7 +280,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         } else {
             // get up next episode and set metadata
             episode = CollectionHelper.getEpisode(collection, playerState.upNextEpisodeMediaId)
-            mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode))
+            // mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this, episode)) // todo remove
             // clear up next media id
             playerState.upNextEpisodeMediaId = String()
             // start playback
@@ -355,6 +356,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         if (playerState.upNextEpisodeMediaId == episode.getMediaId()){
             playerState.upNextEpisodeMediaId = String()
         }
+        // update metadata
+        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
         // prepare player
         preparePlayer()
         // start playback
@@ -543,17 +546,17 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
      */
     private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
         override fun onPlay() {
-            startPlayback()
-        }
-
-        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             // stop current playback, if necessary
             if (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
                 stopPlayback()
             }
+            // start playback of current station
+            startPlayback()
+        }
+
+        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
             // get episode, set metadata and start playback
             episode = CollectionHelper.getEpisode(collection, mediaId ?: String())
-            mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
             startPlayback()
         }
 

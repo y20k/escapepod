@@ -8,6 +8,8 @@ Escapepod is designed, developed and maintained by: [y20k](https://github.com/y2
 
 Basque version: [beriain](https://hosted.weblate.org/user/beriain/) | [weblate version history](https://hosted.weblate.org/changes/?lang=eu&project=escapepod)
 
+Croatian version: [Milo Ivir](https://hosted.weblate.org/user/milotype/) | [weblate version history](https://hosted.weblate.org/changes/?lang=hr&project=escapepod)
+
 Dutch version: [Heimen Stoffels](https://hosted.weblate.org/user/vistaus/) | [weblate version history](https://hosted.weblate.org/changes/?lang=nl&project=escapepod)
 
 Finnish version [Riku Viitanen](https://hosted.weblate.org/user/RiksuRaksu/) | [weblate version history](https://hosted.weblate.org/changes/?lang=fi&project=escapepod)
