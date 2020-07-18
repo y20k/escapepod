@@ -1,0 +1,6 @@
+# v0.8.5 - Gehen Die Leute (23 Special Edition)
+
+**2019-12-19**
+
+- Удалена поддержка Android Auto
+-> Не спрашивай (⊙_☉)
