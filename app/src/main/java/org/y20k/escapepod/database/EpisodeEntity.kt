@@ -2,12 +2,12 @@ package org.y20k.escapepod.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "episode")
+@Entity(tableName = "episodes", indices = arrayOf(Index(value = ["episode_guid"], unique = true)))
 data class EpisodeEntity (
 
-        @PrimaryKey (autoGenerate = true) val eid: Long,
         @ColumnInfo (name = "podcast_id") val podcastId: Long,
         @ColumnInfo (name = "episode_guid") val guid: String,
         @ColumnInfo (name = "episode_title") val title: String,
@@ -24,4 +24,6 @@ data class EpisodeEntity (
         @ColumnInfo (name = "episode_remote_cover_file_location") val remoteCoverFileLocation: String,
         @ColumnInfo (name = "episode_remote_audio_file_location") val remoteAudioFileLocation: String
 
-)
+) {
+    @PrimaryKey (autoGenerate = true) var eid: Long = 0L
+}

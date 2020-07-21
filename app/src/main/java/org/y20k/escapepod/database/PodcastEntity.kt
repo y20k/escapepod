@@ -2,10 +2,11 @@ package org.y20k.escapepod.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "podcast")
+@Entity(tableName = "podcasts", indices = arrayOf(Index(value = ["podcast_remote_podcast_feed_location"], unique = true)))
 data class PodcastEntity(
 
         @ColumnInfo (name = "podcast_name") val name: String,

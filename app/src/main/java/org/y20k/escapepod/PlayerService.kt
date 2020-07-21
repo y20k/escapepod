@@ -611,7 +611,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             }
         }
 
-
         override fun onFastForward() {
             LogHelper.d(TAG, "Skipping forward")
             // update position

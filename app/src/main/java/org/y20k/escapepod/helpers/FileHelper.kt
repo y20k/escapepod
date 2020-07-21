@@ -181,22 +181,27 @@ object FileHelper {
     /* Saves podcast collection as JSON text file */
     fun saveCollection(context: Context, collection: Collection, lastSave: Date) {
         LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
-        // convert to JSON
-        val gson: Gson = getCustomGson()
-        var json: String = String()
-        try {
-            json = gson.toJson(collection)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        if (json.isNotBlank()) {
-            // save modification date
-            PreferencesHelper.saveCollectionModificationDate(context, lastSave)
-            // write text file
-            writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+        val collectionSize: Int = collection.podcasts.size
+        // do not override an existing collection with an empty one - except when last podcast is deleted
+        if (collectionSize > 0 || PreferencesHelper.loadCollectionSize(context) == 1) {
+            // convert to JSON
+            val gson: Gson = getCustomGson()
+            var json: String = String()
+            try {
+                json = gson.toJson(collection)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            if (json.isNotBlank()) {
+                // save modification date
+                PreferencesHelper.saveCollectionModificationDate(context, lastSave)
+                // write text file
+                writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+            }
+        } else {
+            LogHelper.w(TAG, "Not saving collection. Collection is empty.")
         }
     }
-
 
     /* Reads podcast collection from storage using GSON */
     fun readCollection(context: Context): Collection {
