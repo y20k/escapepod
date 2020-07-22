@@ -45,7 +45,6 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     private var collectionChangedReceiver: BroadcastReceiver
     private val backgroundJob = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + backgroundJob)
-//    private var collectionDatabase: CollectionDatabase
 
 
     /* Init constructor */
@@ -55,8 +54,6 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         // create and register collection changed receiver
         collectionChangedReceiver = createCollectionChangedReceiver()
         LocalBroadcastManager.getInstance(application).registerReceiver(collectionChangedReceiver, IntentFilter(Keys.ACTION_COLLECTION_CHANGED))
-        // get instance of collection database // todo remove: just a database test
-//        collectionDatabase = CollectionDatabase.getInstance(application)
     }
 
 
@@ -97,26 +94,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             modificationDateViewModel = collection.modificationDate
             // update collection view model
             collectionLiveData.value = collection
-            // Todo remove: just a database test
-//            insertPodcasts(collection)
     }
 }
 
-    // todo read this :-) https://itnext.io/room-persistence-library-using-mutablelivedata-observable-to-update-the-ui-after-a-database-6836d25e8267
-
-
-/* Todo remove: just a database test */
-//private fun insertPodcasts(collection: Collection) {
-//    GlobalScope.launch {
-//        //collectionDatabase.clearAllTables()
-//
-//        val result: Pair<List<PodcastEntity>, List<EpisodeEntity>> = DatabaseHelper.convertToPodcastEntityList(collection)
-//        collectionDatabase.podcastDao().insertAll(result.first)
-//        collectionDatabase.episodeDao().insertAll(result.second)
-//
-//        val numberOfEpisodes = collectionDatabase.episodeDao().getSize()
-//        val numberOfPodcasts = collectionDatabase.podcastDao().getSize()
-//    }
-//}
 
 }
