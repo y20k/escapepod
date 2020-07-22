@@ -26,6 +26,8 @@ Polish version: [Karol Kosek](https://hosted.weblate.org/user/krkk/) | [weblate 
 
 Portuguese version [Sérgio Marques](https://hosted.weblate.org/user/S%C3%A9rgioMarques/) | [weblate version history](https://hosted.weblate.org/changes/?lang=pt&project=escapepod)
 
+Russian version [Nikita Epifanov](https://hosted.weblate.org/user/Nikets/) | [weblate version history](https://hosted.weblate.org/changes/?lang=pt&project=escapepod)
+
 ### Accessibility / TalkBack
 [holliebaker](https://github.com/holliebaker)
 
