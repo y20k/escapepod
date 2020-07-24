@@ -165,12 +165,10 @@ object Keys {
     const val LOCATION_DEFAULT_COVER: String = "android.resource://org.y20k.escapepod/drawable/ic_default_cover_rss_icon_24dp"
 
     // sizes (in dp)
-    const val SIZE_COVER_PLAYER_SMALL: Int = 56
-    const val SIZE_COVER_PLAYER_LARGE: Int = 265
-    const val SIZE_COVER_PODCAST_CARD: Int = 96
+    const val SIZE_COVER_MAXIMUM: Int = 640 // used to create cover.jpg
+    const val SIZE_COVER_PODCAST_CARD: Int = 96 // used to create cover-small.jpg
     const val SIZE_COVER_NOTIFICATION_LARGE_ICON: Int = 256
     const val SIZE_COVER_LOCK_SCREEN: Int = 320
-    const val SIZE_COVER_MAXIMUM: Int = 640
     const val BOTTOM_SHEET_PEEK_HEIGHT: Int = 72
 
     // default values

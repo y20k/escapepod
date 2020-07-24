@@ -22,6 +22,7 @@ import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
+import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import java.io.IOException
 import java.io.InputStream
@@ -42,14 +43,36 @@ object ImageHelper {
 
 
     /* Get a scaled version of the podcast cover */
-    fun getPodcastCover(context: Context, imageUri: Uri, coverSize: Int): Bitmap {
+    fun getScaledPodcastCover(context: Context, imageUriString: String, coverSize: Int): Bitmap {
         val size: Int = (coverSize * getDensityScalingFactor(context)).toInt()
-        return decodeSampledBitmapFromUri(context, imageUri, size, size)
+        return decodeSampledBitmapFromUri(context, imageUriString, size, size)
+    }
+
+
+    /* Get an unscaled version of the podcast cover */
+    fun getPodcastCover(context: Context, imageUriString: String): Bitmap {
+        var bitmap: Bitmap? = null
+
+        if (imageUriString != Keys.LOCATION_DEFAULT_COVER) {
+            try {
+                // just decode the file
+                bitmap = BitmapFactory.decodeFile(Uri.parse(imageUriString).path)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        // get default image
+        if (bitmap == null) {
+            bitmap = ContextCompat.getDrawable(context, R.drawable.ic_default_cover_rss_icon_24dp)!!.toBitmap()
+        }
+
+        return bitmap
     }
 
 
     /* Extracts color from an image */
-    fun getMainColor(context: Context, imageUri: Uri): Int {
+    fun getMainColor(context: Context, imageUri: String): Int {
 
         // extract color palette from station image
         val palette: Palette = Palette.from(decodeSampledBitmapFromUri(context, imageUri, 72, 72)).generate()
@@ -77,28 +100,30 @@ object ImageHelper {
 
 
     /* Return sampled down image for given Uri */
-    private fun decodeSampledBitmapFromUri(context: Context, imageUri: Uri, reqWidth: Int, reqHeight: Int): Bitmap {
+    private fun decodeSampledBitmapFromUri(context: Context, imageUriString: String, reqWidth: Int, reqHeight: Int): Bitmap {
 
         var bitmap: Bitmap? = null
-        try {
-            // first decode with inJustDecodeBounds=true to check dimensions
-            var stream: InputStream? = context.contentResolver.openInputStream(imageUri)
-            val options = BitmapFactory.Options()
-            options.inJustDecodeBounds = true
-            BitmapFactory.decodeStream(stream, null, options)
-            stream?.close()
+        if (imageUriString != Keys.LOCATION_DEFAULT_COVER) {
+            val imageUri: Uri = Uri.parse(imageUriString)
+            try {
+                // first decode with inJustDecodeBounds=true to check dimensions
+                var stream: InputStream? = context.contentResolver.openInputStream(imageUri)
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds = true
+                BitmapFactory.decodeStream(stream, null, options)
+                stream?.close()
 
-            // calculate inSampleSize
-            options.inSampleSize = calculateSampleParameter(options, reqWidth, reqHeight)
+                // calculate inSampleSize
+                options.inSampleSize = calculateSampleParameter(options, reqWidth, reqHeight)
 
-            // decode bitmap with inSampleSize set
-            stream = context.contentResolver.openInputStream(imageUri)
-            options.inJustDecodeBounds = false
-            bitmap = BitmapFactory.decodeStream(stream, null, options)
-            stream?.close()
-
-        } catch (e: IOException) {
-            e.printStackTrace()
+                // decode bitmap with inSampleSize set
+                stream = context.contentResolver.openInputStream(imageUri)
+                options.inJustDecodeBounds = false
+                bitmap = BitmapFactory.decodeStream(stream, null, options)
+                stream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
         }
 
         // get default image

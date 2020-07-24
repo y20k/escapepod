@@ -170,8 +170,8 @@ object FileHelper {
 
 
     /* Creates and save a scaled version of the podcast cover */
-    fun saveCover(context: Context, podcastName: String, sourceImageUri: Uri, size: Int, fileName: String): Uri {
-        val coverBitmap: Bitmap = ImageHelper.getPodcastCover(context, sourceImageUri, size)
+    fun saveCover(context: Context, podcastName: String, sourceImageUri: String, size: Int, fileName: String): Uri {
+        val coverBitmap: Bitmap = ImageHelper.getScaledPodcastCover(context, sourceImageUri, size)
         val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcastName)), fileName)
         writeImageFile(context, coverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
         return file.toUri()

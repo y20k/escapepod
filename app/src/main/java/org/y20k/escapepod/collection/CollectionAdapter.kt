@@ -149,7 +149,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
     /* Sets the podcast image view */
     private fun setPodcastImage(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
-        podcastViewHolder.podcastImageView.setImageURI(Uri.parse(podcast.smallCover))
+        podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(context, podcast.smallCover))
         podcastViewHolder.podcastImageView.setOnLongClickListener {
             DownloadHelper.refreshCover(context, podcast)
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

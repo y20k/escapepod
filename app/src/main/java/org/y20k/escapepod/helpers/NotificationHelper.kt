@@ -18,7 +18,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.net.Uri
 import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -85,7 +84,7 @@ class NotificationHelper(private val playerService: PlayerService) {
                 .setContentTitle(episode.podcastName)
                 .setContentText(episode.title)
                 .setDeleteIntent(stopPendingIntent)
-                .setLargeIcon(ImageHelper.getPodcastCover(playerService, Uri.parse(episode.cover), Keys.SIZE_COVER_NOTIFICATION_LARGE_ICON))
+                .setLargeIcon(ImageHelper.getScaledPodcastCover(playerService, episode.cover, Keys.SIZE_COVER_NOTIFICATION_LARGE_ICON))
                 .setOnlyAlertOnce(true)
                 .setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
                 .setStyle(mediaStyle)

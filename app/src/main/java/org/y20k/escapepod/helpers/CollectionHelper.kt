@@ -387,7 +387,7 @@ object CollectionHelper {
             putString(MediaMetadataCompat.METADATA_KEY_ALBUM, episode.podcastName)
             putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, episode.cover)
             putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
-            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getPodcastCover(context, Uri.parse(episode.cover), Keys.SIZE_COVER_LOCK_SCREEN))
+            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN))
             putLong(MediaMetadataCompat.METADATA_KEY_DURATION, episode.duration)
         }.build()
     }

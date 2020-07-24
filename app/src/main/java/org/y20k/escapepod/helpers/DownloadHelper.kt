@@ -249,8 +249,8 @@ object DownloadHelper {
     private fun setPodcastImage(context: Context, tempFileUri: Uri, remoteFileLocation: String) {
         collection.podcasts.forEach { podcast ->
             if (podcast.remoteImageFileLocation == remoteFileLocation) {
-                podcast.smallCover = FileHelper.saveCover(context, podcast.name, tempFileUri, Keys.SIZE_COVER_PODCAST_CARD, Keys.PODCAST_SMALL_COVER_FILE).toString()
-                podcast.cover = FileHelper.saveCover(context, podcast.name, tempFileUri, Keys.SIZE_COVER_MAXIMUM, Keys.PODCAST_COVER_FILE).toString()
+                podcast.smallCover = FileHelper.saveCover(context, podcast.name, tempFileUri.toString(), Keys.SIZE_COVER_PODCAST_CARD, Keys.PODCAST_SMALL_COVER_FILE).toString()
+                podcast.cover = FileHelper.saveCover(context, podcast.name, tempFileUri.toString(), Keys.SIZE_COVER_MAXIMUM, Keys.PODCAST_COVER_FILE).toString()
                 podcast.episodes.forEach { episode ->
                     episode.cover = podcast.cover
                     episode.smallCover = podcast.smallCover
