@@ -40,6 +40,7 @@ import org.y20k.escapepod.helpers.DateTimeHelper
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
 import org.y20k.escapepod.helpers.UiHelper
+import org.y20k.escapepod.helpers.ImageHelper
 
 
 /*
@@ -133,13 +134,12 @@ data class LayoutHolder(var rootView: View) {
     fun updatePlayerViews(context: Context, episode: Episode) {
         val coverUri: Uri = Uri.parse(episode.cover)
         val duration: String = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
-        // coverView.setImageBitmap(ImageHelper.getPodcastCover(context, coverUri, Keys.SIZE_COVER_PLAYER_SMALL))
-        coverView.setImageURI(coverUri)
+        coverView.setImageBitmap(ImageHelper.getPodcastCover(context, coverUri, Keys.SIZE_COVER_PLAYER_SMALL))
         coverView.clipToOutline = true // apply rounded corner mask to covers
         coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
         podcastNameView.text = episode.podcastName
         episodeTitleView.text = episode.title
-        sheetCoverView.setImageURI(coverUri)
+        sheetCoverView.setImageBitmap(ImageHelper.getPodcastCover(context, coverUri, Keys.SIZE_COVER_PLAYER_LARGE))
         sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
         sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
         sheetEpisodeTitleView.text = episode.title
