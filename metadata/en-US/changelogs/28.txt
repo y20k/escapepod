@@ -1,0 +1,5 @@
+# v0.9.3 - Aber Hier Leben, Nein Danke
+
+**2020-07-27**
+
+- improved scrolling performance

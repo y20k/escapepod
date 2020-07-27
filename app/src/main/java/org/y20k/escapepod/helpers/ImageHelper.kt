@@ -104,8 +104,9 @@ object ImageHelper {
 
         var bitmap: Bitmap? = null
         if (imageUriString != Keys.LOCATION_DEFAULT_COVER) {
-            val imageUri: Uri = Uri.parse(imageUriString)
             try {
+                val imageUri: Uri = Uri.parse(imageUriString)
+
                 // first decode with inJustDecodeBounds=true to check dimensions
                 var stream: InputStream? = context.contentResolver.openInputStream(imageUri)
                 val options = BitmapFactory.Options()
