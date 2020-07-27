@@ -33,6 +33,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
+import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.search.GpodderResult
@@ -239,7 +240,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val params = HashMap<String, String>()
-                params["User-Agent"] = context.getString(R.string.app_name)
+                params["User-Agent"] = "$Keys.APPLICATION_NAME ${BuildConfig.VERSION_NAME}"
                 return params
             }
         }
