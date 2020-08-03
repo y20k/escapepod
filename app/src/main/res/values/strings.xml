@@ -8,7 +8,7 @@
     <string name="fragment_settings_title">Settings</string>
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Add</string>
-    <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for a RSS symbol on the homepage of the respective podcast.</string>
+    <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for the RSS symbol on the homepage of the respective podcast.</string>
     <string name="dialog_add_podcast_input_hint">Enter podcast feed link</string>
     <string name="dialog_add_podcast_title">Add New Podcast</string>
     <string name="dialog_episode_shownotes_close">Close</string>
