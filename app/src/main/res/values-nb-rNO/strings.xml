@@ -4,7 +4,7 @@
     <string name="app_name">Escapepod</string>
     <!-- Dialogs -->
     <string name="dialog_add_podcast_button">Legg til</string>
-    <string name="dialog_add_podcast_howto">Legg til adresse til et nettradioopptak. Se etter et RSS-symbol på hjemmesiden til kanalen du ønsker å legge til.</string>
+    <string name="dialog_add_podcast_howto">Legg til adresse til et nettradioopptak. Se etter RSS-symbolet på hjemmesiden til kanalen du ønsker å legge til.</string>
     <string name="dialog_add_podcast_input_hint">Skriv inn lenke til informasjonskanal</string>
     <string name="dialog_add_podcast_title">Legg til nytt nettradioopptak</string>
     <string name="dialog_episode_shownotes_close">Lukk</string>
