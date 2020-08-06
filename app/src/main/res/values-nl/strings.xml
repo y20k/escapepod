@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Escapepod</string>
     <string name="dialog_add_podcast_button">Toevoegen</string>
-    <string name="dialog_add_podcast_howto">Voer het adres in van een podcastfeed. Op de podcastwebsite in kwestie is dit een RSS-pictogram.</string>
+    <string name="dialog_add_podcast_howto">Voer het adres in van een podcastfeed. Op de podcastwebsite in kwestie is dit een rss-pictogram.</string>
     <string name="dialog_add_podcast_input_hint">Voer podcastfeedadres in</string>
     <string name="dialog_add_podcast_title">Podcast toevoegen</string>
     <string name="dialog_episode_shownotes_close">Sluiten</string>
