@@ -143,7 +143,7 @@
     <string name="dialog_episode_shownotes_website">Веб-сайт</string>
     <string name="dialog_episode_shownotes_close">Закрыть</string>
     <string name="dialog_add_podcast_title">Добавить новый подкаст</string>
-    <string name="dialog_add_podcast_howto">Пожалуйста, введите адрес подкаста. Ищите символ RSS на главной странице соответствующего подкаста.</string>
+    <string name="dialog_add_podcast_howto">Пожалуйста, введите адрес подкаста. Найдите символ RSS на главной странице соответствующего подкаста.</string>
     <string name="dialog_add_podcast_button">Добавить</string>
     <string name="fragment_settings_title">Настройки</string>
     <string name="app_name">Escapepod</string>
