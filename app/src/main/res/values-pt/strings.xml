@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Escapepod</string>
     <string name="dialog_add_podcast_button">Adicionar</string>
-    <string name="dialog_add_podcast_howto">Introduza o endereço da fonte de podcasts. Procure pelo símbolo RSS da página web do respetivo podcast.</string>
+    <string name="dialog_add_podcast_howto">Introduza o endereço da fonte de podcasts. Procure pelo símbolo RSS da página web do podcast respetivo.</string>
     <string name="dialog_add_podcast_input_hint">Introduza o endereço da fonte de podcasts</string>
     <string name="dialog_add_podcast_title">Adicionar novo</string>
     <string name="dialog_episode_shownotes_close">Fechar</string>
