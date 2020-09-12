@@ -138,7 +138,7 @@
     <string name="pref_report_issue_title">Reportar um erro</string>
     <string name="pref_report_issue_summary">Reporte erros e melhorias/sugestões no GitHub.</string>
     <string name="pref_episode_download_over_mobile_title">Descarregar em redes de dados móveis</string>
-    <string name="pref_episode_download_over_mobile_summary_disabled">Descarregar episódios apenas em redes Wi-fi</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Descarregar episódios apenas em redes Wi-fi.</string>
     <string name="pref_episode_download_over_mobile_summary_enabled">Descarregar episódios em redes Wi-fi ou móveis. Podem ser aplicadas taxas ao descarregar em dados móveis.</string>
     <string name="pref_background_refresh_title">Atualização em segundo plano</string>
     <string name="pref_background_refresh_summary_disabled">Não pesquisar episódios em segundo plano.</string>
