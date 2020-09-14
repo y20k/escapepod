@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Escapepod</string>
     <string name="dialog_add_podcast_button">הוספה</string>
-    <string name="dialog_add_podcast_howto">נא למלא את כתובת הזנת הפודקאסט. מוטב לחפש סמל RSS בעמוד הבית של הפודקאסט המבוקש.</string>
+    <string name="dialog_add_podcast_howto">נא למלא את כתובת הזנת הפודקאסט. מוטב לחפש את סמל RSS בעמוד הבית של הפודקאסט המבוקש.</string>
     <string name="dialog_add_podcast_input_hint">נא למלא את כתובת ההזנה של הפודקאסט</string>
     <string name="dialog_add_podcast_title">הוספת פודקאסט חדש</string>
     <string name="dialog_episode_shownotes_close">סגירה</string>
