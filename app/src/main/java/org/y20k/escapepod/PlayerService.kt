@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.audiofx.AudioEffect
-import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.ResultReceiver
@@ -37,15 +36,9 @@ import androidx.core.os.bundleOf
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.PlaybackParameters
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
 import org.y20k.escapepod.collection.CollectionProvider
@@ -315,11 +308,13 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 .setContentType(C.CONTENT_TYPE_MUSIC)
                 .setUsage(C.USAGE_MEDIA)
                 .build()
-        val player = SimpleExoPlayer.Builder(this).build()
+        val player = SimpleExoPlayer.Builder(this)
+                .setWakeMode(C.WAKE_MODE_NETWORK)
+                .setAudioAttributes(audioAttributes, true)
+                .setHandleAudioBecomingNoisy(true)
+                //.setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))) // todo check if necessary
+                .build()
         player.addListener(this@PlayerService)
-        player.setHandleAudioBecomingNoisy(true)
-        player.setWakeMode(C.WAKE_MODE_LOCAL)
-        player.setAudioAttributes(audioAttributes, true)
         player.addAnalyticsListener(analyticsListener)
         player.seekTo(playerState.playbackPosition)
         return player
@@ -329,14 +324,16 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Prepares player with media source created from current episode */
     private fun preparePlayer() {
         // todo only prepare if not already prepared
+        // build media item.
+        val mediaItem: MediaItem = MediaItem.fromUri(episode.getMediaId())
         // create MediaSource
-        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent)).createMediaSource(Uri.parse(episode.audio))
-        // prepare player with source
-        player.prepare(mediaSource)
+        player.addMediaItem(mediaItem)
         // set player position
         playerState.playbackPosition = episode.playbackPosition
         player.seekTo(playerState.playbackPosition)
         player.setPlaybackParameters(PlaybackParameters(playerState.playbackSpeed))
+        // prepare
+        player.prepare()
     }
 
 

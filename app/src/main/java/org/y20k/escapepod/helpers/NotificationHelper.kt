@@ -80,7 +80,8 @@ class NotificationHelper(private val playerService: PlayerService) {
                 .setShowActionsInCompactView(playPauseIndex)
                 .setShowCancelButton(true)
 
-        return builder.setContentIntent(controller.sessionActivity) // todo check if sessionActivity is correct
+        return builder.setCategory(NotificationCompat.CATEGORY_TRANSPORT)
+                .setContentIntent(controller.sessionActivity) // todo check if sessionActivity is correct
                 .setContentTitle(episode.podcastName)
                 .setContentText(episode.title)
                 .setDeleteIntent(stopPendingIntent)

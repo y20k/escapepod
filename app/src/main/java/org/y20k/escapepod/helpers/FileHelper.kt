@@ -173,7 +173,7 @@ object FileHelper {
     fun saveCover(context: Context, podcastName: String, sourceImageUri: String, size: Int, fileName: String): Uri {
         val coverBitmap: Bitmap = ImageHelper.getScaledPodcastCover(context, sourceImageUri, size)
         val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcastName)), fileName)
-        writeImageFile(context, coverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
+        writeImageFile(coverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
         return file.toUri()
     }
 
@@ -388,7 +388,9 @@ object FileHelper {
 
     /* Writes given text to file on storage */
     private fun writeTextFile(context: Context, text: String, folder: String, fileName: String) {
-        File(context.getExternalFilesDir(folder), fileName).writeText(text)
+        if (text.isNotBlank()) {
+            File(context.getExternalFilesDir(folder), fileName).writeText(text)
+        }
     }
 
 
@@ -400,9 +402,8 @@ object FileHelper {
     }
 
 
-
     /* Writes given bitmap as image file to storage */
-    private fun writeImageFile(context: Context, bitmap: Bitmap, file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 75) {
+    private fun writeImageFile(bitmap: Bitmap, file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 75) {
         if (file.exists()) file.delete ()
         try {
             val out = FileOutputStream(file)
