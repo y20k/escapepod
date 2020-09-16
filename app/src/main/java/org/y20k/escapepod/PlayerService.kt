@@ -327,7 +327,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // build media item.
         val mediaItem: MediaItem = MediaItem.fromUri(episode.getMediaId())
         // create MediaSource
-        player.addMediaItem(mediaItem)
+        player.setMediaItem(mediaItem)
         // set player position
         playerState.playbackPosition = episode.playbackPosition
         player.seekTo(playerState.playbackPosition)
