@@ -39,6 +39,8 @@ import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
 import org.y20k.escapepod.collection.CollectionProvider
@@ -312,7 +314,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 .setWakeMode(C.WAKE_MODE_NETWORK)
                 .setAudioAttributes(audioAttributes, true)
                 .setHandleAudioBecomingNoisy(true)
-                //.setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))) // todo check if necessary
+                .setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent)))
                 .build()
         player.addListener(this@PlayerService)
         player.addAnalyticsListener(analyticsListener)
@@ -324,16 +326,15 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Prepares player with media source created from current episode */
     private fun preparePlayer() {
         // todo only prepare if not already prepared
-        // build media item.
+        // build and set media item.
         val mediaItem: MediaItem = MediaItem.fromUri(episode.getMediaId())
-        // create MediaSource
         player.setMediaItem(mediaItem)
+        // prepare
+        player.prepare()
         // set player position
         playerState.playbackPosition = episode.playbackPosition
         player.seekTo(playerState.playbackPosition)
         player.setPlaybackParameters(PlaybackParameters(playerState.playbackSpeed))
-        // prepare
-        player.prepare()
     }
 
 
