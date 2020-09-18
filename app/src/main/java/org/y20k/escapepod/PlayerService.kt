@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.audiofx.AudioEffect
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.ResultReceiver
@@ -39,6 +40,7 @@ import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -299,9 +301,42 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 }
     }
 
-
     /* Creates a simple exo player */
     private fun createPlayer(): SimpleExoPlayer {
+        if (this::player.isInitialized) {
+            player.removeAnalyticsListener(analyticsListener)
+            player.release()
+        }
+        val audioAttributes: AudioAttributes = AudioAttributes.Builder()
+                .setContentType(C.CONTENT_TYPE_MUSIC)
+                .setUsage(C.USAGE_MEDIA)
+                .build()
+        val player = SimpleExoPlayer.Builder(this).build()
+        player.addListener(this@PlayerService)
+        player.setHandleAudioBecomingNoisy(true)
+        player.setWakeMode(C.WAKE_MODE_LOCAL)
+        player.setAudioAttributes(audioAttributes, true)
+        player.addAnalyticsListener(analyticsListener)
+        return player
+    }
+
+
+    /* Prepares player with media source created from current episode */
+    private fun preparePlayer() {
+        // todo only prepare if not already prepared
+        // create MediaSource
+        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent)).createMediaSource(Uri.parse(episode.audio))
+        // prepare player with source
+        player.prepare(mediaSource)
+        // set player position
+        playerState.playbackPosition = episode.playbackPosition
+        player.seekTo(playerState.playbackPosition)
+        player.setPlaybackParameters(PlaybackParameters(playerState.playbackSpeed))
+    }
+
+
+    /* Creates a simple exo player - v2.12.0 test */
+    private fun createPlayerTest(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
@@ -318,22 +353,22 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 .build()
         player.addListener(this@PlayerService)
         player.addAnalyticsListener(analyticsListener)
-        player.seekTo(playerState.playbackPosition)
+        //player.seekTo(playerState.playbackPosition)
         return player
     }
 
 
-    /* Prepares player with media source created from current episode */
-    private fun preparePlayer() {
+    /* Prepares player with media source created from current episode - v2.12.0 test */
+    private fun preparePlayerTest() {
         // todo only prepare if not already prepared
         // build and set media item.
         val mediaItem: MediaItem = MediaItem.fromUri(episode.getMediaId())
-        player.setMediaItem(mediaItem)
-        // prepare
-        player.prepare()
         // set player position
         playerState.playbackPosition = episode.playbackPosition
-        player.seekTo(playerState.playbackPosition)
+        // set media item
+        player.setMediaItem(mediaItem, playerState.playbackPosition)
+        // prepare
+        player.prepare()
         player.setPlaybackParameters(PlaybackParameters(playerState.playbackSpeed))
     }
 
