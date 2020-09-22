@@ -171,29 +171,37 @@ object DownloadHelper {
 
     /* Enqueues an Array of files in DownloadManager */
     private fun enqueueDownload(context: Context, uris: Array<Uri>, type: Int, ignoreWifiRestriction: Boolean = false) {
-        // determine allowed network types
-        val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
-        // enqueue downloads
-        val newIds = LongArray(uris.size)
-        for (i in uris.indices) {
-            val resolvedUri: Uri = NetworkHelper.resolveRedirects(uris[i].toString()).toUri()
-            LogHelper.v(TAG, "DownloadManager enqueue: ${resolvedUri}")
-            // check if valid url and prevent double download
-            val scheme: String = resolvedUri.scheme ?: String()
-            val pathSegments: List<String> = resolvedUri.pathSegments
-            if (scheme.startsWith("http") && isNotInDownloadQueue(resolvedUri.toString()) && pathSegments.isNotEmpty()) {
-                val fileName: String = resolvedUri.pathSegments.last()
-                val request: DownloadManager.Request = DownloadManager.Request(resolvedUri)
-                        .setAllowedNetworkTypes(allowedNetworkTypes)
-                        .setTitle(fileName)
-                        .setDescription(uris[i].toString()) // store the unresolved URL
-                        .setDestinationInExternalFilesDir(context, Keys.FOLDER_TEMP, fileName)
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                newIds[i] = downloadManager.enqueue(request)
-                activeDownloads.add(newIds[i])
+        val backgroundJob = Job()
+        val ioScope = CoroutineScope(Dispatchers.IO + backgroundJob)
+        ioScope.launch {
+            // determine allowed network types
+            val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
+            // enqueue downloads
+            val newIds = LongArray(uris.size)
+            for (i in uris.indices) {
+                // async: resolve url redirects
+                val deferred: Deferred<String> = async { NetworkHelper.resolveRedirectsSuspended(uris[i].toString()) }
+                val resolvedUri: Uri = deferred.await().toUri()
+                LogHelper.v(TAG, "DownloadManager enqueue: ${resolvedUri}")
+                // check if valid url and prevent double download
+                val scheme: String = resolvedUri.scheme ?: String()
+                val pathSegments: List<String> = resolvedUri.pathSegments
+                if (scheme.startsWith("http") && isNotInDownloadQueue(resolvedUri.toString()) && pathSegments.isNotEmpty()) {
+                    val fileName: String = resolvedUri.pathSegments.last()
+                    val request: DownloadManager.Request = DownloadManager.Request(resolvedUri)
+                            .setAllowedNetworkTypes(allowedNetworkTypes)
+                            .setTitle(fileName)
+                            .setDescription(uris[i].toString()) // store the unresolved URL
+                            .setDestinationInExternalFilesDir(context, Keys.FOLDER_TEMP, fileName)
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                    newIds[i] = downloadManager.enqueue(request)
+                    activeDownloads.add(newIds[i])
+                }
             }
+            setActiveDownloads(context, activeDownloads)
+            backgroundJob.cancel()
         }
-        setActiveDownloads(context, activeDownloads)
+
     }
 
 
