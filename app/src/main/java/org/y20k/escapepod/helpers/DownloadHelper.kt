@@ -136,8 +136,8 @@ object DownloadHelper {
             return
         } else {
             val localFileUri: Uri = downloadResult
-            // get remote URL for download ID
-            val remoteFileLocation: String = getRemoteFileLocation(downloadManager, downloadId)
+            // get unresolved original URL that has been stored in download request Description column
+            val remoteFileLocation: String = getDownloadDescription(downloadManager, downloadId)
             // determine what to do
             val fileType = FileHelper.getContentType(context, localFileUri)
             if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
@@ -176,15 +176,17 @@ object DownloadHelper {
         // enqueue downloads
         val newIds = LongArray(uris.size)
         for (i in uris.indices) {
-            LogHelper.v(TAG, "DownloadManager enqueue: ${uris[i]}")
+            val resolvedUri: Uri = NetworkHelper.resolveRedirects(uris[i].toString()).toUri()
+            LogHelper.v(TAG, "DownloadManager enqueue: ${resolvedUri}")
             // check if valid url and prevent double download
-            val scheme: String = uris[i].scheme ?: String()
-            val pathSegments: List<String> = uris[i].pathSegments
-            if (scheme.startsWith("http") && isNotInDownloadQueue(uris[i].toString()) && pathSegments.isNotEmpty()) {
-                val fileName: String = uris[i].pathSegments.last()
-                val request: DownloadManager.Request = DownloadManager.Request(uris[i])
+            val scheme: String = resolvedUri.scheme ?: String()
+            val pathSegments: List<String> = resolvedUri.pathSegments
+            if (scheme.startsWith("http") && isNotInDownloadQueue(resolvedUri.toString()) && pathSegments.isNotEmpty()) {
+                val fileName: String = resolvedUri.pathSegments.last()
+                val request: DownloadManager.Request = DownloadManager.Request(resolvedUri)
                         .setAllowedNetworkTypes(allowedNetworkTypes)
                         .setTitle(fileName)
+                        .setDescription(uris[i].toString()) // store the unresolved URL
                         .setDestinationInExternalFilesDir(context, Keys.FOLDER_TEMP, fileName)
                         .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                 newIds[i] = downloadManager.enqueue(request)
@@ -413,13 +415,25 @@ object DownloadHelper {
 
     /* Determines the file name for given download id (the original URL) */
     private fun getDownloadFileName(downloadManager: DownloadManager, downloadId: Long): String {
-        var remoteFileLocation: String = ""
+        var downloadFileName: String = ""
         val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
         if (cursor.count > 0) {
             cursor.moveToFirst()
-            remoteFileLocation = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+            downloadFileName = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
         }
-        return remoteFileLocation
+        return downloadFileName
+    }
+
+
+    /* Determines the description for given download id */
+    private fun getDownloadDescription(downloadManager: DownloadManager, downloadId: Long): String {
+        var downloadDescription: String = ""
+        val cursor: Cursor = downloadManager.query(DownloadManager.Query().setFilterById(downloadId))
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+            downloadDescription = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION))
+        }
+        return downloadDescription
     }
 
 

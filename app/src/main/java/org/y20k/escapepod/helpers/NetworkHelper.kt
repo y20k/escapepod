@@ -120,6 +120,28 @@ object NetworkHelper {
     }
 
 
+    /* Suspend function: get redirected (real) URL - async using coroutine */
+    suspend fun resolveRedirectsSuspended(urlString: String): String {
+        return suspendCoroutine { cont ->
+            LogHelper.v(TAG, "Resolving redirects - Thread: ${Thread.currentThread().name}")
+            cont.resume(resolveRedirects(urlString))
+        }
+    }
+
+
+    /* Get redirected (real) URL */
+    fun resolveRedirects(urlString: String): String {
+            var redirectedURL: String = urlString
+            val connection: HttpURLConnection? = createConnection(urlString) // createConnection() resolves redirects
+            if (connection != null) {
+                redirectedURL = connection.url.toString()
+                connection.disconnect()
+            }
+            LogHelper.i(TAG, "Resolved URL: $redirectedURL")
+            return redirectedURL
+    }
+
+
     /* Creates a http connection from given url string */
     private fun createConnection(urlString: String, redirectCount: Int = 0): HttpURLConnection? {
         var connection: HttpURLConnection? = null
