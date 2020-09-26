@@ -324,7 +324,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode */
-    private fun preparePlayerTest() {
+    private fun preparePlayer() {
         LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}")
         // todo only prepare if not already prepared
         // create MediaSource
@@ -362,7 +362,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode - v2.12.0 test */
-    private fun preparePlayer() {
+    private fun preparePlayerTest() {
         LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}")
         // todo only prepare if not already prepared
         // build and set media item.
