@@ -304,7 +304,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
     /* Creates a simple exo player */
-    private fun createPlayerOld(): SimpleExoPlayer {
+    private fun createPlayer(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
@@ -324,7 +324,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode */
-    private fun preparePlayerOld() {
+    private fun preparePlayerTest() {
         LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}")
         // todo only prepare if not already prepared
         // create MediaSource
@@ -339,7 +339,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Creates a simple exo player - v2.12.0 test */
-    private fun createPlayer(): SimpleExoPlayer {
+    private fun createPlayerTest(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
