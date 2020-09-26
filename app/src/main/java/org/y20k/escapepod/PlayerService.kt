@@ -51,6 +51,7 @@ import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.PlayerState
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -227,6 +228,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 if (playerState == Player.STATE_READY) {
                     // active playback: update media session and save state
                     handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
+                    LogHelper.d(TAG, "EXOPLAYER-TEST playback started => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}")
                 } else if (playerState == Player.STATE_ENDED) {
                     // playback reached end: stop / end playback
                     handlePlaybackEnded()
@@ -302,7 +304,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     }
 
     /* Creates a simple exo player */
-    private fun createPlayer(): SimpleExoPlayer {
+    private fun createPlayerOld(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
@@ -322,7 +324,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode */
-    private fun preparePlayer() {
+    private fun preparePlayerOld() {
+        LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}")
         // todo only prepare if not already prepared
         // create MediaSource
         val mediaSource: MediaSource = ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent)).createMediaSource(Uri.parse(episode.audio))
@@ -336,7 +339,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Creates a simple exo player - v2.12.0 test */
-    private fun createPlayerTest(): SimpleExoPlayer {
+    private fun createPlayer(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
@@ -359,7 +362,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode - v2.12.0 test */
-    private fun preparePlayerTest() {
+    private fun preparePlayer() {
+        LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}")
         // todo only prepare if not already prepared
         // build and set media item.
         val mediaItem: MediaItem = MediaItem.fromUri(episode.getMediaId())
@@ -683,13 +687,13 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 Keys.CMD_RELOAD_PLAYER_STATE -> {
                     playerState = PreferencesHelper.loadPlayerState(this@PlayerService)
                 }
-                Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE -> {
+                Keys.CMD_REQUEST_PROGRESS_UPDATE -> {
                     if (cb != null) {
                         val playbackProgressBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_PROGRESS to player.currentPosition)
                         if (sleepTimerTimeRemaining > 0L) {
                             playbackProgressBundle.putLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, sleepTimerTimeRemaining)
                         }
-                        cb.send(Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE, playbackProgressBundle)
+                        cb.send(Keys.RESULT_CODE_PROGRESS_UPDATE, playbackProgressBundle)
                     }
                 }
                 Keys.CMD_START_SLEEP_TIMER -> {

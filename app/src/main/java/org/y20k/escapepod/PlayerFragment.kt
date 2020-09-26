@@ -412,7 +412,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // set up sleep timer cancel button
         layout.sheetSleepTimerCancelButtonView.setOnClickListener {
             MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_CANCEL_SLEEP_TIMER, null, null)
-            layout.sleepTimerRunningViews.visibility = View.GONE
         }
 
         // set up the debug log toggle switch
@@ -481,7 +480,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 MotionEvent.ACTION_DOWN -> {
                     // show time remaining while touching the time played view
                     layout.displayTimeRemaining = true
-                    MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+                    MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
                 }
                 MotionEvent.ACTION_UP -> {
                     // show episode duration when not touching the time played view anymore
@@ -726,7 +725,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
             }
             false -> {
                 handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
-                layout.sleepTimerRunningViews.visibility = View.GONE
+                // request current playback position and sleep timer state once
+                MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
             }
         }
     }
@@ -824,8 +824,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
                 handler.postDelayed(periodicProgressUpdateRequestRunnable, 0)
             } else {
-                // request current playback position once
-                MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+                // request current playback position and sleep timer state once
+                MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
             }
 
             // begin looking for changes in collection
@@ -903,7 +903,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private val periodicProgressUpdateRequestRunnable: Runnable = object : Runnable {
         override fun run() {
             // request current playback position
-            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PERIODIC_PROGRESS_UPDATE, null, resultReceiver)
+            MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
             // use the handler to start runnable again after specified delay
             handler.postDelayed(this, 500)
         }
@@ -920,12 +920,14 @@ class PlayerFragment: Fragment(), CoroutineScope,
     var resultReceiver: ResultReceiver = object: ResultReceiver(Handler()) {
         override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
             when (resultCode) {
-                Keys.RESULT_CODE_PERIODIC_PROGRESS_UPDATE -> {
+                Keys.RESULT_CODE_PROGRESS_UPDATE -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_PROGRESS)) {
                         layout.updateProgressbar(activity as Context, resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), playerState.episodeDuration)
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
                         layout.updateSleepTimer(activity as Context, resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
+                    } else {
+                        layout.updateSleepTimer(activity as Context)
                     }
                 }
                 Keys.RESULT_CODE_PLAYBACK_SPEED -> {

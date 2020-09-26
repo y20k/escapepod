@@ -210,12 +210,15 @@ data class LayoutHolder(var rootView: View) {
     fun updateSleepTimer(context: Context, timeRemaining: Long = 0L) {
         when (timeRemaining) {
             0L -> {
-                sleepTimerRunningViews.visibility = View.GONE
+                if (sleepTimerRunningViews.visibility != View.GONE) {
+                    sleepTimerRunningViews.visibility = View.GONE
+                    sheetSleepTimerRemainingTimeView.text = String()
+                }
             }
             else -> {
                 if (topButtonViews.visibility == View.VISIBLE) {
                     sleepTimerRunningViews.visibility = View.VISIBLE
-                    val sleepTimerTimeRemaining = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
+                    val sleepTimerTimeRemaining: String = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
                     sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
                     sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: ${sleepTimerTimeRemaining}"
                 }
@@ -378,6 +381,9 @@ data class LayoutHolder(var rootView: View) {
     private fun hidePlayerViews() {
         playerViews.visibility = View.GONE
         topButtonViews.visibility = View.VISIBLE
+        if (sheetSleepTimerRemainingTimeView.text.isEmpty()) {
+            sleepTimerRunningViews.visibility = View.GONE
+        }
     }
 
 
