@@ -119,7 +119,7 @@
     <string name="pref_theme_selection_mode_device_default">Igual ao do dispositivo</string>
     <string name="pref_theme_selection_mode_light">Modo claro</string>
     <string name="pref_theme_selection_summary">Tema atual:</string>
-    <string name="pref_theme_selection_title">Tema da aplicação</string>
+    <string name="pref_theme_selection_title">Tema da app</string>
     <string name="fragment_settings_title">Definições</string>
     <string name="pref_delete_all_summary">Elimine alguns episódios para ganhar espaço no dispositivo. Pode descarregar os episódios posteriormente.</string>
     <string name="pref_delete_all_title">Apagar descargas</string>
@@ -134,7 +134,7 @@
     <string name="dialog_yes_no_positive_button_update_covers">Atualizar</string>
     <string name="pref_update_covers_summary">Descarregar a última versão de todas as imagens da sua coleção.</string>
     <string name="pref_update_covers_title">Atualizar imagens</string>
-    <string name="descr_app_icon">Ícone da aplicação que representa uma cápsula de fuga no espaço</string>
+    <string name="descr_app_icon">Ícone da app que representa uma cápsula de fuga no espaço</string>
     <string name="pref_report_issue_title">Reportar um erro</string>
     <string name="pref_report_issue_summary">Reporte erros e melhorias/sugestões no GitHub.</string>
     <string name="pref_episode_download_over_mobile_title">Descarregar em redes de dados móveis</string>
@@ -143,7 +143,7 @@
     <string name="pref_background_refresh_title">Atualização em segundo plano</string>
     <string name="pref_background_refresh_summary_disabled">Não pesquisar episódios em segundo plano.</string>
     <string name="pref_background_refresh_summary_enabled">Pesquisar podcasts em segundo plano.</string>
-    <string name="pref_app_version_title">Versão da aplicação</string>
+    <string name="pref_app_version_title">Versão da app</string>
     <string name="pref_app_version_summary">Versão</string>
     <string name="pref_about_title">Acerca</string>
     <string name="toast_message_error_download_error">Erro ao descarregar</string>
