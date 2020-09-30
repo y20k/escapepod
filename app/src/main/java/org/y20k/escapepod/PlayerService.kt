@@ -45,7 +45,7 @@ import com.google.android.exoplayer2.decoder.DecoderCounters
 import com.google.android.exoplayer2.metadata.Metadata
 import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.upstream.*
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
 import org.y20k.escapepod.collection.CollectionProvider
@@ -232,7 +232,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 if (playerState == Player.STATE_READY) {
                     // active playback: update media session and save state
                     handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
-//                    LogHelper.d(TAG, "EXOPLAYER-TEST playback started => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}") // todo remove
                 } else if (playerState == Player.STATE_ENDED) {
                     // playback reached end: stop / end playback
                     handlePlaybackEnded()
@@ -309,7 +308,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Creates a simple exo player */
-    private fun createPlayerOld(): SimpleExoPlayer {
+    private fun createPlayer(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
@@ -329,8 +328,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode */
-    private fun preparePlayerOld() {
-//        LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}") // todo remove
+    private fun preparePlayer() {
         // todo only prepare if not already prepared
         // create MediaSource
         val mediaSource: MediaSource = ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent)).createMediaSource(Uri.parse(episode.audio))
@@ -344,7 +342,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Creates a simple exo player - v2.12.0 test */
-    private fun createPlayer(): SimpleExoPlayer {
+    private fun createPlayerTest(): SimpleExoPlayer {
         if (this::player.isInitialized) {
             player.removeAnalyticsListener(analyticsListener)
             player.release()
@@ -367,9 +365,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Prepares player with media source created from current episode - v2.12.0 test */
-    private fun preparePlayer() {
-//        LogHelper.d(TAG, "EXOPLAYER-TEST preparing player => ${SimpleDateFormat("HH:mm:ss.SSS").format(Calendar.getInstance().time)}") // todo remove
-        // todo only prepare if not already prepared
+    private fun preparePlayerTest() {
         // build and set media item.
         val mediaItem: MediaItem = MediaItem.fromUri(episode.getMediaId())
         // set player position
@@ -379,27 +375,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // prepare
         player.prepare()
     }
-
-
-    /* Creates a DataSourceFactory that ...*/
-    private fun createDataSourceFactory(context: Context, userAgent: String, listener: TransferListener?): DefaultDataSourceFactory {
-        // Credit: https://stackoverflow.com/questions/41517440/exoplayer2-how-can-i-make-a-http-301-redirect-work
-        // Default parameters, except allowCrossProtocolRedirects is true
-        val httpDataSourceFactory = DefaultHttpDataSourceFactory(
-                userAgent,
-                listener,
-                DefaultHttpDataSource.DEFAULT_CONNECT_TIMEOUT_MILLIS,
-                DefaultHttpDataSource.DEFAULT_READ_TIMEOUT_MILLIS,
-                true /* allowCrossProtocolRedirects */
-        )
-        val fileDataSourceFactory = FileDataSource.Factory()
-        return DefaultDataSourceFactory(
-                context,
-                listener,
-                httpDataSourceFactory
-        )
-    }
-
 
 
     /* Start playback with current episode */
