@@ -30,7 +30,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.view.Surface
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
@@ -41,10 +40,8 @@ import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.decoder.DecoderCounters
-import com.google.android.exoplayer2.metadata.Metadata
-import com.google.android.exoplayer2.source.*
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
@@ -54,8 +51,6 @@ import org.y20k.escapepod.core.Episode
 import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.PlayerState
-import java.io.IOException
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -576,232 +571,232 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             sendBroadcast(intent)
         }
 
-        override fun onPlaybackStateChanged(eventTime: AnalyticsListener.EventTime, state: Int) {
-            super.onPlaybackStateChanged(eventTime, state)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onPlaybackStateChanged    ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onPlayWhenReadyChanged(eventTime: AnalyticsListener.EventTime, playWhenReady: Boolean, reason: Int) {
-            super.onPlayWhenReadyChanged(eventTime, playWhenReady, reason)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onPlayWhenReadyChanged    ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onPlaybackSuppressionReasonChanged(eventTime: AnalyticsListener.EventTime, playbackSuppressionReason: Int) {
-            super.onPlaybackSuppressionReasonChanged(eventTime, playbackSuppressionReason)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onPlaybackSuppressionReasonChanged ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onIsPlayingChanged(eventTime: AnalyticsListener.EventTime, isPlaying: Boolean) {
-            super.onIsPlayingChanged(eventTime, isPlaying)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onIsPlayingChanged        ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onTimelineChanged(eventTime: AnalyticsListener.EventTime, reason: Int) {
-            super.onTimelineChanged(eventTime, reason)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onTimelineChanged         ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)} -> $reason (1 = SOURCE_UPDATE | 0 = PLAYLIST_CHANGED)")
-        }
-
-        override fun onMediaItemTransition(eventTime: AnalyticsListener.EventTime, mediaItem: MediaItem?, reason: Int) {
-            super.onMediaItemTransition(eventTime, mediaItem, reason)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onMediaItemTransition     ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onPositionDiscontinuity(eventTime: AnalyticsListener.EventTime, reason: Int) {
-            super.onPositionDiscontinuity(eventTime, reason)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onPositionDiscontinuity   ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onSeekStarted(eventTime: AnalyticsListener.EventTime) {
-            super.onSeekStarted(eventTime)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onSeekStarted             ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onSeekProcessed(eventTime: AnalyticsListener.EventTime) {
-            super.onSeekProcessed(eventTime)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onSeekProcessed           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onPlaybackParametersChanged(eventTime: AnalyticsListener.EventTime, playbackParameters: PlaybackParameters) {
-            super.onPlaybackParametersChanged(eventTime, playbackParameters)
-        }
-
-        override fun onRepeatModeChanged(eventTime: AnalyticsListener.EventTime, repeatMode: Int) {
-            super.onRepeatModeChanged(eventTime, repeatMode)
-        }
-
-        override fun onShuffleModeChanged(eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) {
-            super.onShuffleModeChanged(eventTime, shuffleModeEnabled)
-        }
-
-        override fun onIsLoadingChanged(eventTime: AnalyticsListener.EventTime, isLoading: Boolean) {
-            super.onIsLoadingChanged(eventTime, isLoading)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onIsLoadingChanged        ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)} -> $isLoading")
-        }
-
-        override fun onLoadingChanged(eventTime: AnalyticsListener.EventTime, isLoading: Boolean) {
-            super.onLoadingChanged(eventTime, isLoading)
-        }
-
-        override fun onPlayerError(eventTime: AnalyticsListener.EventTime, error: ExoPlaybackException) {
-            super.onPlayerError(eventTime, error)
-        }
-
-        override fun onTracksChanged(eventTime: AnalyticsListener.EventTime, trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
-            super.onTracksChanged(eventTime, trackGroups, trackSelections)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onTracksChanged           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onLoadStarted(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData) {
-            super.onLoadStarted(eventTime, loadEventInfo, mediaLoadData)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadStarted             ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onLoadCompleted(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData) {
-            super.onLoadCompleted(eventTime, loadEventInfo, mediaLoadData)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadCompleted           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onLoadCanceled(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData) {
-            super.onLoadCanceled(eventTime, loadEventInfo, mediaLoadData)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadCompleted           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onLoadError(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData, error: IOException, wasCanceled: Boolean) {
-            super.onLoadError(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadError               ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onDownstreamFormatChanged(eventTime: AnalyticsListener.EventTime, mediaLoadData: MediaLoadData) {
-            super.onDownstreamFormatChanged(eventTime, mediaLoadData)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onDownstreamFormatChanged ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onUpstreamDiscarded(eventTime: AnalyticsListener.EventTime, mediaLoadData: MediaLoadData) {
-            super.onUpstreamDiscarded(eventTime, mediaLoadData)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onUpstreamDiscarded       ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onBandwidthEstimate(eventTime: AnalyticsListener.EventTime, totalLoadTimeMs: Int, totalBytesLoaded: Long, bitrateEstimate: Long) {
-            super.onBandwidthEstimate(eventTime, totalLoadTimeMs, totalBytesLoaded, bitrateEstimate)
-        }
-
-        override fun onMetadata(eventTime: AnalyticsListener.EventTime, metadata: Metadata) {
-            super.onMetadata(eventTime, metadata)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onMetadata                ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onDecoderEnabled(eventTime: AnalyticsListener.EventTime, trackType: Int, decoderCounters: DecoderCounters) {
-            super.onDecoderEnabled(eventTime, trackType, decoderCounters)
-        }
-
-        override fun onDecoderInitialized(eventTime: AnalyticsListener.EventTime, trackType: Int, decoderName: String, initializationDurationMs: Long) {
-            super.onDecoderInitialized(eventTime, trackType, decoderName, initializationDurationMs)
-        }
-
-        override fun onDecoderInputFormatChanged(eventTime: AnalyticsListener.EventTime, trackType: Int, format: Format) {
-            super.onDecoderInputFormatChanged(eventTime, trackType, format)
-        }
-
-        override fun onDecoderDisabled(eventTime: AnalyticsListener.EventTime, trackType: Int, decoderCounters: DecoderCounters) {
-            super.onDecoderDisabled(eventTime, trackType, decoderCounters)
-        }
-
-        override fun onAudioEnabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
-            super.onAudioEnabled(eventTime, counters)
-            LogHelper.d (TAG, "EXOPLAYER-TEST => onAudioEnabled            ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
-        }
-
-        override fun onAudioDecoderInitialized(eventTime: AnalyticsListener.EventTime, decoderName: String, initializationDurationMs: Long) {
-            super.onAudioDecoderInitialized(eventTime, decoderName, initializationDurationMs)
-        }
-
-        override fun onAudioInputFormatChanged(eventTime: AnalyticsListener.EventTime, format: Format) {
-            super.onAudioInputFormatChanged(eventTime, format)
-        }
-
-        override fun onAudioPositionAdvancing(eventTime: AnalyticsListener.EventTime, playoutStartSystemTimeMs: Long) {
-            super.onAudioPositionAdvancing(eventTime, playoutStartSystemTimeMs)
-        }
-
-        override fun onAudioUnderrun(eventTime: AnalyticsListener.EventTime, bufferSize: Int, bufferSizeMs: Long, elapsedSinceLastFeedMs: Long) {
-            super.onAudioUnderrun(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
-        }
-
-        override fun onAudioDisabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
-            super.onAudioDisabled(eventTime, counters)
-        }
-
-        override fun onAudioAttributesChanged(eventTime: AnalyticsListener.EventTime, audioAttributes: AudioAttributes) {
-            super.onAudioAttributesChanged(eventTime, audioAttributes)
-        }
-
-        override fun onSkipSilenceEnabledChanged(eventTime: AnalyticsListener.EventTime, skipSilenceEnabled: Boolean) {
-            super.onSkipSilenceEnabledChanged(eventTime, skipSilenceEnabled)
-        }
-
-        override fun onVolumeChanged(eventTime: AnalyticsListener.EventTime, volume: Float) {
-            super.onVolumeChanged(eventTime, volume)
-        }
-
-        override fun onVideoEnabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
-            super.onVideoEnabled(eventTime, counters)
-        }
-
-        override fun onVideoDecoderInitialized(eventTime: AnalyticsListener.EventTime, decoderName: String, initializationDurationMs: Long) {
-            super.onVideoDecoderInitialized(eventTime, decoderName, initializationDurationMs)
-        }
-
-        override fun onVideoInputFormatChanged(eventTime: AnalyticsListener.EventTime, format: Format) {
-            super.onVideoInputFormatChanged(eventTime, format)
-        }
-
-        override fun onDroppedVideoFrames(eventTime: AnalyticsListener.EventTime, droppedFrames: Int, elapsedMs: Long) {
-            super.onDroppedVideoFrames(eventTime, droppedFrames, elapsedMs)
-        }
-
-        override fun onVideoDisabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
-            super.onVideoDisabled(eventTime, counters)
-        }
-
-        override fun onVideoFrameProcessingOffset(eventTime: AnalyticsListener.EventTime, totalProcessingOffsetUs: Long, frameCount: Int) {
-            super.onVideoFrameProcessingOffset(eventTime, totalProcessingOffsetUs, frameCount)
-        }
-
-        override fun onRenderedFirstFrame(eventTime: AnalyticsListener.EventTime, surface: Surface?) {
-            super.onRenderedFirstFrame(eventTime, surface)
-        }
-
-        override fun onVideoSizeChanged(eventTime: AnalyticsListener.EventTime, width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
-            super.onVideoSizeChanged(eventTime, width, height, unappliedRotationDegrees, pixelWidthHeightRatio)
-        }
-
-        override fun onSurfaceSizeChanged(eventTime: AnalyticsListener.EventTime, width: Int, height: Int) {
-            super.onSurfaceSizeChanged(eventTime, width, height)
-        }
-
-        override fun onDrmSessionAcquired(eventTime: AnalyticsListener.EventTime) {
-            super.onDrmSessionAcquired(eventTime)
-        }
-
-        override fun onDrmKeysLoaded(eventTime: AnalyticsListener.EventTime) {
-            super.onDrmKeysLoaded(eventTime)
-        }
-
-        override fun onDrmSessionManagerError(eventTime: AnalyticsListener.EventTime, error: Exception) {
-            super.onDrmSessionManagerError(eventTime, error)
-        }
-
-        override fun onDrmKeysRestored(eventTime: AnalyticsListener.EventTime) {
-            super.onDrmKeysRestored(eventTime)
-        }
-
-        override fun onDrmKeysRemoved(eventTime: AnalyticsListener.EventTime) {
-            super.onDrmKeysRemoved(eventTime)
-        }
-
-        override fun onDrmSessionReleased(eventTime: AnalyticsListener.EventTime) {
-            super.onDrmSessionReleased(eventTime)
-        }
+//        override fun onPlaybackStateChanged(eventTime: AnalyticsListener.EventTime, state: Int) {
+//            super.onPlaybackStateChanged(eventTime, state)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onPlaybackStateChanged    ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onPlayWhenReadyChanged(eventTime: AnalyticsListener.EventTime, playWhenReady: Boolean, reason: Int) {
+//            super.onPlayWhenReadyChanged(eventTime, playWhenReady, reason)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onPlayWhenReadyChanged    ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onPlaybackSuppressionReasonChanged(eventTime: AnalyticsListener.EventTime, playbackSuppressionReason: Int) {
+//            super.onPlaybackSuppressionReasonChanged(eventTime, playbackSuppressionReason)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onPlaybackSuppressionReasonChanged ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onIsPlayingChanged(eventTime: AnalyticsListener.EventTime, isPlaying: Boolean) {
+//            super.onIsPlayingChanged(eventTime, isPlaying)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onIsPlayingChanged        ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onTimelineChanged(eventTime: AnalyticsListener.EventTime, reason: Int) {
+//            super.onTimelineChanged(eventTime, reason)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onTimelineChanged         ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)} -> $reason (1 = SOURCE_UPDATE | 0 = PLAYLIST_CHANGED)")
+//        }
+//
+//        override fun onMediaItemTransition(eventTime: AnalyticsListener.EventTime, mediaItem: MediaItem?, reason: Int) {
+//            super.onMediaItemTransition(eventTime, mediaItem, reason)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onMediaItemTransition     ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onPositionDiscontinuity(eventTime: AnalyticsListener.EventTime, reason: Int) {
+//            super.onPositionDiscontinuity(eventTime, reason)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onPositionDiscontinuity   ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onSeekStarted(eventTime: AnalyticsListener.EventTime) {
+//            super.onSeekStarted(eventTime)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onSeekStarted             ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onSeekProcessed(eventTime: AnalyticsListener.EventTime) {
+//            super.onSeekProcessed(eventTime)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onSeekProcessed           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onPlaybackParametersChanged(eventTime: AnalyticsListener.EventTime, playbackParameters: PlaybackParameters) {
+//            super.onPlaybackParametersChanged(eventTime, playbackParameters)
+//        }
+//
+//        override fun onRepeatModeChanged(eventTime: AnalyticsListener.EventTime, repeatMode: Int) {
+//            super.onRepeatModeChanged(eventTime, repeatMode)
+//        }
+//
+//        override fun onShuffleModeChanged(eventTime: AnalyticsListener.EventTime, shuffleModeEnabled: Boolean) {
+//            super.onShuffleModeChanged(eventTime, shuffleModeEnabled)
+//        }
+//
+//        override fun onIsLoadingChanged(eventTime: AnalyticsListener.EventTime, isLoading: Boolean) {
+//            super.onIsLoadingChanged(eventTime, isLoading)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onIsLoadingChanged        ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)} -> $isLoading")
+//        }
+//
+//        override fun onLoadingChanged(eventTime: AnalyticsListener.EventTime, isLoading: Boolean) {
+//            super.onLoadingChanged(eventTime, isLoading)
+//        }
+//
+//        override fun onPlayerError(eventTime: AnalyticsListener.EventTime, error: ExoPlaybackException) {
+//            super.onPlayerError(eventTime, error)
+//        }
+//
+//        override fun onTracksChanged(eventTime: AnalyticsListener.EventTime, trackGroups: TrackGroupArray, trackSelections: TrackSelectionArray) {
+//            super.onTracksChanged(eventTime, trackGroups, trackSelections)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onTracksChanged           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onLoadStarted(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData) {
+//            super.onLoadStarted(eventTime, loadEventInfo, mediaLoadData)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadStarted             ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onLoadCompleted(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData) {
+//            super.onLoadCompleted(eventTime, loadEventInfo, mediaLoadData)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadCompleted           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onLoadCanceled(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData) {
+//            super.onLoadCanceled(eventTime, loadEventInfo, mediaLoadData)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadCompleted           ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onLoadError(eventTime: AnalyticsListener.EventTime, loadEventInfo: LoadEventInfo, mediaLoadData: MediaLoadData, error: IOException, wasCanceled: Boolean) {
+//            super.onLoadError(eventTime, loadEventInfo, mediaLoadData, error, wasCanceled)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onLoadError               ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onDownstreamFormatChanged(eventTime: AnalyticsListener.EventTime, mediaLoadData: MediaLoadData) {
+//            super.onDownstreamFormatChanged(eventTime, mediaLoadData)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onDownstreamFormatChanged ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onUpstreamDiscarded(eventTime: AnalyticsListener.EventTime, mediaLoadData: MediaLoadData) {
+//            super.onUpstreamDiscarded(eventTime, mediaLoadData)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onUpstreamDiscarded       ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onBandwidthEstimate(eventTime: AnalyticsListener.EventTime, totalLoadTimeMs: Int, totalBytesLoaded: Long, bitrateEstimate: Long) {
+//            super.onBandwidthEstimate(eventTime, totalLoadTimeMs, totalBytesLoaded, bitrateEstimate)
+//        }
+//
+//        override fun onMetadata(eventTime: AnalyticsListener.EventTime, metadata: Metadata) {
+//            super.onMetadata(eventTime, metadata)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onMetadata                ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onDecoderEnabled(eventTime: AnalyticsListener.EventTime, trackType: Int, decoderCounters: DecoderCounters) {
+//            super.onDecoderEnabled(eventTime, trackType, decoderCounters)
+//        }
+//
+//        override fun onDecoderInitialized(eventTime: AnalyticsListener.EventTime, trackType: Int, decoderName: String, initializationDurationMs: Long) {
+//            super.onDecoderInitialized(eventTime, trackType, decoderName, initializationDurationMs)
+//        }
+//
+//        override fun onDecoderInputFormatChanged(eventTime: AnalyticsListener.EventTime, trackType: Int, format: Format) {
+//            super.onDecoderInputFormatChanged(eventTime, trackType, format)
+//        }
+//
+//        override fun onDecoderDisabled(eventTime: AnalyticsListener.EventTime, trackType: Int, decoderCounters: DecoderCounters) {
+//            super.onDecoderDisabled(eventTime, trackType, decoderCounters)
+//        }
+//
+//        override fun onAudioEnabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
+//            super.onAudioEnabled(eventTime, counters)
+//            LogHelper.d (TAG, "EXOPLAYER-TEST => onAudioEnabled            ${SimpleDateFormat("HH:mm:ss.SSS").format(eventTime.realtimeMs)}")
+//        }
+//
+//        override fun onAudioDecoderInitialized(eventTime: AnalyticsListener.EventTime, decoderName: String, initializationDurationMs: Long) {
+//            super.onAudioDecoderInitialized(eventTime, decoderName, initializationDurationMs)
+//        }
+//
+//        override fun onAudioInputFormatChanged(eventTime: AnalyticsListener.EventTime, format: Format) {
+//            super.onAudioInputFormatChanged(eventTime, format)
+//        }
+//
+//        override fun onAudioPositionAdvancing(eventTime: AnalyticsListener.EventTime, playoutStartSystemTimeMs: Long) {
+//            super.onAudioPositionAdvancing(eventTime, playoutStartSystemTimeMs)
+//        }
+//
+//        override fun onAudioUnderrun(eventTime: AnalyticsListener.EventTime, bufferSize: Int, bufferSizeMs: Long, elapsedSinceLastFeedMs: Long) {
+//            super.onAudioUnderrun(eventTime, bufferSize, bufferSizeMs, elapsedSinceLastFeedMs)
+//        }
+//
+//        override fun onAudioDisabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
+//            super.onAudioDisabled(eventTime, counters)
+//        }
+//
+//        override fun onAudioAttributesChanged(eventTime: AnalyticsListener.EventTime, audioAttributes: AudioAttributes) {
+//            super.onAudioAttributesChanged(eventTime, audioAttributes)
+//        }
+//
+//        override fun onSkipSilenceEnabledChanged(eventTime: AnalyticsListener.EventTime, skipSilenceEnabled: Boolean) {
+//            super.onSkipSilenceEnabledChanged(eventTime, skipSilenceEnabled)
+//        }
+//
+//        override fun onVolumeChanged(eventTime: AnalyticsListener.EventTime, volume: Float) {
+//            super.onVolumeChanged(eventTime, volume)
+//        }
+//
+//        override fun onVideoEnabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
+//            super.onVideoEnabled(eventTime, counters)
+//        }
+//
+//        override fun onVideoDecoderInitialized(eventTime: AnalyticsListener.EventTime, decoderName: String, initializationDurationMs: Long) {
+//            super.onVideoDecoderInitialized(eventTime, decoderName, initializationDurationMs)
+//        }
+//
+//        override fun onVideoInputFormatChanged(eventTime: AnalyticsListener.EventTime, format: Format) {
+//            super.onVideoInputFormatChanged(eventTime, format)
+//        }
+//
+//        override fun onDroppedVideoFrames(eventTime: AnalyticsListener.EventTime, droppedFrames: Int, elapsedMs: Long) {
+//            super.onDroppedVideoFrames(eventTime, droppedFrames, elapsedMs)
+//        }
+//
+//        override fun onVideoDisabled(eventTime: AnalyticsListener.EventTime, counters: DecoderCounters) {
+//            super.onVideoDisabled(eventTime, counters)
+//        }
+//
+//        override fun onVideoFrameProcessingOffset(eventTime: AnalyticsListener.EventTime, totalProcessingOffsetUs: Long, frameCount: Int) {
+//            super.onVideoFrameProcessingOffset(eventTime, totalProcessingOffsetUs, frameCount)
+//        }
+//
+//        override fun onRenderedFirstFrame(eventTime: AnalyticsListener.EventTime, surface: Surface?) {
+//            super.onRenderedFirstFrame(eventTime, surface)
+//        }
+//
+//        override fun onVideoSizeChanged(eventTime: AnalyticsListener.EventTime, width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
+//            super.onVideoSizeChanged(eventTime, width, height, unappliedRotationDegrees, pixelWidthHeightRatio)
+//        }
+//
+//        override fun onSurfaceSizeChanged(eventTime: AnalyticsListener.EventTime, width: Int, height: Int) {
+//            super.onSurfaceSizeChanged(eventTime, width, height)
+//        }
+//
+//        override fun onDrmSessionAcquired(eventTime: AnalyticsListener.EventTime) {
+//            super.onDrmSessionAcquired(eventTime)
+//        }
+//
+//        override fun onDrmKeysLoaded(eventTime: AnalyticsListener.EventTime) {
+//            super.onDrmKeysLoaded(eventTime)
+//        }
+//
+//        override fun onDrmSessionManagerError(eventTime: AnalyticsListener.EventTime, error: Exception) {
+//            super.onDrmSessionManagerError(eventTime, error)
+//        }
+//
+//        override fun onDrmKeysRestored(eventTime: AnalyticsListener.EventTime) {
+//            super.onDrmKeysRestored(eventTime)
+//        }
+//
+//        override fun onDrmKeysRemoved(eventTime: AnalyticsListener.EventTime) {
+//            super.onDrmKeysRemoved(eventTime)
+//        }
+//
+//        override fun onDrmSessionReleased(eventTime: AnalyticsListener.EventTime) {
+//            super.onDrmSessionReleased(eventTime)
+//        }
     }
 
 
