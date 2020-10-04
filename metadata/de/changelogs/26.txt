@@ -2,5 +2,5 @@
 
 **2020-03-25**
 
-- Korrigiert das Parsen der Podcast-Homepage-Adresse
+- korrigiert das Parsen der Podcast-Homepage-Adresse
 - aktualisierte Übersetzungen
