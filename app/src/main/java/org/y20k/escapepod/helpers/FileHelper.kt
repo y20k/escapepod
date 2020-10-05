@@ -193,15 +193,19 @@ object FileHelper {
                 e.printStackTrace()
             }
             if (json.isNotBlank()) {
-                // save modification date
-                PreferencesHelper.saveCollectionModificationDate(context, lastSave)
                 // write text file
                 writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
+                // save modification date and collection size
+                PreferencesHelper.saveCollectionModificationDate(context, lastSave)
+                PreferencesHelper.saveCollectionSize(context, collectionSize)
+            } else {
+                LogHelper.w(TAG, "Not writing collection file. Reason: JSON string was completely empty.")
             }
         } else {
-            LogHelper.w(TAG, "Not saving collection. Collection is empty.")
+            LogHelper.w(TAG, "Not saving collection. Reason: Trying to override an collection with more than one podcast")
         }
     }
+
 
     /* Reads podcast collection from storage using GSON */
     fun readCollection(context: Context): Collection {
