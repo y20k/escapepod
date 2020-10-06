@@ -375,11 +375,20 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Start playback with current episode */
     private fun startPlayback() {
         LogHelper.d(TAG, "Starting Playback. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
-        // sanity check
-        if (episode.audio.isEmpty()) {
-            LogHelper.e(TAG, "Unable to start playback. No episode has been selected.")
-            return
+        // check if episode is valid and collection has podcasts
+        if (episode.audio.isEmpty() && collection.podcasts.isNullOrEmpty()) {
+            LogHelper.e(TAG, "Unable to start playback. Force reload collection.")
+            collection = FileHelper.readCollection(this) // todo make this async again
         }
+
+        // default to last played episode, if no episode has been selected
+        if (episode.audio.isEmpty() && collection.podcasts.isNotEmpty()) {
+            LogHelper.w(TAG, "No episode has been selected. Starting playback of last played episode.")
+            episode = CollectionHelper.getEpisode(collection, playerState.episodeMediaId)
+            if (episode.audio.isEmpty()) return // sanity check
+            playerState.playbackPosition = episode.playbackPosition
+        }
+
         // reset playback position if necessary
         if (episode.isFinished()) {
             episode.playbackPosition = 0L
