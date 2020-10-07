@@ -3,34 +3,24 @@ Escapepod ist ein Podcast-Player mit einem minimalistischen Ansatz, der vielleic
 
 HÄUFIGE FRAGEN
 
-ICH KANN NICHT DEN PODCAST X HINZUFÜGEN.
-Die Podcast-Importfunktion bedarf einiger Tests. Sie funktioniert mit den meisten meiner Lieblings-Podcasts, aber es ist mit Problemen zu rechnen. Bitte gehe zum Wiki (https://github.com/y20k/escapepod/wiki/Podcasts-feeds-that-are-not-working-yet) und füge den Podcast hinzu, der nicht importiert werden konnte.
-
-WO SIND DIE EINSTELLUNGEN?
-Escapepod hat keinen Einstellungsbereich. Es versucht, sich auf sinnvolle Voreinstellungen zu verlassen.
-
-WAS SIND DIE STANDARDEINSTELLUNGEN?
-- Auto-Update lädt keine Dateien über das Mobilfunknetz herunter
-- Dark-Modus wird vom Android-System gesteuert
-- Escapepod behält standardmäßig nur zwei Episoden
-
-ESCAPEPOD BEHÄLT MEHR ALS ZWEI EPISODEN.
-Escapepod versucht, die Anzahl der Episoden zu reduzieren. Hier sind die Regeln dafür:
-- Escapepod behält die letzten beiden Episoden
-- Episoden, die gestartet oder manuell heruntergeladen wurden, bleiben ebenfalls erhalten
-- die maximale Anzahl der verfügbaren (und beibehaltenen) Episoden beträgt fünf
-
-WARUM STEHT EINFACHHEIT AN ERSTER STELLE?
-Escapepod ist ein Ein-Personen-Spaß-Projekt. Die Einfachheit hilft bei der Wartung der App.
-
 HAT ESCAPEPOD EINE WIEDERGABE-WARTESCHLANGE?
 Escapepod hat eine einfache Folgefunktion. Tippe auf die Wiedergabe einer Episode, während du eine andere hörst. Du bekommst dann die Möglichkeit, sie in den nächsten Platz einzufügen.
 
-ICH VERMISSE WIRKLICH DIE FUNKTION X.
-Auf absehbare Zeit wird sich die Entwicklung von Escapepod auf Stabilität und den Feinschliff der Benutzeroberfläche konzentrieren. Erwarte in nächster Zeit keine neuen Features.
+WAS SIND DIE STANDARDEINSTELLUNGEN?
+- Auto-Update lädt keine Dateien über das Mobilfunknetz herunter
+- Escapepod behält standardmäßig nur zwei Episoden
+
+KANN ESCAPEPOD MEHR ALS ZWEI EPISODEN BEHALTEN?
+Escapepod versucht, die Anzahl der Episoden zu reduzieren. Hier sind die Regeln dafür:
+- Escapepod behält die letzten beiden Episoden
+- Episoden, die gestartet oder manuell heruntergeladen wurden, bleiben ebenfalls erhalten
+- Die maximale Anzahl der verfügbaren (und beibehaltenen) Episoden beträgt fünf
 
 UNTERSTÜTZT ESCAPEPOD OPML?
-Du kannst eine OPML-formatierte Podcast-Liste importieren. Öffne dazu die Liste in einem Dateibrowser und wähle Escapepod aus. Escapepod verfügt nicht über eine explizite Exportfunktion, aber es speichert eine aktuelle OPML-Datei im folgenden Ordner auf deinem Gerät /Android/data/org.y20k.escapepod/files/collection/.
+Du kannst eine OPML-formatierte Podcast-Liste importieren. Öffne dazu die Liste in einem Dateibrowser und wähle Escapepod aus. Die aktuelle Podcast-Sammlung kann über Einstellungen exportiert werden. Zusätzlich speichert Escapepod eine aktuelle OPML-Datei im Ordner /Android/data/org.y20k.escapepod/files/collection/.
+
+WARUM ICH KANN NICHT DEN PODCAST X HINZUFÜGEN?
+Bitte melde alle Podcast-Feeds, die derzeit nicht funktionieren, mit der GitHub-Fehlervorlage "Feed Issue" (https://github.com/y20k/escapepod/issues/). Hinweis: Escapepod unterstützt keine Video-Podcasts.
 
 WOHER KOMMEN DIE PODCAST-SUCHERGEBNISSE?
 Escapepod durchsucht die Online-Datenbank von gpodder.net (https://gpodder.net/directory/). Gpodder.net ist eine großartige Seite, wenn du auf der Suche nach neuen Sachen zum Anhören bist, nebenbei bemerkt.

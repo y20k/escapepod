@@ -1,0 +1,5 @@
+# v0.9.5 - Aber Hier Leben, Nein Danke
+
+**2020-10-07**
+
+- der letzte verbleibende Podcast in der Liste kann (wieder) gelöscht werden
