@@ -1,0 +1,7 @@
+# v0.9.2 - Aber Hier Leben, Nein Danke
+
+**22 Temmuz 2020**
+
+- arka planda indirmeleri denetlemek için yeni ayar
+- güncellenmiş ve yeni çeviriler
+- birkaç küçük hata düzeltmesi
