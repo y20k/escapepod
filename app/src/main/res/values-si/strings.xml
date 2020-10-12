@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="dialog_add_podcast_button">එක් කරන්න</string>
+    <string name="fragment_settings_title">යෙදුම්</string>
+    <string name="app_name">එස්කේප් පොඩ්</string>
+</resources>
