@@ -147,4 +147,7 @@
     <string name="pref_app_version_title">Version de l\'application</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_about_title">À propos</string>
+    <string name="pref_search_provider_selection_title">Moteur de recherche</string>
+    <string name="pref_search_provider_selection_summary">En cours d\'utilisation :</string>
+    <string name="pref_advanced_title">Avancé</string>
 </resources>
