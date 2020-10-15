@@ -1,2 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="dialog_yes_no_message_default">Is nit txsed ad tged-aya\?</string>
+    <string name="pref_episode_download_over_mobile_title">Agem S Uzeṭṭa N Utilifun</string>
+    <string name="pref_theme_selection_title">Asgum n Tsensi</string>
+    <string name="pref_delete_all_title">Kkes Agamen</string>
+    <string name="pref_app_version_title">Taleqqimet n tsensi</string>
+    <string name="dialog_yes_no_positive_button_delete_downloads">Kkes maṛṛa</string>
+    <string name="dialog_yes_no_positive_button_add_up_next">Senti dɣi</string>
+    <string name="dialog_generic_button_okay">WAXXA</string>
+    <string name="dialog_generic_button_cancel">Ser</string>
+    <string name="dialog_find_podcast_button_add">Rnu</string>
+    <string name="dialog_error_title_default">Tazgalet</string>
+    <string name="dialog_episode_shownotes_website">Asit wib</string>
+    <string name="dialog_episode_shownotes_close">Rgel</string>
+    <string name="dialog_add_podcast_button">Rnu</string>
+    <string name="fragment_settings_title">Tisɣal</string>
+    <string name="app_name">Escapepod</string>
+</resources>
