@@ -147,4 +147,7 @@
     <string name="dialog_find_podcast_hint">Ime ili adresa feeda</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">Preostalo vrijeme odbrojavanja</string>
     <string name="dialog_yes_no_message_default">Stvarno to želiš učiniti\?</string>
+    <string name="pref_search_provider_selection_title">Usluga pretraživanja</string>
+    <string name="pref_search_provider_selection_summary">Trenutačno se koristi:</string>
+    <string name="pref_advanced_title">Napredno</string>
 </resources>
