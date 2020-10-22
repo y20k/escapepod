@@ -16,8 +16,10 @@
 package org.y20k.escapepod.collection
 
 import android.support.v4.media.MediaBrowserCompat
-import org.y20k.escapepod.core.Collection
-import org.y20k.escapepod.helpers.CollectionHelper
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.y20k.escapepod.Keys
+import org.y20k.escapepod.database.CollectionDatabase
 
 
 /**
@@ -31,8 +33,10 @@ class CollectionProvider {
 
     /* Main class variables */
     private enum class State { NON_INITIALIZED, INITIALIZING, INITIALIZED }
-    private var currentState = State.NON_INITIALIZED
+    private var currentState: State = State.NON_INITIALIZED
     val episodeListByDate: MutableList<MediaBrowserCompat.MediaItem> = mutableListOf()
+//    var currentEpisode: Episode? = null
+//    var upNextEpisode: Episode? = null
 
 
     /* Callback used by PlayerService */
@@ -48,21 +52,29 @@ class CollectionProvider {
 
 
     /* Gets list of episodes and caches meta information in list of MediaMetaItems */
-    fun retrieveMedia(collection: Collection, episodeListProviderCallback: CollectionProviderCallback) {
+    fun retrieveMedia(collectionDatabase: CollectionDatabase, episodeListProviderCallback: CollectionProviderCallback) {
         if (currentState == State.INITIALIZED) {
             // already initialized, set callback immediately
             episodeListProviderCallback.onEpisodeListReady(true)
         } else {
             // fill episode list
-            CollectionHelper.getAllEpisodesChronological(collection).forEach { episode ->
-                // add only episodes with downloaded audio
-                if (episode.audio.isNotEmpty()) {
-                    episodeListByDate.add(CollectionHelper.buildEpisodeMediaMetaItem(episode))
+            GlobalScope.launch {
+                // fill episode list
+                collectionDatabase.episodeDao().getChronological(Keys.DEFAULT_NUMBER_OF_EPISODES_FOR_ANDROID_AUTO).forEach { episode ->
+                    // add only episodes with downloaded audio
+                    if (episode.audio.isNotEmpty()) {
+                        episodeListByDate.add(episode.toMediaMetaItem())
+                    }
                 }
+//                // try to get current and up next episode
+//                currentEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
+//                upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
+                // afterwards: update state and set callback
+                currentState = State.INITIALIZED
+                episodeListProviderCallback.onEpisodeListReady(true)
             }
-            // afterwards: update state and set callback
-            currentState = State.INITIALIZED
-            episodeListProviderCallback.onEpisodeListReady(true)
+
+
         }
     }
 
@@ -113,5 +125,11 @@ class CollectionProvider {
         // default: return oldest (cycle through from newest)
         return getOldestEpisode()
     }
+
+
+    private fun observeCollectionViewModel() {
+
+    }
+
 
 }

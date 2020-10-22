@@ -16,12 +16,11 @@ package org.y20k.escapepod.xml
 
 import android.content.Context
 import android.net.Uri
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.y20k.escapepod.Keys
-import org.y20k.escapepod.core.Episode
-import org.y20k.escapepod.core.Podcast
 import org.y20k.escapepod.helpers.DateTimeHelper
 import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.helpers.LogHelper
@@ -42,15 +41,15 @@ class RssHelper {
 
 
     /* Main class variables */
-    private var podcast: Podcast = Podcast()
+    private var podcast: RssPodcast = RssPodcast()
 
 
     /* Suspend function: Read RSS feed from given input stream - async using coroutine */
-    suspend fun readSuspended(context: Context, localFileUri: Uri, remotePodcastFeedLocation: String): Podcast {
+    suspend fun readSuspended(context: Context, localFileUri: Uri, remotePodcastFeedLocation: String): RssPodcast {
         return suspendCoroutine {cont ->
             LogHelper.v(TAG, "Reading RSS feed ($remotePodcastFeedLocation) - Thread: ${Thread.currentThread().name}")
-            // store remote feed location
-            podcast.remotePodcastFeedLocation = remotePodcastFeedLocation
+            // create podcast object and store remote feed location
+            podcast = RssPodcast(remotePodcastFeedLocation = remotePodcastFeedLocation)
             // try parsing
             val stream: InputStream? = FileHelper.getTextFileStream(context, localFileUri)
             try {
@@ -60,7 +59,7 @@ class RssHelper {
                 parser.setInput(stream, null)
                 parser.nextTag()
                 // start reading rss feed
-                podcast = parseFeed(parser)
+                parseFeed(parser)
             } catch (e : Exception) {
                 // e.printStackTrace()
             } finally {
@@ -78,7 +77,7 @@ class RssHelper {
 
     /* Parses whole RSS feed */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun parseFeed(parser: XmlPullParser): Podcast {
+    private fun parseFeed(parser: XmlPullParser) {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_RSS)
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -94,7 +93,6 @@ class RssHelper {
                 else -> XmlHelper.skip(parser)
             }
         }
-        return podcast
     }
 
 
@@ -121,28 +119,29 @@ class RssHelper {
                 Keys.RSS_PODCAST_COVER -> podcast.remoteImageFileLocation = readPodcastCover(parser, Keys.XML_NAME_SPACE)
                 // found an episode
                 Keys.RSS_EPISODE -> {
-                    val episode: Episode = readEpisode(parser, podcast)
-                    if (episode.isValid()) { podcast.episodes.add(episode) }
+                    val episode: RssEpisode = readEpisode(parser)
+                    if (episode.title.isNotEmpty() && episode.remoteAudioFileLocation.isNotEmpty() && episode.publicationDate != Keys.DEFAULT_DATE) {
+                        episode.podcastName = podcast.name
+                        podcast.episodes.add(episode)
+                        if (episode.publicationDate.after(podcast.latestEpisodeDate)) {
+                            podcast.latestEpisodeDate = episode.publicationDate
+                        }
+                    }
                 }
-                // skip any other un-needed tag within "channel" ( = Podcast)
+                // skip any other un-needed tag within "channel" ( = podcast)
                 else -> XmlHelper.skip(parser)
             }
         }
-
     }
 
 
     /* Reads episode element - within podcast element (within feed) */
     @Throws(XmlPullParserException::class, IOException::class)
-    private fun readEpisode(parser: XmlPullParser, podcast: Podcast): Episode {
+    private fun readEpisode(parser: XmlPullParser): RssEpisode {
         parser.require(XmlPullParser.START_TAG, Keys.XML_NAME_SPACE, Keys.RSS_EPISODE)
 
         // initialize episode
-        val episode: Episode = Episode()
-        episode.podcastName = podcast.name
-        episode.podcastFeedLocation = podcast.remotePodcastFeedLocation
-        episode.podcastWebsite = podcast.website
-        episode.cover = podcast.cover
+        val episode: RssEpisode = RssEpisode(episodeRemotePodcastFeedLocation = podcast.remotePodcastFeedLocation)
 
         while (parser.next() != XmlPullParser.END_TAG) {
             // skip this round early if no start tag
@@ -163,7 +162,7 @@ class RssHelper {
                 Keys.RSS_EPISODE_PUBLICATION_DATE -> episode.publicationDate = readEpisodePublicationDate(parser, Keys.XML_NAME_SPACE)
                 // found episode audio link
                 Keys.RSS_EPISODE_AUDIO_LINK -> episode.remoteAudioFileLocation = readEpisodeAudioLink(parser, Keys.XML_NAME_SPACE)
-                // skip any other un-needed tag within "item" ( = Episode)
+                // skip any other un-needed tag within "item" ( = episode)
                 else -> XmlHelper.skip(parser)
             }
         }
@@ -330,5 +329,47 @@ class RssHelper {
         }
     }
 
+
+    /*
+     * Inner class to collect podcast data
+     */
+    inner class RssPodcast(
+            var name: String = String(),
+            var description: String = String(),
+            var website: String = String(),
+            var cover: String = Keys.LOCATION_DEFAULT_COVER,
+            var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
+            var latestEpisodeDate: Date = Keys.DEFAULT_DATE,
+            var remoteImageFileLocation: String = String(),
+            var remotePodcastFeedLocation: String = String(),
+            var episodes: MutableList<RssEpisode> = mutableListOf())
+    /*
+     * End of inner class
+     */
+
+
+    /*
+     * Inner class to collect episode data
+     */
+    inner class RssEpisode(
+            var guid: String = String(),
+            var title: String = String(),
+            var description: String = String(),
+            var audio: String = String(),
+            var cover: String = Keys.LOCATION_DEFAULT_COVER,
+            var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
+            var publicationDate: Date = Keys.DEFAULT_DATE,
+            var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
+            var playbackPosition: Long = 0L,
+            var duration: Long = 0L,
+            var manuallyDownloaded: Boolean = false,
+            var manuallyDeleted: Boolean = false,
+            var podcastName: String = String(),
+            var remoteCoverFileLocation: String = String(),
+            var remoteAudioFileLocation: String = String(),
+            var episodeRemotePodcastFeedLocation: String = String())
+    /*
+     * End of inner class
+     */
 
 }

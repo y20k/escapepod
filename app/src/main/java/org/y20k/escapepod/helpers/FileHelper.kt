@@ -26,12 +26,12 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.Keys
-import org.y20k.escapepod.core.Collection
+import org.y20k.escapepod.database.objects.Podcast
+import org.y20k.escapepod.legacy.LegacyCollection
 import org.y20k.escapepod.xml.OpmlHelper
 import java.io.*
 import java.net.URL
 import java.text.NumberFormat
-import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -117,7 +117,7 @@ object FileHelper {
 
 
     /* Determines a destination folder */
-    fun determineDestinationFolderPath(type: Int, podcastName: String): String {
+    fun determineDestinationFolderPath(type: Int, podcastName: String = String()): String {
         val folderPath: String
         val subDirectory: String = podcastName.replace("[:/]", "_")
         when (type) {
@@ -131,7 +131,7 @@ object FileHelper {
 
 
     /* Clears given folder - keeps given number of files */
-    fun clearFolder(folder: File?, keep: Int, deleteFolder: Boolean = false) {
+    fun clearFolder(folder: File?, keep: Int = 0, deleteFolder: Boolean = false) {
         if (folder != null && folder.exists()) {
             val files: Array<File>? = folder.listFiles()
             if (files != null) {
@@ -146,7 +146,6 @@ object FileHelper {
                     folder.delete()
                 }
             }
-
         }
     }
 
@@ -173,50 +172,21 @@ object FileHelper {
     fun saveCover(context: Context, podcastName: String, sourceImageUri: String, size: Int, fileName: String): Uri {
         val coverBitmap: Bitmap = ImageHelper.getScaledPodcastCover(context, sourceImageUri, size)
         val file: File = File(context.getExternalFilesDir(determineDestinationFolderPath(Keys.FILE_TYPE_IMAGE, podcastName)), fileName)
-        writeImageFile(coverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
+        writeImageFile(context, coverBitmap, file, Bitmap.CompressFormat.JPEG, quality = 75)
         return file.toUri()
     }
 
 
-    /* Saves podcast collection as JSON text file */
-    fun saveCollection(context: Context, collection: Collection, lastSave: Date) {
-        LogHelper.v(TAG, "Saving collection - Thread: ${Thread.currentThread().name}")
-        val collectionSize: Int = collection.podcasts.size
-        // do not override an existing collection with an empty one - except when last podcast is deleted
-        if (collectionSize > 0 || PreferencesHelper.loadCollectionSize(context) == 1) {
-            // convert to JSON
-            val gson: Gson = getCustomGson()
-            var json: String = String()
-            try {
-                json = gson.toJson(collection)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            if (json.isNotBlank()) {
-                // write text file
-                writeTextFile(context, json, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
-                // save modification date and collection size
-                PreferencesHelper.saveCollectionModificationDate(context, lastSave)
-                PreferencesHelper.saveCollectionSize(context, collectionSize)
-            } else {
-                LogHelper.w(TAG, "Not writing collection file. Reason: JSON string was completely empty.")
-            }
-        } else {
-            LogHelper.w(TAG, "Not saving collection. Reason: Trying to override an collection with more than one podcast")
-        }
-    }
-
-
-    /* Reads podcast collection from storage using GSON */
-    fun readCollection(context: Context): Collection {
+    /* Reads podcast collection from storage using GSON */ // todo remove
+    fun readLegacyCollection(context: Context): LegacyCollection {
         LogHelper.v(TAG, "Reading collection - Thread: ${Thread.currentThread().name}")
         // get JSON from text file
         val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
-        var collection: Collection = Collection()
+        var collection: LegacyCollection = LegacyCollection()
         when (json.isNotBlank()) {
             // convert JSON and return as collection
             true -> try {
-                collection = getCustomGson().fromJson(json, Collection::class.java)
+                collection = getCustomGson().fromJson(json, LegacyCollection::class.java)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -250,28 +220,20 @@ object FileHelper {
     }
 
 
-    /* Suspend function: Wrapper for saveCollection */
-    suspend fun saveCollectionSuspended(context: Context, collection: Collection, lastUpdate: Date) {
-        return suspendCoroutine { cont ->
-            cont.resume(saveCollection(context, collection, lastUpdate))
-        }
-    }
-
-
-    /* Suspend function: Wrapper for readCollection */
-    suspend fun readCollectionSuspended(context: Context): Collection {
+    /* Suspend function: Wrapper for readCollection */ // todo remove
+    suspend fun readLegacyCollectionSuspended(context: Context): LegacyCollection {
         return suspendCoroutine {cont ->
-            cont.resume(readCollection(context))
+            cont.resume(readLegacyCollection(context))
         }
     }
 
 
     /* Suspend function: Exports podcast collection as OPML file - local backup copy */
-    suspend fun backupCollectionAsOpmlSuspended(context: Context, collection: Collection) {
+    suspend fun backupCollectionAsOpmlSuspended(context: Context, podcastList: List<Podcast>) {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Backing up collection as OPML - Thread: ${Thread.currentThread().name}")
             // create OPML string
-            val opmlString: String = OpmlHelper.createOpmlString(collection)
+            val opmlString: String = OpmlHelper.createOpmlString(podcastList)
             // save OPML as text file
             cont.resume(writeTextFile(context, opmlString, Keys.FOLDER_COLLECTION, Keys.COLLECTION_OPML_FILE))
         }
@@ -412,7 +374,7 @@ object FileHelper {
 
 
     /* Writes given bitmap as image file to storage */
-    private fun writeImageFile(bitmap: Bitmap, file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 75) {
+    private fun writeImageFile(context: Context, bitmap: Bitmap, file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG, quality: Int = 75) {
         if (file.exists()) file.delete ()
         try {
             val out = FileOutputStream(file)

@@ -1,7 +1,7 @@
 /*
- * Collection.kt
- * Implements the Collection class
- * A Collection object holds a list of Podcasts
+ * LegacyCollection.kt
+ * Implements the LegacyCollection class
+ * A LegacyCollection object holds a list of Podcasts
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepod.core
+package org.y20k.escapepod.legacy
 
 import android.os.Parcelable
 import androidx.annotation.Keep
@@ -23,19 +23,19 @@ import java.util.*
 
 
 /*
- * Collection class
+ * LegacyCollection class
  */
 @Keep
 @Parcelize
-data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
-                      @Expose var podcasts: MutableList<Podcast> = mutableListOf<Podcast>(),
-                      @Expose var modificationDate: Date = Date()) : Parcelable {
+data class LegacyCollection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
+                            @Expose var podcasts: MutableList<LegacyPodcast> = mutableListOf<LegacyPodcast>(),
+                            @Expose var modificationDate: Date = Date()) : Parcelable {
 
     /* overrides toString method */
     override fun toString(): String {
         val stringBuilder: StringBuilder = StringBuilder()
         stringBuilder.append("Format version: $version\n")
-        stringBuilder.append("Number of podcasts in collection: ${podcasts.size}\n\n")
+        stringBuilder.append("Number of legacyPodcasts in collection: ${podcasts.size}\n\n")
         podcasts.forEach {
             stringBuilder.append("${it.toString()}\n")
         }
@@ -43,11 +43,11 @@ data class Collection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_V
     }
 
 
-    /* Creates a deep copy of a Collection */
-    fun deepCopy(): Collection {
-        val podcastsCopy: MutableList<Podcast> = mutableListOf<Podcast>()
+    /* Creates a deep copy of a LegacyCollection */
+    fun deepCopy(): LegacyCollection {
+        val podcastsCopy: MutableList<LegacyPodcast> = mutableListOf<LegacyPodcast>()
         podcasts.forEach { podcastsCopy.add(it.deepCopy()) }
-        return Collection(version = version,
+        return LegacyCollection(version = version,
                           podcasts = podcastsCopy,
                           modificationDate = modificationDate)
     }

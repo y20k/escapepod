@@ -31,9 +31,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
-import org.y20k.escapepod.core.Episode
+import org.y20k.escapepod.database.CollectionDatabase
+import org.y20k.escapepod.database.objects.Episode
+import org.y20k.escapepod.database.objects.EpisodeDescription
+import org.y20k.escapepod.database.objects.Podcast
 import org.y20k.escapepod.dialogs.ShowNotesDialog
 import org.y20k.escapepod.helpers.*
 
@@ -41,7 +48,7 @@ import org.y20k.escapepod.helpers.*
 /*
  * LayoutHolder class
  */
-data class LayoutHolder(var rootView: View) {
+data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDatabase) {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(LayoutHolder::class.java)
@@ -71,7 +78,7 @@ data class LayoutHolder(var rootView: View) {
     var sheetSkipForwardButtonView: ImageView
     var sheetSleepTimerStartButtonView: ImageView
     var sheetSleepTimerCancelButtonView: ImageView
-    private var sheetSleepTimerRemainingTimeView: TextView
+    var sheetSleepTimerRemainingTimeView: TextView
     var sheetDebugToggleButtonView: ImageView
     var sheetPlaybackSpeedButtonView: TextView
     var sheetUpNextName: TextView
@@ -126,39 +133,56 @@ data class LayoutHolder(var rootView: View) {
 
 
     /* Updates the player views */
-    fun updatePlayerViews(context: Context, episode: Episode) {
-        val duration: String = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
-        coverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.smallCover))
-        coverView.clipToOutline = true // apply rounded corner mask to covers
-        coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
-        podcastNameView.text = episode.podcastName
-        episodeTitleView.text = episode.title
-        sheetCoverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.cover))
-        sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
-        sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
-        sheetEpisodeTitleView.text = episode.title
-        sheetDurationView.text = duration
-        sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_episode_length)}: $duration"
-        sheetProgressBarView.max = episode.duration.toInt()
+    fun updatePlayerViews(context: Context, episode: Episode?) {
+        if (episode != null) {
+            val duration: String = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+            coverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.smallCover))
+            coverView.clipToOutline = true // apply rounded corner mask to covers
+            coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
+            podcastNameView.text = episode.podcastName
+            episodeTitleView.text = episode.title
+            sheetCoverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.cover))
+            sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
+            sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
+            sheetEpisodeTitleView.text = episode.title
+            sheetDurationView.text = duration
+            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_episode_length)}: $duration"
+            sheetProgressBarView.max = episode.duration.toInt()
 
-        // update click listeners
-        sheetCoverView.setOnClickListener{
-            ShowNotesDialog().show(context, episode)
+            // setup progress bar
+            updateProgressbar(context, episode.playbackPosition, episode.duration)
+
+            // update click listeners
+            sheetCoverView.setOnClickListener{
+                displayShowNotes(context, episode)
+            }
+            sheetEpisodeTitleView.setOnClickListener {
+                displayShowNotes(context, episode)
+
+            }
+            podcastNameView.setOnLongClickListener{ view ->
+                val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                v.vibrate(50)
+                displayShowNotes(context, episode)
+                return@setOnLongClickListener true
+            }
+            episodeTitleView.setOnLongClickListener{
+                val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                v.vibrate(50)
+                displayShowNotes(context, episode)
+                return@setOnLongClickListener true
+            }
         }
-        sheetEpisodeTitleView.setOnClickListener {
-            ShowNotesDialog().show(context, episode)
-        }
-        podcastNameView.setOnLongClickListener{ view ->
-            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            v.vibrate(50)
-            ShowNotesDialog().show(context, episode)
-            return@setOnLongClickListener true
-        }
-        episodeTitleView.setOnLongClickListener{
-            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-            v.vibrate(50)
-            ShowNotesDialog().show(context, episode)
-            return@setOnLongClickListener true
+    }
+
+
+    private fun displayShowNotes(context: Context, episode: Episode) {
+        GlobalScope.launch {
+            val podcast: Podcast? = collectionDatabase.podcastDao().findByRemotePodcastFeedLocation(episode.episodeRemotePodcastFeedLocation)
+            val episodeDescription: EpisodeDescription? = collectionDatabase.episodeDescriptionDao().findByMediaId(episode.mediaId)
+            if (episodeDescription != null && podcast != null) {
+                withContext(Dispatchers.Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
+            }
         }
     }
 
@@ -186,8 +210,8 @@ data class LayoutHolder(var rootView: View) {
 
 
     /* Updates the Up Next views */
-    fun updateUpNextViews(upNextEpisode: Episode) {
-        when (upNextEpisode.getMediaId().isNotEmpty()) {
+    fun updateUpNextViews(upNextEpisode: Episode?) {
+        when (upNextEpisode != null) {
             true -> {
                 // show the up next queue if queue is not empty
                 upNextViews.visibility = View.GONE // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)

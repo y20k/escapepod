@@ -28,7 +28,17 @@ data class GpodderResult (@Expose val url: String,
                           @Expose val logo_url: String,
                           @Expose val scaled_logo_url: String,
                           @Expose val website: String,
-                          @Expose val mygpo_link: String)
+                          @Expose val mygpo_link: String) {
 
-// Documentation of format for GpodderResult - see:
-// https://gpoddernet.readthedocs.io/en/latest/api/reference/general.html#formats
+    // Documentation of format for GpodderResult - see:
+    // https://gpoddernet.readthedocs.io/en/latest/api/reference/general.html#formats
+
+
+    /* Converts GpodderResult to SearchResult */
+    fun toSearchResult(): SearchResult = SearchResult(url = url, title = title, description = description)
+
+}
+
+
+
+

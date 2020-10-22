@@ -21,7 +21,6 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
-import org.y20k.escapepod.core.Collection
 import org.y20k.escapepod.ui.PlayerState
 import java.util.*
 
@@ -38,7 +37,7 @@ object PreferencesHelper {
     /* Loads mediaId of current episode from shared preferences */
     fun loadCurrentMediaId(context: Context): String {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        return settings.getString(Keys.PREF_CURRENT_MEDIA_ID, String()) ?: String()
+        return settings.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
     }
 
 
@@ -46,7 +45,7 @@ object PreferencesHelper {
     fun saveCurrentMediaId(context: Context, mediaId: String = String()) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
-        editor.putString(Keys.PREF_CURRENT_MEDIA_ID, mediaId)
+        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, mediaId)
         editor.apply()
     }
 
@@ -54,7 +53,7 @@ object PreferencesHelper {
     /* Loads mediaId of next episode in up next queue from shared preferences */
     fun loadUpNextMediaId(context: Context): String {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        return settings.getString(Keys.PREF_UP_NEXT_MEDIA_ID, String()) ?: String()
+        return settings.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
     }
 
 
@@ -62,7 +61,7 @@ object PreferencesHelper {
     fun saveUpNextMediaId(context: Context, mediaId: String = String()) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
-        editor.putString(Keys.PREF_UP_NEXT_MEDIA_ID, mediaId)
+        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, mediaId)
         editor.apply()
     }
 
@@ -86,7 +85,7 @@ object PreferencesHelper {
     /* Loads state of playback for player / PlayerService from shared preferences */
     fun loadPlayerPlaybackState(context: Context): Int {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        return settings.getInt(Keys.PREF_CURRENT_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+        return settings.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
     }
 
 
@@ -94,7 +93,7 @@ object PreferencesHelper {
     fun savePlayerPlaybackState(context: Context, playbackState: Int) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
-        editor.putInt(Keys.PREF_CURRENT_PLAYBACK_STATE, playbackState)
+        editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playbackState)
         editor.apply()
     }
 
@@ -144,6 +143,22 @@ object PreferencesHelper {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
         editor.putInt(Keys.PREF_COLLECTION_SIZE, size)
+        editor.apply()
+    }
+
+
+    /* Loads currently selected podcast search index */
+    fun loadCurrentPodcastSearchIndex(context: Context): String {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getString(Keys.PREF_PODCAST_SEARCH_PROVIDER, Keys.PODCAST_SEARCH_PROVIDER_GPODDER) ?: Keys.PODCAST_SEARCH_PROVIDER_GPODDER
+    }
+
+
+    /* Saves currently selected podcast search index */
+    fun saveCurrentPodcastSearchIndex(context: Context, currentSearchIndex: String) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putString(Keys.PREF_PODCAST_SEARCH_PROVIDER, currentSearchIndex)
         editor.apply()
     }
 
@@ -203,10 +218,10 @@ object PreferencesHelper {
         val playerState: PlayerState = PlayerState()
         playerState.episodeMediaId = settings.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
         playerState.playbackState = settings.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
-        playerState.playbackPosition = settings.getLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, 0L)
-        playerState.episodeDuration = settings.getLong(Keys.PREF_PLAYER_STATE_EPISODE_DURATION, 0L)
+//        playerState.playbackPosition = settings.getLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, 0L)
+//        playerState.episodeDuration = settings.getLong(Keys.PREF_PLAYER_STATE_EPISODE_DURATION, 0L)
         playerState.playbackSpeed = settings.getFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
-        playerState.upNextEpisodeMediaId = settings.getString(Keys.PREF_UP_NEXT_MEDIA_ID, String()) ?: String()
+        playerState.upNextEpisodeMediaId = settings.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
         playerState.bottomSheetState = settings.getInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
         playerState.sleepTimerState = settings.getInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, Keys.STATE_SLEEP_TIMER_STOPPED)
         return playerState
@@ -219,21 +234,13 @@ object PreferencesHelper {
         val editor = settings.edit()
         editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
         editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
-        editor.putLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, playerState.playbackPosition)
-        editor.putLong(Keys.PREF_PLAYER_STATE_EPISODE_DURATION, playerState.episodeDuration)
+//        editor.putLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, playerState.playbackPosition)
+//        editor.putLong(Keys.PREF_PLAYER_STATE_EPISODE_DURATION, playerState.episodeDuration)
         editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playerState.playbackSpeed)
-        editor.putString(Keys.PREF_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
+        editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
         editor.putInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, playerState.bottomSheetState)
         editor.putInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, playerState.sleepTimerState)
         editor.apply()
-    }
-
-
-    /* Reset and save player state if audio file is no longer available */
-    fun updatePlayerState(context: Context, collection: Collection, playerState: PlayerState = loadPlayerState(context)) {
-        if (CollectionHelper.getEpisode(collection, playerState.episodeMediaId).audio.isEmpty()) {
-            savePlayerState(context, PlayerState())
-        }
     }
 
 
@@ -277,6 +284,14 @@ object PreferencesHelper {
             Keys.STATE_THEME_LIGHT_MODE -> context.getString(R.string.pref_theme_selection_mode_light)
             Keys.STATE_THEME_DARK_MODE -> context.getString(R.string.pref_theme_selection_mode_dark)
             else -> context.getString(R.string.pref_theme_selection_mode_device_default)
+        }
+    }
+
+    /* Returns a readable String for currently selected podcast search provider */
+    fun getCurrentPodcastSearchProvider(context: Context): String {
+        return when (loadCurrentPodcastSearchIndex(context)) {
+            Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX -> context.getString(R.string.pref_search_provider_selection_podcastindex)
+            else -> context.getString(R.string.pref_search_provider_selection_gpodder)
         }
     }
 

@@ -28,7 +28,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.y20k.escapepod.core.Collection
+import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.xml.OpmlHelper
@@ -90,7 +90,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceBackgroundRefresh.summaryOff = getString(R.string.pref_background_refresh_summary_disabled)
         preferenceBackgroundRefresh.setDefaultValue(Keys.DEFAULT_BACKGROUND_REFRESH_MODE)
 
-        // set up "Episode Download over mobile" preference
+        // set up "episode Download over mobile" preference
         val preferenceEpisodeDownloadOverMobile: SwitchPreferenceCompat = SwitchPreferenceCompat(activity as Context)
         preferenceEpisodeDownloadOverMobile.title = getString(R.string.pref_episode_download_over_mobile_title)
         preferenceEpisodeDownloadOverMobile.setIcon(R.drawable.ic_signal_cellular_24dp)
@@ -133,6 +133,25 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             // show dialog
             YesNoDialog(this).show(context = context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
             return@setOnPreferenceClickListener true
+        }
+
+        // set up "Search Provider" preference
+        val preferenceSearchProviderSelection: ListPreference = ListPreference(context)
+        preferenceSearchProviderSelection.title = getString(R.string.pref_search_provider_selection_title)
+        preferenceSearchProviderSelection.setIcon(R.drawable.ic_search_24dp)
+        preferenceSearchProviderSelection.key = Keys.PREF_PODCAST_SEARCH_PROVIDER_SELECTION
+        preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${PreferencesHelper.getCurrentPodcastSearchProvider(context)}"
+        preferenceSearchProviderSelection.entries = arrayOf(getString(R.string.pref_search_provider_selection_gpodder), getString(R.string.pref_search_provider_selection_podcastindex))
+        preferenceSearchProviderSelection.entryValues = arrayOf(Keys.PODCAST_SEARCH_PROVIDER_GPODDER, Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX)
+        preferenceSearchProviderSelection.setDefaultValue(Keys.PODCAST_SEARCH_PROVIDER_GPODDER)
+        preferenceSearchProviderSelection.setOnPreferenceChangeListener { preference, newValue ->
+            if (preference is ListPreference) {
+                val index: Int = preference.entryValues.indexOf(newValue)
+                preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${preference.entries.get(index)}"
+                return@setOnPreferenceChangeListener true
+            } else {
+                return@setOnPreferenceChangeListener false
+            }
         }
 
         // set up "App Version" preference
@@ -178,6 +197,10 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceCategoryMaintenance.contains(preferenceUpdateCovers)
         preferenceCategoryMaintenance.contains(preferenceDeleteAll)
 
+        val preferenceCategoryAdvanced: PreferenceCategory = PreferenceCategory(context)
+        preferenceCategoryAdvanced.title = getString(R.string.pref_advanced_title)
+        preferenceCategoryAdvanced.contains(preferenceSearchProviderSelection)
+
         val preferenceCategoryAbout: PreferenceCategory = PreferenceCategory(context)
         preferenceCategoryAbout.title = getString(R.string.pref_about_title)
         preferenceCategoryAbout.contains(preferenceAppVersion)
@@ -193,6 +216,8 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         screen.addPreference(preferenceOpmlExport)
         screen.addPreference(preferenceUpdateCovers)
         screen.addPreference(preferenceDeleteAll)
+        screen.addPreference(preferenceCategoryAdvanced)
+        screen.addPreference(preferenceSearchProviderSelection)
         screen.addPreference(preferenceCategoryAbout)
         screen.addPreference(preferenceAppVersion)
         screen.addPreference(preferenceReportIssue)
@@ -210,7 +235,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
                 when (dialogResult) {
                     // user tapped: delete all downloads
                     true -> {
-                        deleteAllEpisodes(activity as Context, FileHelper.readCollection(activity as Context))
+                        deleteAllEpisodes()
                     }
                 }
             }
@@ -251,14 +276,14 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
 
     /* Deletes all episode audio files - deep clean */
-    private fun deleteAllEpisodes(context: Context, collection: Collection) {
-        val newCollection = collection.deepCopy()
-        // delete all episodes
-        CollectionHelper.deleteAllAudioFile(context, newCollection)
-        // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, newCollection)
-        // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, newCollection)
+    private fun deleteAllEpisodes() {
+        // delete audio files for all episode
+        CollectionHelper.deleteAllAudioFiles(activity as Context)
+        // reset all local audio references in database
+        GlobalScope.launch {
+            val collectionDatabase = CollectionDatabase.getInstance(activity as Context)
+            collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
+        }
     }
 
 
@@ -270,7 +295,12 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             putExtra(Intent.EXTRA_TITLE, Keys.COLLECTION_OPML_FILE)
         }
         // file gets saved in onActivityResult
-        startActivityForResult(intent, Keys.REQUEST_SAVE_OPML)
+        try {
+            startActivityForResult(intent, Keys.REQUEST_SAVE_OPML)
+        } catch (exception: Exception) {
+            LogHelper.e(TAG, "Unable to save OPML.\n$exception")
+            Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
+        }
     }
 
 }

@@ -28,7 +28,7 @@ import androidx.media.session.MediaButtonReceiver
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.PlayerService
 import org.y20k.escapepod.R
-import org.y20k.escapepod.core.Episode
+import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.extensions.isFastForwardEnabled
 import org.y20k.escapepod.extensions.isPlayEnabled
 import org.y20k.escapepod.extensions.isPlaying

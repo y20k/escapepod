@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepod.core
+package org.y20k.escapepod.legacy
 
 import android.os.Parcelable
 import androidx.annotation.Keep
@@ -23,19 +23,19 @@ import java.util.*
 
 
 /*
- * Podcast class
+ * podcast class
  */
 @Keep
 @Parcelize
-data class Podcast(@Expose var name: String = String(),
-                   @Expose var description: String = String(),
-                   @Expose var website: String = String(),
-                   @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
-                   @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
-                   @Expose var episodes: MutableList<Episode> = mutableListOf<Episode>(),
-                   @Expose var lastUpdate: Date = Calendar.getInstance().time,
-                   @Expose var remoteImageFileLocation: String = String(),
-                   @Expose var remotePodcastFeedLocation: String = String()): Parcelable {
+data class LegacyPodcast(@Expose var name: String = String(),
+                         @Expose var description: String = String(),
+                         @Expose var website: String = String(),
+                         @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
+                         @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
+                         @Expose var episodes: MutableList<LegacyEpisode> = mutableListOf<LegacyEpisode>(),
+                         @Expose var lastUpdate: Date = Calendar.getInstance().time,
+                         @Expose var remoteImageFileLocation: String = String(),
+                         @Expose var remotePodcastFeedLocation: String = String()): Parcelable {
 
 
     /* overrides toString method */
@@ -66,10 +66,10 @@ data class Podcast(@Expose var name: String = String(),
 
 
     /* Creates a deep copy of a podcast */
-    fun deepCopy(): Podcast {
-        val episodesCopy: MutableList<Episode> = mutableListOf<Episode>()
+    fun deepCopy(): LegacyPodcast {
+        val episodesCopy: MutableList<LegacyEpisode> = mutableListOf<LegacyEpisode>()
         episodes.forEach { episodesCopy.add(it.deepCopy()) }
-        return Podcast(name = name,
+        return LegacyPodcast(name = name,
                        description = description,
                        website = website,
                        cover = cover,

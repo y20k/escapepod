@@ -15,6 +15,7 @@
 package org.y20k.escapepod.helpers
 
 import org.y20k.escapepod.Keys
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +31,12 @@ object DateTimeHelper {
     /* Main class variables */
     private const val pattern: String = "EEE, dd MMM yyyy HH:mm:ss Z"
     private val dateFormat: SimpleDateFormat = SimpleDateFormat(pattern, Locale.ENGLISH)
+
+
+    /* Creates a readable date string */
+    fun getDateString(date: Date, dateStyle: Int = DateFormat.MEDIUM): String {
+        return DateFormat.getDateInstance(dateStyle, Locale.getDefault()).format(date)
+    }
 
 
     /* Converts RFC 2822 string representation of a date to DATE */

@@ -19,9 +19,11 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.*
+import com.android.volley.BuildConfig
 import org.y20k.escapepod.Keys
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -87,6 +89,39 @@ object NetworkHelper {
     }
 
 
+    /* Creates header for podcastindex.org request */
+    fun createPodcastIndexRequestHeader(): HashMap<String, String> {
+        val params = HashMap<String, String>()
+
+        // preparation
+        val currentDate: Date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
+        val secondsSinceEpoch: Long = currentDate.time / 1000L
+        val apiHeaderTime: String = "$secondsSinceEpoch"
+
+        // create authentication hash
+        val data4Hash = Keys.PODCASTINDEX_API_KEY + StringHelper.decrypt(Keys.PODCASTINDEX_API_KEY2) + apiHeaderTime
+        val hashString: String = StringHelper.createSha1(data4Hash)
+
+        // set up header parameters
+        params["X-Auth-Date"] = apiHeaderTime
+        params["X-Auth-Key"] = Keys.PODCASTINDEX_API_KEY
+        params["Authorization"] = hashString
+        params["User-Agent"] = "$Keys.APPLICATION_NAME ${BuildConfig.VERSION_NAME}"
+
+        return params
+    }
+
+
+    /* Creates header for gpodder.net request */
+    fun createGpodderRequestHeader(): HashMap<String, String> {
+        // set up header parameters
+        val params = HashMap<String, String>()
+        params["User-Agent"] = "$Keys.APPLICATION_NAME ${BuildConfig.VERSION_NAME}"
+
+        return params
+    }
+
+
     /* Checks if the active network connection is connected to any network */
     fun isConnectedToNetwork(context: Context): Boolean {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -95,27 +130,11 @@ object NetworkHelper {
     }
 
 
-    /* Suspend function: Detects content type (mime type) from given URL string - async using coroutine */
+    /* Suspend function: Detect content type (mime type) - async using coroutine */
     suspend fun detectContentTypeSuspended(urlString: String): ContentType {
         return suspendCoroutine { cont ->
             LogHelper.v(TAG, "Determining content type - Thread: ${Thread.currentThread().name}")
-            val contentType: ContentType = ContentType(Keys.MIME_TYPE_UNSUPPORTED, Keys.CHARSET_UNDEFINDED)
-            val connection: HttpURLConnection? = createConnection(urlString)
-            if (connection != null) {
-                val contentTypeHeader: String = connection.contentType ?: String()
-                LogHelper.v(TAG, "Raw content type header: $contentTypeHeader")
-                val contentTypeHeaderParts: List<String> = contentTypeHeader.split(";")
-                contentTypeHeaderParts.forEachIndexed { index, part ->
-                    if (index == 0 && part.isNotEmpty()) {
-                        contentType.type = part.trim()
-                    } else if (part.contains("charset=")) {
-                        contentType.charset = part.substringAfter("charset=").trim()
-                    }
-                }
-                connection.disconnect()
-            }
-            LogHelper.i(TAG, "content type: ${contentType.type} | character set: ${contentType.charset}")
-            cont.resume(contentType)
+            cont.resume(detectContentType(urlString))
         }
     }
 
@@ -129,16 +148,38 @@ object NetworkHelper {
     }
 
 
-    /* Get redirected (real) URL */
-    fun resolveRedirects(urlString: String): String {
-            var redirectedURL: String = urlString
-            val connection: HttpURLConnection? = createConnection(urlString) // createConnection() resolves redirects
-            if (connection != null) {
-                redirectedURL = connection.url.toString()
-                connection.disconnect()
+    /* Detect content type (mime type) from given URL string  */
+    private fun detectContentType(urlString: String): ContentType {
+        val contentType: ContentType = ContentType(Keys.MIME_TYPE_UNSUPPORTED, Keys.CHARSET_UNDEFINDED)
+        val connection: HttpURLConnection? = createConnection(urlString)
+        if (connection != null) {
+            val contentTypeHeader: String = connection.contentType ?: String()
+            LogHelper.v(TAG, "Raw content type header: $contentTypeHeader")
+            val contentTypeHeaderParts: List<String> = contentTypeHeader.split(";")
+            contentTypeHeaderParts.forEachIndexed { index, part ->
+                if (index == 0 && part.isNotEmpty()) {
+                    contentType.type = part.trim()
+                } else if (part.contains("charset=")) {
+                    contentType.charset = part.substringAfter("charset=").trim()
+                }
             }
-            LogHelper.i(TAG, "Resolved URL: $redirectedURL")
-            return redirectedURL
+            connection.disconnect()
+        }
+        LogHelper.i(TAG, "content type: ${contentType.type} | character set: ${contentType.charset}")
+        return contentType
+    }
+
+
+    /* Get redirected (real) URL */
+    private fun resolveRedirects(urlString: String): String {
+        var redirectedURL: String = urlString
+        val connection: HttpURLConnection? = createConnection(urlString) // createConnection() resolves redirects
+        if (connection != null) {
+            redirectedURL = connection.url.toString()
+            connection.disconnect()
+        }
+        LogHelper.i(TAG, "Resolved URL: $redirectedURL")
+        return redirectedURL
     }
 
 
@@ -148,7 +189,7 @@ object NetworkHelper {
 
         try {
             // try to open connection and get status
-            LogHelper.i(TAG, "Opening http connection.")
+            LogHelper.i(TAG, "Opening http connection: $urlString")
             connection = URL(urlString).openConnection() as HttpURLConnection
             val status = connection.responseCode
 

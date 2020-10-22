@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
-import org.y20k.escapepod.core.Collection
+import org.y20k.escapepod.database.objects.Podcast
 import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.helpers.LogHelper
 import java.io.IOException
@@ -186,7 +186,7 @@ object OpmlHelper {
 
 
     /* Create OPML string from podcast collection */
-    fun createOpmlString(collection: Collection): String {
+    fun createOpmlString(podcastList: List<Podcast>): String {
         val opmlString = StringBuilder()
         // add opening tag
         opmlString.append("<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\n")
@@ -202,7 +202,7 @@ object OpmlHelper {
         opmlString.append("\t\t<outline text=\"feeds\">\n")
 
         // add <outline> tags containing name and URL for each podcast
-        collection.podcasts.forEach { podcast ->
+        podcastList.forEach { podcast ->
             opmlString.append("\t\t\t<outline type=\"rss\" text=\"")
             opmlString.append(podcast.name)
             opmlString.append("\" xmlUrl=\"")

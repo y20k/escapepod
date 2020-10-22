@@ -36,11 +36,18 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
-import org.y20k.escapepod.core.Collection
-import org.y20k.escapepod.core.Episode
-import org.y20k.escapepod.core.Podcast
+import org.y20k.escapepod.database.CollectionDatabase
+import org.y20k.escapepod.database.objects.Episode
+import org.y20k.escapepod.database.objects.EpisodeDescription
+import org.y20k.escapepod.database.objects.Podcast
+import org.y20k.escapepod.database.wrappers.EpisodeMostRecentView
+import org.y20k.escapepod.database.wrappers.PodcastWithRecentEpisodesWrapper
 import org.y20k.escapepod.dialogs.ShowNotesDialog
 import org.y20k.escapepod.helpers.*
 
@@ -48,7 +55,7 @@ import org.y20k.escapepod.helpers.*
 /*
  * CollectionAdapter class
  */
-class CollectionAdapter(private val context: Context, private val collectionAdapterListener: CollectionAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CollectionAdapter(private val context: Context, private val collectionDatabase: CollectionDatabase, private val collectionAdapterListener: CollectionAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(CollectionAdapter::class.java)
@@ -56,16 +63,15 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
-    // private lateinit var collectionAdapterListener: CollectionAdapterListener
-    private var collection: Collection = Collection()
+    private var collection: List<PodcastWithRecentEpisodesWrapper> = listOf()
 
 
     /* Listener Interface */
     interface CollectionAdapterListener {
         fun onPlayButtonTapped(mediaId: String, playbackState: Int)
         fun onMarkListenedButtonTapped(mediaId: String)
-        fun onDownloadButtonTapped(episode: Episode)
-        fun onDeleteButtonTapped(episode: Episode)
+        fun onDownloadButtonTapped(selectedEpisode: Episode)
+        fun onDeleteButtonTapped(selectedEpisode: Episode)
         fun onAddNewButtonTapped()
     }
 
@@ -119,23 +125,27 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
             // CASE PODCAST CARD
             is PodcastViewHolder -> {
-                // get station from position
-                val podcast: Podcast = collection.podcasts[position]
+                // get podcast from position
+                val podcast: PodcastWithRecentEpisodesWrapper = collection[position]
 
                 // get reference to StationViewHolder
                 val podcastViewHolder: PodcastViewHolder = holder
 
                 // set up podcast
-                setPodcastName(podcastViewHolder, podcast)
-                setPodcastImage(podcastViewHolder, podcast)
+                setPodcastName(podcastViewHolder, podcast.data)
+                setPodcastImage(podcastViewHolder, podcast.data)
 
-                // set up current episode
-                setEpisodeTitle(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
-                setEpisodeButtons(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
-                setEpisodePlaybackProgress(podcastViewHolder.currentEpisodeViews, podcast.episodes[0])
-
-                // set up older episodes list
-                setOlderEpisodesList(podcastViewHolder, podcast)
+                // set up episodes
+                if (podcast.episodes.isNotEmpty()) {
+                    // sort episodes by date
+                    val podcastWithSortedEpisodes: PodcastWithRecentEpisodesWrapper = PodcastWithRecentEpisodesWrapper(data = podcast.data, episodes = podcast.episodes.sortedByDescending { it.data.publicationDate })
+                    // current episode
+                    setEpisodeTitle(podcastViewHolder.currentEpisodeViews, podcastWithSortedEpisodes.data, podcastWithSortedEpisodes.episodes[0].data)
+                    setEpisodeButtons(podcastViewHolder.currentEpisodeViews, podcastWithSortedEpisodes.episodes[0].data)
+                    setEpisodePlaybackProgress(podcastViewHolder.currentEpisodeViews, podcastWithSortedEpisodes.episodes[0].data)
+                    // older episodes list
+                    setOlderEpisodesList(podcastViewHolder, podcastWithSortedEpisodes)
+                }
             }
         }
     }
@@ -161,10 +171,15 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
 
     /* Sets up an episode's title views */
-    private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        episodeViewHolder.episodeDateView.text = episode.getDateString()
+    private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, podcast: Podcast, episode: Episode) {
+        episodeViewHolder.episodeDateView.text = DateTimeHelper.getDateString(episode.publicationDate)
         episodeViewHolder.episodeDateView.setOnLongClickListener {
-            ShowNotesDialog().show(context, episode)
+            GlobalScope.launch {
+                val episodeDescription: EpisodeDescription? = collectionDatabase.episodeDescriptionDao().findByMediaId(episode.mediaId)
+                if (episodeDescription != null) {
+                    withContext(Dispatchers.Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
+                }
+            }
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
@@ -172,13 +187,19 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
         }
         episodeViewHolder.episodeTitleView.text = episode.title
         episodeViewHolder.episodeTitleView.setOnLongClickListener {
-            ShowNotesDialog().show(context, episode)
+            GlobalScope.launch {
+                val episodeDescription: EpisodeDescription? = collectionDatabase.episodeDescriptionDao().findByMediaId(episode.mediaId)
+                if (episodeDescription != null) {
+                    withContext(Dispatchers.Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
+                }
+            }
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
             return@setOnLongClickListener true
         }
     }
+
 
     /* Sets up the circular progress bar */
     private fun setEpisodePlaybackProgress(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
@@ -200,13 +221,13 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
             collectionAdapterListener.onDownloadButtonTapped(episode)
         }
         episodeViewHolder.episodePlayButtonView.setOnClickListener {
-            collectionAdapterListener.onPlayButtonTapped(episode.getMediaId(), playbackState)
+            collectionAdapterListener.onPlayButtonTapped(episode.mediaId, playbackState)
         }
         episodeViewHolder.episodePlayButtonView.setOnLongClickListener {
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-            collectionAdapterListener.onMarkListenedButtonTapped(episode.getMediaId())
+            collectionAdapterListener.onMarkListenedButtonTapped(episode.mediaId)
             return@setOnLongClickListener true
         }
         episodeViewHolder.episodeDeleteButtonView.setOnClickListener {
@@ -223,7 +244,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
 
     /* Fills the list of older episodes */
-    private fun setOlderEpisodesList(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+    private fun setOlderEpisodesList(podcastViewHolder: PodcastViewHolder, podcast: PodcastWithRecentEpisodesWrapper) {
         if (podcast.episodes.size > 1) {
             // set up episode list
             val episodeListAdapter = EpisodeListAdapter(podcast)
@@ -280,7 +301,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
         } else if (holder is PodcastViewHolder) {
             // get podcast from position
-            val podcast = collection.podcasts[holder.getAdapterPosition()]
+            val podcast = collection[holder.getAdapterPosition()]
 
             // get reference to StationViewHolder
             val stationViewHolder = holder
@@ -320,69 +341,73 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
     /* Overrides getItemCount */
     override fun getItemCount(): Int {
         // +1 ==> the add podcast card
-        return collection.podcasts.size + 1
+        return collection.size + 1
     }
 
 
     /* Removes a podcast from collection */
     fun removePodcast(context: Context, position: Int) {
-        val newCollection = collection.deepCopy()
         // delete folders and assets
-        CollectionHelper.deletePodcastFolders(context, newCollection.podcasts[position])
+        CollectionHelper.deletePodcastFolders(context, collection[position].data)
         // remove podcast from collection
-        newCollection.podcasts.removeAt(position)
-        collection = newCollection
-        // update list
-        notifyItemRemoved(position)
-        // export collection as OPML
-        CollectionHelper.exportCollection(context, newCollection)
-        // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, newCollection)
+        collectionViewModel.removePodcast(collection[position].data.remotePodcastFeedLocation)
+        // export list of podcasts as OPML
+        CollectionHelper.exportCollectionOpml(context, collection.map { it.data })
     }
 
 
     /* Deletes an episode download from collection */
     fun deleteEpisode(context: Context, mediaID: String) {
         LogHelper.v(TAG, "Deleting episode: $mediaID")
-        val newCollection = collection.deepCopy()
-        // delete episode and update collection
-        CollectionHelper.deleteEpisodeAudioFile(context, newCollection, mediaID, manuallyDeleted = true)
-        // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, newCollection)
-        // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, newCollection)
+        // remove audio reference in database
+        collectionViewModel.deleteEpisodeAudio(mediaID)
     }
 
 
-    /* Marks an episode as playedin collection */
-    fun markEpisodePlayed(context: Context, mediaID: String) {
-        LogHelper.v(TAG, "Marking as played episode: $mediaID")
-        val newCollection = collection.deepCopy()
+    /* Marks an episode as played in collection */
+    fun markEpisodePlayed(context: Context, mediaId: String) {
+        LogHelper.v(TAG, "Marking as played episode: $mediaId")
         // mark episode als played and update collection
-        CollectionHelper.markEpisodePlayed(newCollection, mediaID)
-        // update player state if necessary
-        PreferencesHelper.updatePlayerState(context, newCollection)
-        // save collection and broadcast changes
-        CollectionHelper.saveCollection(context, newCollection)
+        collectionViewModel.markEpisodePlayed(mediaId)
+        // remove this episode from player state (current media id), if necessary
+        if (PreferencesHelper.loadCurrentMediaId(context) == mediaId) {
+            PreferencesHelper.saveCurrentMediaId(context)
+        }
     }
 
+
+    /* Get episode for given media id */
+    fun getEpisode(mediaID: String): Episode? {
+        collection.forEach { podcast ->
+            podcast.episodes.forEach { episode ->
+                if (episode.data.mediaId == mediaID) {
+                    return episode.data
+                }
+            }
+        }
+        return null
+    }
 
 
     /* Determines if position is last */
     private fun isPositionFooter(position: Int): Boolean {
-        return position == collection.podcasts.size
+        return position == collection.size
     }
 
 
     /* Updates the podcast list - redraws the views with changed content */
-    private fun updateRecyclerView(oldCollection: Collection, newCollection: Collection) {
-        collection = newCollection
-        if (oldCollection.podcasts.size == 0 && newCollection.podcasts.size > 0) {
+    private fun updateRecyclerView(newCollection: List<PodcastWithRecentEpisodesWrapper>) {
+        if (collection.isEmpty() && newCollection.isNotEmpty()) {
             // data set has been initialized - redraw the whole list
+            collection = newCollection
             notifyDataSetChanged()
         } else {
-            // calculate differences between current collection and new collection - and inform this adapter about the changes
-            val diffResult = DiffUtil.calculateDiff(CollectionDiffCallback(oldCollection, newCollection), true)
+            // store old collection temporarily
+            val oldCollection: List<PodcastWithRecentEpisodesWrapper> = collection.map { it.copy() }
+            // set new collection
+            collection = newCollection
+            // calculate differences between current collection and old collection - and inform this adapter about the changes
+            val diffResult = DiffUtil.calculateDiff(CollectionDiffCallback(oldCollection), true)
             diffResult.dispatchUpdatesTo(this@CollectionAdapter)
         }
     }
@@ -390,14 +415,15 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
-        collectionViewModel.collectionLiveData.observe(owner, Observer<Collection> { newCollection ->
-            updateRecyclerView(collection, newCollection)
-        })
+        collectionViewModel.collectionLiveData.observe(owner, Observer<List<PodcastWithRecentEpisodesWrapper>> { newCollection ->
+            val sortedCollection: List<PodcastWithRecentEpisodesWrapper> = newCollection.sortedByDescending { podcast -> podcast.data.latestEpisodeDate }
+            updateRecyclerView(sortedCollection)
+        } )
     }
 
 
     /*
-     * Inner class: ViewHolder for the Add New Podcast action
+     * Inner class: ViewHolder for the Add New podcast action
      */
     private inner class AddNewViewHolder (listItemAddNewLayout: View) : RecyclerView.ViewHolder(listItemAddNewLayout) {
         val addNewPodcastView: CardView = listItemAddNewLayout.findViewById(R.id.card_add_new_podcast)
@@ -442,55 +468,52 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
     /*
      * Inner class: DiffUtil.Callback that determines changes in data - improves list performance
      */
-    private inner class CollectionDiffCallback(val oldCollection: Collection, val newCollection: Collection): DiffUtil.Callback() {
+    private inner class CollectionDiffCallback(val oldCollection: List<PodcastWithRecentEpisodesWrapper>): DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldPodcast: Podcast = oldCollection.podcasts[oldItemPosition]
-            val newPodcast: Podcast = newCollection.podcasts[newItemPosition]
-            return oldPodcast.getPodcastId() == newPodcast.getPodcastId()
+            val oldPodcast: PodcastWithRecentEpisodesWrapper = oldCollection[oldItemPosition]
+            val newPodcast: PodcastWithRecentEpisodesWrapper = collection[newItemPosition]
+            return oldPodcast.data.remotePodcastFeedLocation == newPodcast.data.remotePodcastFeedLocation
         }
 
         override fun getOldListSize(): Int {
-            return oldCollection.podcasts.size
+            return oldCollection.size
         }
 
         override fun getNewListSize(): Int {
-            return newCollection.podcasts.size
+            return collection.size
         }
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            val oldPodcast: Podcast = oldCollection.podcasts[oldItemPosition]
-            val newPodcast: Podcast = newCollection.podcasts[newItemPosition]
+            val oldPodcast: PodcastWithRecentEpisodesWrapper = oldCollection[oldItemPosition]
+            val newPodcast: PodcastWithRecentEpisodesWrapper = collection[newItemPosition]
 
             // compare relevant contents of podcast
             if (oldPodcast.episodes.size != newPodcast.episodes.size) return false
-            if (oldPodcast.name != newPodcast.name) return false
-            if (oldPodcast.description != newPodcast.description) return false
-            if (oldPodcast.website != newPodcast.website) return false
-            if (oldPodcast.remoteImageFileLocation != newPodcast.remoteImageFileLocation) return false
-            if (oldPodcast.remotePodcastFeedLocation != newPodcast.remotePodcastFeedLocation) return false
-            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.cover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.cover))) return false
-            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.smallCover))) return false
+            if (oldPodcast.data.name != newPodcast.data.name) return false
+            if (oldPodcast.data.website != newPodcast.data.website) return false
+            if (oldPodcast.data.remoteImageFileLocation != newPodcast.data.remoteImageFileLocation) return false
+            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.data.cover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.data.cover))) return false
+            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.data.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.data.smallCover))) return false
 
             // compare relevant contents of episodes within podcast
             oldPodcast.episodes.forEachIndexed { index, oldEpisode ->
-                val newEpisode: Episode = newPodcast.episodes[index]
+                val newEpisode: EpisodeMostRecentView = newPodcast.episodes[index]
                 // check most likely changes fist
-                if (oldEpisode.playbackState != newEpisode.playbackState) return false
-                if (oldEpisode.playbackPosition != newEpisode.playbackPosition) return false
-                if (oldEpisode.manuallyDownloaded != newEpisode.manuallyDownloaded) return false
-                if (oldEpisode.audio != newEpisode.audio) return false
+                if (oldEpisode.data.playbackState != newEpisode.data.playbackState) return false
+                if (oldEpisode.data.playbackPosition != newEpisode.data.playbackPosition) return false
+                if (oldEpisode.data.manuallyDownloaded != newEpisode.data.manuallyDownloaded) return false
+                if (oldEpisode.data.audio != newEpisode.data.audio) return false
                 // check the rest afterwards
-                if (oldEpisode.guid != newEpisode.guid) return false
-                if (oldEpisode.title != newEpisode.title) return false
-                if (oldEpisode.description != newEpisode.description) return false
-                if (oldEpisode.chapters != newEpisode.chapters) return false
-                if (oldEpisode.publicationDate != newEpisode.publicationDate) return false
-                if (oldEpisode.duration != newEpisode.duration) return false
-                if (oldEpisode.remoteCoverFileLocation != newEpisode.remoteCoverFileLocation) return false
-                if (oldEpisode.remoteAudioFileLocation != newEpisode.remoteAudioFileLocation) return false
-                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.cover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.cover))) return false
-                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.smallCover))) return false
+                if (oldEpisode.data.guid != newEpisode.data.guid) return false
+                if (oldEpisode.data.title != newEpisode.data.title) return false
+                //if (oldEpisode.chapters != newEpisode.chapters) return false
+                if (oldEpisode.data.publicationDate != newEpisode.data.publicationDate) return false
+                if (oldEpisode.data.duration != newEpisode.data.duration) return false
+                if (oldEpisode.data.remoteCoverFileLocation != newEpisode.data.remoteCoverFileLocation) return false
+                if (oldEpisode.data.remoteAudioFileLocation != newEpisode.data.remoteAudioFileLocation) return false
+                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.data.cover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.data.cover))) return false
+                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.data.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.data.smallCover))) return false
             }
             // none of the above -> contents are the same
             return true
@@ -504,7 +527,7 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
     /*
      * Inner class: Adapter for an episode list
      */
-    private inner class EpisodeListAdapter(val podcast: Podcast) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private inner class EpisodeListAdapter(val podcastWrapper: PodcastWithRecentEpisodesWrapper) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.element_episode, parent, false)
             return EpisodeViewHolder(v)
@@ -512,22 +535,22 @@ class CollectionAdapter(private val context: Context, private val collectionAdap
 
         override fun getItemCount(): Int {
             val numberOfOlderEpisodes = Keys.DEFAULT_NUMBER_OF_EPISODES_TO_KEEP - 1 // minus the current one
-            if (podcast.episodes.size > numberOfOlderEpisodes) {
+            if (podcastWrapper.episodes.size > numberOfOlderEpisodes) {
                 return numberOfOlderEpisodes
             } else {
-                return podcast.episodes.size -1
+                return podcastWrapper.episodes.size -1
             }
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val episodeNumber = position + 1 // only older episodes - leave out the current one
-            if (podcast.episodes.size > episodeNumber) {
-                val episode = podcast.episodes[episodeNumber]
+            if (podcastWrapper.episodes.size > episodeNumber) {
+                val episode = podcastWrapper.episodes[episodeNumber]
                 val episodeViewHolder: EpisodeViewHolder = holder as EpisodeViewHolder
                 // set up episode
-                setEpisodeTitle(episodeViewHolder, episode)
-                setEpisodeButtons(episodeViewHolder, episode)
-                setEpisodePlaybackProgress(episodeViewHolder, episode)
+                setEpisodeTitle(episodeViewHolder, podcastWrapper.data, episode.data)
+                setEpisodeButtons(episodeViewHolder, episode.data)
+                setEpisodePlaybackProgress(episodeViewHolder, episode.data)
             }
         }
     }

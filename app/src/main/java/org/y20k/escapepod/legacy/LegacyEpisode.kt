@@ -12,7 +12,7 @@
  */
 
 
-package org.y20k.escapepod.core
+package org.y20k.escapepod.legacy
 
 import android.os.Parcelable
 import android.support.v4.media.session.PlaybackStateCompat
@@ -25,28 +25,28 @@ import java.util.*
 
 
 /*
- * Episode class
+ * episode class
  */
 @Keep
 @Parcelize
-data class Episode (@Expose var guid: String = String(),
-                    @Expose var title: String = String(),
-                    @Expose var description: String = String(),
-                    @Expose var audio: String = String(),
-                    @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
-                    @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
-                    @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
-                    @Expose var publicationDate: Date = Keys.DEFAULT_DATE,
-                    @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
-                    @Expose var playbackPosition: Long = 0L,
-                    @Expose var duration: Long = 0L,
-                    @Expose var manuallyDownloaded: Boolean = false,
-                    @Expose var manuallyDeleted: Boolean = false,
-                    @Expose var remoteCoverFileLocation: String = String(),
-                    @Expose var remoteAudioFileLocation: String = String(),
-                    @Expose var podcastName: String = String(),
-                    @Expose var podcastFeedLocation: String = String(),
-                    @Expose var podcastWebsite: String = String()): Parcelable {
+data class LegacyEpisode (@Expose var guid: String = String(),
+                          @Expose var title: String = String(),
+                          @Expose var description: String = String(),
+                          @Expose var audio: String = String(),
+                          @Expose var cover: String = Keys.LOCATION_DEFAULT_COVER,
+                          @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
+                          @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
+                          @Expose var publicationDate: Date = Keys.DEFAULT_DATE,
+                          @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
+                          @Expose var playbackPosition: Long = 0L,
+                          @Expose var duration: Long = 0L,
+                          @Expose var manuallyDownloaded: Boolean = false,
+                          @Expose var manuallyDeleted: Boolean = false,
+                          @Expose var remoteCoverFileLocation: String = String(),
+                          @Expose var remoteAudioFileLocation: String = String(),
+                          @Expose var podcastName: String = String(),
+                          @Expose var podcastFeedLocation: String = String(),
+                          @Expose var podcastWebsite: String = String()): Parcelable {
 
 
     /* overrides toString method */
@@ -89,8 +89,8 @@ data class Episode (@Expose var guid: String = String(),
     fun hasBeenStarted(): Boolean = playbackPosition > 0L
 
 
-    /* Creates a deep copy of an Episode */
-    fun deepCopy(): Episode = Episode(guid = guid,
+    /* Creates a deep copy of an episode */
+    fun deepCopy(): LegacyEpisode = LegacyEpisode(guid = guid,
                                       title = title,
                                       description = description,
                                       audio = audio,

@@ -64,14 +64,12 @@ object Keys {
     const val CMD_RESET_PLAYBACK_SPEED: String = "RESET_PLAYBACK_SPEED"
 
     // preferences
-    const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_26" // increment to current app version code to trigger housekeeping that runs only once
+    const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_31" // increment to current app version code to trigger housekeeping that runs only once
     const val PREF_THEME_SELECTION: String= "THEME_SELECTION"
+    const val PREF_PODCAST_SEARCH_PROVIDER_SELECTION: String= "PODCAST_SEARCH_PROVIDER"
     const val PREF_LAST_UPDATE_COLLECTION: String = "LAST_UPDATE_COLLECTION"
     const val PREF_COLLECTION_SIZE: String = "COLLECTION_SIZE"
     const val PREF_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
-    const val PREF_CURRENT_MEDIA_ID: String = "CURRENT_MEDIA_ID"
-    const val PREF_CURRENT_PLAYBACK_STATE: String = "CURRENT_PLAYBACK_STATE"
-    const val PREF_UP_NEXT_MEDIA_ID: String = "UP_NEXT_MEDIA_ID"
     const val PREF_ACTIVE_DOWNLOADS: String = "ACTIVE_DOWNLOADS"
     const val PREF_BACKGROUND_DOWNLOAD: String = "BACKGROUND_DOWNLOAD"
     const val PREF_BACKGROUND_REFRESH: String = "BACKGROUND_REFRESH"
@@ -80,12 +78,14 @@ object Keys {
     const val PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP: String = "NUMBER_OF_AUDIO_FILES_TO_KEEP"
     const val PREF_KEEP_DEBUG_LOG: String = "KEEP_DEBUG_LOG"
     const val PREF_PLAYER_STATE_EPISODE_MEDIA_ID: String = "PLAYER_STATE_EPISODE_MEDIA_ID"
+    const val PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID: String = "PLAYER_STATE_UP_NEXT_MEDIA_ID"
     const val PREF_PLAYER_STATE_PLAYBACK_STATE: String = "PLAYER_STATE_PLAYBACK_STATE"
     const val PREF_PLAYER_STATE_PLAYBACK_POSITION: String = "PLAYER_STATE_PLAYBACK_POSITION"
     const val PREF_PLAYER_STATE_EPISODE_DURATION: String = "PLAYER_STATE_EPISODE_DURATION"
     const val PREF_PLAYER_STATE_PLAYBACK_SPEED: String = "PLAYER_STATE_PLAYBACK_SPEED"
     const val PREF_PLAYER_STATE_BOTTOM_SHEET_STATE: String = "PLAYER_STATE_BOTTOM_SHEET_STATE"
     const val PREF_PLAYER_STATE_SLEEP_TIMER_STATE: String = "PLAYER_STATE_SLEEP_TIMER_STATE"
+    const val PREF_PODCAST_SEARCH_PROVIDER: String = "PODCAST_SEARCH_PROVIDER"
 
     // states
     const val STATE_SLEEP_TIMER_STOPPED: Int = 0
@@ -93,6 +93,7 @@ object Keys {
     // default const values
     const val DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP: Int = 2
     const val DEFAULT_NUMBER_OF_EPISODES_TO_KEEP: Int = 5
+    const val DEFAULT_NUMBER_OF_EPISODES_FOR_ANDROID_AUTO: Int = 50
     const val ACTIVE_DOWNLOADS_EMPTY: String = "zero"
     const val DEFAULT_BACKGROUND_REFRESH_MODE: Boolean = true
     const val DEFAULT_EPISODE_DOWNLOAD_OVER_MOBILE_MODE: Boolean = false
@@ -195,8 +196,14 @@ object Keys {
 
     // podcast states
     const val PODCAST_STATE_NEW_PODCAST: Int = 0
-    const val PODCAST_STATE_HAS_NEW_EPISODES: Int = 1
+    const val PODCAST_STATE_AUDIO_FILES_DOWNLOAD_NECESSARY: Int = 1
     const val PODCAST_STATE_PODCAST_UNCHANGED: Int = 2
+
+    // search
+    const val PODCAST_SEARCH_PROVIDER_GPODDER: String = "gpodder.net"
+    const val PODCAST_SEARCH_PROVIDER_PODCASTINDEX: String = "podcastindex.org"
+    const val PODCASTINDEX_API_KEY: String = "CT6VUSQ4C7DDA4JGU4TW"
+    const val PODCASTINDEX_API_KEY2: String = "VmV6cXBiR1pWaHNCZEVueDM2bmJwcWNhTXpKdGpCWHF4d0RNRllFcw=="
 
     // theme states
     const val STATE_THEME_FOLLOW_SYSTEM: String = "stateFollowSystem"

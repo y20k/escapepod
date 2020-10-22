@@ -1,7 +1,7 @@
 /*
- * GpodderResultAdapter.kt
- * Implements the GpodderResultAdapter class
- * A GpodderResultAdapter is a custom adapter providing search result views for a RecyclerView
+ * SearchResultAdapter.kt
+ * Implements the SearchResultAdapter class
+ * A SearchResultAdapter is a custom adapter providing search result views for a RecyclerView
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -24,12 +24,12 @@ import org.y20k.escapepod.helpers.LogHelper
 
 
 /*
- * GpodderResultAdapter class
+ * SearchResultAdapter class
  */
-class GpodderResultAdapter(private val listener: GpodderResultAdapterListener, var searchResults: Array<GpodderResult>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SearchResultAdapter(private val listener: SearchResultAdapterListener, var searchResults: Array<SearchResult>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
-    private val TAG: String = LogHelper.makeLogTag(GpodderResultAdapter::class.java)
+    private val TAG: String = LogHelper.makeLogTag(SearchResultAdapter::class.java)
 
 
     /* Main class variables */
@@ -37,7 +37,7 @@ class GpodderResultAdapter(private val listener: GpodderResultAdapterListener, v
 
 
     /* Listener Interface */
-    interface GpodderResultAdapterListener {
+    interface SearchResultAdapterListener {
         fun onSearchResultTapped(url: String)
     }
 
@@ -68,7 +68,7 @@ class GpodderResultAdapter(private val listener: GpodderResultAdapterListener, v
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         // get reference to ViewHolder
         val searchResultViewHolder: SearchResultViewHolder = holder as SearchResultViewHolder
-        val searchResult: GpodderResult = searchResults[position]
+        val searchResult: SearchResult = searchResults[position]
         // update text
         searchResultViewHolder.podcastNameView.text = searchResult.title
         searchResultViewHolder.podcastDescriptionView.text = searchResult.description
