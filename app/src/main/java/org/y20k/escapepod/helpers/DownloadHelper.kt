@@ -266,9 +266,10 @@ object DownloadHelper {
         if (oldPodcast != null) {
             // CASE: existing podcast
             isNewPodcast = false
+            podcast = Podcast(podcastWithAllEpisodes.data, cover = oldPodcast.cover, smallCover = oldPodcast.smallCover)
             val oldEpisodes: List<Episode> = collectionDatabase.episodeDao().findByEpisodeRemotePodcastFeedLocation(podcastWithAllEpisodes.data.remotePodcastFeedLocation)
-            episodes = CollectionHelper.updateEpisodeList(oldEpisodes = oldEpisodes, newEpisodes = podcastWithAllEpisodes.episodes).sortedByDescending { it.publicationDate }
-            podcast = Podcast(podcastWithAllEpisodes.data, cover = oldPodcast!!.cover, smallCover = oldPodcast!!.smallCover)
+            episodes = CollectionHelper.updateEpisodeList(podcast = podcast, oldEpisodes = oldEpisodes, newEpisodes = podcastWithAllEpisodes.episodes).sortedByDescending { it.publicationDate }
+
         } else {
             // CASE: new podcast
             isNewPodcast = true

@@ -245,7 +245,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
-                LogHelper.e(TAG, "up-next changed") // todo remove
                 GlobalScope.launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
@@ -286,28 +285,26 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* End of episode: stop playback or start episode from up-next queue */
     private fun handlePlaybackEnded() {
-        // update playback state and position
-        val currentEpisode: Episode = episode
         GlobalScope.launch {
-            collectionDatabase.episodeDao().upsert(Episode(currentEpisode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration))
+            // update playback state and position
+            episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration)
+            collectionDatabase.episodeDao().upsert(episode)
+            // CASE: Up next episode available
+            if (upNextEpisode != null) {
+                // get up next episode
+                episode = upNextEpisode as Episode
+                // start playback
+                withContext(Dispatchers.Main) { startPlayback() }
+            }
+            // CASE: Up next episode NOT available
+            else {
+                // stop playback
+                withContext(Dispatchers.Main) { stopPlayback() }
+            }
+            // clear up-next
+            upNextEpisode = null
+            PreferencesHelper.saveUpNextMediaId(this@PlayerService)
         }
-
-        // CASE: Up next episode available
-        if (upNextEpisode != null) {
-            // get up next episode
-            episode = upNextEpisode as Episode
-            // start playback
-            startPlayback()
-        }
-        // CASE: Up next episode NOT available
-        else if(upNextEpisode?.mediaId == episode.mediaId) {
-            // stop playback
-            stopPlayback()
-        }
-
-        // clear up-next
-        upNextEpisode = null
-        PreferencesHelper.saveUpNextMediaId(this@PlayerService)
     }
 
 
@@ -543,7 +540,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private val periodicPlaybackPositionUpdateRunnable: Runnable = object : Runnable {
         override fun run() {
             if (this@PlayerService::episode.isInitialized) {
-                LogHelper.i(TAG, "Saving playback position: ${player.contentPosition}") // todo remove
                 GlobalScope.launch {
                     val playbackPosition: Long
                     withContext(Dispatchers.Main) { playbackPosition = player.currentPosition }

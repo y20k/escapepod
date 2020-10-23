@@ -19,6 +19,7 @@ import android.content.Context
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.StatFs
 import android.provider.OpenableColumns
 import androidx.core.net.toUri
 import com.google.gson.Gson
@@ -26,12 +27,15 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.Keys
+import org.y20k.escapepod.R
 import org.y20k.escapepod.database.objects.Podcast
 import org.y20k.escapepod.legacy.LegacyCollection
 import org.y20k.escapepod.xml.OpmlHelper
 import java.io.*
 import java.net.URL
+import java.text.MessageFormat
 import java.text.NumberFormat
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -50,7 +54,7 @@ object FileHelper {
         var stream : InputStream? = null
         try {
             stream = context.contentResolver.openInputStream(uri)
-        } catch (e : Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         return stream
@@ -220,9 +224,73 @@ object FileHelper {
     }
 
 
+    /* Gets the available space */
+    // Credit: https://github.com/osmandapp/OsmAnd/blob/8c6d57468a9ff6ad684c850c9565a6cd32aa4555/OsmAnd/src/net/osmand/plus/download/DownloadActivity.java#L659
+    fun getAvailableFreeSpace(context: Context): String {
+        val dir: File? = context.getExternalFilesDir("")
+        var size: String = String()
+        var percent: Int = 0
+        if (dir != null && dir.canRead()) {
+            val fs: StatFs = StatFs(dir.absolutePath)
+            size = formatSize(fs.availableBlocksLong * fs.blockSizeLong)
+            percent = 100 - (fs.availableBlocksLong * 100 / fs.blockCountLong).toInt()
+        }
+        return "${context.getString(R.string.pref_delete_all_storage_space_available)}: $size | ${context.getString(R.string.pref_delete_all_storage_space_used)}: $percent%"
+    }
+
+
+    /* Determines free space in bytes for given folder  */
+    // Credit: https://github.com/osmandapp/OsmAnd/blob/8c6d57468a9ff6ad684c850c9565a6cd32aa4555/OsmAnd/src/net/osmand/plus/download/DownloadActivity.java#L659
+    fun getAvailableFreeSpaceForFolder(folder: File?): String {
+        if (folder != null && folder.canRead() && folder.isDirectory) {
+            val fs: StatFs = StatFs(folder.absolutePath)
+            return formatSize(fs.availableBlocksLong * fs.blockSizeLong)
+        } else {
+            return formatSize(0L)
+        }
+    }
+
+
+    /* Determines percent of used space for given folder  */
+    // Credit: https://github.com/osmandapp/OsmAnd/blob/8c6d57468a9ff6ad684c850c9565a6cd32aa4555/OsmAnd/src/net/osmand/plus/download/DownloadActivity.java#L659
+    fun getUsedStorageSpaceForFolder(folder: File?): Int {
+        if (folder != null && folder.canRead() && folder.isDirectory) {
+            val fs: StatFs = StatFs(folder.absolutePath)
+            return (100 - (fs.availableBlocksLong * 100 / fs.blockCountLong)).toInt()
+        } else {
+            return 100
+        }
+    }
+
+
+    /* Formats bytes into readable strings */
+    // Credit: https://github.com/osmandapp/OsmAnd/blob/8c6d57468a9ff6ad684c850c9565a6cd32aa4555/OsmAnd/src/net/osmand/AndroidUtils.java#L237
+    private fun formatSize(sizeBytes: Long): String {
+        val formatKb = MessageFormat("{0, number,##.#}", Locale.US)
+        val formatGb = MessageFormat("{0, number,#.##}", Locale.US)
+        val formatMb = MessageFormat("{0, number,##.#}", Locale.US)
+        val sizeKb = (sizeBytes + 512 shr 10).toInt()
+        var size: String = String()
+        var numSuffix: String = "MB"
+        if (sizeKb > 1 shl 20) {
+            size = formatGb.format(arrayOf<Any>(sizeKb.toFloat() / (1 shl 20)))
+            numSuffix = "GB"
+        } else if (sizeBytes > 100 * (1 shl 10)) {
+            size = formatMb.format(arrayOf<Any>(sizeBytes.toFloat() / (1 shl 20)))
+        } else {
+            size = formatKb.format(arrayOf<Any>(sizeBytes.toFloat() / (1 shl 10)))
+            numSuffix = "kB"
+        }
+        return "$size $numSuffix"
+    }
+
+
+
+
+
     /* Suspend function: Wrapper for readCollection */ // todo remove
     suspend fun readLegacyCollectionSuspended(context: Context): LegacyCollection {
-        return suspendCoroutine {cont ->
+        return suspendCoroutine { cont ->
             cont.resume(readLegacyCollection(context))
         }
     }

@@ -43,6 +43,18 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     private val TAG: String = LogHelper.makeLogTag(SettingsFragment::class.java)
 
 
+    /* Main class variables */
+    private lateinit var preferenceThemeSelection: ListPreference
+    private lateinit var preferenceBackgroundRefresh: SwitchPreferenceCompat
+    private lateinit var preferenceEpisodeDownloadOverMobile: SwitchPreferenceCompat
+    private lateinit var preferenceOpmlExport: Preference
+    private lateinit var preferenceUpdateCovers: Preference
+    private lateinit var preferenceDeleteAll: Preference
+    private lateinit var preferenceSearchProviderSelection: ListPreference
+    private lateinit var preferenceAppVersion: Preference
+    private lateinit var preferenceReportIssue: Preference
+
+
     /* Overrides onViewCreated from PreferenceFragmentCompat */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,16 +70,14 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     /* Overrides onCreatePreferences from PreferenceFragmentCompat */
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 
-        val context = preferenceManager.context
-        val screen = preferenceManager.createPreferenceScreen(context)
-
+        val screen = preferenceManager.createPreferenceScreen(preferenceManager.context)
 
         // set up "App Theme" preference
-        val preferenceThemeSelection: ListPreference = ListPreference(context)
+        preferenceThemeSelection = ListPreference(activity as Context)
         preferenceThemeSelection.title = getString(R.string.pref_theme_selection_title)
         preferenceThemeSelection.setIcon(R.drawable.ic_smartphone_24dp)
         preferenceThemeSelection.key = Keys.PREF_THEME_SELECTION
-        preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${PreferencesHelper.getCurrentTheme(context)}"
+        preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${PreferencesHelper.getCurrentTheme(preferenceManager.context)}"
         preferenceThemeSelection.entries = arrayOf(getString(R.string.pref_theme_selection_mode_device_default), getString(R.string.pref_theme_selection_mode_light), getString(R.string.pref_theme_selection_mode_dark))
         preferenceThemeSelection.entryValues = arrayOf(Keys.STATE_THEME_FOLLOW_SYSTEM, Keys.STATE_THEME_LIGHT_MODE, Keys.STATE_THEME_DARK_MODE)
         preferenceThemeSelection.setDefaultValue(Keys.STATE_THEME_FOLLOW_SYSTEM)
@@ -82,7 +92,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         }
 
         // set up "Background Refresh" preference
-        val preferenceBackgroundRefresh: SwitchPreferenceCompat = SwitchPreferenceCompat(activity as Context)
+        preferenceBackgroundRefresh = SwitchPreferenceCompat(activity as Context)
         preferenceBackgroundRefresh.title = getString(R.string.pref_background_refresh_title)
         preferenceBackgroundRefresh.setIcon(R.drawable.ic_autorenew_24dp)
         preferenceBackgroundRefresh.key = Keys.PREF_BACKGROUND_REFRESH
@@ -91,7 +101,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceBackgroundRefresh.setDefaultValue(Keys.DEFAULT_BACKGROUND_REFRESH_MODE)
 
         // set up "episode Download over mobile" preference
-        val preferenceEpisodeDownloadOverMobile: SwitchPreferenceCompat = SwitchPreferenceCompat(activity as Context)
+        preferenceEpisodeDownloadOverMobile = SwitchPreferenceCompat(activity as Context)
         preferenceEpisodeDownloadOverMobile.title = getString(R.string.pref_episode_download_over_mobile_title)
         preferenceEpisodeDownloadOverMobile.setIcon(R.drawable.ic_signal_cellular_24dp)
         preferenceEpisodeDownloadOverMobile.key = Keys.PREF_EPISODE_DOWNLOAD_OVER_MOBILE
@@ -100,7 +110,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceEpisodeDownloadOverMobile.setDefaultValue(Keys.DEFAULT_EPISODE_DOWNLOAD_OVER_MOBILE_MODE)
 
         // set up "OPML Export" preference
-        val preferenceOpmlExport: Preference = Preference(context)
+        preferenceOpmlExport = Preference(activity as Context)
         preferenceOpmlExport.title = getString(R.string.pref_opml_title)
         preferenceOpmlExport.setIcon(R.drawable.ic_save_24dp)
         preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
@@ -110,37 +120,37 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         }
 
         // set up "Update Covers" preference
-        val preferenceUpdateCovers: Preference = Preference(context)
+        preferenceUpdateCovers = Preference(activity as Context)
         preferenceUpdateCovers.title = getString(R.string.pref_update_covers_title)
         preferenceUpdateCovers.setIcon(R.drawable.ic_image_24dp)
         preferenceUpdateCovers.summary = getString(R.string.pref_update_covers_summary)
         preferenceUpdateCovers.setOnPreferenceClickListener {
             // show dialog
-            YesNoDialog(this).show(context = context, type = Keys.DIALOG_UPDATE_COVERS, message = R.string.dialog_yes_no_message_update_covers, yesButton = R.string.dialog_yes_no_positive_button_update_covers)
+            YesNoDialog(this).show(context = preferenceManager.context, type = Keys.DIALOG_UPDATE_COVERS, message = R.string.dialog_yes_no_message_update_covers, yesButton = R.string.dialog_yes_no_positive_button_update_covers)
             return@setOnPreferenceClickListener true
         }
 
         // set up "Delete All" preference
-        val preferenceDeleteAll: Preference = Preference(context)
+        preferenceDeleteAll = Preference(activity as Context)
         preferenceDeleteAll.title = getString(R.string.pref_delete_all_title)
         preferenceDeleteAll.setIcon(R.drawable.ic_delete_24dp)
-        preferenceDeleteAll.summary = getString(R.string.pref_delete_all_summary)
+        preferenceDeleteAll.summary = "${getString(R.string.pref_delete_all_summary)} ${getAvailableSpace()}"
         preferenceDeleteAll.setOnPreferenceClickListener {
             // stop playback using intent (we have no media controller reference here)
             val intent = Intent(activity, PlayerService::class.java)
             intent.action = Keys.ACTION_STOP
-            (context).startService(intent)
+            (preferenceManager.context).startService(intent)
             // show dialog
-            YesNoDialog(this).show(context = context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
+            YesNoDialog(this).show(context = preferenceManager.context, type = Keys.DIALOG_DELETE_DOWNLOADS, message = R.string.dialog_yes_no_message_delete_downloads, yesButton = R.string.dialog_yes_no_positive_button_delete_downloads)
             return@setOnPreferenceClickListener true
         }
 
         // set up "Search Provider" preference
-        val preferenceSearchProviderSelection: ListPreference = ListPreference(context)
+        preferenceSearchProviderSelection = ListPreference(context)
         preferenceSearchProviderSelection.title = getString(R.string.pref_search_provider_selection_title)
         preferenceSearchProviderSelection.setIcon(R.drawable.ic_search_24dp)
         preferenceSearchProviderSelection.key = Keys.PREF_PODCAST_SEARCH_PROVIDER_SELECTION
-        preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${PreferencesHelper.getCurrentPodcastSearchProvider(context)}"
+        preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${PreferencesHelper.getCurrentPodcastSearchProvider(preferenceManager.context)}"
         preferenceSearchProviderSelection.entries = arrayOf(getString(R.string.pref_search_provider_selection_gpodder), getString(R.string.pref_search_provider_selection_podcastindex))
         preferenceSearchProviderSelection.entryValues = arrayOf(Keys.PODCAST_SEARCH_PROVIDER_GPODDER, Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX)
         preferenceSearchProviderSelection.setDefaultValue(Keys.PODCAST_SEARCH_PROVIDER_GPODDER)
@@ -155,21 +165,21 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         }
 
         // set up "App Version" preference
-        val preferenceAppVersion: Preference = Preference(context)
+        preferenceAppVersion = Preference(activity as Context)
         preferenceAppVersion.title = getString(R.string.pref_app_version_title)
         preferenceAppVersion.setIcon(R.drawable.ic_info_24dp)
         preferenceAppVersion.summary = "${getString(R.string.pref_app_version_summary)} ${BuildConfig.VERSION_NAME} (${getString(R.string.app_version_name)})"
         preferenceAppVersion.setOnPreferenceClickListener {
             // copy to clipboard
             val clip: ClipData = ClipData.newPlainText("simple text", preferenceAppVersion.summary)
-            val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val cm: ClipboardManager = preferenceManager.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(clip)
             Toast.makeText(activity as Context, R.string.toast_message_copied_to_clipboard, Toast.LENGTH_LONG).show()
             return@setOnPreferenceClickListener true
         }
 
         // set up "Report Issue" preference
-        val preferenceReportIssue: Preference = Preference(context)
+        preferenceReportIssue = Preference(activity as Context)
         preferenceReportIssue.title = getString(R.string.pref_report_issue_title)
         preferenceReportIssue.setIcon(R.drawable.ic_bug_report_24dp)
         preferenceReportIssue.summary = getString(R.string.pref_report_issue_summary)
@@ -284,6 +294,9 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             val collectionDatabase = CollectionDatabase.getInstance(activity as Context)
             collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
         }
+        // update
+        preferenceDeleteAll.summary = "${getString(R.string.pref_delete_all_summary)} ${getAvailableSpace()}"
+
     }
 
 
@@ -302,5 +315,11 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
         }
     }
+
+
+    /* Creates readable string containing available and used storage space */
+    private fun getAvailableSpace(): String {
+        val externalFilesDir = preferenceManager.context.getExternalFilesDir("")
+        return "${getString(R.string.pref_delete_all_storage_space_available)}: ${FileHelper.getAvailableFreeSpaceForFolder(externalFilesDir)} | ${getString(R.string.pref_delete_all_storage_space_used)}: ${FileHelper.getUsedStorageSpaceForFolder(externalFilesDir)}%" }
 
 }

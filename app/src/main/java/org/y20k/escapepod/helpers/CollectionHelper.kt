@@ -68,7 +68,7 @@ object CollectionHelper {
 
 
     /* Copies over episode states from old episode list to new episode list */
-    fun updateEpisodeList(oldEpisodes: List<Episode>, newEpisodes: List<Episode>): List<Episode> {
+    fun updateEpisodeList(podcast: Podcast, oldEpisodes: List<Episode>, newEpisodes: List<Episode>): List<Episode> {
         val updatedEpisodeList: MutableList<Episode> = mutableListOf()
         newEpisodes.forEach { newEpisode ->
             // try to find matching old episode
@@ -77,10 +77,11 @@ object CollectionHelper {
                 // matching old episode found - update old episode and add to list
                 if (oldEpisode.mediaId == newEpisode.mediaId) {
                     isNew = false
+                    LogHelper.e(TAG, "DING => ${oldEpisode.cover}") // todo remove
                     val updatedEpisode: Episode = Episode(newEpisode,
                             audio = oldEpisode.audio,
-                            cover = oldEpisode.cover,
-                            smallCover = oldEpisode.smallCover,
+                            cover = podcast.cover,
+                            smallCover = podcast.smallCover,
                             playbackState = oldEpisode.playbackState,
                             playbackPosition = oldEpisode.playbackPosition,
                             manuallyDeleted = oldEpisode.manuallyDeleted,
@@ -90,7 +91,10 @@ object CollectionHelper {
             }
             // no matching old episode found - add new episode to list
             if (isNew) {
-                updatedEpisodeList.add(newEpisode)
+                val updatedEpisode: Episode = Episode(newEpisode,
+                        cover = podcast.cover,
+                        smallCover = podcast.smallCover)
+                updatedEpisodeList.add(updatedEpisode)
             }
         }
         return updatedEpisodeList

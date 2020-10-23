@@ -114,6 +114,8 @@
     <string name="pref_background_refresh_summary_disabled">Not looking for podcast episodes in background.</string>
     <string name="pref_background_refresh_title">Background Refresh</string>
     <string name="pref_delete_all_summary">Delete downloaded episodes to free up space on your device. You can download them again at any time.</string>
+    <string name="pref_delete_all_storage_space_available">Available</string>
+    <string name="pref_delete_all_storage_space_used">Used</string>
     <string name="pref_delete_all_title">Delete Downloads</string>
     <string name="pref_episode_download_over_mobile_summary_enabled">Downloading podcast episodes over Wi-Fi and mobile network. Data charges may apply.</string>
     <string name="pref_episode_download_over_mobile_summary_disabled">Downloading podcast episodes over Wi-Fi only.</string>
