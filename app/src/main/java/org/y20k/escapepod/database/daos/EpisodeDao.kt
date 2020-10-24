@@ -137,7 +137,7 @@ interface EpisodeDao {
 
 
     /* Resets local audio references of all episodes */
-    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0 ")
+    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, manually_deleted = 1")
     fun resetLocalAudioReferencesForAllEpisodes()
 
 

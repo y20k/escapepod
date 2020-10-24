@@ -23,7 +23,7 @@ import org.y20k.escapepod.xml.RssHelper
 /*
  * PodcastDescription class
  */
-@Entity(tableName = "podcast_descriptions", indices = arrayOf(Index(value = ["remote_podcast_feed_location"], unique = true)))
+@Entity(tableName = "podcast_descriptions", indices = [Index(value = ["remote_podcast_feed_location"], unique = true)])
 data class PodcastDescription(
 
         @PrimaryKey

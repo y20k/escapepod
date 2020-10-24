@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -294,9 +295,13 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             val collectionDatabase = CollectionDatabase.getInstance(activity as Context)
             collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
         }
-        // update
+        // reset current and up next media id
+        PreferencesHelper.saveCurrentMediaId(activity as Context)
+        PreferencesHelper.saveUpNextMediaId(activity as Context)
+        PreferencesHelper.savePlayerPlaybackState(activity as Context, PlaybackStateCompat.STATE_STOPPED)
+        // update summary
         preferenceDeleteAll.summary = "${getString(R.string.pref_delete_all_summary)} ${getAvailableSpace()}"
-
+        Toast.makeText(activity as Context, R.string.toast_message_deleting_downloads, Toast.LENGTH_LONG).show()
     }
 
 

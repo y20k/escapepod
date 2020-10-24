@@ -27,7 +27,7 @@ import java.util.*
 /*
  * Podcast class
  */
-@Entity(tableName = "podcasts", indices = arrayOf(Index(value = ["remote_podcast_feed_location"], unique = true)))
+@Entity(tableName = "podcasts", indices = [Index(value = ["remote_podcast_feed_location"], unique = true)])
 data class Podcast(
 
         @PrimaryKey

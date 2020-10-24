@@ -69,7 +69,8 @@
     <string name="toast_message_adding_podcasts">Adding podcasts.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection up-to-date.</string>
     <string name="toast_message_copied_to_clipboard">Copied to clipboard.</string>
-    <string name="toast_message_downloading_episode">Downloading Episode.</string>
+    <string name="toast_message_deleting_downloads">Deleting downloaded episodes.</string>
+    <string name="toast_message_downloading_episode">Downloading episode.</string>
     <string name="toast_message_error_download_error">Download error</string>
     <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Grant \"Read Storage\" permission to open this file.</string>

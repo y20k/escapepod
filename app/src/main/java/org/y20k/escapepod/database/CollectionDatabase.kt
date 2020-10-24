@@ -33,7 +33,7 @@ import org.y20k.escapepod.database.wrappers.EpisodeMostRecentView
 /*
  * CollectionDatabase class
  */
-@Database(entities = arrayOf(Podcast::class, PodcastDescription::class, Episode::class, EpisodeDescription::class), views = arrayOf(EpisodeMostRecentView::class),version = 1)
+@Database(entities = [Podcast::class, PodcastDescription::class, Episode::class, EpisodeDescription::class], views = [EpisodeMostRecentView::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class CollectionDatabase : RoomDatabase() {
 
