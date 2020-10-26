@@ -47,7 +47,7 @@
     <string name="dialog_yes_no_message_update_collection">寻找新集吗？</string>
     <string name="dialog_yes_no_message_update_covers">下载所有播客的最新版封面吗？</string>
     <string name="dialog_yes_no_message_vpn_download">您的设备已通过 VPN 连接。仍然下载本集吗？</string>
-    <string name="dialog_yes_no_negative_button_add_up_next">添加到\“下一个\“</string>
+    <string name="dialog_yes_no_negative_button_add_up_next">添加到“下一个“</string>
     <string name="dialog_yes_no_negative_button_cancel">取消</string>
     <string name="dialog_yes_no_negative_button_default">否</string>
     <string name="dialog_yes_no_positive_button_add_up_next">现在开始</string>
@@ -71,7 +71,7 @@
     <string name="toast_message_downloading_episode">正在下载本集</string>
     <string name="toast_message_error_download_error">下载错误</string>
     <string name="toast_message_error_feed_not_supported">不支持的源（application/Atom+XML）。</string>
-    <string name="toast_message_error_missing_storage_permission">请授予\“读取存储\“权限以打开此文件。</string>
+    <string name="toast_message_error_missing_storage_permission">请授予“读取存储“权限以打开此文件。</string>
     <string name="toast_message_error_no_podcast_found">无法开始回放。请先添加一个播客。</string>
     <string name="toast_message_error_no_podcast_matches_search">找不到符合您搜索条件的播客。</string>
     <string name="toast_message_error_refreshing_cover">无法刷新封面。此源不包含参考封面。</string>
@@ -85,11 +85,11 @@
     <string name="toast_message_save_opml">正在保存播客集为 OPML。</string>
     <string name="toast_message_skipping_disabled">回放未运行。已关闭跳跃。</string>
     <string name="toast_message_sleep_timer_unable_to_start">请先开始收听一集。</string>
-    <string name="toast_message_theme_day">正在切换到\“日间模式\“（检测到长按）</string>
-    <string name="toast_message_theme_follow_system">正在切换到\“跟随系统设置模式\“（检测到长按）</string>
-    <string name="toast_message_theme_night">正在切换到\“夜间模式\“（检测到长按）</string>
-    <string name="toast_message_up_next_added_episode">已添加本集到\“下一个\“队列。</string>
-    <string name="toast_message_up_next_removed_episode">本集已从\“下一个\“队列移除。</string>
+    <string name="toast_message_theme_day">正在切换到“日间模式“（检测到长按）</string>
+    <string name="toast_message_theme_follow_system">正在切换到“跟随系统设置模式“（检测到长按）</string>
+    <string name="toast_message_theme_night">正在切换到“夜间模式“（检测到长按）</string>
+    <string name="toast_message_up_next_added_episode">已添加本集到“下一个“队列。</string>
+    <string name="toast_message_up_next_removed_episode">本集已从“下一个“队列移除。</string>
     <string name="toast_message_up_next_start_playback">正开始下一集。</string>
     <string name="toast_message_updating_collection">正在更新播客集。</string>
     <!-- Podcast List -->
@@ -113,6 +113,8 @@
     <string name="pref_background_refresh_summary_disabled">未在后台寻找播客集。</string>
     <string name="pref_background_refresh_title">后台刷新</string>
     <string name="pref_delete_all_summary">删除已下载的集以便释放您的设备空间。您可以随时再次下载它们。</string>
+    <string name="pref_delete_all_storage_space_available">可用</string>
+    <string name="pref_delete_all_storage_space_used">已用</string>
     <string name="pref_delete_all_title">删除下载</string>
     <string name="pref_episode_download_over_mobile_summary_enabled">正在通过 Wi-Fi 和移动网络下载播客集。可能会产生数据费用</string>
     <string name="pref_episode_download_over_mobile_summary_disabled">仅通过 Wi-Fi 下载播客集。</string>
@@ -156,7 +158,7 @@
     <string name="descr_expanded_player_sleep_timer_start_button">启动睡眠定时器</string>
     <string name="descr_expanded_player_time_played">已播放时间</string>
     <string name="descr_expanded_player_time_remaining">剩余时间</string>
-    <string name="descr_expanded_player_up_next_clear_button">清除\“下一个\“队列。</string>
+    <string name="descr_expanded_player_up_next_clear_button">清除“下一个“队列。</string>
     <string name="descr_player_playback_button">播放/暂停</string>
     <string name="descr_player_podcast_cover">小尺寸播客封面图像</string>
     <!-- Onboarding -->
