@@ -150,4 +150,7 @@
     <string name="pref_search_provider_selection_title">Usluga pretraživanja</string>
     <string name="pref_search_provider_selection_summary">Trenutačno se koristi:</string>
     <string name="pref_advanced_title">Napredno</string>
+    <string name="pref_delete_all_storage_space_used">Korišteno</string>
+    <string name="pref_delete_all_storage_space_available">Dostupno</string>
+    <string name="toast_message_deleting_downloads">Brisanje preuzetih epizoda.</string>
 </resources>
