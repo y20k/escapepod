@@ -77,7 +77,6 @@ object CollectionHelper {
                 // matching old episode found - update old episode and add to list
                 if (oldEpisode.mediaId == newEpisode.mediaId) {
                     isNew = false
-                    LogHelper.e(TAG, "DING => ${oldEpisode.cover}") // todo remove
                     val updatedEpisode: Episode = Episode(newEpisode,
                             audio = oldEpisode.audio,
                             cover = podcast.cover,

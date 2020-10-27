@@ -226,7 +226,6 @@ object DownloadHelper {
     /* Enqueue episode and podcast cover */
     private fun enqueuePodcastMediaFiles(context: Context, podcast: Podcast, episodes: List<Episode>, isNewPodcast: Boolean, ignoreWifiRestriction: Boolean = false) {
         // new podcast: first download the cover
-        LogHelper.e(TAG, "DING => new $isNewPodcast ++ empty ${podcast.remoteImageFileLocation.isNotEmpty()}") // todo remove
         if (isNewPodcast && podcast.remoteImageFileLocation.isNotEmpty()) {
             CollectionHelper.clearImagesFolder(context, podcast)
             val coverUris: Array<Uri> = Array(1) { podcast.remoteImageFileLocation.toUri() }

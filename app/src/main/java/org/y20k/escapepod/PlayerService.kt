@@ -74,7 +74,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
-    private lateinit var modificationDate: Date
     private lateinit var sleepTimer: CountDownTimer
     private val handler: Handler = Handler(Looper.getMainLooper())
     private var sleepTimerTimeRemaining: Long = 0L
@@ -93,9 +92,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
-
-        // load modification date of collection
-        modificationDate = PreferencesHelper.loadCollectionModificationDate(this)
 
         // get the package validator // todo can be local?
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
@@ -275,6 +271,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 if (player.isPlaying) {
                     handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
                     handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
+                    PreferencesHelper.saveCurrentMediaId(this@PlayerService, episode.mediaId)
                 } else {
                     handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
                 }

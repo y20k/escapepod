@@ -61,7 +61,7 @@ object PreferencesHelper {
     fun saveUpNextMediaId(context: Context, mediaId: String = String()) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         val editor = settings.edit()
-        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, mediaId)
+        editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, mediaId)
         editor.apply()
     }
 
