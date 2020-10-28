@@ -32,9 +32,6 @@ interface PodcastDao {
     @Query("SELECT * FROM podcasts")
     fun getAll(): List<Podcast>
 
-    @Query("SELECT * FROM podcasts WHERE name LIKE :name LIMIT 1")
-    fun findByName(name: String): Podcast?
-
     @Query("SELECT * FROM podcasts WHERE remote_image_file_location IS :remoteImageFileLocation LIMIT 1")
     fun findByRemoteImageFileLocation(remoteImageFileLocation: String): Podcast?
 

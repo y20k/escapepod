@@ -21,7 +21,7 @@
     <string name="descr_card_settings_button">Asetukset</string>
     <string name="descr_card_add_new_button">Lisää uuden podcastin syöte</string>
     <string name="pref_update_covers_summary">Lataa uusin versio kaikkien podcastien kansikuvista.</string>
-    <string name="pref_opml_summary">Tallenna podcast-syötteet OPML-tiedostoon joka voidaan siirtää muihin soittimiin.</string>
+    <string name="pref_opml_export_summary">Tallenna podcast-syötteet OPML-tiedostoon joka voidaan siirtää muihin soittimiin.</string>
     <string name="pref_theme_selection_title">Sovelluksen teema</string>
     <string name="pref_theme_selection_mode_light">Vaalea teema</string>
     <string name="pref_theme_selection_mode_dark">Tumma teema</string>
@@ -60,7 +60,7 @@
     <string name="pref_theme_selection_summary">Tämän hetkinen teema:</string>
     <string name="pref_theme_selection_mode_device_default">Laitteen oletusteema</string>
     <string name="pref_update_covers_title">Päivitä kansikuvat</string>
-    <string name="pref_opml_title">Vie OPML</string>
+    <string name="pref_opml_export_title">Vie OPML</string>
     <string name="pref_maintenance_title">Huolto</string>
     <string name="pref_delete_all_title">Poista lautaukset</string>
     <string name="notification_skip_forward">Ohita</string>

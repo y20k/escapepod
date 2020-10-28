@@ -26,7 +26,7 @@ import java.util.*
 /*
  * Episode class
  */
-@Entity(tableName = "episodes", indices = [Index(value = ["media_id", "publication_date"], unique = true), Index(value = ["episode_remote_podcast_feed_location"], unique = false)])
+@Entity(tableName = "episodes", indices = [Index(value = ["media_id"], unique = true), Index(value = ["publication_date"], unique = false), Index(value = ["remote_audio_file_location"], unique = true), Index(value = ["episode_remote_podcast_feed_location"], unique = false)])
 data class Episode (
 
         // unique media id - currently just the remoteAudioFileLocation

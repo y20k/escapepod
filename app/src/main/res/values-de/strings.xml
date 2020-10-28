@@ -125,8 +125,8 @@
     <string name="fragment_settings_title">Einstellungen</string>
     <string name="pref_delete_all_summary">Löscht heruntergeladenen Episoden, um Speicherplatz auf deinem Gerät freizugeben. Du kannst sie jederzeit wieder herunterladen.</string>
     <string name="pref_delete_all_title">Downloads löschen</string>
-    <string name="pref_opml_summary">Speichert deine Podcast-Feeds in eine OPML-Datei, die in andere Player importiert werden kann.</string>
-    <string name="pref_opml_title">OPML exportieren</string>
+    <string name="pref_opml_export_summary">Speichert deine Podcast-Feeds in eine OPML-Datei, die in andere Player importiert werden kann.</string>
+    <string name="pref_opml_export_title">OPML exportieren</string>
     <string name="toast_message_install_file_helper">Bitte installiere zuerst einen Dateimanager oder einen Podcast-Player.</string>
     <string name="toast_message_save_opml">Speichern der Podcast-Sammlung als OPML.</string>
     <string name="dialog_episode_shownotes_feed">Feed</string>

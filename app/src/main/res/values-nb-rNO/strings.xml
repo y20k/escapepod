@@ -157,8 +157,8 @@
     <string name="fragment_settings_title">Innstillinger</string>
     <string name="pref_delete_all_summary">Slett nedlastede episoder for å frigjøre plass på enheten din. Du kan laste dem ned igjen etterpå.</string>
     <string name="pref_delete_all_title">Slett nedlastinger</string>
-    <string name="pref_opml_summary">Lagre dine nettradioopptaksinformasjonskanaler til en OPML-fil som kan importeres til andre avspillere.</string>
-    <string name="pref_opml_title">Eksporter OPML</string>
+    <string name="pref_opml_export_summary">Lagre dine nettradioopptaksinformasjonskanaler til en OPML-fil som kan importeres til andre avspillere.</string>
+    <string name="pref_opml_export_title">Eksporter OPML</string>
     <string name="toast_message_install_file_helper">Installer en filbehandler eller nettradioopptaksspiller først.</string>
     <string name="toast_message_save_opml">Lagrer nettradioopptakssamling som OPML.</string>
     <string name="dialog_episode_shownotes_feed">Informasjonskanal</string>

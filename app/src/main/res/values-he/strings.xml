@@ -124,8 +124,8 @@
     <string name="pref_update_covers_summary">הורדת הגרסה העדכנית ביותר של כל תמונות הנושא של הפודקאסטים באוסף שלך.</string>
     <string name="pref_report_issue_title">דיווח על תקלה</string>
     <string name="pref_report_issue_summary">ניתן לדווח על תקלות ולהציע שיפורים ב־GitHub.</string>
-    <string name="pref_opml_title">ייצוא OPML</string>
-    <string name="pref_opml_summary">לשמור את הזנות הפודקאסטים לקובץ OPML שניתן לייבא לנגנים אחרים.</string>
+    <string name="pref_opml_export_title">ייצוא OPML</string>
+    <string name="pref_opml_export_summary">לשמור את הזנות הפודקאסטים לקובץ OPML שניתן לייבא לנגנים אחרים.</string>
     <string name="pref_maintenance_title">תחזוקה</string>
     <string name="pref_general_title">כללי</string>
     <string name="pref_episode_download_over_mobile_title">הורדה דרך רשת סלולרית</string>

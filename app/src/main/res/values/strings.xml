@@ -123,8 +123,10 @@
     <string name="pref_episode_download_over_mobile_title">Download Over Mobile Network</string>
     <string name="pref_general_title">General</string>
     <string name="pref_maintenance_title">Maintenance</string>
-    <string name="pref_opml_summary">Save your podcasts feeds to an OPML file that can be imported into other players.</string>
-    <string name="pref_opml_title">Export OPML</string>
+    <string name="pref_opml_export_summary">Save your podcasts feeds to an OPML file that can be imported into other players.</string>
+    <string name="pref_opml_export_title">Export OPML</string>
+    <string name="pref_opml_import_summary">Select an OPML file from device storage.</string>
+    <string name="pref_opml_import_title">Import OPML</string>
     <string name="pref_report_issue_summary">Report bugs and suggest improvements on GitHub.</string>
     <string name="pref_report_issue_title">Report Issue</string>
     <string name="pref_search_provider_selection_gpodder" translatable="false">gpodder.net </string>

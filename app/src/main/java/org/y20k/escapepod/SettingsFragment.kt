@@ -26,6 +26,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -49,6 +50,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     private lateinit var preferenceBackgroundRefresh: SwitchPreferenceCompat
     private lateinit var preferenceEpisodeDownloadOverMobile: SwitchPreferenceCompat
     private lateinit var preferenceOpmlExport: Preference
+    private lateinit var preferenceOpmlImport: Preference
     private lateinit var preferenceUpdateCovers: Preference
     private lateinit var preferenceDeleteAll: Preference
     private lateinit var preferenceSearchProviderSelection: ListPreference
@@ -112,13 +114,26 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
         // set up "OPML Export" preference
         preferenceOpmlExport = Preference(activity as Context)
-        preferenceOpmlExport.title = getString(R.string.pref_opml_title)
+        preferenceOpmlExport.title = getString(R.string.pref_opml_export_title)
         preferenceOpmlExport.setIcon(R.drawable.ic_save_24dp)
-        preferenceOpmlExport.summary = getString(R.string.pref_opml_summary)
+        preferenceOpmlExport.summary = getString(R.string.pref_opml_export_summary)
         preferenceOpmlExport.setOnPreferenceClickListener {
             openSaveOpmlDialog()
             return@setOnPreferenceClickListener true
         }
+
+
+        // set up "OPML Import" preference
+        preferenceOpmlImport = Preference(activity as Context)
+        preferenceOpmlImport.title = getString(R.string.pref_opml_import_title)
+        preferenceOpmlImport.setIcon(R.drawable.ic_folder_24)
+        preferenceOpmlImport.summary = getString(R.string.pref_opml_import_summary)
+        preferenceOpmlImport.setOnPreferenceClickListener {
+            openImportOpmlDialog()
+            return@setOnPreferenceClickListener true
+        }
+
+
 
         // set up "Update Covers" preference
         preferenceUpdateCovers = Preference(activity as Context)
@@ -205,6 +220,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
         preferenceCategoryMaintenance.contains(preferenceOpmlExport)
+        preferenceCategoryMaintenance.contains(preferenceOpmlImport)
         preferenceCategoryMaintenance.contains(preferenceUpdateCovers)
         preferenceCategoryMaintenance.contains(preferenceDeleteAll)
 
@@ -225,6 +241,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         screen.addPreference(preferenceEpisodeDownloadOverMobile)
         screen.addPreference(preferenceCategoryMaintenance)
         screen.addPreference(preferenceOpmlExport)
+        screen.addPreference(preferenceOpmlImport)
         screen.addPreference(preferenceUpdateCovers)
         screen.addPreference(preferenceDeleteAll)
         screen.addPreference(preferenceCategoryAdvanced)
@@ -280,6 +297,18 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
                     }
                 }
             }
+            // open OPML file selected in file picker and import
+            Keys.REQUEST_OPEN_OPML -> {
+                if (resultCode == RESULT_OK && data != null) {
+                    val targetUri: Uri? = data.data
+                    if (targetUri != null) {
+                        // open and import opml in player fragment
+                        val bundle: Bundle = Bundle()
+                        bundle.putString(Keys.ARG_OPEN_OPML, targetUri.toString())
+                        this.findNavController().navigate(R.id.podcast_player_destination, bundle)
+                    }
+                }
+            }
             // let activity handle result
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
@@ -320,6 +349,25 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
         }
     }
+
+
+    /* Opens up a file picker to select an OPML file for import */
+    private fun openImportOpmlDialog() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = Keys.MIME_TYPE_XML
+            putExtra(Intent.EXTRA_TITLE, Keys.COLLECTION_OPML_FILE)
+        }
+        // file gets saved in onActivityResult
+        try {
+            startActivityForResult(intent, Keys.REQUEST_OPEN_OPML)
+        } catch (exception: Exception) {
+            LogHelper.e(TAG, "Unable to open file picker for OPML.\n$exception")
+            // Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
+        }
+    }
+
+
 
 
     /* Creates readable string containing available and used storage space */

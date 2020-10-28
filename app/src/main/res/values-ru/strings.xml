@@ -30,7 +30,7 @@
     <string name="pref_update_covers_title">Обновить обложки</string>
     <string name="pref_report_issue_title">Сообщить о проблеме</string>
     <string name="pref_report_issue_summary">Сообщайте об ошибках и предлагайте улучшения на GitHub.</string>
-    <string name="pref_opml_title">Экспорт OPML</string>
+    <string name="pref_opml_export_title">Экспорт OPML</string>
     <string name="pref_episode_download_over_mobile_title">Загрузка через мобильную сеть</string>
     <string name="pref_background_refresh_summary_enabled">Искать эпизоды подкаста в фоновом режиме.</string>
     <string name="pref_background_refresh_summary_disabled">Не искать эпизоды подкаста в фоновом режиме.</string>
@@ -63,7 +63,7 @@
     <string name="pref_delete_all_title">Удалить загрузки</string>
     <string name="pref_delete_all_summary">Удалить загруженные эпизоды, чтобы освободить место на вашем устройстве. Вы можете загрузить их снова в любое время.</string>
     <string name="pref_update_covers_summary">Загрузить последнюю версию всех обложек подкастов из вашей коллекции.</string>
-    <string name="pref_opml_summary">Сохранить ваши каналы подкастов в файл OPML, который можно импортировать в другие проигрыватели.</string>
+    <string name="pref_opml_export_summary">Сохранить ваши каналы подкастов в файл OPML, который можно импортировать в другие проигрыватели.</string>
     <string name="pref_theme_selection_summary">Текущая тема:</string>
     <string name="pref_theme_selection_mode_light">Светлый режим</string>
     <string name="pref_theme_selection_mode_device_default">Аналогично устройству</string>

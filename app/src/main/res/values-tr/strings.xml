@@ -38,8 +38,8 @@
     <string name="pref_update_covers_summary">Koleksiyonunuzdaki tüm podcast kapaklarının en son sürümünü indirin.</string>
     <string name="pref_report_issue_title">Sorun Bildir</string>
     <string name="pref_report_issue_summary">GitHub\'da hataları bildirin ve iyileştirmeler önerin.</string>
-    <string name="pref_opml_title">OPML olarak dışa aktar</string>
-    <string name="pref_opml_summary">Podcast akışlarınızı, diğer oynatıcılara aktarılabilen bir OPML dosyasına kaydedin.</string>
+    <string name="pref_opml_export_title">OPML olarak dışa aktar</string>
+    <string name="pref_opml_export_summary">Podcast akışlarınızı, diğer oynatıcılara aktarılabilen bir OPML dosyasına kaydedin.</string>
     <string name="pref_maintenance_title">Bakım</string>
     <string name="pref_general_title">Genel</string>
     <string name="pref_episode_download_over_mobile_title">Mobil Ağ Üzerinden İndir</string>

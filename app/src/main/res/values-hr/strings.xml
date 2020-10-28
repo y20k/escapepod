@@ -4,7 +4,7 @@
     <string name="toast_message_adding_podcast">Dodavanje podcasta.</string>
     <string name="descr_expanded_player_playback_speed_button">Povećaj brzinu reprodukcije</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Starije epizode</string>
-    <string name="pref_opml_title">Izvezi OPML</string>
+    <string name="pref_opml_export_title">Izvezi OPML</string>
     <string name="toast_message_collection_update_not_necessary">Zbirka podcasta je aktualna.</string>
     <string name="dialog_error_title_no_network">Nema mreže</string>
     <string name="descr_expanded_player_seekbar">Trajanje reprodukcije epizode</string>
@@ -118,7 +118,7 @@
     <string name="dialog_yes_no_positive_button_non_wifi_download">Svejedno preuzmi</string>
     <string name="pref_theme_selection_mode_device_default">Isto kao uređaj</string>
     <string name="notification_playing">Svira</string>
-    <string name="pref_opml_summary">Spremi svoje feedove podcasta u OPML datoteku koja se može uvesti u druge playere.</string>
+    <string name="pref_opml_export_summary">Spremi svoje feedove podcasta u OPML datoteku koja se može uvesti u druge playere.</string>
     <string name="descr_expanded_player_forward_button">Skoči 30 sekundi naprijed</string>
     <string name="notification_play">Sviraj</string>
     <string name="toast_message_error_no_podcast_found">Nemoguće pokrenuti reprodukciju. Najprije dodaj jedan podcast.</string>

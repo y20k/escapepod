@@ -129,8 +129,8 @@
     <string name="descr_card_small_playback_button">Odtwórz/zatrzymaj</string>
     <string name="pref_update_covers_title">Aktualizuj okładki</string>
     <string name="pref_update_covers_summary">Pobierz najnowszą wersję wszystkich okładek podcastów ze swojej kolekcji.</string>
-    <string name="pref_opml_title">Eksportuj OPML</string>
-    <string name="pref_opml_summary">Zapisz kanały podcastów w pliku OPML, który można zaimportować do innych odtwarzaczy.</string>
+    <string name="pref_opml_export_title">Eksportuj OPML</string>
+    <string name="pref_opml_export_summary">Zapisz kanały podcastów w pliku OPML, który można zaimportować do innych odtwarzaczy.</string>
     <string name="pref_delete_all_title">Usuń pobrane</string>
     <string name="pref_delete_all_summary">Usuń pobrane odcinki, aby zwolnić miejsce na urządzeniu. Możesz pobrać je ponownie w każdej chwili.</string>
     <string name="toast_message_install_file_helper">Najpierw zainstaluj menedżera plików lub odtwarzacz podcastów.</string>

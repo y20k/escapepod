@@ -117,6 +117,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
+
+        // start watching for changes in shared preferences
+        PreferencesHelper.registerPreferenceChangeListener(this, this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
 
 
@@ -157,6 +160,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         // release player
         player.removeAnalyticsListener(analyticsListener)
         player.release()
+        // stop watching for changes in shared preferences
+        PreferencesHelper.unregisterPreferenceChangeListener(this, this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
 
 
@@ -244,6 +249,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 GlobalScope.launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
+                    LogHelper.e(TAG, "DONG => ${upNextEpisode?.title}") // todo remove
                 }
             }
         }
@@ -288,6 +294,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             collectionDatabase.episodeDao().upsert(episode)
             // CASE: Up next episode available
             if (upNextEpisode != null) {
+                LogHelper.e(TAG, "DING") // todo remove
                 // get up next episode
                 episode = upNextEpisode as Episode
                 // start playback

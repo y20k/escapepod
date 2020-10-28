@@ -197,6 +197,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 layout.toggleDownloadProgressIndicator(activity as Context)
             }
         }
+        // handle navigation arguments
+        handleNavigationArguments()
         // start watching for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
@@ -820,8 +822,17 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private fun tryToOfferOpmlImport() {
         val opmlFile: File? = File((activity as Context).getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_OPML_FILE)
         if (FileHelper.getCollectionFolderSize(activity as Context) == 1 && opmlFile!= null && opmlFile.exists() && opmlFile.length() > 0L) {
-            LogHelper.i(TAG, "Found an OPML file in the otherwise empty LegacyCollection folder. Size: ${opmlFile.length()} bytes")
+            LogHelper.i(TAG, "Found an OPML file in the otherwise empty Collection folder. Size: ${opmlFile.length()} bytes")
             readOpmlFile(opmlFile.toUri(), permissionCheckNeeded = false)
+        }
+    }
+
+
+    /* Handles arguments handed over by navigation (from SettingsFragment) */
+    private fun handleNavigationArguments() {
+        val opmlFileString: String? = arguments?.getString(Keys.ARG_OPEN_OPML)
+        if (opmlFileString != null) {
+            readOpmlFile(opmlFileString.toUri(), permissionCheckNeeded = false)
         }
     }
 
