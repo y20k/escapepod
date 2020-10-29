@@ -121,8 +121,10 @@
     <string name="pref_episode_download_over_mobile_title">通过移动网络下载</string>
     <string name="pref_general_title">常规</string>
     <string name="pref_maintenance_title">维护</string>
-    <string name="pref_opml_export_summary">将您的播客源保存为一个可被输入到其它播放器的 OPML 文件。</string>
-    <string name="pref_opml_export_title">输出 OPML</string>
+    <string name="pref_opml_export_summary">将您的播客源保存为一个可被导入到其它播放器的 OPML 文件。</string>
+    <string name="pref_opml_export_title">导出 OPML</string>
+    <string name="pref_opml_import_summary">从设备中选择一个 OPML 文件。</string>
+    <string name="pref_opml_import_title">导入 OPML</string>
     <string name="pref_report_issue_summary">在 Github 上报告漏洞并提出改进建议。</string>
     <string name="pref_report_issue_title">报告问题</string>
     <string name="pref_search_provider_selection_summary">当前使用：</string>
