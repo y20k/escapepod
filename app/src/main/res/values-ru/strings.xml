@@ -153,4 +153,6 @@
     <string name="pref_delete_all_storage_space_used">Использовано</string>
     <string name="pref_delete_all_storage_space_available">Доступно</string>
     <string name="toast_message_deleting_downloads">Удаление скачанных выпусков.</string>
+    <string name="pref_opml_import_title">Импорт OPML</string>
+    <string name="pref_opml_import_summary">Выберите файл OPML из хранилища устройства.</string>
 </resources>
