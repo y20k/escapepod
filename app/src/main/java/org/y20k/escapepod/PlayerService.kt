@@ -248,8 +248,9 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
                 GlobalScope.launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
+                    playerState.upNextEpisodeMediaId = mediaId
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-                    LogHelper.e(TAG, "DONG => ${upNextEpisode?.title}") // todo remove
+                    LogHelper.e(TAG, "UPNEXT => ${upNextEpisode?.title}") // todo remove
                 }
             }
         }
@@ -267,7 +268,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 collectionDatabase.episodeDao().upsert(episode)
                 collectionDatabase.episodeDao().setPlaybackStateForAllEpisodes(playbackState = PlaybackState.STATE_STOPPED, exclude = episode.mediaId)
                 // update player state
-                updatePlayerState(episode, playbackState)
+                updatePlayerState(playbackState)
                 // update media session
                 mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
                 mediaSession.setActive(playbackState != PlaybackStateCompat.STATE_STOPPED)
@@ -277,7 +278,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 if (player.isPlaying) {
                     handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
                     handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
-                    PreferencesHelper.saveCurrentMediaId(this@PlayerService, episode.mediaId)
                 } else {
                     handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
                 }
@@ -294,20 +294,20 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             collectionDatabase.episodeDao().upsert(episode)
             // CASE: Up next episode available
             if (upNextEpisode != null) {
-                LogHelper.e(TAG, "DING") // todo remove
                 // get up next episode
                 episode = upNextEpisode as Episode
+                // clear up-next
+                upNextEpisode = null
                 // start playback
                 withContext(Dispatchers.Main) { startPlayback() }
             }
             // CASE: Up next episode NOT available
             else {
+                // clear up-next
+                upNextEpisode = null
                 // stop playback
                 withContext(Dispatchers.Main) { stopPlayback() }
             }
-            // clear up-next
-            upNextEpisode = null
-            PreferencesHelper.saveUpNextMediaId(this@PlayerService)
         }
     }
 
@@ -377,8 +377,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
         // check if episode is in up-next queue - reset up next
         if (playerState.upNextEpisodeMediaId == episode.mediaId){
-            playerState.upNextEpisodeMediaId = String()
-            PreferencesHelper.saveUpNextMediaId(this )
+            upNextEpisode = null
         }
         // update metadata
         mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
@@ -513,9 +512,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Updates and saves the state of the player ui */
-    private fun updatePlayerState (episode: Episode, playbackState: Int) {
+    private fun updatePlayerState (playbackState: Int) {
         playerState.episodeMediaId = episode.mediaId
         playerState.playbackState = playbackState
+        playerState.upNextEpisodeMediaId = upNextEpisode?.mediaId ?: String()
+        // playerState.playbackSpeed is updated separately
         PreferencesHelper.savePlayerState(this, playerState)
     }
 
@@ -666,7 +667,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onSeekTo(position: Long) {
-            episode = Episode(episode, playbackPosition = position, playbackState = playerState.playbackState)
+            episode = Episode(episode, playbackPosition = position, playbackState = episode.playbackState)
             player.seekTo(position)
         }
 

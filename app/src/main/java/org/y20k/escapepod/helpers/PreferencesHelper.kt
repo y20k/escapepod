@@ -18,7 +18,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.preference.PreferenceManager
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.ui.PlayerState
@@ -218,12 +217,8 @@ object PreferencesHelper {
         val playerState: PlayerState = PlayerState()
         playerState.episodeMediaId = settings.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
         playerState.playbackState = settings.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
-//        playerState.playbackPosition = settings.getLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, 0L)
-//        playerState.episodeDuration = settings.getLong(Keys.PREF_PLAYER_STATE_EPISODE_DURATION, 0L)
         playerState.playbackSpeed = settings.getFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
         playerState.upNextEpisodeMediaId = settings.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
-        playerState.bottomSheetState = settings.getInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, BottomSheetBehavior.STATE_HIDDEN)
-        playerState.sleepTimerState = settings.getInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, Keys.STATE_SLEEP_TIMER_STOPPED)
         return playerState
     }
 
@@ -234,14 +229,25 @@ object PreferencesHelper {
         val editor = settings.edit()
         editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
         editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
-//        editor.putLong(Keys.PREF_PLAYER_STATE_PLAYBACK_POSITION, playerState.playbackPosition)
-//        editor.putLong(Keys.PREF_PLAYER_STATE_EPISODE_DURATION, playerState.episodeDuration)
         editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playerState.playbackSpeed)
         editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
-        editor.putInt(Keys.PREF_PLAYER_STATE_BOTTOM_SHEET_STATE, playerState.bottomSheetState)
-        editor.putInt(Keys.PREF_PLAYER_STATE_SLEEP_TIMER_STATE, playerState.sleepTimerState)
         editor.apply()
     }
+
+
+    /* Resets state of player user interface */
+    fun resetPlayerState(context: Context, keepUpNextMediaId: Boolean = true) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        val editor = settings.edit()
+        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String())
+        editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+        editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
+        if (!keepUpNextMediaId) {
+            editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String())
+        }
+        editor.apply()
+    }
+
 
 
     /* Start watching for changes in shared preferences - context must implement OnSharedPreferenceChangeListener */

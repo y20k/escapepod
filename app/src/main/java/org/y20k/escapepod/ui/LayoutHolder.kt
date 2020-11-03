@@ -158,7 +158,6 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             }
             sheetEpisodeTitleView.setOnClickListener {
                 displayShowNotes(context, episode)
-
             }
             podcastNameView.setOnLongClickListener{ view ->
                 val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator

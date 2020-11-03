@@ -61,15 +61,12 @@ object FileHelper {
     }
 
 
-    /* Get file size for given Uri */
-    fun getFileSize(context: Context, uri: Uri): Long {
-        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
-        if (cursor != null) {
-            val sizeIndex: Int = cursor.getColumnIndex(OpenableColumns.SIZE)
-            cursor.moveToFirst()
-            val size: Long = cursor.getLong(sizeIndex)
-            cursor.close()
-            return size
+    /* Get file size for given file-Uri */
+    fun getFileSize(uri: Uri): Long {
+        // return DocumentFile.fromSingleUri(context, uri)?.length() ?: 0L /* => solution for content-Uris */
+        val path: String? = uri.path
+        if (path != null) {
+            return File(path).length()
         } else {
             return 0L
         }
@@ -284,16 +281,6 @@ object FileHelper {
         return "$size $numSuffix"
     }
 
-
-
-
-
-    /* Suspend function: Wrapper for readCollection */ // todo remove
-    suspend fun readLegacyCollectionSuspended(context: Context): LegacyCollection {
-        return suspendCoroutine { cont ->
-            cont.resume(readLegacyCollection(context))
-        }
-    }
 
 
     /* Suspend function: Exports podcast collection as OPML file - local backup copy */

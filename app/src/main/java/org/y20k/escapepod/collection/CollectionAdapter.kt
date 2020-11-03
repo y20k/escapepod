@@ -351,16 +351,14 @@ class CollectionAdapter(private val context: Context, private val collectionData
         CollectionHelper.deletePodcastFolders(context, collection[position].data)
         // remove podcast from collection
         collectionViewModel.removePodcast(collection[position].data.remotePodcastFeedLocation)
-        // export list of podcasts as OPML
-        CollectionHelper.exportCollectionOpml(context, collection.map { it.data })
     }
 
 
     /* Deletes an episode download from collection */
-    fun deleteEpisode(context: Context, mediaID: String) {
-        LogHelper.v(TAG, "Deleting episode: $mediaID")
+    fun deleteEpisode(context: Context, mediaId: String) {
+        LogHelper.v(TAG, "Deleting episode: $mediaId")
         // remove audio reference in database
-        collectionViewModel.deleteEpisodeAudio(mediaID)
+        collectionViewModel.deleteEpisodeAudio(mediaId)
     }
 
 
@@ -369,23 +367,12 @@ class CollectionAdapter(private val context: Context, private val collectionData
         LogHelper.v(TAG, "Marking as played episode: $mediaId")
         // mark episode als played and update collection
         collectionViewModel.markEpisodePlayed(mediaId)
-        // remove this episode from player state (current media id), if necessary
-        if (PreferencesHelper.loadCurrentMediaId(context) == mediaId) {
-            PreferencesHelper.saveCurrentMediaId(context)
-        }
     }
 
 
-    /* Get episode for given media id */
-    fun getEpisode(mediaID: String): Episode? {
-        collection.forEach { podcast ->
-            podcast.episodes.forEach { episode ->
-                if (episode.data.mediaId == mediaID) {
-                    return episode.data
-                }
-            }
-        }
-        return null
+    /* Get podcast for given position */
+    fun getPodcast(position: Int): PodcastWithRecentEpisodesWrapper {
+        return collection[position]
     }
 
 
@@ -493,8 +480,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
             if (oldPodcast.data.name != newPodcast.data.name) return false
             if (oldPodcast.data.website != newPodcast.data.website) return false
             if (oldPodcast.data.remoteImageFileLocation != newPodcast.data.remoteImageFileLocation) return false
-            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.data.cover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.data.cover))) return false
-            if (FileHelper.getFileSize(context, Uri.parse(oldPodcast.data.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newPodcast.data.smallCover))) return false
+            if (FileHelper.getFileSize(Uri.parse(oldPodcast.data.cover)) != FileHelper.getFileSize(Uri.parse(newPodcast.data.cover))) return false
+            if (FileHelper.getFileSize(Uri.parse(oldPodcast.data.smallCover)) != FileHelper.getFileSize(Uri.parse(newPodcast.data.smallCover))) return false
 
             // compare relevant contents of episodes within podcast
             oldPodcast.episodes.forEachIndexed { index, oldEpisode ->
@@ -512,8 +499,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
                 if (oldEpisode.data.duration != newEpisode.data.duration) return false
                 if (oldEpisode.data.remoteCoverFileLocation != newEpisode.data.remoteCoverFileLocation) return false
                 if (oldEpisode.data.remoteAudioFileLocation != newEpisode.data.remoteAudioFileLocation) return false
-                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.data.cover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.data.cover))) return false
-                if (FileHelper.getFileSize(context, Uri.parse(oldEpisode.data.smallCover)) != FileHelper.getFileSize(context, Uri.parse(newEpisode.data.smallCover))) return false
+                if (FileHelper.getFileSize(Uri.parse(oldEpisode.data.cover)) != FileHelper.getFileSize(Uri.parse(newEpisode.data.cover))) return false
+                if (FileHelper.getFileSize(Uri.parse(oldEpisode.data.smallCover)) != FileHelper.getFileSize(Uri.parse(newEpisode.data.smallCover))) return false
             }
             // none of the above -> contents are the same
             return true

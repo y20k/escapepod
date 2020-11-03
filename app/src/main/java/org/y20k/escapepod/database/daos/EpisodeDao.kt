@@ -40,6 +40,10 @@ interface EpisodeDao {
     fun getLatest(episodeRemotePodcastFeedLocation: String): Episode
 
 
+    @Query("SELECT title FROM episodes WHERE media_id IS :mediaId LIMIT 1")
+    fun getTitle(mediaId: String): String?
+
+
     @Query("SELECT * FROM episodes WHERE media_id IS :mediaId LIMIT 1")
     fun findByMediaId(mediaId: String): Episode?
 
@@ -119,17 +123,20 @@ interface EpisodeDao {
 
 
     /* Set episode playback position to it's duration - marking it as played */
-    @Query("UPDATE episodes SET playback_position = duration WHERE media_id IS :mediaId")
+    // https://developer.android.com/reference/kotlin/android/support/v4/media/session/PlaybackStateCompat#state_stopped
+    @Query("UPDATE episodes SET playback_position = duration, playback_state = 1 WHERE media_id IS :mediaId")
     fun markPlayed(mediaId: String): Int
 
 
     /* Resets local audio reference - used when user taps on trashcan */
-    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, manually_deleted = :manuallyDeleted WHERE media_id IS :mediaId")
+    // https://developer.android.com/reference/kotlin/android/support/v4/media/session/PlaybackStateCompat#state_stopped
+    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, playback_state = 1, manually_deleted = :manuallyDeleted WHERE media_id IS :mediaId")
     fun resetLocalAudioReference(mediaId: String, manuallyDeleted: Boolean): Int
 
 
     /* Resets local audio references of all episodes */
-    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, manually_deleted = 1")
+    // https://developer.android.com/reference/kotlin/android/support/v4/media/session/PlaybackStateCompat#state_stopped
+    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, playback_state = 1, manually_deleted = 1")
     fun resetLocalAudioReferencesForAllEpisodes()
 
 

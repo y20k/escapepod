@@ -15,6 +15,7 @@
 package org.y20k.escapepod.collection
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.GlobalScope
@@ -26,6 +27,7 @@ import org.y20k.escapepod.database.wrappers.PodcastWithAllEpisodesWrapper
 import org.y20k.escapepod.database.wrappers.PodcastWithRecentEpisodesWrapper
 import org.y20k.escapepod.helpers.CollectionHelper
 import org.y20k.escapepod.helpers.LogHelper
+import org.y20k.escapepod.helpers.PreferencesHelper
 
 
 /*
@@ -43,6 +45,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     private val backgroundJob = Job()
     private var collectionDatabase: CollectionDatabase = CollectionDatabase.getInstance(application)
+    private val context: Context = application
 
 
     /* Init constructor */
@@ -65,6 +68,14 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
         GlobalScope.launch {
             val podcast: PodcastWithAllEpisodesWrapper? = collectionDatabase.podcastDao().getWithRemotePodcastFeedLocation(remotePodcastFeedLocation)
             if (podcast != null) {
+                // reset media id in player state if necessary
+                val currentMediaId: String = PreferencesHelper.loadCurrentMediaId(context)
+                podcast.episodes.forEach { episode ->
+                    if (episode.mediaId == currentMediaId) {
+                        PreferencesHelper.resetPlayerState(context)
+                    }
+                }
+                // remove all relevant entries for given podcast
                 collectionDatabase.episodeDao().deleteAll(podcast.data.remotePodcastFeedLocation)
                 collectionDatabase.episodeDescriptionDao().deleteAll(podcast.data.remotePodcastFeedLocation)
                 collectionDatabase.podcastDao().delete(podcast.data)
@@ -77,7 +88,12 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     /* Marks an episode as played */
     fun markEpisodePlayed(mediaId: String) {
         GlobalScope.launch {
+            // mark as played
             collectionDatabase.episodeDao().markPlayed(mediaId = mediaId)
+            // reset media id in player state if necessary
+            if (PreferencesHelper.loadCurrentMediaId(context) == mediaId) {
+                PreferencesHelper.resetPlayerState(context)
+            }
         }
     }
 
@@ -86,9 +102,13 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     fun deleteEpisodeAudio(mediaId: String) {
         GlobalScope.launch {
             val episode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId)
-            LogHelper.e(TAG, "DING = ${episode?.title}") // todo remove
             if (episode != null) {
+                // update episode (remove audio reference and mark as not downloaded)
                 collectionDatabase.episodeDao().update(CollectionHelper.deleteEpisodeAudioFile(episode = episode, manuallyDeleted = true))
+                // update media id in player state if necessary
+                if (PreferencesHelper.loadCurrentMediaId(context) == mediaId) {
+                    PreferencesHelper.resetPlayerState(context)
+                }
             }
         }
     }

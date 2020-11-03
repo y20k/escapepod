@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioManager
+import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
@@ -60,7 +61,6 @@ import org.y20k.escapepod.legacy.ImportHelper
 import org.y20k.escapepod.ui.LayoutHolder
 import org.y20k.escapepod.ui.PlayerState
 import org.y20k.escapepod.xml.OpmlHelper
-import java.io.File
 import kotlin.coroutines.CoroutineContext
 
 
@@ -88,10 +88,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private var episode: Episode? = null
     private var upNextEpisode: Episode? = null
     private var playerServiceConnected: Boolean = false
-    private var onboarding: Boolean = false
     private var playerState: PlayerState = PlayerState()
     private var listLayoutState: Parcelable? = null
-    private var opmlCreatedObserver: FileObserver? = null
     private var tempOpmlUriString: String = String()
     private val handler: Handler = Handler(Looper.getMainLooper())
 
@@ -118,9 +116,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
         // Create MediaBrowserCompat
         mediaBrowser = MediaBrowserCompat(activity as Context, ComponentName(activity as Context, PlayerService::class.java), mediaBrowserConnectionCallback, null)
-
-        // Create an observer for OPML files in collection folder
-        opmlCreatedObserver = createOpmlCreatedObserver(Keys.FOLDER_COLLECTION)
 
         // start worker that periodically updates the podcast collection
         WorkerHelper.schedulePeriodicUpdateWorker()
@@ -211,8 +206,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
         PreferencesHelper.savePlayerState(activity as Context, playerState)
         // stop receiving playback progress updates
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
-        // stop watching for new opml files
-        opmlCreatedObserver?.stopWatching()
         // stop watching for changes in shared preferences
         PreferencesHelper.unregisterPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
 
@@ -272,22 +265,10 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     withContext(Dispatchers.Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }
-        }
-    }
-
-
-    /* Overrides onFindPodcastDialog from FindPodcastDialog */
-    override fun onFindPodcastDialog(remotePodcastFeedLocation: String) {
-        super.onFindPodcastDialog(remotePodcastFeedLocation)
-        GlobalScope.launch {
-            val podcastUrl: String = remotePodcastFeedLocation.trim()
-            val existingPodcast = collectionDatabase.podcastDao().findByRemotePodcastFeedLocation(podcastUrl)
-            if (existingPodcast == null) {
-                downloadPodcastFeed(podcastUrl)
-            } else {
-                withContext(Dispatchers.Main) {
-                    ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, podcastUrl)
-                }
+            Keys.PREF_PLAYER_STATE_PLAYBACK_STATE -> {
+                playerState.playbackState = sharedPreferences?.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackState.STATE_STOPPED) ?: PlaybackState.STATE_STOPPED
+                LogHelper.v(TAG, "onSharedPreferenceChanged - current state: ${playerState.playbackState}") // todo remove
+                layout.togglePlayerVisibility(activity as Context, playerState.playbackState)
             }
         }
     }
@@ -313,9 +294,13 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     }
                     else -> {
                         // ask user: playback or add to Up Next
-                        val episodeTitle: String = collectionAdapter.getEpisode(mediaId)?.title ?: String()
-                        val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- $episodeTitle"
-                        YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId)
+                        GlobalScope.launch {
+                            val episodeTitle: String? = collectionDatabase.episodeDao().getTitle(mediaId)
+                            if (episodeTitle != null) {
+                                val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- $episodeTitle"
+                                withContext(Dispatchers.Main) { YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId) }
+                            }
+                        }
                     }
                 }
             }
@@ -360,7 +345,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
     /* Overrides onAddNewButtonTapped from CollectionAdapterListener */
     override fun onAddNewButtonTapped() {
-//        AddPodcastDialog(this).show(this)
         FindPodcastDialog(activity as Activity, this as FindPodcastDialog.FindPodcastDialogListener).show()
     }
 
@@ -369,6 +353,15 @@ class PlayerFragment: Fragment(), CoroutineScope,
     override fun onOpmlImportDialog(feedUrls: Array<String>) {
         super.onOpmlImportDialog(feedUrls)
         downloadPodcastFeedsFromOpml(feedUrls)
+    }
+
+
+    /* Overrides onFindPodcastDialog from FindPodcastDialog */
+    override fun onFindPodcastDialog(remotePodcastFeedLocation: String) {
+        super.onFindPodcastDialog(remotePodcastFeedLocation)
+        // try to add podcast
+        val podcastUrl: String = remotePodcastFeedLocation.trim()
+        downloadPodcastFeed(podcastUrl)
     }
 
 
@@ -441,9 +434,14 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // enable swipe to delete
         val swipeHandler = object : UiHelper.SwipeToDeleteCallback(activity as Context) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // ask user
                 val adapterPosition: Int = viewHolder.adapterPosition
-                val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}"
+                val podcast = collectionAdapter.getPodcast(adapterPosition)
+                // stop playback, if necessary
+                podcast.episodes.forEach { it ->
+                    if (it.data.mediaId == episode?.mediaId) MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
+                }
+                // ask user
+                val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n - ${podcast.data.name}"
                 YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
             }
         }
@@ -673,21 +671,26 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private fun downloadPodcastFeed(feedUrl: String) {
         if (!feedUrl.startsWith("http")) {
             ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
-        } else if (NetworkHelper.isConnectedToNetwork(activity as Context)) {
-            launch {
-                // detect content type on background thread
-                val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }
-                // wait for result
-                val contentType: NetworkHelper.ContentType = deferred.await()
-                if ((contentType.type in Keys.MIME_TYPES_RSS) || (contentType.type in Keys.MIME_TYPES_ATOM)) {
-                    Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
-                    DownloadHelper.downloadPodcasts(activity as Context, arrayOf(feedUrl))
+        } else if (!NetworkHelper.isConnectedToNetwork(activity as Context)) {
+            ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
+        } else {
+            GlobalScope.launch {
+                val existingPodcast: Podcast? = collectionDatabase.podcastDao().findByRemotePodcastFeedLocation(feedUrl)
+                if (existingPodcast != null) {
+                    // not adding podcast, because podcast is duplicate
+                    withContext(Dispatchers.Main) { ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, feedUrl) }
                 } else {
-                    ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl)
+                    // detect content type on background thread
+                    val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }
+                    val contentType: NetworkHelper.ContentType = deferred.await()
+                    if ((contentType.type !in Keys.MIME_TYPES_RSS) && contentType.type !in Keys.MIME_TYPES_ATOM) {
+                        withContext(Dispatchers.Main) { ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl) }
+                    } else {
+                        withContext(Dispatchers.Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
+                        DownloadHelper.downloadPodcasts(activity as Context, arrayOf(feedUrl))
+                    }
                 }
             }
-        } else {
-            ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         }
     }
 
@@ -699,7 +702,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 val podcastList: List<Podcast> = collectionDatabase.podcastDao().getAll()
                 val urls = CollectionHelper.removeDuplicates(podcastList, feedUrls)
                 if (urls.isNotEmpty()) {
-                    Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show()
+                    withContext(Dispatchers.Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
                     DownloadHelper.downloadPodcasts(activity as Context, urls)
                     PreferencesHelper.saveLastUpdateCollection(activity as Context)
                 }
@@ -797,34 +800,11 @@ class PlayerFragment: Fragment(), CoroutineScope,
     /* Observe view model of podcast collection */
     private fun observeCollectionViewModel() {
         collectionViewModel.numberOfPodcastsLiveData.observe(this, Observer<Int> { numberOfPodcasts ->
-            toggleOnboarding(numberOfPodcasts)
+            layout.toggleOnboarding(activity as Context, numberOfPodcasts)
+            GlobalScope.launch {
+                CollectionHelper.exportCollectionOpml(activity as Context, collectionDatabase.podcastDao().getAll() )
+            }
         } )
-    }
-
-
-    /* Toggle onboarding layout on/off and try to offer an OPML import */
-    private fun toggleOnboarding(numberOfPodcasts: Int) {
-        // toggle onboading layout
-        onboarding = layout.toggleOnboarding(activity as Context, numberOfPodcasts)
-        // start / stop watching for OPML
-        if (onboarding) {
-            // try to offer import
-            tryToOfferOpmlImport()
-            // start watching for files to be created in collection folder
-            opmlCreatedObserver?.startWatching()
-        } else {
-            opmlCreatedObserver?.stopWatching()
-        }
-    }
-
-
-    /* Offers to import podcasts if an OPML file was found in collection folder (probably from a restore via Play Services) */
-    private fun tryToOfferOpmlImport() {
-        val opmlFile: File? = File((activity as Context).getExternalFilesDir(Keys.FOLDER_COLLECTION), Keys.COLLECTION_OPML_FILE)
-        if (FileHelper.getCollectionFolderSize(activity as Context) == 1 && opmlFile!= null && opmlFile.exists() && opmlFile.length() > 0L) {
-            LogHelper.i(TAG, "Found an OPML file in the otherwise empty Collection folder. Size: ${opmlFile.length()} bytes")
-            readOpmlFile(opmlFile.toUri(), permissionCheckNeeded = false)
-        }
     }
 
 
@@ -834,24 +814,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
         if (opmlFileString != null) {
             readOpmlFile(opmlFileString.toUri(), permissionCheckNeeded = false)
         }
-    }
-
-
-    /* Creates an observer for OPML files in collection folder */
-    private fun createOpmlCreatedObserver(folderString: String): FileObserver? {
-        val folder: File? = (activity as Context).getExternalFilesDir(folderString)
-        var fileObserver: FileObserver? = null
-        // check if valid folder
-        if (folder != null && folder.isDirectory) {
-            // create the observer - Note: constructor is deprecated, but the one that it replaces is API 29+
-            fileObserver = object: FileObserver(folder.path, CREATE) {
-                override fun onEvent(event: Int, path: String?) {
-                    // a file file was created in the collection folder
-                    tryToOfferOpmlImport()
-                }
-            }
-        }
-        return fileObserver
     }
 
 
