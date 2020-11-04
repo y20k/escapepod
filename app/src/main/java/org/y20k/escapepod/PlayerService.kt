@@ -565,8 +565,14 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
      */
     private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
         override fun onPlay() {
-            // start playback
-            startPlayback()
+            if (!this@PlayerService::episode.isInitialized) {
+                // get current media id and hand over to onPlayFromMediaId
+                val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId(this@PlayerService)
+                onPlayFromMediaId(currentEpisodeMediaId, null)
+            } else {
+                // start playback
+                startPlayback()
+            }
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
