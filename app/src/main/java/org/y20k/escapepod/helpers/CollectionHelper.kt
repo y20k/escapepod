@@ -169,8 +169,10 @@ object CollectionHelper {
                     } catch (e: Exception) {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }
-                    // remove episode state and add to updated list
-                    updatedEpisodes.add(Episode(episodes[i]))
+                    // remove audio reference
+                    val updatedEpisode: Episode = Episode(episodes[i], audio = String(), playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
+                    // add to updated list
+                    updatedEpisodes.add(updatedEpisode)
                 }
             }
         }
