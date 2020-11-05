@@ -153,4 +153,6 @@
     <string name="pref_delete_all_storage_space_used">Korišteno</string>
     <string name="pref_delete_all_storage_space_available">Dostupno</string>
     <string name="toast_message_deleting_downloads">Brisanje preuzetih epizoda.</string>
+    <string name="pref_opml_import_title">Uvezi OPML</string>
+    <string name="pref_opml_import_summary">Odaberi OPML datoteku iz memorije uređaja.</string>
 </resources>
