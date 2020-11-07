@@ -1,0 +1,6 @@
+# v0.8.6 - Gehen Die Leute
+
+**5 Ocak 2020**
+
+- arama iletişim kutusundaki bir çökmeyi düzeltir
+- İbranice sürümü

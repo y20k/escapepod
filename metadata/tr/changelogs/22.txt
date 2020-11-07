@@ -1,0 +1,7 @@
+# v0.8.4 - Gehen Die Leute
+
+**18 Aralık 2019**
+
+- Lehçe sürümü
+- küçük hata düzeltmeleri
+- küçük performans iyileştirmeleri
