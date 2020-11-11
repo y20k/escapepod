@@ -8,7 +8,7 @@
     <string name="dialog_episode_shownotes_close">Fermer</string>
     <string name="dialog_episode_shownotes_title">Afficher la description</string>
     <string name="dialog_error_message_default">Un erreur s\'est produite</string>
-    <string name="dialog_error_message_no_network">Connecté à Internet.</string>
+    <string name="dialog_error_message_no_network">Connectez-vous à Internet.</string>
     <string name="dialog_error_message_podcast_duplicate">Ce podcast fait déjà partie de votre collection.</string>
     <string name="dialog_error_message_podcast_invalid_feed">Cette adresse n\'est pas un flux RSS.</string>
     <string name="dialog_error_title_default">Erreur</string>
@@ -37,7 +37,7 @@
     <string name="dialog_yes_no_message_non_wifi_download">Votre appareil n\'est pas connecté au Wi-Fi. Télécharger l\'épisode quand même \?</string>
     <string name="dialog_yes_no_message_remove_podcast">Supprimer ce podcast \?</string>
     <string name="dialog_yes_no_message_update_collection">Rechercher de nouveaux épisodes \?</string>
-    <string name="dialog_yes_no_message_vpn_download">Votre périphérique est connecté via un VPN. Télécharger l\'épisode quand même \?</string>
+    <string name="dialog_yes_no_message_vpn_download">Votre périphérique est connecté via un RPV. Télécharger l\'épisode quand même \?</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Ajouter à « File d\'attente »</string>
     <string name="dialog_yes_no_negative_button_cancel">Annuler</string>
     <string name="dialog_yes_no_negative_button_default">Non</string>
@@ -66,7 +66,7 @@
     <string name="toast_message_debug_logging_to_file_started">Débogage : Début de l\'écriture d\'un fichier de journal local.</string>
     <string name="toast_message_debug_logging_to_file_stopped">Débogage : Arrêt de l\'écriture d\'un fichier de journal local.</string>
     <string name="toast_message_playback_speed_reset">Réinitialisation de la vitesse de lecture.</string>
-    <string name="toast_message_copied_to_clipboard">Adresse du flux copiée dans le presse-papiers.</string>
+    <string name="toast_message_copied_to_clipboard">Copiée dans le presse-papiers.</string>
     <string name="toast_message_refreshing_cover">Actualisation de la pochette du podcast.</string>
     <string name="toast_message_skipping_disabled">Pas de lecture en cours. Passage au suivant désactivé.</string>
     <string name="toast_message_sleep_timer_unable_to_start">Veuillez d\'abord démarrer la lecture d\'un épisode.</string>
@@ -104,9 +104,9 @@
     <string name="descr_expanded_player_previous_chapter_button">Chapitre précédent</string>
     <string name="descr_expanded_player_replay_button">Relire les 10 dernières secondes</string>
     <string name="descr_expanded_player_seekbar">Durée de lecture de l\'épisode</string>
-    <string name="descr_expanded_player_sleep_timer_cancel_button">Annuler le minuteur de sommeil</string>
-    <string name="descr_expanded_player_sleep_timer_remaining_time">Temps restant au minuteur de sommeil</string>
-    <string name="descr_expanded_player_sleep_timer_start_button">Démarrer le minuteur de sommeil</string>
+    <string name="descr_expanded_player_sleep_timer_cancel_button">Annuler le minuterie de veille</string>
+    <string name="descr_expanded_player_sleep_timer_remaining_time">Temps restant à la minuterie de veille</string>
+    <string name="descr_expanded_player_sleep_timer_start_button">Démarrer la minuterie</string>
     <string name="descr_expanded_player_time_played">Temps écoulé</string>
     <string name="descr_expanded_player_time_remaining">Temps restant</string>
     <string name="descr_expanded_player_up_next_clear_button">Effacer la file d\'attente</string>
@@ -115,7 +115,7 @@
     <string name="onboarding_app_description">Application de podcast</string>
     <string name="onboarding_app_get_started">Démarrer</string>
     <string name="descr_card_settings_button">Paramètres</string>
-    <string name="pref_maintenance_title">Avancé</string>
+    <string name="pref_maintenance_title">Maintenance</string>
     <string name="pref_general_title">Général</string>
     <string name="pref_theme_selection_mode_dark">Thème sombre</string>
     <string name="pref_theme_selection_mode_device_default">Thème de l\'appareil</string>
