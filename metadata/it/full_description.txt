@@ -1,0 +1,26 @@
+Escapepod è un lettore di podcast con un approccio minimalista, che potrebbe non essere gradito a tutti. L'applicazione ha una sola schermata, controlli di riproduzione e un elenco di podcast che mostra i cinque episodi più recenti ciascuno. Escapepod non ha funzionalità di rilevamento dei podcast. Offre solo un'opzione di ricerca molto semplice e apre i collegamenti ai podcast RSS quando li tocchi in un browser web.
+
+
+DOMANDE FREQUENTI
+
+ESCAPEPOD HA UNA CODA DI RIPRODUZIONE?
+Escapepod ha una semplice funzionalità coda «Successivo». Tocca «Riproduci» su un episodio mentre ne ascolti un altro. Ti verrà data la possibilità di aggiungerlo allo slot successivo.
+
+QUALI SONO LE IMPOSTAZIONI PREDEFINITE?
+- L'aggiornamento automatico non scarica i file sulla rete cellulare
+- Escapepod per impostazione predefinita conserva solo due episodi
+
+ESCAPEPOD PU MANTENERE PIÙ DI DUE EPISODI?
+Escapepod cerca di ridurre il numero di episodi che conserva. Ecco le regole per questo:
+- Escapepod conserva gli ultimi due episodi
+- Anche gli episodi che sono stati avviati o che sono stati scaricati manualmente vengono conservati
+- Il numero massimo di episodi disponibili (e conservati) è cinque
+
+ESCAPEPOD SUPPORTA OPML?
+Puoi importare un elenco di podcast utilizzando il formato di scambio OPML. Basta aprire un file OPML utilizzando un gestore di file e scegliere Escapepod come gestore. La raccolta di podcast corrente può essere esportata tramite Impostazioni. Inoltre Escapepod mantiene un file OPML aggiornato nella cartella /Android/data/org.y20k.escapepod/files/collection/.
+
+NON POSSO AGGIUNGERE PODCAST X. PERCHÉ?
+Segnala eventuali flussi di podcast che al momento non funzionano utilizzando il modello Problema di GitHub «Problema di flusso» (https://github.com/y20k/escapepod/issues/). Nota: Escapepod non supporta i podcast video.
+
+DA DOVE PROVENGONO I RISULTATI DELLA RICERCA DI PODCAST?
+Escapepod cerca nella base di dati in linea gpodder.net (https://gpodder.net/directory/). Gpodder.net è un'ottima pagina, se stai cercando nuove cose da ascoltare.
