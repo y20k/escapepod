@@ -1,0 +1,26 @@
+Escapepod est un lecteur de balados avec une approche minimaliste, ce qui ne convient pas à tout le monde. L'application ne possède qu'un seul écran, avec des contrôles de lecture et une liste de balados qui affiche chacun des cinq derniers épisodes. Escapepod ne possède pas de fonctionnalité de découverte de balados. L'application offre seulement une option de recherche très basique et peut ouvrir les liens RSS de baladodiffusion si vous appuyez dessus dans le navigateur Web.
+
+
+QUESTIONS FRÉQUENTES
+
+EST-CE QUE ESCAPEPOD POSSÈDE UNE LISTE DE LECTURE?
+Escapepod possède une simple fonctionnalité de lecture à suivre. Appuyez sur le bouton de lecture d'un épisode pendant que vous en écoutez un autre et vous aurez la possibilité de l'ajouter à la lecture à suivre.
+
+QUELS SONT LES PARAMÈTRES PAR DÉFAUT?
+- La mise à jour automatique ne télécharge pas de fichiers via les données mobiles
+- Escapepod ne conserve que deux épisodes
+
+ESCAPEPOD PEUT-IL CONSERVER PLUS DE DEUX ÉPISODES?
+Escapepod tente de réduire le nombre d'épisodes qu'il conserve. Voici les règles pour cela :
+- Escapepod conserve les deux derniers épisodes
+- Les épisodes qui ont été commencés, ou ceux qui ont été téléchargés manuellement sont également conservés
+- Le nombre maximum d'épisodes disponibles (et conservés) est de cinq
+
+EST-CE QU'ESCAPEPOD PREND EN CHARGE LE FORMAT OPML?
+Vous pouvez importer une liste de podcasts utilisant le format d'échange OPML. Ouvrez simplement un fichier OPML en utilisant le gestionnaire de fichiers et sélectionnez Escapepod comme application par défaut. La sélection de balados courante peut être exportée via les paramètres. De plus Escapepod conserve un fichier OPML à jour dans le dossier /Android/data/org.y20k.escapepod/files/collection/.
+
+JE NE PEUX PAS AJOUTER LE PODCAST X. POURQUOI?
+Veuillez signaler tous les flux de baladodiffusion qui ne fonctionnent pas en utilisant le modèle de ticket sur GitHub « Feed Issue » (en anglais) (https://github.com/y20k/escapepod/issues/). Remarque : Escapepod ne prend pas en charge les balados vidéo.
+
+D'OÙ VIENNENT LES RÉSULTATS DE RECHERCHE DE PODCASTS?
+Escapepod effectue les recherches dans la base de données en ligne gpodder.net (https://gpodder.net/directory/). Gpodder.net est une superbe page si vous êtes à la recherche de quelque chose à écouter par ailleurs.
