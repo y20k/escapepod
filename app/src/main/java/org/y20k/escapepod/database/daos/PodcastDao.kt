@@ -67,9 +67,10 @@ interface PodcastDao {
         val rowIds = insertAll(podcasts)
         val podcastsToUpdate: List<Podcast> = rowIds.mapIndexedNotNull { index, rowId ->
             if (rowId == -1L) {
-                null
-            } else {
+                // result -1 means that insert operation was not successful
                 podcasts[index]
+            } else {
+                null
             }
         }
         podcastsToUpdate.forEach { update(it) }

@@ -161,16 +161,17 @@ object CollectionHelper {
 
         if (numberOfEpisodes > numberOfAudioFilesToKeep) {
             for (i in numberOfEpisodes -1 downTo numberOfAudioFilesToKeep) {
+                val episode: Episode = episodes[i]
                 // check if episode can be deleted
-                if (canBeDeleted(context, episodes[i])) {
+                if (canBeDeleted(context, episode)) {
                     // delete audio file
                     try {
-                        Uri.parse(episodes[i].audio).toFile().delete()
+                        Uri.parse(episode.audio).toFile().delete()
                     } catch (e: Exception) {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }
                     // remove audio reference
-                    val updatedEpisode: Episode = Episode(episodes[i], audio = String(), playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
+                    val updatedEpisode: Episode = Episode(episode, audio = String(), playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
                     // add to updated list
                     updatedEpisodes.add(updatedEpisode)
                 }
@@ -247,7 +248,7 @@ object CollectionHelper {
             // episode has no audio reference
             return false
         } else {
-            // episode may be deleted
+            // none of the above: episode may be deleted
             return true
         }
     }

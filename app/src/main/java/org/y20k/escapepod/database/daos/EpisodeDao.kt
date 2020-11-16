@@ -65,7 +65,7 @@ interface EpisodeDao {
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(episodes: List<Episode>): List< Long>
+    fun insertAll(episodes: List<Episode>): List<Long>
 
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -97,7 +97,13 @@ interface EpisodeDao {
     fun upsertAll(episodes: List<Episode>) {
         val rowIds = insertAll(episodes)
         val episodesToUpdate = rowIds.mapIndexedNotNull { index, rowId ->
-            if (rowId == -1L) null else episodes[index] }
+            if (rowId == -1L) {
+                // result -1 means that insert operation was not successful
+                episodes[index]
+            } else {
+                null
+            }
+        }
         episodesToUpdate.forEach { update(it) }
     }
 
