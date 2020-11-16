@@ -68,7 +68,7 @@
     <string name="toast_message_adding_podcasts">正在添加播客。</string>
     <string name="toast_message_collection_update_not_necessary">播客集已是最新。</string>
     <string name="toast_message_copied_to_clipboard">已复制到剪贴板。</string>
-    <string name="toast_message_downloading_episode">正在下载本集</string>
+    <string name="toast_message_downloading_episode">正在下载节目。</string>
     <string name="toast_message_error_download_error">下载错误</string>
     <string name="toast_message_error_feed_not_supported">不支持的源（application/Atom+XML）。</string>
     <string name="toast_message_error_missing_storage_permission">请授予“读取存储“权限以打开此文件。</string>
@@ -116,7 +116,7 @@
     <string name="pref_delete_all_storage_space_available">可用</string>
     <string name="pref_delete_all_storage_space_used">已用</string>
     <string name="pref_delete_all_title">删除下载</string>
-    <string name="pref_episode_download_over_mobile_summary_enabled">正在通过 Wi-Fi 和移动网络下载播客集。可能会产生数据费用</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">正在通过 Wi-Fi 和移动网络下载播客节目。可能会产生数据费用。</string>
     <string name="pref_episode_download_over_mobile_summary_disabled">仅通过 Wi-Fi 下载播客集。</string>
     <string name="pref_episode_download_over_mobile_title">通过移动网络下载</string>
     <string name="pref_general_title">常规</string>
@@ -135,7 +135,7 @@
     <string name="pref_theme_selection_summary">当前主题：</string>
     <string name="pref_theme_selection_title">程序主题</string>
     <string name="pref_update_covers_summary">下载您收藏的所有播客封面的最新版。</string>
-    <string name="pref_update_covers_title">更新封面</string>   
+    <string name="pref_update_covers_title">更新封面</string>
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">程序图标代表一个太空救生舱</string>
     <string name="descr_card_add_new_button">添加新播客源</string>
@@ -160,10 +160,11 @@
     <string name="descr_expanded_player_sleep_timer_start_button">启动睡眠定时器</string>
     <string name="descr_expanded_player_time_played">已播放时间</string>
     <string name="descr_expanded_player_time_remaining">剩余时间</string>
-    <string name="descr_expanded_player_up_next_clear_button">清除“下一个“队列。</string>
+    <string name="descr_expanded_player_up_next_clear_button">清除“下一个“队列</string>
     <string name="descr_player_playback_button">播放/暂停</string>
     <string name="descr_player_podcast_cover">小尺寸播客封面图像</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
+    <string name="toast_message_deleting_downloads">正在删除已下载的节目。</string>
 </resources>
