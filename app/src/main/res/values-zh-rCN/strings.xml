@@ -37,16 +37,16 @@
     <string name="dialog_opml_import_message_error">无法导入 OPML 文件。未找到播客。</string>
     <string name="dialog_opml_import_message">添加新播客吗？重复项在导入前会被移除。找到播客数：</string>
     <string name="dialog_opml_import_title">OPML 导入</string>
-    <string name="dialog_yes_no_message_add_up_next">现在就开始收听本集吗？</string>
+    <string name="dialog_yes_no_message_add_up_next">现在就开始收听本节目吗？</string>
     <string name="dialog_yes_no_message_default">您确认此次操作吗？</string>
-    <string name="dialog_yes_no_message_delete_downloads">删除已下载的集吗？您可以随时再次下载它们。</string>
-    <string name="dialog_yes_no_message_delete_episode">删除本集吗？</string>
-    <string name="dialog_yes_no_message_mark_episode_played">标记本集为已播放吗？</string>
-    <string name="dialog_yes_no_message_non_wifi_download">您的设备未连接 Wi-Fi。仍然下载本集吗？</string>
+    <string name="dialog_yes_no_message_delete_downloads">删除已下载的节目吗？您可以随时再次下载它们。</string>
+    <string name="dialog_yes_no_message_delete_episode">删除本节目吗？</string>
+    <string name="dialog_yes_no_message_mark_episode_played">标记本节目为已播放吗？</string>
+    <string name="dialog_yes_no_message_non_wifi_download">您的设备未连接 Wi-Fi。仍然下载本节目吗？</string>
     <string name="dialog_yes_no_message_remove_podcast">移除此播客吗？</string>
-    <string name="dialog_yes_no_message_update_collection">寻找新集吗？</string>
+    <string name="dialog_yes_no_message_update_collection">寻找新节目吗？</string>
     <string name="dialog_yes_no_message_update_covers">下载所有播客的最新版封面吗？</string>
-    <string name="dialog_yes_no_message_vpn_download">您的设备已通过 VPN 连接。仍然下载本集吗？</string>
+    <string name="dialog_yes_no_message_vpn_download">您的设备已通过 VPN 连接。仍然下载本节目吗？</string>
     <string name="dialog_yes_no_negative_button_add_up_next">添加到“下一个“</string>
     <string name="dialog_yes_no_negative_button_cancel">取消</string>
     <string name="dialog_yes_no_negative_button_default">否</string>
@@ -68,6 +68,7 @@
     <string name="toast_message_adding_podcasts">正在添加播客。</string>
     <string name="toast_message_collection_update_not_necessary">播客集已是最新。</string>
     <string name="toast_message_copied_to_clipboard">已复制到剪贴板。</string>
+    <string name="toast_message_deleting_downloads">正在删除已下载的节目。</string>
     <string name="toast_message_downloading_episode">正在下载节目。</string>
     <string name="toast_message_error_download_error">下载错误</string>
     <string name="toast_message_error_feed_not_supported">不支持的源（application/Atom+XML）。</string>
@@ -75,7 +76,7 @@
     <string name="toast_message_error_no_podcast_found">无法开始回放。请先添加一个播客。</string>
     <string name="toast_message_error_no_podcast_matches_search">找不到符合您搜索条件的播客。</string>
     <string name="toast_message_error_refreshing_cover">无法刷新封面。此源不包含参考封面。</string>
-    <string name="toast_message_error_validation_no_valid_episodes">RSS 验证：此源不包含任何有效集。</string>
+    <string name="toast_message_error_validation_no_valid_episodes">RSS 验证：此源不包含任何有效节目。</string>
     <string name="toast_message_error_validation_missing_cover">RSS 验证：此源不包含参考封面。</string>
     <string name="toast_message_debug_logging_to_file_started">调试：开始写入本地日志文件。</string>
     <string name="toast_message_debug_logging_to_file_stopped">调试：停止写入本地日志文件。</string>
@@ -84,20 +85,20 @@
     <string name="toast_message_refreshing_cover">正在刷新播客封面。</string>
     <string name="toast_message_save_opml">正在保存播客集为 OPML。</string>
     <string name="toast_message_skipping_disabled">回放未运行。已关闭跳跃。</string>
-    <string name="toast_message_sleep_timer_unable_to_start">请先开始收听一集。</string>
+    <string name="toast_message_sleep_timer_unable_to_start">请先开始收听一个节目。</string>
     <string name="toast_message_theme_day">正在切换到“日间模式“（检测到长按）</string>
     <string name="toast_message_theme_follow_system">正在切换到“跟随系统设置模式“（检测到长按）</string>
     <string name="toast_message_theme_night">正在切换到“夜间模式“（检测到长按）</string>
-    <string name="toast_message_up_next_added_episode">已添加本集到“下一个“队列。</string>
-    <string name="toast_message_up_next_removed_episode">本集已从“下一个“队列移除。</string>
-    <string name="toast_message_up_next_start_playback">正开始下一集。</string>
+    <string name="toast_message_up_next_added_episode">已添加本节目到“下一个“队列。</string>
+    <string name="toast_message_up_next_removed_episode">本节目已从“下一个“队列移除。</string>
+    <string name="toast_message_up_next_start_playback">正开始下一个节目。</string>
     <string name="toast_message_updating_collection">正在更新播客集。</string>
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">添加新播客</string>
-    <string name="podcast_list_button_toggle_hide_older_episodes">隐藏旧集</string>
-    <string name="podcast_list_button_toggle_show_older_episodes">旧集</string>
+    <string name="podcast_list_button_toggle_hide_older_episodes">隐藏旧节目</string>
+    <string name="podcast_list_button_toggle_show_older_episodes">旧节目</string>
     <!-- Notification -->
-    <string name="notification_now_playing_channel_description">回放控制，集名和封面。</string>
+    <string name="notification_now_playing_channel_description">回放控制，节目名和封面。</string>
     <string name="notification_now_playing_channel_name">回放控制</string>
     <string name="notification_pause">暂停</string>
     <string name="notification_play">播放</string>
@@ -109,15 +110,15 @@
     <string name="pref_advanced_title">高级</string>
     <string name="pref_app_version_summary">版本</string>
     <string name="pref_app_version_title">程序版本</string>
-    <string name="pref_background_refresh_summary_enabled">正在后台寻找播客集。</string>
-    <string name="pref_background_refresh_summary_disabled">未在后台寻找播客集。</string>
+    <string name="pref_background_refresh_summary_enabled">正在后台寻找播客节目。</string>
+    <string name="pref_background_refresh_summary_disabled">未在后台寻找播客节目。</string>
     <string name="pref_background_refresh_title">后台刷新</string>
-    <string name="pref_delete_all_summary">删除已下载的集以便释放您的设备空间。您可以随时再次下载它们。</string>
+    <string name="pref_delete_all_summary">删除已下载的节目以便释放您的设备空间。您可以随时再次下载它们。</string>
     <string name="pref_delete_all_storage_space_available">可用</string>
     <string name="pref_delete_all_storage_space_used">已用</string>
     <string name="pref_delete_all_title">删除下载</string>
     <string name="pref_episode_download_over_mobile_summary_enabled">正在通过 Wi-Fi 和移动网络下载播客节目。可能会产生数据费用。</string>
-    <string name="pref_episode_download_over_mobile_summary_disabled">仅通过 Wi-Fi 下载播客集。</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">仅通过 Wi-Fi 下载播客节目。</string>
     <string name="pref_episode_download_over_mobile_title">通过移动网络下载</string>
     <string name="pref_general_title">常规</string>
     <string name="pref_maintenance_title">维护</string>
@@ -139,13 +140,13 @@
     <!-- Accessibility Descriptions -->
     <string name="descr_app_icon">程序图标代表一个太空救生舱</string>
     <string name="descr_card_add_new_button">添加新播客源</string>
-    <string name="descr_card_delete_episode_button">移除已下载的集</string>
+    <string name="descr_card_delete_episode_button">移除已下载的节目</string>
     <string name="descr_card_playback_indicator">回放进度</string>
     <string name="descr_card_podcast_cover">播客封面图像</string>
     <string name="descr_card_settings_button">设置</string>
     <string name="descr_card_small_download_button">下载</string>
     <string name="descr_card_small_playback_button">播放/暂停</string>
-    <string name="descr_expanded_episode_length">本集长度</string>
+    <string name="descr_expanded_episode_length">节目长度</string>
     <string name="descr_expanded_player_debug_log_toggle_button">调试日志文件切换</string>
     <string name="descr_expanded_player_forward_button">前进 30 秒</string>
     <string name="descr_expanded_player_next_chapter_button">下一章</string>
@@ -154,7 +155,7 @@
     <string name="descr_expanded_player_podcast_cover">大尺寸播客封面图像</string>
     <string name="descr_expanded_player_previous_chapter_button">上一章</string>
     <string name="descr_expanded_player_replay_button">重复最后 10 秒</string>
-    <string name="descr_expanded_player_seekbar">回放集时间</string>
+    <string name="descr_expanded_player_seekbar">节目回放时间</string>
     <string name="descr_expanded_player_sleep_timer_cancel_button">取消睡眠定时器</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">睡眠定时器剩余时间</string>
     <string name="descr_expanded_player_sleep_timer_start_button">启动睡眠定时器</string>
@@ -166,5 +167,4 @@
     <!-- Onboarding -->
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
-    <string name="toast_message_deleting_downloads">正在删除已下载的节目。</string>
 </resources>
