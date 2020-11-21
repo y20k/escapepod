@@ -26,6 +26,8 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -213,16 +215,16 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
         when (upNextEpisode != null) {
             true -> {
                 // show the up next queue if queue is not empty
-                upNextViews.visibility = View.GONE // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
-                upNextViews.visibility = View.VISIBLE
+                upNextViews.isGone = true // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
+                upNextViews.isVisible = true
                 // update up next view
                 val upNextName = "${upNextEpisode.podcastName} - ${upNextEpisode.title}"
                 sheetUpNextName.text = upNextName
             }
             false -> {
                 // hide the up next queue if queue is empty
-                upNextViews.visibility = View.GONE // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
-                upNextViews.visibility = View.INVISIBLE
+                upNextViews.isGone = true // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
+                upNextViews.isVisible = false
 
             }
         }
@@ -233,14 +235,14 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     fun updateSleepTimer(context: Context, timeRemaining: Long = 0L) {
         when (timeRemaining) {
             0L -> {
-                if (sleepTimerRunningViews.visibility != View.GONE) {
-                    sleepTimerRunningViews.visibility = View.GONE
+                if (!sleepTimerRunningViews.isGone) {
+                    sleepTimerRunningViews.isGone = true
                     sheetSleepTimerRemainingTimeView.text = String()
                 }
             }
             else -> {
-                if (topButtonViews.visibility == View.VISIBLE) {
-                    sleepTimerRunningViews.visibility = View.VISIBLE
+                if (topButtonViews.isVisible) {
+                    sleepTimerRunningViews.isVisible = true
                     val sleepTimerTimeRemaining: String = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
                     sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
                     sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: ${sleepTimerTimeRemaining}"
@@ -279,19 +281,19 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     /* Toggles visibility of the download progress indicator */
     fun toggleDownloadProgressIndicator(context: Context) {
         when (PreferencesHelper.loadActiveDownloads(context)) {
-            Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator.visibility = View.GONE
-            else -> downloadProgressIndicator.visibility = View.VISIBLE
+            Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator.isGone = true
+            else -> downloadProgressIndicator.isVisible = true
         }
     }
 
 
     fun toggleOnboarding(context: Context, collectionSize: Int): Boolean {
         if (collectionSize == 0) {
-            onboardingLayout.visibility = View.VISIBLE
+            onboardingLayout.isVisible = true
             hidePlayer(context)
             return true
         } else {
-            onboardingLayout.visibility = View.GONE
+            onboardingLayout.isGone = true
             return false
         }
     }
@@ -395,17 +397,17 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
     /* Shows player views and hides of the top button views */
     private fun showPlayerViews() {
-        playerViews.visibility = View.VISIBLE
-        topButtonViews.visibility = View.GONE
+        playerViews.isVisible = true
+        topButtonViews.isGone = true
     }
 
 
     /* Hides player views in favor of the top button views */
     private fun hidePlayerViews() {
-        playerViews.visibility = View.GONE
-        topButtonViews.visibility = View.VISIBLE
+        playerViews.isGone = true
+        topButtonViews.isVisible = true
         if (sheetSleepTimerRemainingTimeView.text.isEmpty()) {
-            sleepTimerRunningViews.visibility = View.GONE
+            sleepTimerRunningViews.isGone = true
         }
     }
 

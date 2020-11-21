@@ -54,11 +54,11 @@ interface PodcastDao {
     fun upsert(podcast: Podcast): Boolean {
         val rowId = insert(podcast)
         if (rowId == -1L) {
-            // podcast was NOT NEW (= update)
+            // false = podcast was NOT NEW (= update)
             update(podcast)
             return false
         }
-        // podcast was NEW (= insert)
+        // true = podcast was NEW (= insert)
         return true
     }
 

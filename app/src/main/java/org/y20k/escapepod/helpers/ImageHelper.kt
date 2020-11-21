@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toUri
 import androidx.palette.graphics.Palette
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
@@ -56,7 +57,7 @@ object ImageHelper {
         if (imageUriString != Keys.LOCATION_DEFAULT_COVER) {
             try {
                 // just decode the file
-                bitmap = BitmapFactory.decodeFile(Uri.parse(imageUriString).path)
+                bitmap = BitmapFactory.decodeFile(imageUriString.toUri().path)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -105,7 +106,7 @@ object ImageHelper {
         var bitmap: Bitmap? = null
         if (imageUriString != Keys.LOCATION_DEFAULT_COVER) {
             try {
-                val imageUri: Uri = Uri.parse(imageUriString)
+                val imageUri: Uri = imageUriString.toUri()
 
                 // first decode with inJustDecodeBounds=true to check dimensions
                 var stream: InputStream? = context.contentResolver.openInputStream(imageUri)

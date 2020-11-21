@@ -18,11 +18,12 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.view.LayoutInflater
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -98,7 +99,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
         searchRequestProgressIndicator = view.findViewById(R.id.search_request_progress_indicator)
         podcastSearchResultList = view.findViewById(R.id.podcast_search_result_list)
         noSearchResultsTextView = view.findViewById(R.id.no_results_text_view)
-        noSearchResultsTextView.visibility = View.GONE
+        noSearchResultsTextView.isGone = true
 
         // set up list of search results
         setupRecyclerView(context)
@@ -211,8 +212,8 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
     /* Makes the "Add" button clickable */
     private fun activateAddButton(query: String) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-        searchRequestProgressIndicator.visibility = View.GONE
-        noSearchResultsTextView.visibility = View.GONE
+        searchRequestProgressIndicator.isGone = true
+        noSearchResultsTextView.isGone = true
         podcastFeedLocation = query
         val imm: InputMethodManager = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(podcastSearchBoxView.windowToken, 0)
@@ -222,8 +223,8 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
     /* Resets the dialog layout to default state */
     private fun resetLayout(clearAdapter: Boolean = false) {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        searchRequestProgressIndicator.visibility = View.GONE
-        noSearchResultsTextView.visibility = View.GONE
+        searchRequestProgressIndicator.isGone = true
+        noSearchResultsTextView.isGone = true
         searchResultAdapter.resetSelection(clearAdapter)
     }
 
@@ -231,16 +232,16 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
     /* Display the "No Results" error - hide other unneeded views */
     private fun showNoResultsError() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        searchRequestProgressIndicator.visibility = View.GONE
-        noSearchResultsTextView.visibility = View.VISIBLE
+        searchRequestProgressIndicator.isGone = true
+        noSearchResultsTextView.isVisible = true
     }
 
 
     /* Display the "No Results" error - hide other unneeded views */
     private fun showProgressIndicator() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        searchRequestProgressIndicator.visibility = View.VISIBLE
-        noSearchResultsTextView.visibility = View.GONE
+        searchRequestProgressIndicator.isVisible = true
+        noSearchResultsTextView.isGone = true
     }
 
 

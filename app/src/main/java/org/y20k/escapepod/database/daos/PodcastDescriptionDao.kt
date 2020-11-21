@@ -46,11 +46,11 @@ interface PodcastDescriptionDao {
     fun upsert(podcastDescription: PodcastDescription): Boolean {
         val rowId = insert(podcastDescription)
         if (rowId == -1L) {
-            // podcast was NOT NEW (= update)
+            // false = podcast was NOT NEW (= update)
             update(podcastDescription)
             return false
         }
-        // podcast was NEW (= insert)
+        // true = podcast was NEW (= insert)
         return true
     }
 
@@ -58,7 +58,13 @@ interface PodcastDescriptionDao {
     fun upsertAll(podcastDescriptions: List<PodcastDescription>) {
         val rowIds = insertAll(podcastDescriptions)
         val podcastDescriptionsToUpdate: List<PodcastDescription> = rowIds.mapIndexedNotNull { index, rowId ->
-            if (rowId == -1L) null else podcastDescriptions[index] }
+            if (rowId == -1L) {
+                // result -1 means that insert operation was not successful
+                podcastDescriptions[index]
+            } else {
+                null
+            }
+        }
         podcastDescriptionsToUpdate.forEach { update(it) }
     }
 

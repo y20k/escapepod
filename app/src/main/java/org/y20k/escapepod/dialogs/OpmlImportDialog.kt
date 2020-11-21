@@ -19,6 +19,8 @@ import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
@@ -62,8 +64,8 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 opmlImportMessageView.text = context.getString(R.string.dialog_opml_import_message_error)
 
                 // change details visibility
-                opmlImportDetailsLinkView.visibility = View.GONE
-                opmlImportDetailsView.visibility = View.GONE
+                opmlImportDetailsLinkView.isGone = true
+                opmlImportDetailsView.isGone = true
 
                 // add okay button
                 builder.setPositiveButton(R.string.dialog_generic_button_okay) { _, _ ->
@@ -92,14 +94,14 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
                 opmlImportDetailsView.movementMethod = ScrollingMovementMethod()
 
                 // change details visibility
-                opmlImportDetailsLinkView.visibility = View.VISIBLE
-                opmlImportDetailsView.visibility = View.GONE
+                opmlImportDetailsLinkView.isVisible = true
+                opmlImportDetailsView.isGone = true
 
                 // show and hide details on click
                 opmlImportDetailsLinkView.setOnClickListener {
                     when (opmlImportDetailsView.visibility) {
-                        View.GONE -> opmlImportDetailsView.visibility = View.VISIBLE
-                        View.VISIBLE -> opmlImportDetailsView.visibility = View.GONE
+                        View.GONE -> opmlImportDetailsView.isVisible = true
+                        View.VISIBLE -> opmlImportDetailsView.isGone = true
                     }
                 }
 

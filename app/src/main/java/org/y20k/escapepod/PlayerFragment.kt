@@ -230,7 +230,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     // permission granted
                     if (tempOpmlUriString.isNotEmpty()) {
-                        readOpmlFile(Uri.parse(tempOpmlUriString), false)
+                        readOpmlFile(tempOpmlUriString.toUri(), false)
                     }
                 } else {
                     // permission denied

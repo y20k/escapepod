@@ -26,6 +26,8 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.preference.*
 import kotlinx.coroutines.GlobalScope
@@ -87,7 +89,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceThemeSelection.setOnPreferenceChangeListener { preference, newValue ->
             if (preference is ListPreference) {
                 val index: Int = preference.entryValues.indexOf(newValue)
-                preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${preference.entries.get(index)}"
+                preferenceThemeSelection.summary = "${getString(R.string.pref_theme_selection_summary)} ${preference.entries[index]}"
                 return@setOnPreferenceChangeListener true
             } else {
                 return@setOnPreferenceChangeListener false
@@ -173,7 +175,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceSearchProviderSelection.setOnPreferenceChangeListener { preference, newValue ->
             if (preference is ListPreference) {
                 val index: Int = preference.entryValues.indexOf(newValue)
-                preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${preference.entries.get(index)}"
+                preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${preference.entries[index]}"
                 return@setOnPreferenceChangeListener true
             } else {
                 return@setOnPreferenceChangeListener false
@@ -203,7 +205,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             // open web browser
             val intent = Intent().apply {
                 action = Intent.ACTION_VIEW
-                data = Uri.parse("https://github.com/y20k/escapepod/issues")
+                data = "https://github.com/y20k/escapepod/issues".toUri()
             }
             startActivity(intent)
             return@setOnPreferenceClickListener true
@@ -303,8 +305,9 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
                     val targetUri: Uri? = data.data
                     if (targetUri != null) {
                         // open and import opml in player fragment
-                        val bundle: Bundle = Bundle()
-                        bundle.putString(Keys.ARG_OPEN_OPML, targetUri.toString())
+                        val bundle: Bundle = bundleOf(
+                                Keys.ARG_OPEN_OPML to targetUri.toString()
+                        )
                         this.findNavController().navigate(R.id.podcast_player_destination, bundle)
                     }
                 }

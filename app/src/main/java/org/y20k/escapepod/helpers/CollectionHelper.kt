@@ -20,6 +20,7 @@ import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -83,6 +84,7 @@ object CollectionHelper {
                             smallCover = podcast.smallCover,
                             playbackState = oldEpisode.playbackState,
                             playbackPosition = oldEpisode.playbackPosition,
+                            duration = oldEpisode.duration,
                             manuallyDeleted = oldEpisode.manuallyDeleted,
                             manuallyDownloaded = oldEpisode.manuallyDownloaded)
                     updatedEpisodeList.add(updatedEpisode)
@@ -138,7 +140,7 @@ object CollectionHelper {
     }
 
 
-    /* Creates MediaMetadata for a single episode - used in media session*/
+    /* Creates MediaMetadata for a single episode - used in media session */
     fun buildEpisodeMediaMetadata(context: Context, episode: Episode): MediaMetadataCompat {
         return MediaMetadataCompat.Builder().apply {
             putString(MediaMetadataCompat.METADATA_KEY_TITLE, episode.title)
@@ -166,12 +168,12 @@ object CollectionHelper {
                 if (canBeDeleted(context, episode)) {
                     // delete audio file
                     try {
-                        Uri.parse(episode.audio).toFile().delete()
+                        episode.audio.toUri().toFile().delete()
                     } catch (e: Exception) {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }
                     // remove audio reference
-                    val updatedEpisode: Episode = Episode(episode, audio = String(), playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
+                    val updatedEpisode: Episode = Episode(episode, audio = String(), playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L, duration = 0L)
                     // add to updated list
                     updatedEpisodes.add(updatedEpisode)
                 }
@@ -201,7 +203,7 @@ object CollectionHelper {
         // delete audio file
         LogHelper.d(TAG, "Deleting audio file for episode: ${episode.title}")
         try {
-            Uri.parse(episode.audio).toFile().delete()
+            episode.audio.toUri().toFile().delete()
         } catch (e: Exception) {
             LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
         }

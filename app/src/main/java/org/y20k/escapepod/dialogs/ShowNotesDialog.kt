@@ -18,7 +18,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -27,6 +26,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.objects.Episode
@@ -71,14 +73,14 @@ class ShowNotesDialog () {
 
         // podcast website: set up open browser
         if (podcast.website.isNotEmpty()) {
-            podcastWebsiteView.visibility = View.VISIBLE
-            podcastLinksDivider.visibility = View.VISIBLE
+            podcastWebsiteView.isVisible = true
+            podcastLinksDivider.isVisible = true
             podcastWebsiteView.setOnClickListener {
-                startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(podcast.website)), null)
+                startActivity(context, Intent(Intent.ACTION_VIEW, podcast.website.toUri()), null)
             }
         } else {
-            podcastWebsiteView.visibility = View.GONE
-            podcastLinksDivider.visibility = View.GONE
+            podcastWebsiteView.isGone = true
+            podcastLinksDivider.isGone = true
         }
 
         // podcast feed: set up clipboard copy

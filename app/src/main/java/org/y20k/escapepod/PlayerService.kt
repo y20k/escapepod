@@ -183,10 +183,11 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             val CONTENT_STYLE_BROWSABLE_HINT = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
             val CONTENT_STYLE_LIST_ITEM_HINT_VALUE = 1
             val CONTENT_STYLE_GRID_ITEM_HINT_VALUE = 2
-            val extras = Bundle()
-            extras.putBoolean(CONTENT_STYLE_SUPPORTED, true)
-            extras.putInt(CONTENT_STYLE_BROWSABLE_HINT, CONTENT_STYLE_GRID_ITEM_HINT_VALUE)
-            extras.putInt(CONTENT_STYLE_PLAYABLE_HINT, CONTENT_STYLE_LIST_ITEM_HINT_VALUE)
+            val extras: Bundle = bundleOf(
+                    CONTENT_STYLE_SUPPORTED to true,
+                    CONTENT_STYLE_BROWSABLE_HINT to CONTENT_STYLE_GRID_ITEM_HINT_VALUE,
+                    CONTENT_STYLE_PLAYABLE_HINT to CONTENT_STYLE_LIST_ITEM_HINT_VALUE
+            )
             return BrowserRoot(Keys.MEDIA_ID_ROOT, extras)
         }
     }

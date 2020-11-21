@@ -17,6 +17,7 @@ package org.y20k.escapepod.helpers
 import android.content.Context
 import android.content.SharedPreferences
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
@@ -43,9 +44,9 @@ object PreferencesHelper {
     /* Saves mediaId of current episode to shared preferences */
     fun saveCurrentMediaId(context: Context, mediaId: String = String()) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, mediaId)
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, mediaId)
+        }
     }
 
 
@@ -59,9 +60,9 @@ object PreferencesHelper {
     /* Saves mediaId of next episode in up next queue  to shared preferences */
     fun saveUpNextMediaId(context: Context, mediaId: String = String()) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, mediaId)
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, mediaId)
+        }
     }
 
 
@@ -75,9 +76,9 @@ object PreferencesHelper {
     /* Saves keepDebugLog true or false */
     fun saveKeepDebugLog(context: Context, keepDebugLog: Boolean = false) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putBoolean(Keys.PREF_KEEP_DEBUG_LOG, keepDebugLog)
-        editor.apply()
+        settings.edit {
+            putBoolean(Keys.PREF_KEEP_DEBUG_LOG, keepDebugLog)
+        }
     }
 
 
@@ -91,9 +92,9 @@ object PreferencesHelper {
     /* Saves state of playback for player / PlayerService to shared preferences */
     fun savePlayerPlaybackState(context: Context, playbackState: Int) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playbackState)
-        editor.apply()
+        settings.edit {
+            putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playbackState)
+        }
     }
 
 
@@ -107,9 +108,9 @@ object PreferencesHelper {
     /* Saves state of playback for player / PlayerService to shared preferences */
     fun savePlayerPlaybackSpeed(context: Context, playbackSpeed: Float) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playbackSpeed)
-        editor.apply()
+        settings.edit {
+            putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playbackSpeed)
+        }
     }
 
 
@@ -124,9 +125,9 @@ object PreferencesHelper {
     /* Saves last update to shared preferences */
     fun saveLastUpdateCollection(context: Context, lastUpdate: Date = Calendar.getInstance().time) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateTimeHelper.convertToRfc2822(lastUpdate))
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_LAST_UPDATE_COLLECTION, DateTimeHelper.convertToRfc2822(lastUpdate))
+        }
     }
 
 
@@ -140,9 +141,9 @@ object PreferencesHelper {
     /* Saves site of collection to shared preferences */
     fun saveCollectionSize(context: Context, size: Int) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putInt(Keys.PREF_COLLECTION_SIZE, size)
-        editor.apply()
+        settings.edit {
+            putInt(Keys.PREF_COLLECTION_SIZE, size)
+        }
     }
 
 
@@ -156,9 +157,9 @@ object PreferencesHelper {
     /* Saves currently selected podcast search index */
     fun saveCurrentPodcastSearchIndex(context: Context, currentSearchIndex: String) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_PODCAST_SEARCH_PROVIDER, currentSearchIndex)
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_PODCAST_SEARCH_PROVIDER, currentSearchIndex)
+        }
     }
 
 
@@ -173,9 +174,9 @@ object PreferencesHelper {
     /* Saves date of last save operation to shared preferences */
     fun saveCollectionModificationDate(context: Context, lastSave: Date = Calendar.getInstance().time) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_COLLECTION_MODIFICATION_DATE, DateTimeHelper.convertToRfc2822(lastSave))
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_COLLECTION_MODIFICATION_DATE, DateTimeHelper.convertToRfc2822(lastSave))
+        }
     }
 
 
@@ -205,9 +206,9 @@ object PreferencesHelper {
     /* Saves active downloads to shared preferences */
     fun saveActiveDownloads(context: Context, activeDownloadsString: String = String()) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_ACTIVE_DOWNLOADS, activeDownloadsString)
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_ACTIVE_DOWNLOADS, activeDownloadsString)
+        }
     }
 
 
@@ -226,26 +227,37 @@ object PreferencesHelper {
     /* Saves state of player user interface to shared preferences */
     fun savePlayerState(context: Context, playerState: PlayerState) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
-        editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
-        editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playerState.playbackSpeed)
-        editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
-        editor.apply()
+        settings.edit {
+            putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
+            putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
+            putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playerState.playbackSpeed)
+            putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
+        }
     }
 
 
     /* Resets state of player user interface */
     fun resetPlayerState(context: Context, keepUpNextMediaId: Boolean = true) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String())
-        editor.putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
-        editor.putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
-        if (!keepUpNextMediaId) {
-            editor.putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String())
+        when (keepUpNextMediaId) {
+            true -> {
+                // reset player state - keep up next
+                settings.edit {
+                    putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String())
+                    putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+                    putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
+                }
+            }
+            false -> {
+                // reset player state - also reset up next
+                settings.edit {
+                    putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String())
+                    putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+                    putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
+                    putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String())
+                }
+            }
         }
-        editor.apply()
     }
 
 
@@ -272,9 +284,9 @@ object PreferencesHelper {
     /* Saves state of housekeeping */
     fun saveHouseKeepingNecessaryState(context: Context, state: Boolean = false) {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        val editor = settings.edit()
-        editor.putBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, state)
-        editor.apply()
+        settings.edit {
+            putBoolean(Keys.PREF_ONE_TIME_HOUSEKEEPING_NECESSARY, state)
+        }
     }
 
 

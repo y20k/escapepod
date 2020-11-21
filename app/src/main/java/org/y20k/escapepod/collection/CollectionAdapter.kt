@@ -15,7 +15,6 @@
 package org.y20k.escapepod.collection
 
 import android.content.Context
-import android.net.Uri
 import android.os.Vibrator
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
@@ -28,6 +27,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.Group
+import androidx.core.net.toUri
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -234,11 +236,11 @@ class CollectionAdapter(private val context: Context, private val collectionData
             collectionAdapterListener.onDeleteButtonTapped(episode)
         }
         if (episode.audio.isNotEmpty()) {
-            episodeViewHolder.episodeDownloadButtonView.visibility = View.GONE
-            episodeViewHolder.episodePlaybackViews.visibility = View.VISIBLE
+            episodeViewHolder.episodeDownloadButtonView.isGone = true
+            episodeViewHolder.episodePlaybackViews.isVisible = true
         } else {
-            episodeViewHolder.episodeDownloadButtonView.visibility = View.VISIBLE
-            episodeViewHolder.episodePlaybackViews.visibility = View.GONE
+            episodeViewHolder.episodeDownloadButtonView.isVisible = true
+            episodeViewHolder.episodePlaybackViews.isGone = true
         }
     }
 
@@ -265,11 +267,11 @@ class CollectionAdapter(private val context: Context, private val collectionData
         when (podcastViewHolder.olderEpisodesList.visibility) {
             // CASE: older episode list is hidden -> show episode list
             View.GONE -> {
-                podcastViewHolder.olderEpisodesList.visibility = View.VISIBLE
+                podcastViewHolder.olderEpisodesList.isVisible = true
             }
             // CASE: older episode list is visible -> hide episode list
             View.VISIBLE -> {
-                podcastViewHolder.olderEpisodesList.visibility = View.GONE
+                podcastViewHolder.olderEpisodesList.isGone = true
             }
         }
         // update older episodes button text
@@ -480,8 +482,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
             if (oldPodcast.data.name != newPodcast.data.name) return false
             if (oldPodcast.data.website != newPodcast.data.website) return false
             if (oldPodcast.data.remoteImageFileLocation != newPodcast.data.remoteImageFileLocation) return false
-            if (FileHelper.getFileSize(Uri.parse(oldPodcast.data.cover)) != FileHelper.getFileSize(Uri.parse(newPodcast.data.cover))) return false
-            if (FileHelper.getFileSize(Uri.parse(oldPodcast.data.smallCover)) != FileHelper.getFileSize(Uri.parse(newPodcast.data.smallCover))) return false
+            if (FileHelper.getFileSize(oldPodcast.data.cover.toUri()) != FileHelper.getFileSize(newPodcast.data.cover.toUri())) return false
+            if (FileHelper.getFileSize(oldPodcast.data.smallCover.toUri()) != FileHelper.getFileSize(newPodcast.data.smallCover.toUri())) return false
 
             // compare relevant contents of episodes within podcast
             oldPodcast.episodes.forEachIndexed { index, oldEpisode ->
@@ -499,8 +501,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
                 if (oldEpisode.data.duration != newEpisode.data.duration) return false
                 if (oldEpisode.data.remoteCoverFileLocation != newEpisode.data.remoteCoverFileLocation) return false
                 if (oldEpisode.data.remoteAudioFileLocation != newEpisode.data.remoteAudioFileLocation) return false
-                if (FileHelper.getFileSize(Uri.parse(oldEpisode.data.cover)) != FileHelper.getFileSize(Uri.parse(newEpisode.data.cover))) return false
-                if (FileHelper.getFileSize(Uri.parse(oldEpisode.data.smallCover)) != FileHelper.getFileSize(Uri.parse(newEpisode.data.smallCover))) return false
+                if (FileHelper.getFileSize(oldEpisode.data.cover.toUri()) != FileHelper.getFileSize(newEpisode.data.cover.toUri())) return false
+                if (FileHelper.getFileSize(oldEpisode.data.smallCover.toUri()) != FileHelper.getFileSize(newEpisode.data.smallCover.toUri())) return false
             }
             // none of the above -> contents are the same
             return true

@@ -19,6 +19,8 @@ import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
@@ -54,7 +56,7 @@ class ErrorDialog {
         // set detail view
         if (errorDetails.isNotEmpty()) {
             // show details link
-            errorDetailsLinkView.visibility = View.VISIBLE
+            errorDetailsLinkView.isVisible = true
 
             // allow scrolling on details view
             errorDetailsView.movementMethod = ScrollingMovementMethod()
@@ -62,15 +64,15 @@ class ErrorDialog {
             // show and hide details on click
             errorDetailsLinkView.setOnClickListener {
                 when (errorDetailsView.visibility) {
-                    View.GONE -> errorDetailsView.visibility = View.VISIBLE
-                    View.VISIBLE -> errorDetailsView.visibility = View.GONE
+                    View.GONE -> errorDetailsView.isVisible = true
+                    View.VISIBLE -> errorDetailsView.isGone = true
                 }
             }
             // set details text view
             errorDetailsView.text = errorDetails
         } else {
             // hide details link
-            errorDetailsLinkView.visibility = View.GONE
+            errorDetailsLinkView.isGone = true
         }
 
         // set text views

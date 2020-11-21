@@ -85,10 +85,10 @@ interface EpisodeDao {
         val rowId = insert(episode)
         if (rowId == -1L) {
             update(episode)
-            // episode was NOT NEW (= update)
+            // false = episode was NOT NEW (= update)
             return false
         }
-        // episode was NEW (= insert)
+        // true = episode was NEW (= insert)
         return true
     }
 

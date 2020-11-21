@@ -52,10 +52,10 @@ interface EpisodeDescriptionDao {
         val rowId = insert(episode)
         if (rowId == -1L) {
             update(episode)
-            // episode was NOT NEW (= update)
+            // false = episode was NOT NEW (= update)
             return false
         }
-        // episode was NEW (= insert)
+        // true = episode was NEW (= insert)
         return true
     }
 
@@ -64,7 +64,13 @@ interface EpisodeDescriptionDao {
     fun upsertAll(episodeDescriptions: List<EpisodeDescription>) {
         val rowIds = insertAll(episodeDescriptions)
         val episodeDescriptionsToUpdate = rowIds.mapIndexedNotNull { index, rowId ->
-            if (rowId == -1L) null else episodeDescriptions[index] }
+            if (rowId == -1L) {
+                // result -1 means that insert operation was not successful
+                episodeDescriptions[index]
+            } else {
+                null
+            }
+        }
         episodeDescriptionsToUpdate.forEach { update(it) }
     }
 

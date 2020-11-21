@@ -14,9 +14,9 @@
 
 package org.y20k.escapepod.database.objects
 
-import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
+import androidx.core.net.toUri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -71,7 +71,7 @@ data class Podcast(
     fun toMediaMetaItem(): MediaBrowserCompat.MediaItem {
         val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
         mediaDescriptionBuilder.setTitle(name)
-        mediaDescriptionBuilder.setIconUri(Uri.parse(cover))
+        mediaDescriptionBuilder.setIconUri(cover.toUri())
         return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
     }
 

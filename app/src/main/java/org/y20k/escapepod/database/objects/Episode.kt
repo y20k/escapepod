@@ -134,7 +134,7 @@ data class Episode (
         mediaDescriptionBuilder.setTitle(title)
         mediaDescriptionBuilder.setSubtitle(podcastName)
         mediaDescriptionBuilder.setDescription(podcastName)
-        //mediaDescriptionBuilder.setIconUri(Uri.parse(episode.cover))
+        //mediaDescriptionBuilder.setIconUri(episode.cover.toUri())
         return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
     }
 

@@ -57,7 +57,7 @@ object DownloadHelper {
         // initialize main class variables, if necessary
         initialize(context)
         // convert array
-        val uris: Array<Uri> = Array<Uri>(podcastUrlStrings.size) { index -> Uri.parse(podcastUrlStrings[index]) }
+        val uris: Array<Uri> = Array<Uri>(podcastUrlStrings.size) { index -> podcastUrlStrings[index].toUri() }
         // enqueue podcast
         enqueueDownload(context, uris, Keys.FILE_TYPE_RSS)
     }
