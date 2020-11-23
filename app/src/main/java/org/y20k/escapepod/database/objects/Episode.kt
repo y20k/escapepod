@@ -19,6 +19,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
 
@@ -114,7 +115,7 @@ data class Episode (
             podcastName = rssEpisode.podcastName,
             remoteCoverFileLocation = rssEpisode.remoteCoverFileLocation,
             remoteAudioFileLocation = rssEpisode.remoteAudioFileLocation,
-            remoteAudioFileName = rssEpisode.remoteAudioFileLocation.substring(rssEpisode.remoteAudioFileLocation.lastIndexOf('/')+1, rssEpisode.remoteAudioFileLocation.length),
+            remoteAudioFileName = FileHelper.getFileNameFromUrl(rssEpisode.remoteAudioFileLocation),
             episodeRemotePodcastFeedLocation = rssEpisode.episodeRemotePodcastFeedLocation
     )
 

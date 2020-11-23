@@ -27,7 +27,7 @@ import java.util.*
  */
 @Keep
 @Parcelize
-data class LegacyCollection(@Expose val version: Int = Keys.CURRENT_COLLECTION_CLASS_VERSION_NUMBER,
+data class LegacyCollection(@Expose val version: Int = Keys.CURRENT_LEGACY_COLLECTION_CLASS_VERSION_NUMBER,
                             @Expose var podcasts: MutableList<LegacyPodcast> = mutableListOf<LegacyPodcast>(),
                             @Expose var modificationDate: Date = Date()) : Parcelable {
 

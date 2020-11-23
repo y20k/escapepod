@@ -21,6 +21,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.StatFs
 import android.provider.OpenableColumns
+import android.webkit.URLUtil
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -87,6 +88,14 @@ object FileHelper {
         } else {
             return String()
         }
+    }
+
+
+    /* Parses out file name from URL */
+    fun getFileNameFromUrl(remoteFileLocation: String): String {
+        // val fileName: String = remoteFileLocation.substring(remoteFileLocation.lastIndexOf('/')+1, remoteFileLocation.length)
+        val fileName: String = URLUtil.guessFileName(remoteFileLocation, null, null)
+        return fileName
     }
 
 

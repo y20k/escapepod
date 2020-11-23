@@ -80,7 +80,7 @@ object ImportHelper {
                         manuallyDownloaded = legacyEpisode.manuallyDownloaded,
                         podcastName = legacyEpisode.podcastName,
                         remoteAudioFileLocation = legacyEpisode.remoteAudioFileLocation,
-                        remoteAudioFileName = String(),
+                        remoteAudioFileName = FileHelper.getFileNameFromUrl(legacyEpisode.remoteAudioFileLocation),
                         remoteCoverFileLocation = legacyEpisode.remoteCoverFileLocation,
                         episodeRemotePodcastFeedLocation = podcastData.remotePodcastFeedLocation
                 )

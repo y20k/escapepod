@@ -26,7 +26,7 @@ object Keys {
     const val APPLICATION_NAME: String = "Escapepod"
 
     // version numbers
-    const val CURRENT_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
+    const val CURRENT_LEGACY_COLLECTION_CLASS_VERSION_NUMBER: Int = 0
 
     // time values
     const val UPDATE_REPEAT_INTERVAL: Long = 4L             // every 4 hours
