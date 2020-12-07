@@ -171,7 +171,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         preferenceSearchProviderSelection.summary = "${getString(R.string.pref_search_provider_selection_summary)} ${PreferencesHelper.getCurrentPodcastSearchProvider(preferenceManager.context)}"
         preferenceSearchProviderSelection.entries = arrayOf(getString(R.string.pref_search_provider_selection_gpodder), getString(R.string.pref_search_provider_selection_podcastindex))
         preferenceSearchProviderSelection.entryValues = arrayOf(Keys.PODCAST_SEARCH_PROVIDER_GPODDER, Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX)
-        preferenceSearchProviderSelection.setDefaultValue(Keys.PODCAST_SEARCH_PROVIDER_GPODDER)
+        preferenceSearchProviderSelection.setDefaultValue(Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX)
         preferenceSearchProviderSelection.setOnPreferenceChangeListener { preference, newValue ->
             if (preference is ListPreference) {
                 val index: Int = preference.entryValues.indexOf(newValue)

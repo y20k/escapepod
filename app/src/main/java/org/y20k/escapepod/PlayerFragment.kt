@@ -605,6 +605,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 layout.updatePlayerViews(activity as Context, episode)
                 layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
             }
+            layout.updateUpNextViews(upNextEpisode)
         }
     }
 

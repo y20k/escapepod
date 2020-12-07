@@ -4,7 +4,7 @@ README
 # Escapepod - Podcast Player for Android
 <img src="https://raw.githubusercontent.com/y20k/escapepod/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="192" />
 
-**Version 0.9.x ("Aber Hier Leben, Nein Danke")**
+**Version 1.0.0 ("Sag Alles Ab")**
 
 Escapepod is a simple and lightweight app with a minimalistic approach for listening to podcasts, which may not be to everyone's liking. The app has only a single screen. Playback controls and a list of podcasts that shows the five most recent episodes each. Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
 
@@ -34,13 +34,13 @@ Escapepod tries to reduce the number of episodes it keeps. Here are the rules fo
 - the maximum number of episodes available (and kept) is five
 
 ### Does Escapepod support OMPL?
-You can import a podcast list using the [OPML](https://en.wikipedia.org/wiki/OPML) exchange format. Just open an OPML file using a file manager and choose Escapepod as the handler. The current podcast collection can be exported via Settings. Addionally Escapepod keeps an up-to-date OPML file in the folder `/Android/data/org.y20k.escapepod/files/collection/`.
+You can import a podcast list using the [OPML](https://en.wikipedia.org/wiki/OPML) exchange format using the respective option in the app's Settings. The current podcast collection can be exported via Settings, too. Additionally Escapepod keeps an up-to-date OPML file in the folder `/Android/data/org.y20k.escapepod/files/collection/`.
 
 ### I cannot add podcast X.
 Please report any podcast feeds, that are currently not working, using the GitHub Issue template [Feed Issue](https://github.com/y20k/escapepod/issues/new?assignees=&labels=feed+issue&template=feed-issue.md&title=%5BFeed%5D). Note: Escapepod does not support video podcasts.
 
 ### Where do the podcast search results come from?
-Escapepod searches the [gpodder.net](https://gpodder.net/directory/) online database. Gpodder.net is a great service, if you are looking for new stuff to listen to, btw.
+Escapepod searches by default the [Podcastindex.org](https://podcastindex.org/) online database - or if you toggle the respective setting the [gpodder.net](https://gpodder.net/directory/) online database.
 
 
 ## Screenshots (v0.8)
