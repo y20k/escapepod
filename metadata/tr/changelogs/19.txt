@@ -1,0 +1,5 @@
+# v0.8.1 - Gehen Die Leute
+
+**5 Aralık 2019**
+
+- podcast listesi hala boşken sesli denetim yoluyla verilen oynatma komutunun neden olduğu bir çökmeyi önler

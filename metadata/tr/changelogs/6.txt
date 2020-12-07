@@ -1,0 +1,7 @@
+# v0.7.1 - Drüben Auf Dem Hügel
+
+**2 Ekim 2019**
+
+- yeni oynatma hızı değiştirme
+- RSS akışında varsa, bölüm notlarında daha uzun bölüm açıklamaları görüntülenir
+- hata düzeltmeleri

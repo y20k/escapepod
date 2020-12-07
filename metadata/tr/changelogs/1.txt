@@ -1,0 +1,5 @@
+# v0.4.0-alpha - An Diesen Langweiligen Tagen
+
+**19 Temmuz 2019**
+
+- ilk sürüm

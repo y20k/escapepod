@@ -1,0 +1,7 @@
+# v0.7.5 - Drüben Auf Dem Hügel
+
+**16 Ekim 2019**
+
+- Almanca sürümü
+- Android'in otomatik yedekleme özelliği için destek
+- birkaç hata düzeltmesi

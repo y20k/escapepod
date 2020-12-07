@@ -1,0 +1,7 @@
+# v0.8.0 - Gehen Die Leute
+
+**5 Aralık 2019**
+
+- gpodder.net hizmetinde temel podcast araması
+- Portekizce sürümü
+- Flemenkçe sürümü

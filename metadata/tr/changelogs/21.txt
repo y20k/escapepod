@@ -1,0 +1,7 @@
+# v0.8.3 - Gehen Die Leute
+
+**6 Aralık 2019**
+
+- sesle başlatılan arama başarılı olmadığında kullanıcıyı bilgilendirir.
+
+Not: Üzgünüm arkadaşlar. Bu, iki gün içindeki üçüncü güncelleme. Android Auto uyumluluğu için otomatik test, podcast eklenmemiş olsa bile uygulamanın "Müzik çal" sesli komutuna tepki verdiğini varsaydığından, uygulamalar Play Store'da reddedilmiş gibi görünüyor. Ne yapacağımdan emin değilim. Android Auto desteğini tamamen kaldırabilirim.

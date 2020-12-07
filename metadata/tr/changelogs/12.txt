@@ -1,0 +1,5 @@
+# v0.7.7 - Drüben Auf Dem Hügel
+
+**16 Ekim 2019**
+
+- oynatma konumunun doğru kaydedilmediği bir hatayı düzeltir

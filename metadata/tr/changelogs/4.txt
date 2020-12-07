@@ -1,0 +1,13 @@
+# v0.6.0-beta - Drei Schritte Vom Abgrund Entfernt
+
+**14 Ağustos 2019**
+
+- temel bölüm notları görüntüleyici
+- baskı türü değiştirildi (Material Tasarım Bileşenleri)
+- hata düzeltmeleri
+
+
+Not: Listede iki kez görünen tekli bölümleri düzeltmek için:
+1) OPML dışa aktarma dosyasını kaydedin (/Android/data/org.y20k.escapepod/files/collection/collection_opml.xml)
+2) Tüm uygulama verilerini silin
+3) OPML dosyasını Escapepod ile açın ve tüm podcast'leri yeniden içe aktarın.

@@ -1,0 +1,5 @@
+# v0.7.9 - Drüben Auf Dem Hügel
+
+**6 Kasım 2019**
+
+- küçük kararlılık iyileştirmeleri

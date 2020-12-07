@@ -1,0 +1,5 @@
+# v0.8.2 - Gehen Die Leute
+
+**6 Aralık 2019**
+
+- podcast listesi boş ise kullanıcıya sesle denetlenen oynatmanın başarılı olamayacağını bildirir.

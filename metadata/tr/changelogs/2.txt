@@ -1,0 +1,7 @@
+# v0.4.1-alpha - An Diesen Langweiligen Tagen
+
+**25 Temmuz 2019**
+
+- feedburner kullanan podcast'lerle ilgili sorunları düzeltir
+- kaydırma performansı iyileştirildi
+- yeni hata ayıklama günlük dosyası özelliği
