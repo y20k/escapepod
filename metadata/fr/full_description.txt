@@ -17,10 +17,12 @@ Escapepod tente de réduire le nombre d'épisodes qu'il conserve. Voici les règ
 - Le nombre maximum d'épisodes disponibles (et conservés) est de cinq
 
 EST-CE QU'ESCAPEPOD PREND EN CHARGE LE FORMAT OPML ?
-Vous pouvez importer une liste de podcasts utilisant le format d'échange OPML. Ouvrez simplement un fichier OPML en utilisant le gestionnaire de fichiers et sélectionnez Escapepod comme application par défaut. La sélection de podcasts courante peut être exportée via les paramètres. De plus Escapepod conserve un fichier OPML à jour dans le dossier /Android/data/org.y20k.escapepod/files/collection/.
+Vous pouvez importer une liste de podcasts utilisant le format d'échange OPML en utilisant l'option respective dans l'application. La sélection de podcasts courante peut être exportée via les paramètres également. De plus Escapepod conserve un fichier OPML à jour dans le dossier /Android/data/org.y20k.escapepod/files/collection/.
+
+You can import a podcast list using the OPML exchange format using the respective option in the app's Settings. The current podcast collection can be exported via Settings, too. Additionally Escapepod keeps an up-to-date OPML file in the folder /Android/data/org.y20k.escapepod/files/collection/.
 
 JE NE PEUX PAS AJOUTER LE PODCAST X. POURQUOI ?
 Veuillez signaler tous les flux de podcast qui ne fonctionnent pas en utilisant le modèle de ticket sur GitHub « Feed Issue » (en anglais) (https://github.com/y20k/escapepod/issues/). Remarque : Escapepod ne prend pas en charge les podcasts vidéo.
 
 D'OÙ VIENNENT LES RÉSULTATS DE RECHERCHE DE PODCASTS ?
-Escapepod effectue les recherches dans la base de données en ligne gpodder.net (https://gpodder.net/directory/). Gpodder.net est une superbe page si vous êtes à la recherche de quelque chose à écouter par ailleurs.
+Escapepod effectue les recherches dans la base de données en ligne Podcastindex.org (https://podcastindex.org/) ou, si vous l'activez, depuis la base de données en ligne de gpodder.net (https://gpodder.net/directory/).
