@@ -147,4 +147,12 @@
     <string name="pref_app_version_summary">Versão</string>
     <string name="pref_about_title">Acerca</string>
     <string name="toast_message_error_download_error">Erro ao descarregar</string>
+    <string name="pref_search_provider_selection_title">Serviço de pesquisa</string>
+    <string name="pref_search_provider_selection_summary">Utilizado atualmente:</string>
+    <string name="pref_opml_import_title">Importar OPML</string>
+    <string name="pref_opml_import_summary">Selecione um ficheiro OPML do armazenamento.</string>
+    <string name="pref_delete_all_storage_space_used">Utilizado</string>
+    <string name="pref_delete_all_storage_space_available">Disponível</string>
+    <string name="pref_advanced_title">Avançado</string>
+    <string name="toast_message_deleting_downloads">A eliminar episódios descarregados.</string>
 </resources>
