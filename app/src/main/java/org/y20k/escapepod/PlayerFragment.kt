@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -46,6 +46,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import org.y20k.escapepod.collection.CollectionAdapter
 import org.y20k.escapepod.collection.CollectionViewModel
 import org.y20k.escapepod.database.CollectionDatabase
@@ -181,12 +183,12 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // load player state
         playerState = PreferencesHelper.loadPlayerState(activity as Context)
         // recreate player ui
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // get current and up-next episode
-            episode = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId) }
-            upNextEpisode = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId) }
+            episode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
+            upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
             // setup ui
-            withContext(Dispatchers.Main) {
+            withContext(Main) {
                 setupPlayer()
                 setupList()
                 layout.toggleDownloadProgressIndicator(activity as Context)
@@ -248,21 +250,21 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 layout.toggleDownloadProgressIndicator(activity as Context)
             }
             Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID -> {
-                GlobalScope.launch {
+                CoroutineScope(IO).launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
                     playerState.episodeMediaId = mediaId
                     LogHelper.v(TAG, "onSharedPreferenceChanged - current episode: $mediaId") // todo remove
-                    episode = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(mediaId) }
-                    withContext(Dispatchers.Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+                    collectionDatabase.episodeDao().findByMediaId(mediaId)
+                    withContext(Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
-                GlobalScope.launch {
+                CoroutineScope(IO).launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     LogHelper.v(TAG, "onSharedPreferenceChanged - up next episode: $mediaId") // todo remove
-                    upNextEpisode = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(mediaId) }
-                    withContext(Dispatchers.Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+                    collectionDatabase.episodeDao().findByMediaId(mediaId)
+                    withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }
             Keys.PREF_PLAYER_STATE_PLAYBACK_STATE -> {
@@ -294,11 +296,11 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     }
                     else -> {
                         // ask user: playback or add to Up Next
-                        GlobalScope.launch {
+                        CoroutineScope(IO).launch {
                             val episodeTitle: String? = collectionDatabase.episodeDao().getTitle(mediaId)
                             if (episodeTitle != null) {
                                 val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- $episodeTitle"
-                                withContext(Dispatchers.Main) { YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId) }
+                                withContext(Main) { YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_ADD_UP_NEXT, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_add_up_next, noButton = R.string.dialog_yes_no_negative_button_add_up_next, payloadString = mediaId) }
                             }
                         }
                     }
@@ -319,10 +321,10 @@ class PlayerFragment: Fragment(), CoroutineScope,
         if (mediaId == episode?.mediaId) {
             MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         }
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             val tappedEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId)
             val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_mark_episode_played)}\n\n- ${tappedEpisode?.title}"
-            withContext(Dispatchers.Main) { YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId) }
+            withContext(Main) { YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_MARK_EPISODE_PLAYED, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_mark_episode_played, noButton = R.string.dialog_yes_no_negative_button_cancel, payloadString = mediaId) }
         }
     }
 
@@ -480,15 +482,15 @@ class PlayerFragment: Fragment(), CoroutineScope,
     /* Builds playback controls - used after connected to player service */
     @SuppressLint("ClickableViewAccessibility") // it is probably okay to suppress this warning - the OnTouchListener on the time played view does only toggle the time duration / remaining display
     private fun buildPlaybackControls() {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // get player state
             playerState = PreferencesHelper.loadPlayerState(activity as Context)
 
             // get current and up-next episode
-            episode = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId) }
-            upNextEpisode = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId) }
+            episode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
+            upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
 
-            withContext(Dispatchers.Main) {
+            withContext(Main) {
                 // get reference to media controller
                 val mediaController = MediaControllerCompat.getMediaController(activity as Activity)
 
@@ -675,19 +677,19 @@ class PlayerFragment: Fragment(), CoroutineScope,
         } else if (!NetworkHelper.isConnectedToNetwork(activity as Context)) {
             ErrorDialog().show(activity as Context, R.string.dialog_error_title_no_network, R.string.dialog_error_message_no_network)
         } else {
-            GlobalScope.launch {
+            CoroutineScope(IO).launch {
                 val existingPodcast: Podcast? = collectionDatabase.podcastDao().findByRemotePodcastFeedLocation(feedUrl)
                 if (existingPodcast != null) {
                     // not adding podcast, because podcast is duplicate
-                    withContext(Dispatchers.Main) { ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, feedUrl) }
+                    withContext(Main) { ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_duplicate, R.string.dialog_error_message_podcast_duplicate, feedUrl) }
                 } else {
                     // detect content type on background thread
                     val deferred: Deferred<NetworkHelper.ContentType> = async(Dispatchers.Default) { NetworkHelper.detectContentTypeSuspended(feedUrl) }
                     val contentType: NetworkHelper.ContentType = deferred.await()
                     if ((contentType.type !in Keys.MIME_TYPES_RSS) && contentType.type !in Keys.MIME_TYPES_ATOM) {
-                        withContext(Dispatchers.Main) { ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl) }
+                        withContext(Main) { ErrorDialog().show(activity as Context, R.string.dialog_error_title_podcast_invalid_feed, R.string.dialog_error_message_podcast_invalid_feed, feedUrl) }
                     } else {
-                        withContext(Dispatchers.Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
+                        withContext(Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
                         DownloadHelper.downloadPodcasts(activity as Context, arrayOf(feedUrl))
                     }
                 }
@@ -699,11 +701,11 @@ class PlayerFragment: Fragment(), CoroutineScope,
     /* Download podcast feed using async co-routine */
     private fun downloadPodcastFeedsFromOpml(feedUrls: Array<String>) {
         if (NetworkHelper.isConnectedToNetwork(activity as Context)) {
-            GlobalScope.launch {
+            CoroutineScope(IO).launch {
                 val podcastList: List<Podcast> = collectionDatabase.podcastDao().getAll()
                 val urls = CollectionHelper.removeDuplicates(podcastList, feedUrls)
                 if (urls.isNotEmpty()) {
-                    withContext(Dispatchers.Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
+                    withContext(Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
                     DownloadHelper.downloadPodcasts(activity as Context, urls)
                     PreferencesHelper.saveLastUpdateCollection(activity as Context)
                 }
@@ -802,7 +804,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private fun observeCollectionViewModel() {
         collectionViewModel.numberOfPodcastsLiveData.observe(this, Observer<Int> { numberOfPodcasts ->
             layout.toggleOnboarding(activity as Context, numberOfPodcasts)
-            GlobalScope.launch {
+            CoroutineScope(IO).launch {
                 CollectionHelper.exportCollectionOpml(activity as Context, collectionDatabase.podcastDao().getAll() )
             }
         } )

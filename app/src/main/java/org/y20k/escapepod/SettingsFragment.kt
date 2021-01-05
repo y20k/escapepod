@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -30,7 +30,8 @@ import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.preference.*
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.dialogs.YesNoDialog
@@ -294,7 +295,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
                     val targetUri: Uri? = data.data
                     if (targetUri != null) {
                         // copy file async (= fire & forget - no return value needed)
-                        GlobalScope.launch { FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri) }
+                        CoroutineScope(IO).launch { FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri) }
                         Toast.makeText(activity as Context, R.string.toast_message_save_opml, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -323,7 +324,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         // delete audio files for all episode
         CollectionHelper.deleteAllAudioFiles(activity as Context)
         // reset all local audio references in database
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             val collectionDatabase = CollectionDatabase.getInstance(activity as Context)
             collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
         }

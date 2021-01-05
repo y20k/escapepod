@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -14,6 +14,7 @@
 
 package org.y20k.escapepod
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
@@ -22,12 +23,9 @@ import android.media.audiofx.AudioEffect
 import android.media.session.PlaybackState
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
@@ -36,13 +34,15 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import org.y20k.escapepod.collection.CollectionProvider
 import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.database.objects.Episode
-import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.PlayerState
 import java.util.*
@@ -70,8 +70,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private lateinit var backgroundJob: Job
     private lateinit var packageValidator: PackageValidator
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var mediaController: MediaControllerCompat
-    private lateinit var notificationManager: NotificationManagerCompat
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
     private lateinit var sleepTimer: CountDownTimer
@@ -81,7 +79,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides coroutineContext variable */
     override val coroutineContext: CoroutineContext get() = backgroundJob + Dispatchers.Main
-
 
     /* Overrides onCreate from Service */
     override fun onCreate() {
@@ -106,14 +103,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         mediaSession = createMediaSession()
         sessionToken = mediaSession.sessionToken
 
-        // because ExoPlayer will manage the MediaSession, add the service as a callback for state changes
-        mediaController = MediaControllerCompat(this, mediaSession).also {
-            it.registerCallback(MediaControllerCallback())
-        }
-
-        // initialize notification helper and notification manager
-        notificationHelper = NotificationHelper(this)
-        notificationManager = NotificationManagerCompat.from(this)
+        // initialize notification helper
+        notificationHelper = NotificationHelper(this, mediaSession.sessionToken, PlayerNotificationListener())
 
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
@@ -157,6 +148,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
         // cancel background job
         backgroundJob.cancel()
+        // hide notification (detach player)
+        notificationHelper.hideNotification()
         // release player
         player.removeAnalyticsListener(analyticsListener)
         player.release()
@@ -198,7 +191,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
             result.detach()
-            collectionProvider.retrieveMedia(collectionDatabase, object: CollectionProvider.CollectionProviderCallback {
+            collectionProvider.retrieveMedia(collectionDatabase, object : CollectionProvider.CollectionProviderCallback {
                 override fun onEpisodeListReady(success: Boolean) {
                     if (success) {
                         loadChildren(parentId, result)
@@ -214,6 +207,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides onPlayerStateChanged from Player.EventListener */
     override fun onPlayerStateChanged(playWhenReady: Boolean, playerState: Int) {
+        LogHelper.e(TAG, "onPlayerStateChanged") // todo remove
         when (playWhenReady) {
             // CASE: playWhenReady = true
             true -> {
@@ -247,7 +241,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
-                GlobalScope.launch {
+                CoroutineScope(IO).launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
@@ -261,35 +255,42 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     /* Updates media session and save state */
     private fun handlePlaybackChange(playbackState: Int) {
         // update playback state and position
-        GlobalScope.launch {
-            withContext(Dispatchers.Main) {
+        CoroutineScope(IO).launch {
+
+            withContext(Main) {
                 episode = Episode(episode, playbackState = playbackState, playbackPosition = player.currentPosition)
             }
-            withContext(Dispatchers.IO) {
-                collectionDatabase.episodeDao().upsert(episode)
-                collectionDatabase.episodeDao().setPlaybackStateForAllEpisodes(playbackState = PlaybackState.STATE_STOPPED, exclude = episode.mediaId)
-                // update player state
-                updatePlayerState(playbackState)
-                // update media session
-                mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
-                mediaSession.setActive(playbackState != PlaybackStateCompat.STATE_STOPPED)
-            }
-            withContext(Dispatchers.Main) {
-                // start/stop updating playback position
+
+            collectionDatabase.episodeDao().upsert(episode)
+            collectionDatabase.episodeDao().setPlaybackStateForAllEpisodes(playbackState = PlaybackState.STATE_STOPPED, exclude = episode.mediaId)
+            // update player state
+            updatePlayerState(playbackState)
+            // update media session
+            mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
+            mediaSession.setActive(playbackState != PlaybackStateCompat.STATE_STOPPED)
+
+            withContext(Main) {
                 if (player.isPlaying) {
+                    // start updating playback position
                     handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
                     handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
+                    // display notification
+                    notificationHelper.showNotificationForPlayer(player)
                 } else {
+                    // stop updating playback position
                     handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
+                    // make notification swipe-able
+                    stopForeground(false)
                 }
             }
+
         }
     }
 
 
     /* End of episode: stop playback or start episode from up-next queue */
     private fun handlePlaybackEnded() {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // update playback state and position
             episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration)
             collectionDatabase.episodeDao().upsert(episode)
@@ -299,15 +300,27 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                 episode = upNextEpisode as Episode
                 // clear up-next
                 upNextEpisode = null
-                // start playback
-                withContext(Dispatchers.Main) { startPlayback() }
+                PreferencesHelper.saveUpNextMediaId(this@PlayerService)
+
+                withContext(Main) {
+                    // start playback
+                    startPlayback()
+                }
+
             }
             // CASE: Up next episode NOT available
             else {
                 // clear up-next
                 upNextEpisode = null
-                // stop playback
-                withContext(Dispatchers.Main) { stopPlayback() }
+                PreferencesHelper.saveUpNextMediaId(this@PlayerService)
+
+                withContext(Main) {
+                    // hide notification
+                    notificationHelper.hideNotification()
+                    // stop playback
+                    stopPlayback()
+                }
+
             }
         }
     }
@@ -378,7 +391,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
         // check if episode is in up-next queue - reset up next
         if (playerState.upNextEpisodeMediaId == episode.mediaId){
-            upNextEpisode = null
+            PreferencesHelper.saveUpNextMediaId(this@PlayerService)
         }
         // update metadata
         mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
@@ -434,7 +447,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
             sleepTimer.cancel()
         }
         // initialize timer
-        sleepTimer = object:CountDownTimer (Keys.SLEEP_TIMER_DURATION + sleepTimerTimeRemaining, Keys.SLEEP_TIMER_INTERVAL) {
+        sleepTimer = object:CountDownTimer(Keys.SLEEP_TIMER_DURATION + sleepTimerTimeRemaining, Keys.SLEEP_TIMER_INTERVAL) {
             override fun onFinish() {
                 LogHelper.v(TAG, "Sleep timer finished. Sweet dreams.")
                 // reset time remaining
@@ -513,7 +526,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /* Updates and saves the state of the player ui */
-    private fun updatePlayerState (playbackState: Int) {
+    private fun updatePlayerState(playbackState: Int) {
         playerState.episodeMediaId = episode.mediaId
         playerState.playbackState = playbackState
         playerState.upNextEpisodeMediaId = upNextEpisode?.mediaId ?: String()
@@ -546,10 +559,10 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
     private val periodicPlaybackPositionUpdateRunnable: Runnable = object : Runnable {
         override fun run() {
             if (this@PlayerService::episode.isInitialized) {
-                GlobalScope.launch {
+                CoroutineScope(IO).launch {
                     val playbackPosition: Long
-                    withContext(Dispatchers.Main) { playbackPosition = player.currentPosition }
-                    withContext(Dispatchers.IO) {collectionDatabase.episodeDao().updatePlaybackPosition(mediaId = episode.mediaId, playbackPosition = playbackPosition)}
+                    withContext(Main) { playbackPosition = player.currentPosition }
+                    collectionDatabase.episodeDao().updatePlaybackPosition(mediaId = episode.mediaId, playbackPosition = playbackPosition)
                 }
             }
             // use the handler to start runnable again after specified delay (every 20 seconds)
@@ -566,6 +579,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
      */
     private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
         override fun onPlay() {
+            LogHelper.e(TAG, "onPlay") // todo remove
             if (!this@PlayerService::episode.isInitialized) {
                 // get current media id and hand over to onPlayFromMediaId
                 val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId(this@PlayerService)
@@ -577,12 +591,13 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            GlobalScope.launch {
+            LogHelper.e(TAG, "onPlayFromMediaId") // todo remove
+            CoroutineScope(IO).launch {
                 // get episode
-                val newEpisode: Episode? = withContext(Dispatchers.IO) { collectionDatabase.episodeDao().findByMediaId(mediaId ?: String())}
+                val newEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId ?: String())
                 // start playback
                 if (newEpisode != null) {
-                    withContext(Dispatchers.Main) {
+                    withContext(Main) {
                         // stop playback if necessary
                         if (player.isPlaying) {
                             stopPlayback()
@@ -729,66 +744,29 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
 
     /*
-     * Inner class: Class to receive callbacks about state changes to the MediaSessionCompat - handles notification
-     * Source: https://github.com/googlesamples/android-UniversalMusicPlayer/blob/master/common/src/main/java/com/example/android/uamp/media/MusicService.kt
+     * Inner class: Listen for notification events
      */
-    private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            mediaController.playbackState?.let { updateNotification(it) }
+    private inner class PlayerNotificationListener: PlayerNotificationManager.NotificationListener {
+
+        override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
+            if (ongoing && !isForegroundService) {
+                ContextCompat.startForegroundService(
+                        applicationContext,
+                        Intent(applicationContext, this@PlayerService.javaClass)
+                )
+                startForeground(notificationId, notification)
+                isForegroundService = true
+            }
         }
 
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            state?.let { updateNotification(it) }
-        }
-
-        private fun updateNotification(state: PlaybackStateCompat) {
-            // skip building a notification when state is "none" and metadata is null
-            // val notification = if (mediaController.metadata != null && state.state != PlaybackStateCompat.STATE_NONE) {
-            val notification = if (state.state != PlaybackStateCompat.STATE_NONE) {
-                notificationHelper.buildNotification(mediaSession.sessionToken, episode)
-            } else {
-                null
-            }
-
-            when (state.isActive) {
-                // CASE: Playback has started
-                true -> {
-                    /**
-                     * This may look strange, but the documentation for [Service.startForeground]
-                     * notes that "calling this method does *not* put the service in the started
-                     * state itself, even though the name sounds like it."
-                     */
-                    if (notification != null) {
-                        notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
-                        if (!isForegroundService) {
-                            ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, this@PlayerService.javaClass))
-                            startForeground(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
-                            isForegroundService = true
-                        }
-                    }
-                }
-                // CASE: Playback has stopped
-                false -> {
-                    if (isForegroundService) {
-                        stopForeground(false)
-                        isForegroundService = false
-
-                        // if playback has ended, also stop the service.
-                        if (state.state == PlaybackStateCompat.STATE_NONE) {
-                            stopSelf()
-                        }
-
-                        if (notification != null && state.state != PlaybackStateCompat.STATE_STOPPED) {
-                            notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
-                        } else {
-                            // remove notification - playback ended (or buildNotification failed)
-                            stopForeground(true)
-                        }
-                    }
-
-                }
-            }
+        override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+            stopForeground(true)
+            isForegroundService = false
+            stopSelf()
         }
     }
+    /*
+     * End of inner class
+     */
 
 }

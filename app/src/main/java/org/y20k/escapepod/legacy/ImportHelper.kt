@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -15,7 +15,8 @@
 package org.y20k.escapepod.legacy
 
 import android.content.Context
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.database.objects.Episode
@@ -98,7 +99,7 @@ object ImportHelper {
         }
 
         // insert podcasts and episodes
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             collectionDatabase.podcastDao().insertAll(podcastDataList)
             collectionDatabase.podcastDescriptionDao().insertAll(podcastDescriptionList)
             collectionDatabase.episodeDao().insertAll(episodeList)

@@ -63,8 +63,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
+
+    def coroutinesVersion = "1.3.9"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     implementation "com.google.android.material:material:1.2.1"
 
@@ -76,18 +78,21 @@ dependencies {
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.preference:preference-ktx:1.1.1"
 
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.2'
+    def navigationVersion = "2.3.2"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 
-    implementation "androidx.room:room-runtime:2.2.5"
-    implementation "androidx.room:room-ktx:2.2.5"
+    def roomVersion = "2.2.6"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
     debugImplementation 'com.idescout.sql:sqlscout-server:4.1'
-    kapt "androidx.room:room-compiler:2.2.5"
 
     implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
-    implementation "com.google.android.exoplayer:exoplayer:2.12.1"
-    implementation "com.google.android.exoplayer:extension-mediasession:2.12.1"
+    def exoplayerVersion = "2.12.2"
+    implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
     implementation "com.google.code.gson:gson:2.8.6"
 
     implementation 'com.android.volley:volley:1.1.1'

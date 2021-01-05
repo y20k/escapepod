@@ -7,7 +7,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -16,7 +16,8 @@
 package org.y20k.escapepod.collection
 
 import android.support.v4.media.MediaBrowserCompat
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.database.CollectionDatabase
@@ -58,7 +59,7 @@ class CollectionProvider {
             episodeListProviderCallback.onEpisodeListReady(true)
         } else {
             // fill episode list
-            GlobalScope.launch {
+            CoroutineScope(IO).launch {
                 // fill episode list
                 collectionDatabase.episodeDao().getChronological(Keys.DEFAULT_NUMBER_OF_EPISODES_FOR_ANDROID_AUTO).forEach { episode ->
                     // add only episodes with downloaded audio

@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -150,7 +150,7 @@ object PreferencesHelper {
     /* Loads currently selected podcast search index */
     fun loadCurrentPodcastSearchIndex(context: Context): String {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
-        return settings.getString(Keys.PREF_PODCAST_SEARCH_PROVIDER, Keys.PODCAST_SEARCH_PROVIDER_GPODDER) ?: Keys.PODCAST_SEARCH_PROVIDER_GPODDER
+        return settings.getString(Keys.PREF_PODCAST_SEARCH_PROVIDER, Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX) ?: Keys.PODCAST_SEARCH_PROVIDER_PODCASTINDEX
     }
 
 

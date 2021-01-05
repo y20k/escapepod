@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -21,6 +21,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.CollectionDatabase
@@ -68,7 +69,7 @@ object DownloadHelper {
         // initialize main class variables, if necessary
         initialize(context)
         // get episode
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             val episode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId)
             if (episode != null) {
                 // mark as manually downloaded if necessary
@@ -103,7 +104,7 @@ object DownloadHelper {
     fun updateCollection(context: Context) {
         // initialize main class variables, if necessary
         initialize(context)
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // re-download all podcast xml episode lists
             PreferencesHelper.saveLastUpdateCollection(context)
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()
@@ -121,7 +122,7 @@ object DownloadHelper {
         // initialize main class variables, if necessary
         initialize(context)
         // re-download all podcast covers
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             PreferencesHelper.saveLastUpdateCollection(context)
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()
             val uris: Array<Uri> = Array(podcasts.size) { it ->
@@ -290,7 +291,7 @@ object DownloadHelper {
 
     /* Sets podcast cover */
     private fun setPodcastImage(context: Context, tempFileUri: Uri, remoteFileLocation: String) {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // save cover
             val podcastData: Podcast? = collectionDatabase.podcastDao().findByRemoteImageFileLocation(remoteFileLocation)
             if (podcastData != null) {
@@ -307,7 +308,7 @@ object DownloadHelper {
 
     /* Sets Media Uri in episode */
     private fun setEpisodeMediaUri(context: Context, tempFileUri: Uri, remoteAudioFileLocation: String) {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // save file and update audio reference and duration
             val episode: Episode? = collectionDatabase.episodeDao().findByRemoteAudioFileLocation(remoteAudioFileLocation)
             if (episode != null) {
@@ -365,7 +366,7 @@ object DownloadHelper {
 
     /* Async via coroutine: Reads podcast feed */
     private fun readPodcastFeed(context: Context, localFileUri: Uri, remoteFileLocation: String) {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             LogHelper.v(TAG, "Reading podcast RSS file ($remoteFileLocation) - Thread: ${Thread.currentThread().name}")
             // async: readSuspended xml
             val deferred: Deferred<RssHelper.RssPodcast> = async { RssHelper().readSuspended(context, localFileUri, remoteFileLocation) }

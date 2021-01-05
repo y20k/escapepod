@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -18,7 +18,8 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.database.CollectionDatabase
@@ -65,7 +66,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Delete a podcast and all its episodes from database */
     fun removePodcast(remotePodcastFeedLocation: String) {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             val podcast: PodcastWithAllEpisodesWrapper? = collectionDatabase.podcastDao().getWithRemotePodcastFeedLocation(remotePodcastFeedLocation)
             if (podcast != null) {
                 // reset media id in player state if necessary
@@ -87,7 +88,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Marks an episode as played */
     fun markEpisodePlayed(mediaId: String) {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             // mark as played
             collectionDatabase.episodeDao().markPlayed(mediaId = mediaId)
             // reset media id in player state if necessary
@@ -100,7 +101,7 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     /* Remove local audio reference within an episode */
     fun deleteEpisodeAudio(mediaId: String) {
-        GlobalScope.launch {
+        CoroutineScope(IO).launch {
             val episode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId)
             if (episode != null) {
                 // update episode (remove audio reference and mark as not downloaded)

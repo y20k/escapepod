@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -22,7 +22,8 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.database.objects.Episode
@@ -136,7 +137,7 @@ object CollectionHelper {
     fun exportCollectionOpml(context: Context, podcastList: List<Podcast>) {
         LogHelper.v(TAG, "Exporting podcast collection as OPML")
         // export collection as OPML - launch = fire & forget (no return value from save collection)
-        GlobalScope.launch { FileHelper.backupCollectionAsOpmlSuspended(context, podcastList) }
+        CoroutineScope(IO).launch { FileHelper.backupCollectionAsOpmlSuspended(context, podcastList) }
     }
 
 

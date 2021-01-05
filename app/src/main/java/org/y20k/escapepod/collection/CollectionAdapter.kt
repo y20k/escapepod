@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-20 - Y20K.org
+ * Copyright (c) 2018-21 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */
@@ -38,10 +38,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.CollectionDatabase
@@ -176,10 +175,10 @@ class CollectionAdapter(private val context: Context, private val collectionData
     private fun setEpisodeTitle(episodeViewHolder: EpisodeViewHolder, podcast: Podcast, episode: Episode) {
         episodeViewHolder.episodeDateView.text = DateTimeHelper.getDateString(episode.publicationDate)
         episodeViewHolder.episodeDateView.setOnLongClickListener {
-            GlobalScope.launch {
+            CoroutineScope(IO).launch {
                 val episodeDescription: EpisodeDescription? = collectionDatabase.episodeDescriptionDao().findByMediaId(episode.mediaId)
                 if (episodeDescription != null) {
-                    withContext(Dispatchers.Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
+                    withContext(Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
                 }
             }
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -189,10 +188,10 @@ class CollectionAdapter(private val context: Context, private val collectionData
         }
         episodeViewHolder.episodeTitleView.text = episode.title
         episodeViewHolder.episodeTitleView.setOnLongClickListener {
-            GlobalScope.launch {
+            CoroutineScope(IO).launch {
                 val episodeDescription: EpisodeDescription? = collectionDatabase.episodeDescriptionDao().findByMediaId(episode.mediaId)
                 if (episodeDescription != null) {
-                    withContext(Dispatchers.Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
+                    withContext(Main) { ShowNotesDialog().show(context, podcast, episode, episodeDescription) }
                 }
             }
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
