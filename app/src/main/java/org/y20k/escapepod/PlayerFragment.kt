@@ -254,7 +254,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
                     playerState.episodeMediaId = mediaId
                     LogHelper.v(TAG, "onSharedPreferenceChanged - current episode: $mediaId") // todo remove
-                    collectionDatabase.episodeDao().findByMediaId(mediaId)
+                    episode = collectionDatabase.episodeDao().findByMediaId(mediaId)
                     withContext(Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }
@@ -263,7 +263,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     LogHelper.v(TAG, "onSharedPreferenceChanged - up next episode: $mediaId") // todo remove
-                    collectionDatabase.episodeDao().findByMediaId(mediaId)
+                    upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
                     withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }

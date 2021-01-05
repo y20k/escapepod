@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="exo_notification_rewind">@drawable/ic_notification_skip_back_36dp</drawable>
+    <drawable name="exo_notification_fastforward">@drawable/ic_notification_skip_forward_36dp</drawable>
+    <drawable name="exo_notification_play">@drawable/ic_notification_play_36dp</drawable>
+    <drawable name="exo_notification_pause">@drawable/ic_notification_pause_36dp</drawable>
+    <drawable name="exo_notification_stop">@drawable/ic_notification_clear_36dp</drawable>
+</resources>

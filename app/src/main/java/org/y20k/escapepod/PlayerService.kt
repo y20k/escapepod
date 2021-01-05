@@ -207,7 +207,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
 
     /* Overrides onPlayerStateChanged from Player.EventListener */
     override fun onPlayerStateChanged(playWhenReady: Boolean, playerState: Int) {
-        LogHelper.e(TAG, "onPlayerStateChanged") // todo remove
         when (playWhenReady) {
             // CASE: playWhenReady = true
             true -> {
@@ -245,7 +244,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-                    LogHelper.e(TAG, "UPNEXT => ${upNextEpisode?.title}") // todo remove
                 }
             }
         }
@@ -283,7 +281,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
                     stopForeground(false)
                 }
             }
-
         }
     }
 
@@ -579,7 +576,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
      */
     private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
         override fun onPlay() {
-            LogHelper.e(TAG, "onPlay") // todo remove
             if (!this@PlayerService::episode.isInitialized) {
                 // get current media id and hand over to onPlayFromMediaId
                 val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId(this@PlayerService)
@@ -591,7 +587,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Corout
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
-            LogHelper.e(TAG, "onPlayFromMediaId") // todo remove
             CoroutineScope(IO).launch {
                 // get episode
                 val newEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId ?: String())
