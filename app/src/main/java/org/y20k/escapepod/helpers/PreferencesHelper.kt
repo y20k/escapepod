@@ -181,7 +181,7 @@ object PreferencesHelper {
 
 
     /* Returns if background refresh is allowed */
-    fun loadBackgroundRefresh(context: Context): Boolean  {
+    fun loadBackgroundRefresh(context: Context): Boolean {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
         return settings.getBoolean(Keys.PREF_BACKGROUND_REFRESH, Keys.DEFAULT_BACKGROUND_REFRESH_MODE)
     }
@@ -259,7 +259,6 @@ object PreferencesHelper {
             }
         }
     }
-
 
 
     /* Start watching for changes in shared preferences - context must implement OnSharedPreferenceChangeListener */

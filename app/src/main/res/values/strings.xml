@@ -101,6 +101,7 @@
     <!-- Notification -->
     <string name="notification_now_playing_channel_description">Playback controls, episode name and cover.</string>
     <string name="notification_now_playing_channel_name">Playback Controls</string>
+    <string name="notification_dismiss">Dismiss notification</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Play</string>
     <string name="notification_playing">Playing</string>
