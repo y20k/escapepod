@@ -167,4 +167,5 @@
     <!-- Onboarding -->
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
+    <string name="notification_dismiss">不理会通知</string>
 </resources>
