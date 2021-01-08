@@ -155,4 +155,5 @@
     <string name="toast_message_deleting_downloads">Heruntergeladene Folgen werden gelöscht.</string>
     <string name="pref_opml_import_summary">Wähle eine OPML-Datei aus dem Gerätespeicher.</string>
     <string name="pref_opml_import_title">OPML importieren</string>
+    <string name="notification_dismiss">Benachrichtigung verwerfen</string>
 </resources>
