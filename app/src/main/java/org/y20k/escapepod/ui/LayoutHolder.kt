@@ -176,6 +176,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     }
 
 
+    /* Loads and displays show notes */
     private fun displayShowNotes(context: Context, episode: Episode) {
         CoroutineScope(IO).launch {
             val podcast: Podcast? = collectionDatabase.podcastDao().findByRemotePodcastFeedLocation(episode.episodeRemotePodcastFeedLocation)

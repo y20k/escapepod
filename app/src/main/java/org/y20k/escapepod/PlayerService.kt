@@ -53,7 +53,7 @@ import java.util.*
 /*
  * PlayerService class
  */
-class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, SharedPreferences.OnSharedPreferenceChangeListener {
+class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     /* Define log tag */
@@ -99,9 +99,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
         // create player
         createPlayer()
 
-        // create a new MediaSession
-        mediaSession = createMediaSession()
-        sessionToken = mediaSession.sessionToken
+        // create MediaSession
+        createMediaSession()
 
         // because ExoPlayer will manage the MediaSession, add the service as a callback for state changes
         mediaController = MediaControllerCompat(this, mediaSession).also {
@@ -193,7 +192,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
             result.detach()
-            collectionProvider.retrieveMedia(collectionDatabase, object: CollectionProvider.CollectionProviderCallback {
+            collectionProvider.retrieveMedia(collectionDatabase, object : CollectionProvider.CollectionProviderCallback {
                 override fun onEpisodeListReady(success: Boolean) {
                     if (success) {
                         loadChildren(parentId, result)
@@ -207,37 +206,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
     }
 
 
-    /* Overrides onPlayerStateChanged from Player.EventListener */
-    override fun onPlayerStateChanged(playWhenReady: Boolean, playerState: Int) {
-        when (playWhenReady) {
-            // CASE: playWhenReady = true
-            true -> {
-                if (playerState == Player.STATE_READY) {
-                    // active playback: update media session and save state
-                    handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
-                } else if (playerState == Player.STATE_ENDED) {
-                    // playback reached end: stop / end playback
-                    handlePlaybackEnded()
-                } else {
-                    // not playing because the player is buffering, stopped or failed - check playbackState and player.getPlaybackError for details)
-                }
-            }
-            // CASE: playWhenReady = false
-            false -> {
-                if (playerState == Player.STATE_READY) {
-                    // stopped by app: update media session and save state
-                    handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
-                } else if (playerState == Player.STATE_ENDED) {
-                    // ended by app: update media session and save state
-                    handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
-                }
-                // stop sleep timer - if running
-                cancelSleepTimer()
-            }
-        }
-    }
-
-
     /* Overrides onSharedPreferenceChanged from SharedPreferences.OnSharedPreferenceChangeListener */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
@@ -246,7 +214,6 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-                    LogHelper.e(TAG, "UPNEXT => ${upNextEpisode?.title}") // todo remove
                 }
             }
         }
@@ -255,87 +222,85 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
 
     /* Updates media session and save state */
     private fun handlePlaybackChange(playbackState: Int) {
-        // update playback state and position
+        // update episode
+        episode = Episode(episode, playbackState = playbackState, playbackPosition = player.currentPosition)
+        // update player state
+        updatePlayerState(playbackState)
+        // update media session
+        mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
+        mediaSession.setActive(playbackState != PlaybackStateCompat.STATE_STOPPED)
+        // toggle updating playback position
+        if (player.isPlaying) {
+            handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
+            handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
+        } else {
+            handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
+        }
+        // save episode
         CoroutineScope(IO).launch {
-            withContext(Main) { episode = Episode(episode, playbackState = playbackState, playbackPosition = player.currentPosition) }
-
             collectionDatabase.episodeDao().upsert(episode)
             collectionDatabase.episodeDao().setPlaybackStateForAllEpisodes(playbackState = PlaybackState.STATE_STOPPED, exclude = episode.mediaId)
-            // update player state
-            updatePlayerState(playbackState)
-            // update media session
-            mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
-            mediaSession.setActive(playbackState != PlaybackStateCompat.STATE_STOPPED)
-
-            withContext(Main) {
-                // start/stop updating playback position
-                if (player.isPlaying) {
-                    handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
-                    handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
-                } else {
-                    handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
-                }
-            }
         }
     }
 
 
     /* End of episode: stop playback or start episode from up-next queue */
     private fun handlePlaybackEnded() {
+        // update episode
+        episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration)
+        // save episode
         CoroutineScope(IO).launch {
-            // update playback state and position
-            episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration)
             collectionDatabase.episodeDao().upsert(episode)
-            // CASE: Up next episode available
-            if (upNextEpisode != null) {
-                // get up next episode
-                episode = upNextEpisode as Episode
-                // clear up-next
-                upNextEpisode = null
-                // start playback
-                withContext(Main) { startPlayback() }
-            }
-            // CASE: Up next episode NOT available
-            else {
-                // clear up-next
-                upNextEpisode = null
-                // stop playback
-                withContext(Main) { stopPlayback() }
-            }
+        }
+        // CASE: Up next episode available
+        if (upNextEpisode != null) {
+            // get up next episode
+            episode = upNextEpisode as Episode
+            // clear up-next
+            upNextEpisode = null
+            // start playback
+            startPlayback()
+        }
+        // CASE: Up next episode NOT available
+        else {
+            // clear up-next
+            upNextEpisode = null
+            // stop playback
+            stopPlayback()
         }
     }
 
 
     /* Creates a new MediaSession */
-    private fun createMediaSession(): MediaSessionCompat {
+    private fun createMediaSession() {
         val initialPlaybackState: Int = PreferencesHelper.loadPlayerPlaybackState(this)
-        val sessionActivityPendingIntent =
-                packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
-                    PendingIntent.getActivity(this, 0, sessionIntent, 0)
-                }
-        return MediaSessionCompat(this, TAG)
-                .apply {
-                    setSessionActivity(sessionActivityPendingIntent)
-                    setCallback(mediaSessionCallback)
-                    setPlaybackState(createPlaybackState(initialPlaybackState, 0))
-                }
+        val sessionActivityPendingIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
+            PendingIntent.getActivity(this, 0, sessionIntent, 0)
+        }
+        mediaSession= MediaSessionCompat(this, TAG).apply {
+            setSessionActivity(sessionActivityPendingIntent)
+            setCallback(MediaSessionCallback())
+            setPlaybackState(createPlaybackState(initialPlaybackState, 0))
+        }
+        sessionToken = mediaSession.sessionToken
     }
 
 
     /* Creates a simple exo player */
     private fun createPlayer() {
         if (!this::player.isInitialized) {
+            LogHelper.e(TAG, "Create New Player") // todo remove
             val audioAttributes: AudioAttributes = AudioAttributes.Builder()
                     .setContentType(C.CONTENT_TYPE_MUSIC)
                     .setUsage(C.USAGE_MEDIA)
                     .build()
             player = SimpleExoPlayer.Builder(this)
-                    .setWakeMode(C.WAKE_MODE_NETWORK)
+                    .setWakeMode(C.WAKE_MODE_LOCAL)
                     .setAudioAttributes(audioAttributes, true)
                     .setHandleAudioBecomingNoisy(true)
                     .setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))) // check if necessary
                     .build()
-            player.addListener(this@PlayerService)
+            player.addListener(PlayerEventListener())
             player.addAnalyticsListener(analyticsListener)
         }
     }
@@ -345,6 +310,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
     private fun preparePlayer() {
         // check if not already prepared
         if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
+            LogHelper.e(TAG, "Prepare Player with: ${episode.title}") // todo remove
             // build and set media item
             val mediaItem: MediaItem = MediaItem.fromUri(episode.audio)
             // set media item
@@ -370,7 +336,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
         }
         // check if episode is in up-next queue - reset up next
         if (playerState.upNextEpisodeMediaId == episode.mediaId){
-            upNextEpisode = null
+            PreferencesHelper.saveUpNextMediaId(this@PlayerService)
         }
         // update metadata
         mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
@@ -426,7 +392,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
             sleepTimer.cancel()
         }
         // initialize timer
-        sleepTimer = object:CountDownTimer (Keys.SLEEP_TIMER_DURATION + sleepTimerTimeRemaining, Keys.SLEEP_TIMER_INTERVAL) {
+        sleepTimer = object: CountDownTimer(Keys.SLEEP_TIMER_DURATION + sleepTimerTimeRemaining, Keys.SLEEP_TIMER_INTERVAL) {
             override fun onFinish() {
                 LogHelper.v(TAG, "Sleep timer finished. Sweet dreams.")
                 // reset time remaining
@@ -505,7 +471,7 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
 
 
     /* Updates and saves the state of the player ui */
-    private fun updatePlayerState (playbackState: Int) {
+    private fun updatePlayerState(playbackState: Int) {
         playerState.episodeMediaId = episode.mediaId
         playerState.playbackState = playbackState
         playerState.upNextEpisodeMediaId = upNextEpisode?.mediaId ?: String()
@@ -533,14 +499,13 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
 
 
     /*
-    * Runnable: Periodically requests playback position (and sleep timer if running)
-    */
+     * Runnable: Periodically requests playback position (and sleep timer if running)
+     */
     private val periodicPlaybackPositionUpdateRunnable: Runnable = object : Runnable {
         override fun run() {
             if (this@PlayerService::episode.isInitialized) {
+                val playbackPosition: Long = player.currentPosition
                 CoroutineScope(IO).launch {
-                    val playbackPosition: Long
-                    withContext(Main) { playbackPosition = player.currentPosition }
                     collectionDatabase.episodeDao().updatePlaybackPosition(mediaId = episode.mediaId, playbackPosition = playbackPosition)
                 }
             }
@@ -552,12 +517,53 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
      * End of declaration
      */
 
+    /*
+     * Inner class: Listener for ExoPlayer Events
+     */
+    private inner class PlayerEventListener: Player.EventListener {
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            super.onPlayerStateChanged(playWhenReady, playbackState)
+            when (playWhenReady) {
+                // CASE: playWhenReady = true
+                true -> {
+                    if (playbackState == Player.STATE_READY) {
+                        // active playback: update media session and save state
+                        handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
+                    } else if (playbackState == Player.STATE_BUFFERING) {
+                        LogHelper.e(TAG, "onPlayerStateChanged: playWhenReady and STATE_BUFFERING") // todo remove
+                    } else if (playbackState == Player.STATE_ENDED) {
+                        // playback reached end: stop / end playback
+                        handlePlaybackEnded()
+                    } else {
+                        // not playing because the player is buffering, stopped or failed - check playbackState and player.getPlaybackError for details)
+                    }
+                }
+                // CASE: playWhenReady = false
+                false -> {
+                    if (playbackState == Player.STATE_READY) {
+                        // stopped by app: update media session and save state
+                        handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+                    } else if (playbackState == Player.STATE_ENDED) {
+                        // ended by app: update media session and save state
+                        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED)
+                    }
+                    // stop sleep timer - if running
+                    cancelSleepTimer()
+                }
+            }
+        }
+    }
+    /*
+     * End of Inner Class
+     */
+
 
     /*
-     * Callback: Defines callbacks for active media session
+     * Inner class: Defines callbacks for active media session
      */
-    private var mediaSessionCallback = object: MediaSessionCompat.Callback() {
+    private inner class MediaSessionCallback: MediaSessionCompat.Callback() {
         override fun onPlay() {
+            LogHelper.e(TAG, "onPlay") // todo remove
             if (!this@PlayerService::episode.isInitialized) {
                 // get current media id and hand over to onPlayFromMediaId
                 val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId(this@PlayerService)
@@ -569,18 +575,17 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
         }
 
         override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+            LogHelper.e(TAG, "onPlayFromMediaId") // todo remove
             CoroutineScope(IO).launch {
                 // get episode
                 val newEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId ?: String())
                 // start playback
                 if (newEpisode != null) {
-
                     withContext(Main) {
                         if (player.isPlaying) { stopPlayback() } // stop playback if necessary
                         episode = newEpisode
                         startPlayback()
                     }
-
                 }
             }
         }
@@ -716,15 +721,14 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
 
     }
     /*
-     * End of callback
+     * End of Inner Class
      */
-
 
     /*
      * Inner class: Class to receive callbacks about state changes to the MediaSessionCompat - handles notification
-     * Source: https://github.com/googlesamples/android-UniversalMusicPlayer/blob/master/common/src/main/java/com/example/android/uamp/media/MusicService.kt
+     * Source: https://github.com/android/uamp/blob/29f66d37ab236ce1745e29b35af9006ec1b61167/common/src/main/java/com/example/android/uamp/media/MusicService.kt
      */
-    private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
+    private inner class MediaControllerCallback: MediaControllerCompat.Callback() {
         override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
             mediaController.playbackState?.let { updateNotification(it) }
         }
@@ -782,5 +786,8 @@ class PlayerService(): MediaBrowserServiceCompat(), Player.EventListener, Shared
             }
         }
     }
+    /*
+     * End of Inner Class
+     */
 
 }

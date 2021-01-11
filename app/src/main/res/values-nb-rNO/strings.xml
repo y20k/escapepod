@@ -129,14 +129,6 @@
     <string name="sample_text_shownotes" translatable="false">Hvordan en aldri oppgitt Windows-sikkerhetsfeil raskt ble omvendt utrensket fra feilfiksene for å fikse den, og omgjort til 12 potente og skadelige internettormer på tre dager. Hva betyr det for fremtidig internettsikkerhet?</string>
     <string name="sample_text_sleep_timer_remaining_time" translatable="false">00:00</string>
     <string name="sample_text_up_next_name" translatable="false">Spillveteranen - Nå snakker de også! (tyskspråklig)</string>
-    <!-- Allowed Caller Template -->
-    <string name="allowed_caller_log" translatable="false">
-        Ringeren har et gyldig sertifikat, men dens pakkenavn samsvarer ikke med noen forventet pakke for
-        angitt sertifikat. For å tillate denne ringeren, legg til følgende i anropsliste:\n
-        <![CDATA[
-        <signature name=\"%1$s\" package=\"%2$s\">\n\t<key>%3$s</key>\n</signature>\n
-        ]]>
-    </string>
     <string name="dialog_find_podcast_button_add">Legg til</string>
     <string name="dialog_find_podcast_hint">Navn eller adresse for informasjonskanal</string>
     <string name="dialog_find_podcast_no_results">Resultatløst søk.</string>
