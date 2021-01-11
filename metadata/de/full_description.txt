@@ -17,10 +17,10 @@ Escapepod versucht, die Anzahl der Episoden zu reduzieren. Hier sind die Regeln 
 - Die maximale Anzahl der verfügbaren (und beibehaltenen) Episoden beträgt fünf
 
 UNTERSTÜTZT ESCAPEPOD OPML?
-Du kannst eine OPML-formatierte Podcast-Liste importieren. Öffne dazu die Liste in einem Dateibrowser und wähle Escapepod aus. Die aktuelle Podcast-Sammlung kann über Einstellungen exportiert werden. Zusätzlich speichert Escapepod eine aktuelle OPML-Datei im Ordner /Android/data/org.y20k.escapepod/files/collection/.
+Du kannst eine OPML-formatierte Podcast-Liste über die entsprechende Option in den Einstellungen der App importieren. Die aktuelle Podcast-Sammlung kann auch über die Einstellungen exportiert werden. Die aktuelle Podcast-Sammlung kann über Einstellungen exportiert werden. Zusätzlich speichert Escapepod eine aktuelle OPML-Datei im Ordner /Android/data/org.y20k.escapepod/files/collection/.
 
 WARUM ICH KANN NICHT DEN PODCAST X HINZUFÜGEN?
 Bitte melde alle Podcast-Feeds, die derzeit nicht funktionieren, mit der GitHub-Fehlervorlage "Feed Issue" (https://github.com/y20k/escapepod/issues/). Hinweis: Escapepod unterstützt keine Video-Podcasts.
 
 WOHER KOMMEN DIE PODCAST-SUCHERGEBNISSE?
-Escapepod durchsucht die Online-Datenbank von gpodder.net (https://gpodder.net/directory/). Gpodder.net ist eine großartige Seite, wenn du auf der Suche nach neuen Sachen zum Anhören bist, nebenbei bemerkt.
+Escapepod durchsucht standardmäßig die Online-Datenbank Podcastindex.org (https://podcastindex.org/) - oder bei Änderung der entsprechenden Einstellung die Online-Datenbank gpodder.net (https://gpodder.net/directory/).

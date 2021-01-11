@@ -100,6 +100,7 @@
     <!-- Notification -->
     <string name="notification_now_playing_channel_description">回放控制，节目名和封面。</string>
     <string name="notification_now_playing_channel_name">回放控制</string>
+    <string name="notification_dismiss">忽略通知</string>
     <string name="notification_pause">暂停</string>
     <string name="notification_play">播放</string>
     <string name="notification_playing">正在播放</string>

@@ -179,4 +179,5 @@
     <string name="toast_message_deleting_downloads">Sletter nedlastede episoder.</string>
     <string name="pref_opml_import_title">Importer OPML</string>
     <string name="pref_opml_import_summary">Velg en OPML-fil fra enhetslager.</string>
+    <string name="notification_dismiss">Avfei merknad</string>
 </resources>
