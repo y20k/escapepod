@@ -155,4 +155,5 @@
     <string name="toast_message_deleting_downloads">Brisanje preuzetih epizoda.</string>
     <string name="pref_opml_import_title">Uvezi OPML</string>
     <string name="pref_opml_import_summary">Odaberi OPML datoteku iz memorije uređaja.</string>
+    <string name="notification_dismiss">Odbaci obavijest</string>
 </resources>
