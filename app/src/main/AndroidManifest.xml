@@ -94,8 +94,8 @@
         <!-- Player Service -->
         <service
             android:name=".PlayerService"
+            android:enabled="true"
             android:exported="true"
-            android:stopWithTask="false"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService"/>
