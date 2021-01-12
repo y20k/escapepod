@@ -155,4 +155,5 @@
     <string name="toast_message_deleting_downloads">Suppression de tous les épisodes téléchargés.</string>
     <string name="pref_opml_import_title">Importer un fichier OPML</string>
     <string name="pref_opml_import_summary">Sélectionnez un fichier OPML depuis les fichiers du périphérique.</string>
+    <string name="notification_dismiss">Masquer la notification</string>
 </resources>
