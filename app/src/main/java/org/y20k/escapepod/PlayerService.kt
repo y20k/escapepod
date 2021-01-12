@@ -31,7 +31,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
-import androidx.media.session.MediaButtonReceiver
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -86,7 +85,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /* Overrides onCreate from Service */
     override fun onCreate() {
         super.onCreate()
-        LogHelper.e(TAG, "onCreate") // todo remove
 
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
@@ -120,17 +118,17 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     }
 
 
-    /* Overrides onStartCommand from Service */
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
-
-        if (intent != null && intent.action == Keys.ACTION_STOP && player.isPlaying) {
-            stopPlayback()
-        }
-
-        MediaButtonReceiver.handleIntent(mediaSession, intent)
-        return Service.START_NOT_STICKY
-    }
+//    /* Overrides onStartCommand from Service */
+//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+//        super.onStartCommand(intent, flags, startId)
+//
+//        if (intent != null && intent.action == Keys.ACTION_STOP && player.isPlaying) {
+//            stopPlayback()
+//        }
+//
+//        MediaButtonReceiver.handleIntent(mediaSession, intent)
+//        return Service.START_NOT_STICKY
+//    }
 
 
     /* Overrides onTaskRemoved from Service */
@@ -143,7 +141,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
-        LogHelper.e(TAG, "onDestroy") // todo remove
         // set playback state if possible / necessary
         if (this::episode.isInitialized && playerState.playbackState != PlaybackStateCompat.STATE_STOPPED) {
             handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
@@ -530,19 +527,17 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                 when (reason) {
                     // playback has been started or paused by a call to setPlayWhenReady(boolean)
                     Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST -> {
-                        LogHelper.e(TAG, "PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST") // todo remove
                         // update media session and save state
                         handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
                     }
                     // playback has been paused at the end of a media item
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
-                        LogHelper.e(TAG, "PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM") // todo remove
                         // playback reached end: stop / end playback
                         handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration, startUpNext = true)
                     }
                     // playback has been started or paused because of a remote change
                     Player.PLAY_WHEN_READY_CHANGE_REASON_REMOTE -> {
-                        LogHelper.e(TAG, "PLAY_WHEN_READY_CHANGE_REASON_REMOTE") // todo remove
+                        LogHelper.v(TAG, "playback has been started or paused because of a remote change.")
                     }
                 }
             }
@@ -755,8 +750,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                             startForeground(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
                             isForegroundService = true
                         }
-                    } else {
-                        LogHelper.e(TAG, "Notification was NULL :-/") // todo remove
                     }
                 }
                 // CASE: Playback has stopped

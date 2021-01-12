@@ -336,7 +336,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     /* Shows player */
     private fun showPlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
-        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN || bottomSheetBehavior.state == BottomSheetBehavior.STATE_SETTLING) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         return true

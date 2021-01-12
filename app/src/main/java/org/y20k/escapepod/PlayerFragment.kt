@@ -23,7 +23,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.media.AudioManager
-import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
@@ -267,11 +266,11 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }
-            Keys.PREF_PLAYER_STATE_PLAYBACK_STATE -> {
-                playerState.playbackState = sharedPreferences?.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackState.STATE_STOPPED) ?: PlaybackState.STATE_STOPPED
-                LogHelper.v(TAG, "onSharedPreferenceChanged - current state: ${playerState.playbackState}") // todo remove
-                layout.togglePlayerVisibility(activity as Context, playerState.playbackState)
-            }
+//            Keys.PREF_PLAYER_STATE_PLAYBACK_STATE -> {
+//                playerState.playbackState = sharedPreferences?.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackState.STATE_STOPPED) ?: PlaybackState.STATE_STOPPED
+//                LogHelper.v(TAG, "onSharedPreferenceChanged - current state: ${playerState.playbackState}") // todo remove
+//                //layout.togglePlayerVisibility(activity as Context, playerState.playbackState)
+//            }
         }
     }
 
