@@ -113,6 +113,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
 
+        // get up next episode
+        CoroutineScope(IO).launch {
+            upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
+        }
+
         // start watching for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(this, this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
