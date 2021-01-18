@@ -530,23 +530,20 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             super.onPlayWhenReadyChanged(playWhenReady, reason)
             if (!playWhenReady) {
                 when (reason) {
-                    // playback has been started or paused by a call to setPlayWhenReady(boolean)
-                    Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST -> {
-                        // update media session and save state
-                        handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
-                    }
-                    // playback has been paused at the end of a media item
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
                         handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration, startUpNext = true)
                     }
-                    // playback has been started or paused because of a remote change
-                    Player.PLAY_WHEN_READY_CHANGE_REASON_REMOTE -> {
-                        LogHelper.v(TAG, "playback has been started or paused because of a remote change.")
+                    else -> {
+                        // playback has been paused by user or OS: update media session and save state
+                        // PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST or
+                        // PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS or
+                        // PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY or
+                        // PLAY_WHEN_READY_CHANGE_REASON_REMOTE
+                        handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
                     }
                 }
             }
-
         }
     }
     /*
