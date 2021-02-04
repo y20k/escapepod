@@ -245,6 +245,10 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             collectionDatabase.episodeDao().upsert(episode)
             collectionDatabase.episodeDao().setPlaybackStateForAllEpisodes(playbackState = PlaybackState.STATE_STOPPED, exclude = episode.mediaId)
         }
+        // stop sleep timer - if running
+        if (!player.playWhenReady) {
+            cancelSleepTimer()
+        }
         // start up next episode if requested
         if (startUpNext) {
             startUpNextEpisode()

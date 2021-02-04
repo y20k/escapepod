@@ -372,11 +372,10 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
     }
 
 
-
-
     /* Creates readable string containing available and used storage space */
     private fun getAvailableSpace(): String {
         val externalFilesDir = preferenceManager.context.getExternalFilesDir("")
-        return "${getString(R.string.pref_delete_all_storage_space_available)}: ${FileHelper.getAvailableFreeSpaceForFolder(externalFilesDir)} | ${getString(R.string.pref_delete_all_storage_space_used)}: ${FileHelper.getUsedStorageSpaceForFolder(externalFilesDir)}%" }
+        val audioFolder = preferenceManager.context.getExternalFilesDir(Keys.FOLDER_AUDIO)
+        return "${getString(R.string.pref_delete_all_storage_space_available)}: ${FileHelper.getAvailableFreeSpaceForFolder(externalFilesDir)} | ${getString(R.string.pref_delete_all_storage_space_used)}: ${FileHelper.getFolderSize(audioFolder)}" }
 
 }

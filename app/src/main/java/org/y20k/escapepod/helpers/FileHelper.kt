@@ -272,6 +272,39 @@ object FileHelper {
     }
 
 
+    /* Returns size of folder in a readable format */
+    fun getFolderSize(folder: File?): String {
+        val size: Long
+        if (folder != null && folder.canRead() && folder.isDirectory) {
+            size = calculateFolderSize(folder)
+        } else {
+            size = 0L
+        }
+        return formatSize(size)
+    }
+
+
+    /* Returns size of folder (including all subfolders) in Bytes */
+    private fun calculateFolderSize(folder: File): Long {
+        var size: Long = 0L
+        //val fs: StatFs = StatFs(folder.absolutePath)
+        //size += fs.blockSizeLong
+        val fileList = folder.listFiles()
+        if (!fileList.isNullOrEmpty()) {
+            fileList.forEach { file ->
+                if (file != null && file.canRead()) {
+                    if (file.isDirectory) {
+                        size += calculateFolderSize(file)
+                    } else {
+                        size += file.length()
+                    }
+                }
+            }
+        }
+        return size
+    }
+
+
     /* Formats bytes into readable strings */
     // Credit: https://github.com/osmandapp/OsmAnd/blob/8c6d57468a9ff6ad684c850c9565a6cd32aa4555/OsmAnd/src/net/osmand/AndroidUtils.java#L237
     private fun formatSize(sizeBytes: Long): String {
@@ -279,7 +312,7 @@ object FileHelper {
         val formatGb = MessageFormat("{0, number,#.##}", Locale.US)
         val formatMb = MessageFormat("{0, number,##.#}", Locale.US)
         val sizeKb = (sizeBytes + 512 shr 10).toInt()
-        var size: String = String()
+        val size: String
         var numSuffix: String = "MB"
         if (sizeKb > 1 shl 20) {
             size = formatGb.format(arrayOf<Any>(sizeKb.toFloat() / (1 shl 20)))
