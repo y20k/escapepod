@@ -155,4 +155,5 @@
     <string name="dialog_add_podcast_button">Ajouter</string>
     <string name="fragment_settings_title">Paramètres</string>
     <string name="app_name">Escapepod</string>
+    <string name="notification_dismiss">Masquer la notification</string>
 </resources>
