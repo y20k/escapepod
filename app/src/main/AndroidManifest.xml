@@ -93,7 +93,7 @@
 
         <!-- Player Service -->
         <service
-            android:name=".PlayerService"
+            android:name=".playback.PlayerService"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService">

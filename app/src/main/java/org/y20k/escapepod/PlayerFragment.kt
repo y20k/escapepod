@@ -59,6 +59,8 @@ import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.legacy.ImportHelper
+import org.y20k.escapepod.playback.PlayerController
+import org.y20k.escapepod.playback.PlayerService
 import org.y20k.escapepod.ui.LayoutHolder
 import org.y20k.escapepod.ui.PlayerState
 import org.y20k.escapepod.xml.OpmlHelper
@@ -86,6 +88,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private lateinit var collectionViewModel: CollectionViewModel
     private lateinit var layout: LayoutHolder
     private lateinit var collectionAdapter: CollectionAdapter
+    private lateinit var playerController: PlayerController
     private var episode: Episode? = null
     private var upNextEpisode: Episode? = null
     private var playerServiceConnected: Boolean = false
@@ -217,6 +220,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     override fun onStop() {
         super.onStop()
         // (see "stay in sync with the MediaSession")
+        // TODO user playerController here - OR REMOVE
         MediaControllerCompat.getMediaController(activity as Activity)?.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
@@ -318,6 +322,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     /* Overrides onMarkListenedButtonTapped from CollectionAdapterListener */
     override fun onMarkListenedButtonTapped(mediaId: String) {
         if (mediaId == episode?.mediaId) {
+            // TODO user playerController here
             MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         }
         CoroutineScope(IO).launch {
@@ -337,6 +342,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     /* Overrides onDeleteButtonTapped from CollectionAdapterListener */
     override fun onDeleteButtonTapped(selectedEpisode: Episode) {
         if (selectedEpisode.mediaId == episode?.mediaId) {
+            // TODO user playerController here
             MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
         }
         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_delete_episode)}\n\n- ${selectedEpisode.title}"
@@ -439,6 +445,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 val podcast = collectionAdapter.getPodcast(adapterPosition)
                 // stop playback, if necessary
                 podcast.episodes.forEach { it ->
+                    // TODO user playerController here
                     if (it.data.mediaId == episode?.mediaId) MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
                 }
                 // ask user
@@ -458,6 +465,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
         // set up sleep timer start button
         layout.sheetSleepTimerStartButtonView.setOnClickListener {
+            // TODO user playerController here
             val playbackState: PlaybackStateCompat = MediaControllerCompat.getMediaController(activity as Activity).playbackState
             when (playbackState.isActive) {
                 true -> MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_START_SLEEP_TIMER, null, null)
@@ -467,6 +475,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
         // set up sleep timer cancel button
         layout.sheetSleepTimerCancelButtonView.setOnClickListener {
+            // TODO user playerController here
             MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_CANCEL_SLEEP_TIMER, null, null)
         }
 
@@ -530,6 +539,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                         position = progress
                     }
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                        // TODO user playerController here
                         MediaControllerCompat.getMediaController(activity as Activity).transportControls.seekTo(position.toLong())
                     }
                 })
@@ -541,6 +551,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                         MotionEvent.ACTION_DOWN -> {
                             // show time remaining while touching the time played view
                             layout.displayTimeRemaining = true
+                            // TODO user playerController here
                             MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
                         }
                         MotionEvent.ACTION_UP -> {
@@ -559,7 +570,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 layout.sheetUpNextName.setOnClickListener {
                     // start episode in up next queue
                     val upNextEpisodeMediaId: String = upNextEpisode?.mediaId ?: String()
-                    MediaControllerCompat.getMediaController(activity as Activity).transportControls.playFromMediaId(upNextEpisodeMediaId, null)
+                    playerController.play(upNextEpisodeMediaId)
+                    // MediaControllerCompat.getMediaController(activity as Activity).transportControls.playFromMediaId(upNextEpisodeMediaId, null) // todo remove
                     Toast.makeText(activity as Context, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
                 }
 
@@ -573,6 +585,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // bottom sheet playback speed button
                 layout.sheetPlaybackSpeedButtonView.setOnClickListener {
                     // request playback speed change
+                    // TODO user playerController here
+                    playerController.changePlaybackSpeed()
                     MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_CHANGE_PLAYBACK_SPEED, null, resultReceiver)
                 }
                 layout.sheetPlaybackSpeedButtonView.setOnLongClickListener {
@@ -582,6 +596,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                         // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
                         Toast.makeText(activity as Context, R.string.toast_message_playback_speed_reset, Toast.LENGTH_LONG).show()
                         // request playback speed reset
+                        // TODO user playerController here
                         MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_RESET_PLAYBACK_SPEED, null, resultReceiver)
                     }
                     return@setOnLongClickListener true
@@ -625,8 +640,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
         playerState.playbackState = playbackState // = current state BEFORE desired startPlayback action
         // start / pause playback
         when (startPlayback) {
-            true -> MediaControllerCompat.getMediaController(activity as Activity).transportControls.playFromMediaId(mediaId, null)
-            false -> MediaControllerCompat.getMediaController(activity as Activity).transportControls.pause()
+            true -> playerController.play(mediaId)
+            false -> playerController.pause()
         }
     }
 
@@ -833,6 +848,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 val mediaController = MediaControllerCompat(activity as Context, token)
                 // save the controller
                 MediaControllerCompat.setMediaController(activity as Activity, mediaController)
+                // initialize playerController
+                playerController = PlayerController(mediaController)
             }
             playerServiceConnected = true
 
@@ -847,6 +864,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 handler.postDelayed(periodicProgressUpdateRequestRunnable, 0)
             } else {
                 // request current playback position and sleep timer state once
+                // TODO user playerController here
                 MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
             }
         }
@@ -922,6 +940,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private val periodicProgressUpdateRequestRunnable: Runnable = object : Runnable {
         override fun run() {
             // request current playback position
+            // TODO user playerController here
             MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver)
             // use the handler to start runnable again after specified delay
             handler.postDelayed(this, 500)

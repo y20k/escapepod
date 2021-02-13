@@ -1,7 +1,7 @@
 /*
  * PlayerService.kt
  * Implements the PlayerService class
- * PlayerService is Escapepod's foreground service that plays podcast audio and handles playback controls
+ * PlayerService is Escapepod's foreground service that plays podcast audio
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -12,38 +12,40 @@
  */
 
 
-package org.y20k.escapepod
+package org.y20k.escapepod.playback
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.audiofx.AudioEffect
 import android.media.session.PlaybackState
+import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import org.y20k.escapepod.Keys
+import org.y20k.escapepod.R
 import org.y20k.escapepod.collection.CollectionProvider
 import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.database.objects.Episode
-import org.y20k.escapepod.extensions.isActive
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.PlayerState
 import java.util.*
@@ -53,7 +55,6 @@ import java.util.*
  * PlayerService class
  */
 class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
-
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PlayerService::class.java)
@@ -69,8 +70,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     private lateinit var playerState: PlayerState
     private lateinit var packageValidator: PackageValidator
     private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var mediaController: MediaControllerCompat
-    private lateinit var notificationManager: NotificationManagerCompat
+    private lateinit var mediaSessionConnector: MediaSessionConnector
     private lateinit var notificationHelper: NotificationHelper
     private lateinit var userAgent: String
     private lateinit var sleepTimer: CountDownTimer
@@ -85,7 +85,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /* Overrides onCreate from Service */
     override fun onCreate() {
         super.onCreate()
-
+        LogHelper.e(TAG, "onCreate") // todo remove
         // set user agent
         userAgent = Util.getUserAgent(this, Keys.APPLICATION_NAME)
 
@@ -101,14 +101,13 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // create MediaSession
         createMediaSession()
 
-        // because ExoPlayer will manage the MediaSession, add the service as a callback for state changes
-        mediaController = MediaControllerCompat(this, mediaSession).also {
-            it.registerCallback(MediaControllerCallback())
-        }
+        // ExoPlayer manages MediaSession
+        mediaSessionConnector = MediaSessionConnector(mediaSession)
+        mediaSessionConnector.setPlaybackPreparer(preparer)
 
-        // initialize notification helper and notification manager
-        notificationHelper = NotificationHelper(this)
-        notificationManager = NotificationManagerCompat.from(this)
+        // initialize notification helper
+        notificationHelper = NotificationHelper(this, mediaSession.sessionToken, notificationListener)
+        notificationHelper.showNotificationForPlayer(player)
 
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
@@ -123,22 +122,24 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     }
 
 
-//    /* Overrides onStartCommand from Service */
-//    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-//        super.onStartCommand(intent, flags, startId)
+    /* Overrides onStartCommand from Service */
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        LogHelper.e(TAG, "onStartCommand") // todo remove
 //
 //        if (intent != null && intent.action == Keys.ACTION_STOP && player.isPlaying) {
 //            stopPlayback()
 //        }
 //
-//        MediaButtonReceiver.handleIntent(mediaSession, intent)
-//        return Service.START_NOT_STICKY
-//    }
+        // MediaButtonReceiver.handleIntent(mediaSession, intent)
+        return Service.START_STICKY
+    }
 
 
     /* Overrides onTaskRemoved from Service */
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
+        LogHelper.e(TAG, "onTaskRemoved") // todo remove
         // kill service, if MainActivity was canceled through task switcher
         //stopSelf()
     }
@@ -146,6 +147,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
+        LogHelper.e(TAG, "onDestroy") // todo remove
         // set playback state if possible / necessary
         if (this::episode.isInitialized && playerState.playbackState != PlaybackStateCompat.STATE_STOPPED) {
             handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
@@ -155,8 +157,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             isActive = false
             release()
         }
+        // remove callback
+        //mediaController.unregisterCallback(controllerCallback)
         // release player
         player.removeAnalyticsListener(analyticsListener)
+        player.removeListener(playerListener)
         player.release()
         // stop watching for changes in shared preferences
         PreferencesHelper.unregisterPreferenceChangeListener(this, this as SharedPreferences.OnSharedPreferenceChangeListener)
@@ -264,7 +269,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             // clear up-next
             upNextEpisode = null
             // start playback
-            startPlayback()
+            // TODO Implememnt
         }
     }
 
@@ -275,9 +280,9 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         val sessionActivityPendingIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
             PendingIntent.getActivity(this, 0, sessionIntent, 0)
         }
-        mediaSession= MediaSessionCompat(this, TAG).apply {
+        mediaSession = MediaSessionCompat(this, TAG).apply {
             setSessionActivity(sessionActivityPendingIntent)
-            setCallback(MediaSessionCallback())
+            //setCallback(sessionCallback)
             setPlaybackState(createPlaybackState(initialPlaybackState, 0))
         }
         sessionToken = mediaSession.sessionToken
@@ -298,14 +303,17 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     .setPauseAtEndOfMediaItems(true)
                     .setMediaSourceFactory(ProgressiveMediaSource.Factory(DefaultDataSourceFactory(this, userAgent))) // check if necessary
                     .build()
-            player.addListener(PlayerEventListener())
+            player.addListener(playerListener)
             player.addAnalyticsListener(analyticsListener)
         }
     }
 
 
     /* Prepares player with media source created from current episode */
-    private fun preparePlayer() {
+    private fun preparePlayer(playWhenReady: Boolean) {
+        // update metadata // todo move
+        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
+
         // check if not already prepared
         if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
             // build and set media item
@@ -317,6 +325,8 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         }
         // set position
         player.seekTo(episode.playbackPosition)
+        // set playWhenReady state
+        player.playWhenReady = playWhenReady
     }
 
 
@@ -339,7 +349,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // update metadata
         mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
         // prepare player
-        preparePlayer()
+        preparePlayer(true)
         // start playback
         player.playWhenReady = true
         LogHelper.d(TAG, "Starting Playback. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
@@ -517,9 +527,9 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
      */
 
     /*
-     * Inner class: Listener for ExoPlayer Events
+     * EventListener: Listener for ExoPlayer Events
      */
-    private inner class PlayerEventListener: Player.EventListener {
+    private val playerListener = object : Player.EventListener {
         override fun onIsPlayingChanged(isPlaying: Boolean){
             if (isPlaying) {
                 // active playback
@@ -551,26 +561,48 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         }
     }
     /*
-     * End of Inner Class
+     * End of declaration
      */
 
 
     /*
-     * Inner class: Defines callbacks for active media session
+     * NotificationListener: handles foreground state of service
      */
-    private inner class MediaSessionCallback: MediaSessionCompat.Callback() {
-        override fun onPlay() {
-            if (!this@PlayerService::episode.isInitialized) {
-                // get current media id and hand over to onPlayFromMediaId
-                val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId(this@PlayerService)
-                onPlayFromMediaId(currentEpisodeMediaId, null)
-            } else {
-                // start playback
-                startPlayback()
-            }
+    private val notificationListener = object : PlayerNotificationManager.NotificationListener {
+        override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+            super.onNotificationCancelled(notificationId, dismissedByUser)
+            stopForeground(true)
+            isForegroundService = false
+            stopSelf()
         }
 
-        override fun onPlayFromMediaId(mediaId: String?, extras: Bundle?) {
+        override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
+            super.onNotificationPosted(notificationId, notification, ongoing)
+            if (ongoing && !isForegroundService) {
+                ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, this@PlayerService.javaClass))
+                startForeground(Keys.NOW_PLAYING_NOTIFICATION_ID, notification)
+                isForegroundService = true
+            }
+        }
+    }
+    /*
+     * End of declaration
+     */
+
+    private val preparer = object : MediaSessionConnector.PlaybackPreparer {
+
+        override fun getSupportedPrepareActions(): Long =
+                PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
+                        PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                        PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
+                        PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+
+        override fun onPrepare(playWhenReady: Boolean) {
+            preparePlayer(playWhenReady)
+        }
+
+        override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+            LogHelper.e(TAG, "onPrepareFromMediaId!!!") // todo remove
             CoroutineScope(IO).launch {
                 // get episode
                 val newEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId ?: String())
@@ -579,27 +611,21 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     withContext(Main) {
                         if (player.isPlaying) { stopPlayback() } // stop playback if necessary
                         episode = newEpisode
-                        startPlayback()
+                        preparePlayer(playWhenReady)
                     }
                 }
             }
+
+
         }
 
-        override fun onPause() {
-            stopPlayback()
-        }
-
-        override fun onStop() {
-            stopPlayback()
-        }
-
-        override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+        override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) {
             // SPECIAL CASE: Empty query - user provided generic string e.g. 'Play music'
             if (query.isNullOrEmpty()) {
                 // try to get newest episode
                 val episodeMediaItem: MediaBrowserCompat.MediaItem? = collectionProvider.getNewestEpisode()
                 if (episodeMediaItem != null) {
-                    onPlayFromMediaId(episodeMediaItem.mediaId, null)
+                    onPrepareFromMediaId(episodeMediaItem.mediaId!!, playWhenReady = true, extras = null)
                 } else {
                     // unable to get the first episode - notify user
                     Toast.makeText(this@PlayerService, R.string.toast_message_error_no_podcast_found, Toast.LENGTH_LONG).show()
@@ -615,7 +641,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     // FIRST: try to match the whole query
                     if (podcastName == queryLowercase) {
                         // start playback of newest podcast episode
-                        onPlayFromMediaId(mediaItem.description.mediaId, null)
+                        onPrepareFromMediaId(mediaItem.description.mediaId!!, playWhenReady = true, extras = null)
                         return
                     }
                     // SECOND: try to match parts of the query
@@ -624,7 +650,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                         words.forEach { word ->
                             if (podcastName.contains(word)) {
                                 // start playback of newest podcast episode
-                                onPlayFromMediaId(mediaItem.description.mediaId, null)
+                                onPrepareFromMediaId(mediaItem.description.mediaId!!, playWhenReady = true, extras = null)
                                 return
                             }
                         }
@@ -636,44 +662,13 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             }
         }
 
-        override fun onFastForward() {
-            LogHelper.d(TAG, "Skipping forward")
-            // update position
-            var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
-            if (position > episode.duration) {
-                position =  episode.duration
-            }
-            player.seekTo(position)
-        }
+        override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) = Unit
 
-        override fun onRewind() {
-            LogHelper.d(TAG, "Skipping back")
-            var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
-            if (position < 0L) {
-                position = 0L
-            }
-            player.seekTo(position)
-        }
-
-        override fun onSkipToPrevious() {
-            // note: rewind is the new skip to previous ^o^
-            onRewind()
-        }
-
-        override fun onSkipToNext() {
-            // note: fast forward is the new skip to next ^o^
-            onFastForward()
-        }
-
-        override fun onSeekTo(position: Long) {
-            episode = Episode(episode, playbackPosition = position, playbackState = episode.playbackState)
-            player.seekTo(position)
-        }
-
-        override fun onCommand(command: String?, extras: Bundle?, cb: ResultReceiver?) {
+        override fun onCommand (player: Player, controlDispatcher: ControlDispatcher, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
             when (command) {
                 Keys.CMD_RELOAD_PLAYER_STATE -> {
                     playerState = PreferencesHelper.loadPlayerState(this@PlayerService)
+                    return true
                 }
                 Keys.CMD_REQUEST_PROGRESS_UPDATE -> {
                     if (cb != null) {
@@ -684,14 +679,21 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                                 playbackProgressBundle.putLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, sleepTimerTimeRemaining)
                             }
                             cb.send(Keys.RESULT_CODE_PROGRESS_UPDATE, playbackProgressBundle)
+                            return true
+                        } else {
+                            return false
                         }
+                    } else {
+                        return false
                     }
                 }
                 Keys.CMD_START_SLEEP_TIMER -> {
                     startSleepTimer()
+                    return true
                 }
                 Keys.CMD_CANCEL_SLEEP_TIMER -> {
                     cancelSleepTimer()
+                    return true
                 }
                 Keys.CMD_CHANGE_PLAYBACK_SPEED -> {
                     if (cb != null) {
@@ -700,7 +702,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                         // send back new playback speed
                         val playbackSpeedBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_SPEED to newPlaybackSpeed)
                         cb.send(Keys.RESULT_CODE_PLAYBACK_SPEED, playbackSpeedBundle)
+                        return true
+                    } else {
+                        return false
                     }
+
                 }
                 Keys.CMD_RESET_PLAYBACK_SPEED -> {
                     if (cb != null) {
@@ -709,80 +715,19 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                         // send back new playback speed
                         val playbackSpeedBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_SPEED to 1f)
                         cb.send(Keys.RESULT_CODE_PLAYBACK_SPEED, playbackSpeedBundle)
+                        return true
+                    } else {
+                        return false
                     }
+                }
+                else -> {
+                    return false
                 }
             }
         }
 
     }
-    /*
-     * End of Inner Class
-     */
 
-    /*
-     * Inner class: Class to receive callbacks about state changes to the MediaSessionCompat - handles notification
-     * Source: https://github.com/android/uamp/blob/29f66d37ab236ce1745e29b35af9006ec1b61167/common/src/main/java/com/example/android/uamp/media/MusicService.kt
-     */
-    private inner class MediaControllerCallback: MediaControllerCompat.Callback() {
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            mediaController.playbackState?.let { updateNotification(it) }
-        }
 
-        override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            state?.let { updateNotification(it) }
-        }
-
-        private fun updateNotification(state: PlaybackStateCompat) {
-            // skip building a notification when state is "none" and metadata is null
-            // val notification = if (mediaController.metadata != null && state.state != PlaybackStateCompat.STATE_NONE) {
-            val notification = if (state.state != PlaybackStateCompat.STATE_NONE) {
-                notificationHelper.buildNotification(mediaSession.sessionToken, episode)
-            } else {
-                null
-            }
-
-            when (state.isActive) {
-                // CASE: Playback has started
-                true -> {
-                    /**
-                     * This may look strange, but the documentation for [Service.startForeground]
-                     * notes that "calling this method does *not* put the service in the started
-                     * state itself, even though the name sounds like it."
-                     */
-                    if (notification != null) {
-                        notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
-                        if (!isForegroundService) {
-                            ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, this@PlayerService.javaClass))
-                            startForeground(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
-                            isForegroundService = true
-                        }
-                    }
-                }
-                // CASE: Playback has stopped
-                false -> {
-                    if (isForegroundService) {
-                        stopForeground(false)
-                        isForegroundService = false
-
-                        // if playback has ended, also stop the service.
-                        if (state.state == PlaybackStateCompat.STATE_NONE) {
-                            stopSelf()
-                        }
-
-                        if (notification != null && state.state != PlaybackStateCompat.STATE_STOPPED) {
-                            notificationManager.notify(Keys.NOTIFICATION_NOW_PLAYING_ID, notification)
-                        } else {
-                            // remove notification - playback ended (or buildNotification failed)
-                            stopForeground(true)
-                        }
-                    }
-
-                }
-            }
-        }
-    }
-    /*
-     * End of Inner Class
-     */
 
 }
