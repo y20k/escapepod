@@ -14,10 +14,8 @@
 
 package org.y20k.escapepod.legacy
 
-import android.os.Parcelable
 import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
-import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepod.Keys
 import java.util.*
 
@@ -26,7 +24,6 @@ import java.util.*
  * podcast class
  */
 @Keep
-@Parcelize
 data class LegacyPodcast(@Expose var name: String = String(),
                          @Expose var description: String = String(),
                          @Expose var website: String = String(),
@@ -35,7 +32,7 @@ data class LegacyPodcast(@Expose var name: String = String(),
                          @Expose var episodes: MutableList<LegacyEpisode> = mutableListOf<LegacyEpisode>(),
                          @Expose var lastUpdate: Date = Calendar.getInstance().time,
                          @Expose var remoteImageFileLocation: String = String(),
-                         @Expose var remotePodcastFeedLocation: String = String()): Parcelable {
+                         @Expose var remotePodcastFeedLocation: String = String()) {
 
 
     /* overrides toString method */

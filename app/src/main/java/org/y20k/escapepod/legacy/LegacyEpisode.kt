@@ -14,11 +14,9 @@
 
 package org.y20k.escapepod.legacy
 
-import android.os.Parcelable
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
-import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepod.Keys
 import java.text.DateFormat
 import java.util.*
@@ -28,7 +26,6 @@ import java.util.*
  * episode class
  */
 @Keep
-@Parcelize
 data class LegacyEpisode (@Expose var guid: String = String(),
                           @Expose var title: String = String(),
                           @Expose var description: String = String(),
@@ -46,7 +43,7 @@ data class LegacyEpisode (@Expose var guid: String = String(),
                           @Expose var remoteAudioFileLocation: String = String(),
                           @Expose var podcastName: String = String(),
                           @Expose var podcastFeedLocation: String = String(),
-                          @Expose var podcastWebsite: String = String()): Parcelable {
+                          @Expose var podcastWebsite: String = String()) {
 
 
     /* overrides toString method */

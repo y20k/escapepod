@@ -65,7 +65,7 @@ class NotificationHelper(private val context: Context, sessionToken: MediaSessio
             setMediaSessionToken(sessionToken)
             setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
             setUsePlayPauseActions(true)
-            setControlDispatcher(DefaultControlDispatcher(Keys.SKIP_BACK_TIME_SPAN, Keys.SKIP_FORWARD_TIME_SPAN))
+            setControlDispatcher(DefaultControlDispatcher(Keys.SKIP_FORWARD_TIME_SPAN, Keys.SKIP_BACK_TIME_SPAN))
             setUseStopAction(false) // set true to display the dismiss button
             setUsePreviousAction(false)
             setUsePreviousActionInCompactView(false)
