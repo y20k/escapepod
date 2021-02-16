@@ -48,6 +48,7 @@ import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.PlayerState
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /*
@@ -208,17 +209,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-
-                    withContext(Main) {
-                        // update playlist
-                        if (player.mediaItemCount > 1) {
-                            player.removeMediaItem(1)
-                        }
-                        val upNextEpisodeAudio: String? = upNextEpisode?.audio
-                        if (upNextEpisodeAudio != null) {
-                            player.addMediaItem(1, MediaItem.fromUri(upNextEpisodeAudio))
-                        }
-                    }
                 }
             }
         }
@@ -263,10 +253,15 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /* Start episode from up-next queue */
     private fun startUpNextEpisode() {
         if (upNextEpisode != null) {
+            // stop playback
+            player.playWhenReady = false
             // get up next episode
             episode = upNextEpisode as Episode
             // clear up-next
             upNextEpisode = null
+            // prepare player and start playback
+            LogHelper.e(TAG, "startUpNextEpisode => ${episode.title}")
+            preparePlayer(true)
         }
     }
 
@@ -324,13 +319,10 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // update metadata
         mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
 
-//        // check if not already prepared
-//        if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
-//            //
-//        }
-
-        // set media items (= episode and upNextEpisode)
-        player.setMediaItems(createPlaylist())
+        // check if not already prepared
+        if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
+            player.setMediaItem(MediaItem.fromUri(episode.audio))
+        }
         // prepare
         player.prepare()
 
@@ -339,28 +331,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // set playWhenReady state
         player.playWhenReady = playWhenReady
     }
-
-
-    /*
-    * The player automatically handles modifications during playback in the correct way. For example
-    * if the currently playing media item is moved, playback is not interrupted and its new successor
-    * will be played upon completion. If the currently playing MediaItem is removed, the player will
-    * automatically move to playing the first remaining successor, or transition to the ended state
-    * if no such successor exists.
-    * https://exoplayer.dev/playlists.html
-    */
-    // todo modify
-    private fun createPlaylist(): List<MediaItem> {
-        val playList: MutableList<MediaItem> = mutableListOf()
-        if (this::episode.isInitialized) {
-            playList.add(MediaItem.fromUri(episode.audio))
-            if (upNextEpisode != null) {
-                playList.add(MediaItem.fromUri(episode.audio))
-            }
-        }
-        return playList
-    }
-
 
     /* Creates playback state - actions for playback state to be used in media session callback */
     private fun createPlaybackState(state: Int, position: Long): PlaybackStateCompat {
@@ -539,7 +509,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
-                        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration)
+                        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration, startUpNext = true)
                     }
                     else -> {
                         // playback has been paused by user or OS: update media session and save state
