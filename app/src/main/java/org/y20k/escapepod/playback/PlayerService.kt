@@ -23,6 +23,7 @@ import android.media.session.PlaybackState
 import android.net.Uri
 import android.os.*
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.widget.Toast
@@ -33,6 +34,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.analytics.AnalyticsListener
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
+import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -102,8 +104,12 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
         // ExoPlayer manages MediaSession
         mediaSessionConnector = MediaSessionConnector(mediaSession)
-        mediaSessionConnector.setPlayer(player)
         mediaSessionConnector.setPlaybackPreparer(preparer)
+        mediaSessionConnector.setQueueNavigator(object: TimelineQueueNavigator(mediaSession) {
+            override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+                return CollectionHelper.buildEpisodeMediaDescription(this@PlayerService, episode)
+            }
+        })
 
         // initialize notification helper
         notificationHelper = NotificationHelper(this, mediaSession.sessionToken, notificationListener)
@@ -221,9 +227,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         episode = Episode(episode, playbackState = playbackState, playbackPosition = playbackPosition)
         // update player state
         updatePlayerState(playbackState)
-        // update media session
-        mediaSession.setPlaybackState(createPlaybackState(playbackState, episode.playbackPosition))
-        mediaSession.setActive(playbackState != PlaybackStateCompat.STATE_STOPPED)
         // toggle updating playback position
         if (player.isPlaying) {
             handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
@@ -253,14 +256,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /* Start episode from up-next queue */
     private fun startUpNextEpisode() {
         if (upNextEpisode != null) {
-            // stop playback
-            player.playWhenReady = false
             // get up next episode
             episode = upNextEpisode as Episode
             // clear up-next
             upNextEpisode = null
             // prepare player and start playback
-            LogHelper.e(TAG, "startUpNextEpisode => ${episode.title}")
             preparePlayer(true)
         }
     }
@@ -274,8 +274,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         }
         mediaSession = MediaSessionCompat(this, TAG).apply {
             setSessionActivity(sessionActivityPendingIntent)
-            //setCallback(sessionCallback)
-            setPlaybackState(createPlaybackState(initialPlaybackState, 0))
+            isActive = true
         }
         sessionToken = mediaSession.sessionToken
     }
@@ -316,9 +315,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
         }
 
-        // update metadata
-        mediaSession.setMetadata(CollectionHelper.buildEpisodeMediaMetadata(this@PlayerService, episode))
-
         // check if not already prepared
         if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
             player.setMediaItem(MediaItem.fromUri(episode.audio))
@@ -328,33 +324,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
         // set position
         player.seekTo(episode.playbackPosition)
+
+        mediaSessionConnector.setPlayer(player)
+
         // set playWhenReady state
         player.playWhenReady = playWhenReady
-    }
-
-    /* Creates playback state - actions for playback state to be used in media session callback */
-    private fun createPlaybackState(state: Int, position: Long): PlaybackStateCompat {
-        val skipActions: Long = PlaybackStateCompat.ACTION_FAST_FORWARD or PlaybackStateCompat.ACTION_REWIND or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or PlaybackStateCompat.ACTION_SEEK_TO
-        when(state) {
-            PlaybackStateCompat.STATE_PLAYING -> {
-                return PlaybackStateCompat.Builder()
-                        .setState(PlaybackStateCompat.STATE_PLAYING, position, 1f)
-                        .setActions(PlaybackStateCompat.ACTION_STOP or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or skipActions)
-                        .build()
-            }
-            PlaybackStateCompat.STATE_PAUSED -> {
-                return PlaybackStateCompat.Builder()
-                        .setState(PlaybackStateCompat.STATE_PAUSED, position, 0f)
-                        .setActions(PlaybackStateCompat.ACTION_PLAY)
-                        .build()
-            }
-            else -> {
-                return PlaybackStateCompat.Builder()
-                        .setState(PlaybackStateCompat.STATE_STOPPED, position, 0f)
-                        .setActions(PlaybackStateCompat.ACTION_PLAY)
-                        .build()
-            }
-        }
     }
 
 
@@ -551,6 +525,12 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /*
      * End of declaration
      */
+
+//    private val queueNavigator = object : TimelineQueueNavigator(mediaSession) {
+//        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+//            return CollectionHelper.buildEpisodeMediaDescription(this@PlayerService, episode)
+//        }
+//    }
 
 
     /*

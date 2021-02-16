@@ -509,7 +509,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // bottom sheet skip back button
                 layout.sheetSkipBackButtonView.setOnClickListener {
                     when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
-                        true -> playerController.transportControls.rewind()
+                        true -> playerController.skipBack()
                         false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
                     }
                 }
@@ -517,7 +517,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // bottom sheet skip forward button
                 layout.sheetSkipForwardButtonView.setOnClickListener {
                     when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
-                        true -> playerController.transportControls.fastForward()
+                        true -> playerController.skipForward(episode?.duration ?: 0L)
                         false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
                     }
                 }
