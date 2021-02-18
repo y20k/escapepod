@@ -26,6 +26,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -105,8 +106,10 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // ExoPlayer manages MediaSession
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlaybackPreparer(preparer)
-        mediaSessionConnector.setQueueNavigator(object: TimelineQueueNavigator(mediaSession) {
+        mediaSessionConnector.setMediaButtonEventHandler(buttonEventHandler)
+        mediaSessionConnector.setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
             override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
+                // create media description - used in notification
                 return CollectionHelper.buildEpisodeMediaDescription(this@PlayerService, episode)
             }
         })
@@ -131,7 +134,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /* Overrides onTaskRemoved from Service */
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
-        LogHelper.d(TAG, "onTaskRemoved") // todo remove
         // kill service, if MainActivity was canceled through task switcher
         //stopSelf()
     }
@@ -212,7 +214,8 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
                 CoroutineScope(IO).launch {
                     // update up next episode
-                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
+                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String())
+                            ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
                 }
@@ -526,11 +529,38 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
      * End of declaration
      */
 
-//    private val queueNavigator = object : TimelineQueueNavigator(mediaSession) {
-//        override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-//            return CollectionHelper.buildEpisodeMediaDescription(this@PlayerService, episode)
-//        }
-//    }
+
+    /*
+     * MediaButtonEventHandler: overrides headphone next/previous button behavior
+     */
+    private val buttonEventHandler = object : MediaSessionConnector.MediaButtonEventHandler {
+        override fun onMediaButtonEvent(player: Player, controlDispatcher: ControlDispatcher, mediaButtonEvent: Intent): Boolean {
+            val event: KeyEvent? = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
+            when (event?.keyCode) {
+                KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                    if (player.isPlaying && this@PlayerService::episode.isInitialized) {
+                        val episodeDuration = episode.duration
+                        var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
+                        if (position > episode.duration) position = episodeDuration
+                        player.seekTo(position)
+                    }
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                    if (player.isPlaying) {
+                        var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
+                        if (position < 0L) position = 0L
+                        player.seekTo(position)
+                    }
+                    return true
+                }
+                else -> return false
+            }
+        }
+    }
+    /*
+     * End of declaration
+     */
 
 
     /*

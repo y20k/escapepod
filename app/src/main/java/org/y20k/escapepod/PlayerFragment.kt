@@ -255,7 +255,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 CoroutineScope(IO).launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
                     playerState.episodeMediaId = mediaId
-                    LogHelper.v(TAG, "onSharedPreferenceChanged - current episode: $mediaId") // todo remove
                     episode = collectionDatabase.episodeDao().findByMediaId(mediaId)
                     withContext(Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
@@ -264,16 +263,10 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 CoroutineScope(IO).launch {
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     playerState.upNextEpisodeMediaId = mediaId
-                    LogHelper.v(TAG, "onSharedPreferenceChanged - up next episode: $mediaId") // todo remove
                     upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
                     withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
             }
-//            Keys.PREF_PLAYER_STATE_PLAYBACK_STATE -> {
-//                playerState.playbackState = sharedPreferences?.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackState.STATE_STOPPED) ?: PlaybackState.STATE_STOPPED
-//                LogHelper.v(TAG, "onSharedPreferenceChanged - current state: ${playerState.playbackState}") // todo remove
-//                //layout.togglePlayerVisibility(activity as Context, playerState.playbackState)
-//            }
         }
     }
 
@@ -560,7 +553,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     // start episode in up next queue
                     val upNextEpisodeMediaId: String = upNextEpisode?.mediaId ?: String()
                     this@PlayerFragment.playerController.play(upNextEpisodeMediaId)
-                    // MediaControllerCompat.getMediaController(activity as Activity).transportControls.playFromMediaId(upNextEpisodeMediaId, null) // todo remove
                     Toast.makeText(activity as Context, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
                 }
 
