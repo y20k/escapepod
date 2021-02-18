@@ -51,7 +51,6 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
         } else if (!PreferencesHelper.loadBackgroundRefresh(applicationContext)) {
             LogHelper.w(TAG, "Background update not initiated: Background refresh has been set to manual.")
         } else {
-            LogHelper.w(TAG, "Background update initiated.") // todo remove
             DownloadHelper.updateCollection(applicationContext)
         }
     }

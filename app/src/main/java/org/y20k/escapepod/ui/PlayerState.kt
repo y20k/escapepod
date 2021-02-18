@@ -14,17 +14,14 @@
 
 package org.y20k.escapepod.ui
 
-import android.os.Parcelable
 import android.support.v4.media.session.PlaybackStateCompat
 import com.google.gson.annotations.Expose
-import kotlinx.android.parcel.Parcelize
 
 
 /*
  * PlayerState class
  */
-@Parcelize
 data class PlayerState (@Expose var episodeMediaId: String = String(),
                         @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
                         @Expose var playbackSpeed: Float = 1f,
-                        @Expose var upNextEpisodeMediaId: String = String()): Parcelable
+                        @Expose var upNextEpisodeMediaId: String = String())

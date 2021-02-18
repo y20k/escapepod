@@ -14,10 +14,8 @@
 
 package org.y20k.escapepod.legacy
 
-import android.os.Parcelable
 import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
-import kotlinx.android.parcel.Parcelize
 import org.y20k.escapepod.Keys
 import java.util.*
 
@@ -26,10 +24,9 @@ import java.util.*
  * LegacyCollection class
  */
 @Keep
-@Parcelize
 data class LegacyCollection(@Expose val version: Int = Keys.CURRENT_LEGACY_COLLECTION_CLASS_VERSION_NUMBER,
                             @Expose var podcasts: MutableList<LegacyPodcast> = mutableListOf<LegacyPodcast>(),
-                            @Expose var modificationDate: Date = Date()) : Parcelable {
+                            @Expose var modificationDate: Date = Date()) {
 
     /* overrides toString method */
     override fun toString(): String {

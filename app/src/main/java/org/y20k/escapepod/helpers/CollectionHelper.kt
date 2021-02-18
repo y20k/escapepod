@@ -16,7 +16,10 @@ package org.y20k.escapepod.helpers
 
 //import org.y20k.escapepod.legacy.LegacyCollection
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.net.toFile
@@ -151,6 +154,24 @@ object CollectionHelper {
             putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
             putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN))
             putLong(MediaMetadataCompat.METADATA_KEY_DURATION, episode.duration)
+        }.build()
+    }
+
+
+
+    /* Creates description for a single episode - used in MediaSessionConnector */
+    fun buildEpisodeMediaDescription(context: Context, episode: Episode): MediaDescriptionCompat {
+        val coverBitmap: Bitmap = ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN)
+        val extras: Bundle = Bundle()
+        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, coverBitmap)
+        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, coverBitmap)
+        return MediaDescriptionCompat.Builder().apply {
+            setMediaId(episode.mediaId)
+            setIconBitmap(coverBitmap)
+            setTitle(episode.title)
+            setSubtitle(episode.podcastName)
+            //setDescription(episode.podcastName)
+            setExtras(extras)
         }.build()
     }
 
