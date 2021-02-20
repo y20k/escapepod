@@ -92,8 +92,8 @@ dependencies {
     def exoplayerVersion = "2.13.0"
     implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
-    implementation "com.google.code.gson:gson:2.8.6"
 
+    implementation "com.google.code.gson:gson:2.8.6"
     implementation 'com.android.volley:volley:1.1.1'
 
 }

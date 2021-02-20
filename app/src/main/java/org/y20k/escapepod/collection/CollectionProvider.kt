@@ -128,9 +128,4 @@ class CollectionProvider {
     }
 
 
-    private fun observeCollectionViewModel() {
-
-    }
-
-
 }
