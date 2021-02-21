@@ -831,7 +831,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
             }
             playerServiceConnected = true
 
-            mediaBrowser.subscribe(Keys.MEDIA_BROWSABLE_ROOT, mediaBrowserSubscriptionCallback)
+            //mediaBrowser.subscribe(Keys.MEDIA_BROWSABLE_ROOT, mediaBrowserSubscriptionCallback)
 
             // finish building the UI
             buildPlaybackControls()

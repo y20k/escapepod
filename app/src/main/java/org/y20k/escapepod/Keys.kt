@@ -47,6 +47,7 @@ object Keys {
     const val ACTION_SHOW_PLAYER: String = "org.y20k.escapepod.action.SHOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepod.action.COLLECTION_CHANGED"
     const val ACTION_STOP: String = "org.y20k.escapepod.action.STOP"
+    const val ACTION_DISMISS: String = "org.y20k.escapepod.action.DISMISS"
 
     // intent extras
     const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
@@ -62,6 +63,7 @@ object Keys {
     const val CMD_CANCEL_SLEEP_TIMER: String = "CANCEL_SLEEP_TIMER"
     const val CMD_CHANGE_PLAYBACK_SPEED: String = "CHANGE_PLAYBACK_SPEED"
     const val CMD_RESET_PLAYBACK_SPEED: String = "RESET_PLAYBACK_SPEED"
+    const val CMD_DISMISS_NOTIFICATION: String = "DISMISS_NOTIFICATION"
 
     // preferences
     const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_31" // increment to current app version code to trigger housekeeping that runs only once

@@ -148,7 +148,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
         // set playback state if possible / necessary
-        if (this::episode.isInitialized && player.isPlaying) {
+        if (this::episode.isInitialized && (player.isPlaying)) {
             handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
         }
         // release media session
@@ -167,6 +167,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
     /* Overrides onGetRoot from MediaBrowserService */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
+        LogHelper.e(TAG, "onGetRoot ${rootHints} | is recent request = ${rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false}") // todo remove
         // Credit: https://github.com/googlesamples/android-UniversalMusicPlayer (->  MusicService)
         // LogHelper.d(TAG, "OnGetRoot: clientPackageName=$clientPackageName; clientUid=$clientUid ; rootHints=$rootHints")
         // to ensure you are not allowing any arbitrary app to browse your app's contents, you need to check the origin
@@ -188,13 +189,16 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     CONTENT_STYLE_BROWSABLE_HINT to CONTENT_STYLE_GRID_ITEM_HINT_VALUE,
                     CONTENT_STYLE_PLAYABLE_HINT to CONTENT_STYLE_LIST_ITEM_HINT_VALUE
             )
-            return BrowserRoot(Keys.MEDIA_BROWSABLE_ROOT, extras)
+            val isRecentRequest = rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false
+            val browserRootPath = if (isRecentRequest) Keys.MEDIA_RECENT_ROOT else Keys.MEDIA_BROWSABLE_ROOT
+            return BrowserRoot(browserRootPath, extras)
         }
     }
 
 
     /* Overrides onLoadChildren from MediaBrowserService */
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        LogHelper.e(TAG, "onLoadChildren => $parentId")
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
             result.detach()
@@ -238,12 +242,12 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         if (player.isPlaying) {
             handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
             handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
-            // notificationHelper.showNotificationForPlayer(player)
+            notificationHelper.showNotificationForPlayer(player)
             LogHelper.d(TAG, "Playback Started. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
         } else {
             handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
             episode = Episode(episode, playbackPosition = player.contentPosition, playbackState = PlaybackStateCompat.STATE_PAUSED)
-            // stopForeground(false)
+            // notification is hidden via CMD_DISMISS_NOTIFICATION
             LogHelper.d(TAG, "Playback Stopped. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
         }
         // save episode
@@ -394,6 +398,9 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     mediaItems.add(item)
                 }
             }
+            Keys.MEDIA_RECENT_ROOT -> {
+                // todo implement
+            }
             else -> {
                 // log error
                 LogHelper.w(TAG, "Skipping unmatched parentId: $parentId")
@@ -466,6 +473,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
             super.onPlayWhenReadyChanged(playWhenReady, reason)
             if (!playWhenReady) {
+                // detect dismiss action
+                if (player.mediaItemCount == 0) {
+                    stopSelf()
+                }
+
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
@@ -681,6 +693,12 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     } else {
                         return false
                     }
+                }
+                Keys.CMD_DISMISS_NOTIFICATION -> {
+                    // stop service
+                    player.pause()
+                    notificationHelper.hideNotification()
+                    return true
                 }
                 else -> {
                     return false
