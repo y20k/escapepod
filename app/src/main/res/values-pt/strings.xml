@@ -155,4 +155,5 @@
     <string name="pref_delete_all_storage_space_available">Disponível</string>
     <string name="pref_advanced_title">Avançado</string>
     <string name="toast_message_deleting_downloads">A eliminar episódios descarregados.</string>
+    <string name="notification_dismiss">Dispensar notificação</string>
 </resources>
