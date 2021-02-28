@@ -1,0 +1,10 @@
+# v1.0.0 - Sag Alles Ab
+
+**2021-03-04**
+
+- resume via headphone buttons works reliably
+- new podcast search provider: podcastindex.org
+- under the hood: Escapepod stores Podcast data in a Room database instead of a JSON text file
+- OPML import via settings
+- updated translations
+- several small bug fixes

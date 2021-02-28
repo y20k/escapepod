@@ -40,7 +40,7 @@ You can import a podcast list using the [OPML](https://en.wikipedia.org/wiki/OPM
 Please report any podcast feeds, that are currently not working, using the GitHub Issue template [Feed Issue](https://github.com/y20k/escapepod/issues/new?assignees=&labels=feed+issue&template=feed-issue.md&title=%5BFeed%5D). Note: Escapepod does not support video podcasts.
 
 ### Where do the podcast search results come from?
-Escapepod searches by default the [Podcastindex.org](https://podcastindex.org/) online database - or if you toggle the respective setting the [gpodder.net](https://gpodder.net/directory/) online database.
+Escapepod searches by default the [Podcastindex.org](https://podcastindex.org/) online database or, if you toggle the respective setting, the [gpodder.net](https://gpodder.net/directory/) online database.
 
 
 ## Screenshots (v0.8)

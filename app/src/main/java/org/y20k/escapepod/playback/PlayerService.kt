@@ -167,7 +167,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
     /* Overrides onGetRoot from MediaBrowserService */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
-        LogHelper.e(TAG, "onGetRoot ${rootHints} | is recent request = ${rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false}") // todo remove
+        LogHelper.d(TAG, "onGetRoot ${rootHints} | is recent request = ${rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false}") // todo remove
         // Credit: https://github.com/googlesamples/android-UniversalMusicPlayer (->  MusicService)
         // LogHelper.d(TAG, "OnGetRoot: clientPackageName=$clientPackageName; clientUid=$clientUid ; rootHints=$rootHints")
         // to ensure you are not allowing any arbitrary app to browse your app's contents, you need to check the origin
@@ -233,7 +233,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
 
     /* Updates media session and save state */
-    private fun handlePlaybackChange(playbackState: Int, playbackPosition: Long = player.currentPosition, startUpNext: Boolean = false) {
+    private fun handlePlaybackChange(playbackState: Int, playbackPosition: Long = player.currentPosition) {
         // update episode
         episode = Episode(episode, playbackState = playbackState, playbackPosition = playbackPosition)
         // update player state
@@ -259,15 +259,11 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         if (!player.playWhenReady) {
             cancelSleepTimer()
         }
-        // start up next episode if requested
-        if (startUpNext) {
-            startUpNextEpisode()
-        }
     }
 
 
-    /* Start episode from up-next queue */
-    private fun startUpNextEpisode() {
+    /* Try to start episode from up-next queue */
+    private fun tryToStartUpNextEpisode() {
         if (upNextEpisode != null) {
             // get up next episode
             episode = upNextEpisode as Episode
@@ -275,6 +271,8 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             upNextEpisode = null
             // prepare player and start playback
             preparePlayer(true)
+        } else {
+            notificationHelper.hideNotification()
         }
     }
 
@@ -481,7 +479,8 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
-                        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration, startUpNext = true)
+                        handlePlaybackChange(PlaybackStateCompat.STATE_STOPPED, playbackPosition = episode.duration)
+                        tryToStartUpNextEpisode()
                     }
                     else -> {
                         // playback has been paused by user or OS: update media session and save state
@@ -533,7 +532,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             val event: KeyEvent? = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
             when (event?.keyCode) {
                 KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                    if (player.isPlaying && this@PlayerService::episode.isInitialized) {
+                    if (event.action == KeyEvent.ACTION_UP && player.isPlaying && this@PlayerService::episode.isInitialized) {
                         val episodeDuration = episode.duration
                         var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
                         if (position > episode.duration) position = episodeDuration
@@ -542,7 +541,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                     return true
                 }
                 KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                    if (player.isPlaying) {
+                    if (event.action == KeyEvent.ACTION_UP && player.isPlaying) {
                         var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
                         if (position < 0L) position = 0L
                         player.seekTo(position)
