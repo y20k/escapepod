@@ -1,0 +1,10 @@
+# v1.0.0 - Sag Alles Ab
+
+**4 Mart 2021**
+
+- kulaklık düğmeleriyle devam etme güvenilir bir şekilde çalışıyor
+- yeni podcast arama sağlayıcısı: podcastindex.org
+- arka planda: Escapepod, podcast verilerini JSON metin dosyası yerine bir Room veri tabanında saklıyor
+- ayarlar aracılığıyla OPML olarak içe aktarma
+- güncellenmiş çeviriler
+- birkaç küçük hata düzeltmesi
