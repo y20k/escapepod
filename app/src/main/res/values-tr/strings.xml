@@ -156,4 +156,5 @@
     <string name="pref_delete_all_storage_space_available">Kullanılabilir</string>
     <string name="toast_message_deleting_downloads">İndirilen bölümler siliniyor.</string>
     <string name="notification_dismiss">Bildirimi kapat</string>
+    <string name="toast_message_error_file_type_unknown">İndirme işlenemiyor. Dosya türü:</string>
 </resources>
