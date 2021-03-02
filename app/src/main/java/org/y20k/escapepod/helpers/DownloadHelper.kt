@@ -153,10 +153,13 @@ object DownloadHelper {
             val remoteFileLocation: String = getDownloadDescription(downloadManager, downloadId)
             // determine what to do
             val fileType = FileHelper.getContentType(context, localFileUri)
-            if (fileType in Keys.MIME_TYPES_RSS) readPodcastFeed(context, localFileUri, remoteFileLocation)
-            if (fileType in Keys.MIME_TYPES_ATOM) Toast.makeText(context, context.getString(R.string.toast_message_error_feed_not_supported), Toast.LENGTH_LONG).show()
-            if (fileType in Keys.MIME_TYPES_AUDIO) setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
-            if (fileType in Keys.MIME_TYPES_IMAGE) setPodcastImage(context, localFileUri, remoteFileLocation)
+            when (fileType) {
+                in Keys.MIME_TYPES_RSS -> readPodcastFeed(context, localFileUri, remoteFileLocation)
+                in Keys.MIME_TYPES_ATOM -> Toast.makeText(context, context.getString(R.string.toast_message_error_feed_not_supported), Toast.LENGTH_LONG).show()
+                in Keys.MIME_TYPES_AUDIO -> setEpisodeMediaUri(context, localFileUri, remoteFileLocation)
+                in Keys.MIME_TYPES_IMAGE -> setPodcastImage(context, localFileUri, remoteFileLocation)
+                else -> Toast.makeText(context, "${context.getString(R.string.toast_message_error_file_type_unknown)} $fileType", Toast.LENGTH_LONG).show()
+            }
             // remove ID from active downloads
             removeFromActiveDownloads(context, arrayOf(downloadId))
         }

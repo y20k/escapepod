@@ -19,6 +19,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.*
+import android.net.Uri
 import com.android.volley.BuildConfig
 import org.y20k.escapepod.Keys
 import java.net.HttpURLConnection
@@ -167,6 +168,14 @@ object NetworkHelper {
         }
         LogHelper.i(TAG, "content type: ${contentType.type} | character set: ${contentType.charset}")
         return contentType
+    }
+
+
+    /* Checks if content type of remote file is supported */
+    private fun checkContentTypeSupported(context: Context, uri: Uri): Boolean {
+        val contentType: ContentType = detectContentType(uri.toString())
+        val supportedContentTypes = Keys.MIME_TYPES_RSS + Keys.MIME_TYPES_AUDIO + Keys.MIME_TYPES_IMAGE
+        return contentType.type in supportedContentTypes
     }
 
 

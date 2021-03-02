@@ -200,8 +200,6 @@ class RssHelper {
     }
 
 
-
-
     /* EPISODE: readSuspended GUID */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeGuid(parser: XmlPullParser, nameSpace: String?): String {

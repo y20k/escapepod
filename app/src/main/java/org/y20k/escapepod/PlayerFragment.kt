@@ -14,14 +14,12 @@
 
 package org.y20k.escapepod
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.net.Uri
 import android.os.*
@@ -36,8 +34,6 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -94,7 +90,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private var playerServiceConnected: Boolean = false
     private var playerState: PlayerState = PlayerState()
     private var listLayoutState: Parcelable? = null
-    private var tempOpmlUriString: String = String()
     private val handler: Handler = Handler(Looper.getMainLooper())
 
 
@@ -223,25 +218,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
         playerController.unregisterCallback(mediaControllerCallback)
         mediaBrowser.disconnect()
         playerServiceConnected = false
-    }
-
-
-    /* Overrides onRequestPermissionsResult from Fragment */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    // permission granted
-                    if (tempOpmlUriString.isNotEmpty()) {
-                        readOpmlFile(tempOpmlUriString.toUri(), false)
-                    }
-                } else {
-                    // permission denied
-                    Toast.makeText(activity as Context, R.string.toast_message_error_missing_storage_permission, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
     }
 
 
@@ -709,32 +685,14 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
 
     /* Read OPML file */
-    private fun readOpmlFile(opmlUri: Uri, permissionCheckNeeded: Boolean)  {
-        when (permissionCheckNeeded) {
-            true -> {
-                // permission check
-                if (ContextCompat.checkSelfPermission(activity as Context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    // save uri for later use in onRequestPermissionsResult
-                    tempOpmlUriString = opmlUri.toString()
-                    // permission is not granted - request it
-                    ActivityCompat.requestPermissions(activity as Activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), Keys.PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE)
-                } else {
-                    // permission granted - call readOpmlFile again
-                    readOpmlFile(opmlUri, false)
-                }
-            }
-            false -> {
-                // reset temp url string
-                tempOpmlUriString = String()
-                // read opml
-                launch {
-                    // readSuspended OPML on background thread
-                    val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper.readSuspended(activity as Context, opmlUri) }
-                    // wait for result and update collection
-                    val feedUrls: Array<String> = deferred.await()
-                    OpmlImportDialog(this@PlayerFragment).show(activity as Context, feedUrls)
-                }
-            }
+    private fun readOpmlFile(opmlUri: Uri)  {
+        // read opml
+        launch {
+            // readSuspended OPML on background thread
+            val deferred: Deferred<Array<String>> = async(Dispatchers.Default) { OpmlHelper.readSuspended(activity as Context, opmlUri) }
+            // wait for result and update collection
+            val feedUrls: Array<String> = deferred.await()
+            OpmlImportDialog(this@PlayerFragment).show(activity as Context, feedUrls)
         }
     }
 
@@ -768,9 +726,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // download new podcast
                 scheme.startsWith("http") -> downloadPodcastFeed(contentUri.toString())
                 // readSuspended opml from content uri
-                scheme.startsWith("content") -> readOpmlFile(contentUri, false)
-                // readSuspended opml from file uri
-                scheme.startsWith("file") -> readOpmlFile(contentUri, true)
+                scheme.startsWith("content") -> readOpmlFile(contentUri)
             }
         }
     }
@@ -807,7 +763,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private fun handleNavigationArguments() {
         val opmlFileString: String? = arguments?.getString(Keys.ARG_OPEN_OPML)
         if (opmlFileString != null) {
-            readOpmlFile(opmlFileString.toUri(), permissionCheckNeeded = false)
+            readOpmlFile(opmlFileString.toUri())
         }
     }
 
