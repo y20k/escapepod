@@ -135,7 +135,7 @@
     <string name="dialog_yes_no_positive_button_update_covers">Aktualisieren</string>
     <string name="pref_update_covers_summary">Lade die neueste Version aller Podcast-Cover in deiner Sammlung herunter.</string>
     <string name="pref_update_covers_title">Cover aktualisieren</string>
-    <string name="toast_message_error_download_error">Herunterladen-Ereignis-Fehler</string>
+    <string name="toast_message_error_download_error">Downloadfehler</string>
     <string name="pref_report_issue_title">Fehler melden</string>
     <string name="pref_report_issue_summary">Fehler melden und Verbesserungen vorschlagen auf GitHub.</string>
     <string name="pref_episode_download_over_mobile_title">Herunterladen über Mobilfunknetz</string>
@@ -156,4 +156,5 @@
     <string name="pref_opml_import_summary">Wähle eine OPML-Datei aus dem Gerätespeicher.</string>
     <string name="pref_opml_import_title">OPML importieren</string>
     <string name="notification_dismiss">Benachrichtigung verwerfen</string>
+    <string name="toast_message_error_file_type_unknown">Download kann nicht verarbeitet werden. Dateityp:</string>
 </resources>
