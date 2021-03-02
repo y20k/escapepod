@@ -1,0 +1,10 @@
+# v1.0.0 - Sag Alles Ab
+
+**2021-03-04**
+
+- Fortsetzen über Kopfhörertasten funktioniert zuverlässig
+- neuer Podcast-Suchanbieter: podcastindex.org
+- unter der Haube: Escapepod speichert Podcast-Daten in einer Room-Datenbank statt in einer JSON-Textdatei
+- OPML-Import über Einstellungen
+- aktualisierte Übersetzungen
+- verschiedene kleine Fehlerbehebungen
