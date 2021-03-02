@@ -123,6 +123,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
         if (PreferencesHelper.isHouseKeepingNecessary(activity as Context)) {
             // import podcasts from json into database
             ImportHelper.importLegacyCollection(activity as Context, collectionDatabase)
+            // reset the player
+            PreferencesHelper.resetPlayerState(activity as Context, keepUpNextMediaId = false)
             // housekeeping finished - save state
             PreferencesHelper.saveHouseKeepingNecessaryState(activity as Context)
         }
