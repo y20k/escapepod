@@ -195,6 +195,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
         }
         // handle navigation arguments
         handleNavigationArguments()
+        // handle start intent - if started via tap on rss link
+        handleStartIntent()
         // start watching for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
@@ -209,7 +211,6 @@ class PlayerFragment: Fragment(), CoroutineScope,
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
         // stop watching for changes in shared preferences
         PreferencesHelper.unregisterPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
-
     }
 
 
@@ -703,7 +704,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private fun handleStartIntent() {
         if ((activity as Activity).intent.action != null) {
             when ((activity as Activity).intent.action) {
-                Keys.ACTION_SHOW_PLAYER -> handleShowPlayer()
+                //Keys.ACTION_SHOW_PLAYER -> handleShowPlayer()
                 Intent.ACTION_VIEW -> handleViewIntent()
             }
         }
