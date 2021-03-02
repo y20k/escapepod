@@ -1,0 +1,10 @@
+# v1.0.0 - Sag Alles Ab
+
+**2021-03-04**
+
+-Hervatten met koptelefoonknoppen werkt nu naar behoren
+-Nieuwe podcastdienst: podcastindex.org
+-Onder de motorkap: Escapepod slaat podcastgegevens voortaan op in een Room-databank in plaats van een json-bestand
+-OPML kan voortaan worden geïmporteerd via de instellingen
+-Bijgewerkte vertalingen
+-Enkele kleine fouten opgelost
