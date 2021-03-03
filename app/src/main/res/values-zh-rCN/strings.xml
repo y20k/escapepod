@@ -168,4 +168,5 @@
     <!-- Onboarding -->
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
+    <string name="toast_message_error_file_type_unknown">无法处理下载。文件类型：</string>
 </resources>
