@@ -18,9 +18,13 @@ Finnish version [Riku Viitanen](https://hosted.weblate.org/user/RiksuRaksu/) | [
 
 French version: [Nathan](https://hosted.weblate.org/user/NathanBnm/) | [weblate version history](https://hosted.weblate.org/changes/?lang=fr&project=escapepod)
 
+French version (Canada): [J. Lavoie](https://hosted.weblate.org/user/Edanas/) | [weblate version history](https://hosted.weblate.org/changes/?lang=fr_CA&project=escapepod)
+
 German version: [waweic](https://hosted.weblate.org/user/waweic/) | [weblate version history](https://hosted.weblate.org/changes/?lang=de&project=escapepod)
 
 Hebrew version: [Yaron Shahrabani](https://hosted.weblate.org/user/Yaron/) | [weblate version history](https://hosted.weblate.org/changes/?lang=he&project=escapepod)
+
+Italian version: [J. Lavoie](https://hosted.weblate.org/user/Edanas/) | [weblate version history](https://hosted.weblate.org/changes/?lang=it&project=escapepod)
 
 Norwegian version: [Allan Nordhøy](https://hosted.weblate.org/user/kingu/) | [weblate version history](https://hosted.weblate.org/changes/?lang=nb_NO&project=escapepod)
 
@@ -30,7 +34,9 @@ Portuguese version [Sérgio Marques](https://hosted.weblate.org/user/S%C3%A9rgio
 
 Russian version [Nikita Epifanov](https://hosted.weblate.org/user/Nikets/) | [weblate version history](https://hosted.weblate.org/changes/?lang=pt&project=escapepod)
 
-Spanish version [marlon mt](https://hosted.weblate.org/user/marmonto/) | [weblate version history](https://hosted.weblate.org/changes/?lang=es&project=escapepod)
+Spanish version [marlon mt](https://hosted.weblate.org/user/marmonto/), [Adolfo Jayme Barrientos](https://hosted.weblate.org/user/Fito/) | [weblate version history](https://hosted.weblate.org/changes/?lang=es&project=escapepod)
+
+Turkish version [Oğuz Ersen](https://hosted.weblate.org/user/ersen/) | [weblate version history](https://hosted.weblate.org/changes/?lang=tr&project=escapepod)
 
 ### Accessibility / TalkBack
 [holliebaker](https://github.com/holliebaker)

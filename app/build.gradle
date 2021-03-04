@@ -13,7 +13,7 @@ android {
         targetSdkVersion 30
         versionCode 31
         versionName '1.0.0'
-        resConfigs "de", "en", "es", "eu", "fi", "fr", "he", "hr", "nb-rNO", "nl", "pl", "pt", "ru", "zh-rCN"
+        resConfigs "de", "en", "es", "eu", "fi", "fr", "fr-rCA", "he", "hr", "it", "nb-rNO", "nl", "pl", "pt", "ru", "tr", "zh-rCN"
     }
 
     kotlinOptions {
