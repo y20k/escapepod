@@ -156,4 +156,5 @@
     <string name="fragment_settings_title">Paramètres</string>
     <string name="app_name">Escapepod</string>
     <string name="notification_dismiss">Masquer la notification</string>
+    <string name="toast_message_error_file_type_unknown">Impossible de traiter le téléchargement. Type de fichier :</string>
 </resources>
