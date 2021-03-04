@@ -156,4 +156,5 @@
     <string name="pref_opml_import_title">Импорт OPML</string>
     <string name="pref_opml_import_summary">Выберите файл OPML из хранилища устройства.</string>
     <string name="notification_dismiss">Закрыть уведомление</string>
+    <string name="toast_message_error_file_type_unknown">Невозможно обработать загрузку. Тип файла:</string>
 </resources>
