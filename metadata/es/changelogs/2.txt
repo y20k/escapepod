@@ -1,0 +1,7 @@
+# v0.4.1-alpha: An Diesen Langweiligen Tagen
+
+**2019-07-25**
+
+- Arregla problemas con pódcasts que utilizan FeedBurner
+- Mejor desempeño al desplazarse
+- Función nueva para crear archivos de registro de depuración

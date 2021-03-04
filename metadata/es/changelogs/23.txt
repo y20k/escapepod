@@ -1,0 +1,6 @@
+# v0.8.5: Gehen Die Leute (edición especial 23)
+
+**2019-12-19**
+
+- Se eliminó la compatibilidad con Android Auto
+--> No pregunte por qué (⊙_☉)

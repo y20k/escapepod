@@ -1,0 +1,6 @@
+# v0.8.6: Gehen Die Leute
+
+**2020-01-05**
+
+- Repara un cierre inesperado al utilizar el cuadro de diálogo de búsqueda
+- Versión en lengua hebrea

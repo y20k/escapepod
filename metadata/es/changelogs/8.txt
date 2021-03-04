@@ -1,0 +1,5 @@
+# v0.7.3: Drüben Auf Dem Hügel
+
+**2019-10-03**
+
+- Tuve que desactivar temporalmente la compatibilidad con Android Auto (Google Play rechazó la actualización porque faltaba la función de voz)

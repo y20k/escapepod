@@ -1,0 +1,5 @@
+# v0.8.1: Gehen Die Leute
+
+**2019-12-05**
+
+- Evita un cierre inesperado causado por la orden de voz de reproducir cuando la lista de pódcast está vacía

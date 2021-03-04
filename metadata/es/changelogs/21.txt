@@ -1,0 +1,7 @@
+# v0.8.3: Gehen Die Leute
+
+**2019-12-06**
+
+- Le notifica cuando la búsqueda por voz no fue exitosa.
+
+Nota: Gente, lo siento. Es la tercera actualización en dos días. Parece que la Play Store rechaza la aplicación porque la puesta comprobación automatizada de compatibilidad con Android Auto supone que la aplicación reacciona a la orden de voz «Reproduce música», incluso cuando no se ha añadido ningún pódcast. No sé qué hacer. Quizá abandone la compatibilidad con Android Auto.

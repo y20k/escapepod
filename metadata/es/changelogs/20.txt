@@ -1,0 +1,5 @@
+# v0.8.2: Gehen Die Leute
+
+**2019-12-06**
+
+- Le notifica cuando la reproducción controlada por voz no puede funcionar por estar vacía la lista de pódcast.

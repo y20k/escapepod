@@ -1,0 +1,26 @@
+Escapepod es un reproductor de pódcast minimalista, que podría no ser del agrado de todos. La aplicación consta de una sola pantalla: controles de reproducción y una lista de pódcast que enumera los cinco episodios más recientes de cada uno. Escapepod no incluye una función de descubrimiento de pódcast. Únicamente cuenta con un sencillo buscador y puede abrir enlaces a suministros RSS al tocarlos en un navegador web.
+
+
+PREGUNTAS FRECUENTES
+
+¿ESCAPEPOD INCLUYE UNA COLA DE REPRODUCCIÓN?
+Escapepod tiene una sencilla función de «A continuación». Toque Reproducir en un episodio mientras se reproduce otro y tendrá la posibilidad de añadirlo a la posición siguiente.
+
+¿CUÁLES SON LAS CONFIGURACIONES PREDETERMINADAS?
+- La actualización automática evita descargar archivos en conexiones de datos móviles
+- Escapepod de manera predeterminada guarda solo dos episodios
+
+¿ESCAPEPOD PUEDE GUARDAR MÁS DE DOS EPISODIOS?
+Escapepod intenta reducir la cantidad de episodios que guarda siguiendo estas reglas:
+- Escapepod conserva los dos episodios más recientes
+- Aquellos episodios que se han empezado o que se descargaron manualmente también se mantienen
+- El número máximo de episodios disponibles (y conservados) es de cinco
+
+¿ESCAPEPOD ADMITE OPML?
+Puede importar una lista de pódcast mediante el formato de intercambio OPML si utiliza la opción correspondiente en la configuración de la aplicación. La colección de pódcast actual se puede exportar en la configuración también. Asimismo, Escapepod mantiene actualizado un archivo OPML en la carpeta /Android/data/org.y20k.escapepod/files/collection/.
+
+NO PUEDO AÑADIR EL PÓDCAST «X». ¿POR QUÉ?
+Infórmenos, en inglés, de cualquier suministro de pódcast que no funcione mediante la plantilla de informe «Feed Issue» (‘Problema con un suministro’) en GitHub (https://github.com/y20k/escapepod/issues/). Nota: Escapepod no admite videopódcast.
+
+¿DE DÓNDE PROVIENEN LOS RESULTADOS DE BÚSQUEDA DE PÓDCAST?
+Escapepod busca de manera predeterminada en la base de datos en línea de Podcastindex.org (https://podcastindex.org/), con la opción de buscar en la base de datos de gpodder.net (https://gpodder.net/directory/).

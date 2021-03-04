@@ -1,0 +1,7 @@
+# v0.8.0: Gehen Die Leute
+
+**2019-12-05**
+
+- Búsqueda básica de pódcast en el servicio gpodder.net
+- Versión en lengua portuguesa
+- Versión en lengua neerlandesa

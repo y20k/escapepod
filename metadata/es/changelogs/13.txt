@@ -1,0 +1,9 @@
+# v0.7.8: Drüben Auf Dem Hügel
+
+**2019-10-30**
+
+- Mejor accesibilidad mediante TalkBack
+- Versión en lengua noruega
+- Mejoras de estabilidad (*)
+
+(*) Los archivos de audio se almacenan de manera algo distinta a partir de la versión 0.7.8. Si ello causare fallos (que no debería), consulte las sugerencias de solución de problemas (https://github.com/y20k/escapepod/wiki/Troubleshooting).
