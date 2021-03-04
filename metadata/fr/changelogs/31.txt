@@ -1,0 +1,10 @@
+# v1.0.0 - Sag Alles Ab
+
+**04/03/2021**
+
+- la reprise via les boutons du casque fonctionne de manière fiable
+- nouveau fournisseur de recherche de podcast : podcastindex.org
+- sous le capot : Escapepod stocke les données de podcast dans une base de données Room au lieu d'un fichier texte JSON
+- Importation OPML via les paramètres
+- traductions mises à jour
+- plusieurs petites corrections d'erreurs
