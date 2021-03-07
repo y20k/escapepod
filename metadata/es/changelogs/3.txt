@@ -1,0 +1,8 @@
+# v0.5.0-beta: Der Cousin
+
+**2019-08-02**
+
+- Temporizador de apagado
+- Compatibilidad básica con Android Auto y Wear OS
+- Función para crear archivos de registro de depuración
+- Arreglos de errores

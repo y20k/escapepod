@@ -1,0 +1,5 @@
+# v0.9.3: Aber hier leben, nein danke
+
+**2020-07-27**
+
+- Mejor desempeño al desplazar

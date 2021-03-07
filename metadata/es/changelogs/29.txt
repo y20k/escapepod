@@ -1,0 +1,6 @@
+# v0.9.4: Aber hier leben, nein danke
+
+**2020-10-01**
+
+- Traducciones nuevas y actualizadas
+- Un par de correcciones de errores pequeños
