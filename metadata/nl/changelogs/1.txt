@@ -2,4 +2,4 @@
 
 **2019-07-19**
 
-- initial release
+- initiële uitgave
