@@ -1,0 +1,5 @@
+# v1.0.1 - Sag Alles Ab
+
+**2021-03-13**
+
+- F-Droid compliance fix: unneeded proprietary dependency removed (see https://github.com/y20k/escapepod/issues/64)
