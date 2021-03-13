@@ -1,0 +1,5 @@
+# v1.0.1 - Sag Alles Ab
+
+**13 Mart 2021**
+
+- F-Droid uyumluluk düzeltmesi: gereksiz mülkiyetli bağımlılık kaldırıldı (bkz: https://github.com/y20k/escapepod/issues/64)
