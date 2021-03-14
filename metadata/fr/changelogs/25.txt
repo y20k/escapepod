@@ -1,5 +1,5 @@
 # v0.9.0 - Aber Hier Leben, Nein Danke
 
-**2020-02-25**
+**25/02/2020**
 
 - Écran des paramètres

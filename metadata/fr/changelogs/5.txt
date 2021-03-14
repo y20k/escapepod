@@ -1,5 +1,5 @@
 # v0.7.0 - Drüben Auf Dem Hügel
 
-**2019-09-11**
+**11/09/2019**
 
 - Première version stable

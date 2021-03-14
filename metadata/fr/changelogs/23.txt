@@ -1,6 +1,6 @@
 # v0.8.5 - Gehen Die Leute (23 Special Edition)
 
-**2019-12-19**
+**19/12/2019**
 
 - Retrait de la prise en charge d'Android Auto
 --> Ne posez pas de questions (⊙_☉)

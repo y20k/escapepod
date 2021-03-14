@@ -1,6 +1,6 @@
 # v0.7.1 - Drüben Auf Dem Hügel
 
-**2019-10-02**
+**02/10/2019**
 
 - Nouveau contrôleur de vitesse de lecture
 - Les descriptions d'épisode plus longues sont affichées dans les notes, si disponibles dans le flux RSS
