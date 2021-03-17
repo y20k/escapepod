@@ -156,4 +156,5 @@
     <string name="pref_advanced_title">Avançado</string>
     <string name="toast_message_deleting_downloads">A eliminar episódios descarregados.</string>
     <string name="notification_dismiss">Dispensar notificação</string>
+    <string name="toast_message_error_file_type_unknown">Não foi possível processar a transferência. Tipo:</string>
 </resources>
