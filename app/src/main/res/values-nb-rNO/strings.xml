@@ -43,7 +43,7 @@
     <string name="dialog_yes_no_positive_button_default">Ja</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Slett alle</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Slett</string>
-    <string name="dialog_yes_no_positive_button_mark_episode_played">Merk som avspilt</string>
+    <string name="dialog_yes_no_positive_button_mark_episode_played">Merk som Spilte</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Last ned uansett</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Fjern</string>
     <string name="dialog_yes_no_positive_button_update_collection">Oppdater</string>
@@ -53,7 +53,7 @@
     <!-- Toasts -->
     <string name="toast_message_adding_podcast">Legger til nettradioopptak.</string>
     <string name="toast_message_adding_podcasts">Legger til nettradioopptak.</string>
-    <string name="toast_message_collection_update_not_necessary">Nettradioopptakssamling oppdatert.</string>
+    <string name="toast_message_collection_update_not_necessary">Podcast samling up-to-date.</string>
     <string name="toast_message_downloading_episode">Laster ned episode.</string>
     <string name="toast_message_error_missing_storage_permission">Innvilg tilgang for \"Les lagring\" for å åpne denne filen.</string>
     <string name="toast_message_error_refreshing_cover">Kunne ikke oppdatere omslag. Informasjonskanalen inneholder ikke omslagsreferanse.</string>
@@ -109,11 +109,11 @@
     <string name="descr_expanded_player_time_played">Avspilt tid</string>
     <string name="descr_expanded_player_time_remaining">Gjenstående tid</string>
     <string name="descr_expanded_player_up_next_clear_button">Tøm \'Spilles etterpå\'-kø</string>
-    <string name="descr_player_playback_button">Spill av / sett på pause</string>
+    <string name="descr_player_playback_button">Spill av/pause</string>
     <string name="descr_player_podcast_cover">Lite nettradioopptaksomslag</string>
     <!-- Onboarding -->
     <string name="onboarding_app_description">Nettradioopptaksavspillingsprogram</string>
-    <string name="onboarding_app_get_started">Begynn nå</string>
+    <string name="onboarding_app_get_started">Kom I Gang</string>
     <string name="onboarding_app_hypercritical_quote_1" translatable="false">Ingenting er så perfekt</string>
     <string name="onboarding_app_hypercritical_quote_2" translatable="false">at det ikke kan påklages.</string>
     <string name="player_sheet_p_no_data" translatable="false">-</string>
@@ -153,10 +153,10 @@
     <string name="pref_opml_export_title">Eksporter OPML</string>
     <string name="toast_message_install_file_helper">Installer en filbehandler eller nettradioopptaksspiller først.</string>
     <string name="toast_message_save_opml">Lagrer nettradioopptakssamling som OPML.</string>
-    <string name="dialog_episode_shownotes_feed">Informasjonskanal</string>
+    <string name="dialog_episode_shownotes_feed">Mate</string>
     <string name="dialog_episode_shownotes_website">Nettside</string>
     <string name="dialog_yes_no_message_update_covers">Last ned siste versjon av alle nettradioopptaksomslag\?</string>
-    <string name="dialog_yes_no_positive_button_update_covers">Oppdater</string>
+    <string name="dialog_yes_no_positive_button_update_covers">Oppdatering</string>
     <string name="pref_update_covers_summary">Last ned siste versjon av alle nettradioopptaksomslag i samlingen din.</string>
     <string name="pref_update_covers_title">Oppdater omslag</string>
     <string name="toast_message_error_download_error">Nedlastingsfeil</string>
@@ -172,7 +172,7 @@
     <string name="pref_app_version_summary">Versjon</string>
     <string name="pref_about_title">Om</string>
     <string name="pref_search_provider_selection_title">Søketilbyder</string>
-    <string name="pref_search_provider_selection_summary">Bruker nå:</string>
+    <string name="pref_search_provider_selection_summary">Bruker:</string>
     <string name="pref_advanced_title">Avansert</string>
     <string name="pref_delete_all_storage_space_used">Brukt</string>
     <string name="pref_delete_all_storage_space_available">Tilgjengelig</string>
