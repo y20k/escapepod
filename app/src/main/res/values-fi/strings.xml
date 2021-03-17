@@ -135,4 +135,26 @@
     <string name="dialog_add_podcast_button">Lisää</string>
     <string name="fragment_settings_title">Asetukset</string>
     <string name="app_name">Escapepod</string>
+    <string name="toast_message_deleting_downloads">Poistetaan ladattuja jaksoja.</string>
+    <string name="toast_message_error_download_error">Latausvirhe</string>
+    <string name="toast_message_error_file_type_unknown">Latausta ei voitu käsitellä. Tiedostotyyppi:</string>
+    <string name="notification_dismiss">Irtisanomisilmoitus</string>
+    <string name="pref_about_title">Jokseenkin</string>
+    <string name="pref_advanced_title">Edistyksellinen</string>
+    <string name="pref_app_version_summary">Versio</string>
+    <string name="pref_app_version_title">Sovelluksen Versio</string>
+    <string name="pref_background_refresh_summary_enabled">Etsitään podcast-jaksoja taustalta.</string>
+    <string name="pref_background_refresh_summary_disabled">Ei etsi podcast-jaksoja taustalla.</string>
+    <string name="pref_background_refresh_title">Taustan Päivitys</string>
+    <string name="pref_delete_all_storage_space_available">Käytettävissä</string>
+    <string name="pref_delete_all_storage_space_used">Käyttää</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Podcast-jaksojen lataaminen Wi-Fi: n ja mobiiliverkon kautta. Datamaksuja voidaan periä.</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Ladataan podcast-jaksoja vain Wi-Fi: n kautta.</string>
+    <string name="pref_episode_download_over_mobile_title">Lataa Mobiiliverkossa</string>
+    <string name="pref_opml_import_summary">Valitse OPML-tiedosto laitteen tallennustilasta.</string>
+    <string name="pref_opml_import_title">Tuo OPML</string>
+    <string name="pref_report_issue_summary">Raportoi vikoja ja ehdottaa parannuksia GitHub.</string>
+    <string name="pref_report_issue_title">Raportti</string>
+    <string name="pref_search_provider_selection_summary">Tällä hetkellä käytössä:</string>
+    <string name="pref_search_provider_selection_title">Hakupalvelujen Tarjoaja</string>
 </resources>
