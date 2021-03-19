@@ -1,0 +1,5 @@
+# v1.0.2 - Sag Alles Ab
+
+**2021-03-19**
+
+- fixes a crash in the search dialog

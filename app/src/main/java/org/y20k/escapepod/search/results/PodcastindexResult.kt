@@ -12,8 +12,9 @@
  */
 
 
-package org.y20k.escapepod.search
+package org.y20k.escapepod.search.results
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 
 
@@ -21,6 +22,9 @@ import com.google.gson.annotations.Expose
  * PodcastindexResult class
  * Documentation of format for PodcastindexResult - see: https://podcastindex-org.github.io/docs-api/
  */
+// NOTE: This class needs to be excepted from Obfuscation to work with GSON
+// therefore it is added to proguard-rules.pro with "-keep public class ..."
+@Keep
 data class PodcastindexResult (@Expose val status: Boolean,
                                @Expose val feeds: List<Feed>,
                                @Expose val count: Int,

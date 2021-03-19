@@ -21,9 +21,8 @@
 -renamesourcefileattribute SourceFile
 
 
-# Preserve the core classes - because they need to be de-/serialized with GSON
--keep public class org.y20k.escapepod.core.**  { *; }
+# Preserve classes - because they need to be de-/serialized with GSON
+-keep public class org.y20k.escapepod.search.results.*  { *; }
 
 -keep public class org.y20k.escapepod.playback.PlayerService  { *; }
 
--keep public class org.y20k.escapepod.search.GpodderResult  { *; }

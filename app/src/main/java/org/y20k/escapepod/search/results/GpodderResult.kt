@@ -12,14 +12,18 @@
  */
 
 
-package org.y20k.escapepod.search
+package org.y20k.escapepod.search.results
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 
 
 /*
  * GpodderResult class
  */
+// NOTE: This class needs to be excepted from Obfuscation to work with GSON
+// therefore it is added to proguard-rules.pro with "-keep public class ..."
+@Keep
 data class GpodderResult (@Expose val url: String,
                           @Expose val title: String,
                           @Expose val description: String,

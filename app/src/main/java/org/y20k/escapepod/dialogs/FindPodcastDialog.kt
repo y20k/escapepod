@@ -41,10 +41,10 @@ import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.NetworkHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
-import org.y20k.escapepod.search.GpodderResult
-import org.y20k.escapepod.search.PodcastindexResult
-import org.y20k.escapepod.search.SearchResult
 import org.y20k.escapepod.search.SearchResultAdapter
+import org.y20k.escapepod.search.results.GpodderResult
+import org.y20k.escapepod.search.results.PodcastindexResult
+import org.y20k.escapepod.search.results.SearchResult
 
 
 /*

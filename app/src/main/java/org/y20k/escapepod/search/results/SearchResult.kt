@@ -1,7 +1,7 @@
 /*
- * GpodderResult.kt
- * Implements the GpodderResult class
- * A GpodderResult is the search result of a request to the gpodder.net search API
+ * SearchResult.kt
+ * Implements the SearchResult class
+ * A SearchResult contains data needed to display the search dialog results
  *
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
@@ -12,17 +12,18 @@
  */
 
 
-package org.y20k.escapepod.search
+package org.y20k.escapepod.search.results
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 
 
 /*
- * GpodderResult class
+ * SearchResult class
  */
+// NOTE: This class needs to be excepted from Obfuscation to work with GSON
+// therefore it is added to proguard-rules.pro with "-keep public class ..."
+@Keep
 data class SearchResult (@Expose val url: String,
                          @Expose val title: String,
                          @Expose val description: String)
-
-// Documentation of format for GpodderResult - see:
-// https://gpoddernet.readthedocs.io/en/latest/api/reference/general.html#formats

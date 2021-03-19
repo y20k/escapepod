@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textview.MaterialTextView
 import org.y20k.escapepod.R
 import org.y20k.escapepod.helpers.LogHelper
+import org.y20k.escapepod.search.results.SearchResult
 
 
 /*
