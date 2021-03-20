@@ -1,0 +1,5 @@
+# v1.0.3 - Sag Alles Ab
+
+**20 Mart 2021**
+
+- bir hata mesajı görüntülerken meydana gelen çökmeyi düzeltir

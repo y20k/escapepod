@@ -1,0 +1,5 @@
+# v1.0.2 - Sag Alles Ab
+
+**19 Mart 2021**
+
+- arama iletişim kutusundaki bir çökmeyi düzeltir
