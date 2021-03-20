@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.CollectionDatabase
@@ -382,10 +383,14 @@ object DownloadHelper {
                 }
                 Keys.PODCAST_VALIDATION_MISSING_COVER -> {
                     addPodcast(context, rssPodcast)
-                    Toast.makeText(context, context.getString(R.string.toast_message_error_validation_missing_cover), Toast.LENGTH_LONG).show()
+                    withContext(Main) {
+                        Toast.makeText(context, context.getString(R.string.toast_message_error_validation_missing_cover), Toast.LENGTH_LONG).show()
+                    }
                 }
                 Keys.PODCAST_VALIDATION_NO_VALID_EPISODES -> {
-                    Toast.makeText(context, context.getString(R.string.toast_message_error_validation_no_valid_episodes), Toast.LENGTH_LONG).show()
+                    withContext(Main) {
+                        Toast.makeText(context, context.getString(R.string.toast_message_error_validation_no_valid_episodes), Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

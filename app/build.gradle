@@ -11,8 +11,8 @@ android {
         applicationId 'org.y20k.escapepod'
         minSdkVersion 25
         targetSdkVersion 30
-        versionCode 33
-        versionName '1.0.2'
+        versionCode 34
+        versionName '1.0.3'
         resConfigs "de", "en", "es", "eu", "fi", "fr", "fr-rCA", "he", "hr", "it", "nb-rNO", "nl", "pl", "pt", "ru", "tr", "zh-rCN"
     }
 
@@ -63,7 +63,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
-    def coroutinesVersion = "1.3.9"
+    def coroutinesVersion = "1.4.3"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
