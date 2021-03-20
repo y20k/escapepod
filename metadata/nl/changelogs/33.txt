@@ -1,0 +1,5 @@
+# v1.0.2 - Sag Alles Ab
+
+**2021-03-19**
+
+- Opgelost: crash van het zoekvenster

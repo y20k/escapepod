@@ -1,0 +1,5 @@
+# v1.0.3 - Sag Alles Ab
+
+**2021-03-20**
+
+-Opgelost: crash tijdens het tonen van een foutmelding
