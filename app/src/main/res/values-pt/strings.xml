@@ -6,7 +6,7 @@
     <string name="dialog_add_podcast_input_hint">Introduza o endereço da fonte de podcasts</string>
     <string name="dialog_add_podcast_title">Adicionar novo</string>
     <string name="dialog_episode_shownotes_close">Fechar</string>
-    <string name="dialog_episode_shownotes_title">Mostrar notas</string>
+    <string name="dialog_episode_shownotes_title">Notas do programa</string>
     <string name="dialog_error_message_default">Ocorreu um erro</string>
     <string name="dialog_error_message_no_network">Conecte-se à Internet.</string>
     <string name="dialog_error_message_podcast_duplicate">Este podcast já faz parte da sua coleção.</string>
