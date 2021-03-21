@@ -146,7 +146,7 @@
     <string name="dialog_error_message_no_network">Connettiti a Internet.</string>
     <string name="dialog_error_message_default">Si è verificato un errore</string>
     <string name="dialog_episode_shownotes_website">Sito web</string>
-    <string name="dialog_episode_shownotes_title">Mostra le note</string>
+    <string name="dialog_episode_shownotes_title">Note del programma</string>
     <string name="dialog_episode_shownotes_feed">Flusso</string>
     <string name="dialog_episode_shownotes_close">Chiudi</string>
     <string name="dialog_add_podcast_title">Aggiungi un nuovo podcast</string>
