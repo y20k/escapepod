@@ -149,7 +149,7 @@
     <string name="dialog_error_message_no_network">Connectez-vous à Internet.</string>
     <string name="dialog_error_message_default">Un erreur s\'est produite</string>
     <string name="dialog_episode_shownotes_website">Site Web</string>
-    <string name="dialog_episode_shownotes_title">Afficher la description</string>
+    <string name="dialog_episode_shownotes_title">Description du programme</string>
     <string name="dialog_episode_shownotes_feed">Flux</string>
     <string name="dialog_episode_shownotes_close">Fermer</string>
     <string name="dialog_add_podcast_button">Ajouter</string>
