@@ -1,0 +1,13 @@
+# v0.6.0-beta: Drei Schritte vom Abgrund entfernt
+
+**2019-08-14**
+
+- Visor de notas de programa básico
+- Tipografía cambiada (Material Design Components)
+- Arreglos de errores
+
+
+Nota: para solucionar cuando aparecen duplicados los episodios en la lista:
+1) Guarde el archivo de exportación OPML (/Android/data/org.y20k.escapepod/files/collection/collection_opml.xml)
+2) Elimine todos los datos de la aplicación
+3) Abra el archivo OPML con Escapepod y vuelva a importar todos los pódcast.

@@ -1,0 +1,5 @@
+# v1.0.3: Sag alles ab
+
+**2021-03-20**
+
+- Corrige un cierre inesperado al mostrar un mensaje de error

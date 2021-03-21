@@ -1,0 +1,5 @@
+# v0.9.5: Aber hier leben, nein danke
+
+**2020-10-07**
+
+- El último pódcast de la lista puede eliminarse (otra vez)

@@ -1,4 +1,4 @@
-# v1.0.0: Sag Alles Ab
+# v1.0.0: Sag alles ab
 
 **2021-03-04**
 

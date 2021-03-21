@@ -1,0 +1,5 @@
+# v1.0.1: Sag alles ab
+
+**2021-03-13**
+
+- Arreglo para cumplimiento normativo de F-Droid: se eliminó una innecesaria dependencia de licencia privativa (vea https://github.com/y20k/escapepod/issues/64)

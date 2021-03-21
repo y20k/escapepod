@@ -1,0 +1,5 @@
+# v1.0.2: Sag alles ab
+
+**2021-03-19**
+
+- Corrige un cierre inesperado al utilizar el diálogo de búsqueda
