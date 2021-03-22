@@ -1,0 +1,5 @@
+# v1.0.2 - Sag Alles Ab
+
+**19/03/2021**
+
+- Correction d'un plantage au niveau de la boîte de dialogue de recherche

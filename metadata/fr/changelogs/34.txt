@@ -1,0 +1,5 @@
+# v1.0.3 - Sag Alles Ab
+
+**20/03/2021**
+
+- Correction d'un plantage lors de l'affichage d'un message d'erreur
