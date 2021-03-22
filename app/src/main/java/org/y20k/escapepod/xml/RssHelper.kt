@@ -255,17 +255,26 @@ class RssHelper {
     private fun readPodcastCover(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER)
-        while (parser.next() != XmlPullParser.END_TAG) {
-            // abort loop early if no start tag
-            if (parser.eventType != XmlPullParser.START_TAG) {
-                continue
-            }
-            // read only relevant tags
-            when (parser.name) {
-                // found episode cover
-                Keys.RSS_PODCAST_COVER_URL -> link = readPodcastCoverUrl(parser, nameSpace)
-                // skip any other un-needed tag within "image" ( = Cover)
-                else -> XmlHelper.skip(parser)
+        val href: String? = parser.getAttributeValue(null, Keys.RSS_PODCAST_COVER_HREF)
+        // CASE: Get cover URL from <image href="https:/..." />
+        if (!href.isNullOrEmpty()) {
+            link = href
+            parser.nextTag()
+        }
+        // CASE: Get cover URL from <image><url>https:/...</url></image>
+        else {
+            while (parser.next() != XmlPullParser.END_TAG) {
+                // abort loop early if no start tag
+                if (parser.eventType != XmlPullParser.START_TAG) {
+                    continue
+                }
+                // read only relevant tags
+                when (parser.name) {
+                    // found episode cover
+                    Keys.RSS_PODCAST_COVER_URL -> link = readPodcastCoverUrl(parser, nameSpace)
+                    // skip any other un-needed tag within "image" ( = Cover)
+                    else -> XmlHelper.skip(parser)
+                }
             }
         }
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_COVER)
@@ -288,11 +297,11 @@ class RssHelper {
     private fun readPodcastCoverItunes(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER_ITUNES)
-        val tag = parser.name
-        if (tag == Keys.RSS_PODCAST_COVER_ITUNES) {
-            link = parser.getAttributeValue(null, Keys.RSS_PODCAST_COVER_ITUNES_URL)
-            parser.nextTag()
+        val href: String? = parser.getAttributeValue(null, Keys.RSS_PODCAST_COVER_HREF)
+        if (!href.isNullOrEmpty()) {
+            link = href
         }
+        parser.nextTag()
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_PODCAST_COVER_ITUNES)
         return link
     }
