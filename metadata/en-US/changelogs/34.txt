@@ -1,5 +1,6 @@
 # v1.0.3 - Sag Alles Ab
 
-**2021-03-20**
+**2021-03-24**
 
+- improves RSS parsing for podcast cover art
 - fixes a crash when displaying an error message
