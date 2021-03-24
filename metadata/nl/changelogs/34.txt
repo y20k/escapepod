@@ -2,4 +2,5 @@
 
 **2021-03-20**
 
+-Verbeterd: rss-verwerking van podcasthoezen
 -Opgelost: crash tijdens het tonen van een foutmelding
