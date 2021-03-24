@@ -45,7 +45,7 @@
     <string name="toast_message_copied_to_clipboard">Syötteen osoite kopioitu leikepöydälle.</string>
     <string name="toast_message_debug_logging_to_file_started">Virheenkorjaus: Aloita paikalliseen lokitiedostoon kirjoittaminen.</string>
     <string name="toast_message_error_no_podcast_matches_search">Hakuasi vastaavaa podcastia ei löydy.</string>
-    <string name="toast_message_downloading_episode">Ladataan jaksoa.</string>
+    <string name="toast_message_downloading_episode">Jakson lataaminen.</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Poista</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Poista kaikki</string>
     <string name="dialog_yes_no_negative_button_cancel">Peruuta</string>
@@ -93,7 +93,7 @@
     <string name="toast_message_up_next_removed_episode">Jakso poistettu toistojonosta.</string>
     <string name="toast_message_up_next_added_episode">Lisätty jakso toistojonoon.</string>
     <string name="player_up_next_headline">Seuraavaksi:</string>
-    <string name="dialog_add_podcast_howto">Syötä podcastin syötteen osoite. Voit esimerkiksi etsiä RSS-symbolia podcastin nettisivuilta.</string>
+    <string name="dialog_add_podcast_howto">Anna podcastin syötteen osoite. Etsi RSS-symboli kyseisen podcastin kotisivulta.</string>
     <string name="dialog_yes_no_message_non_wifi_download">Laitteesi ei ole yhteydessä Wi-Fillä. Ladataanko jakso silti\?</string>
     <string name="dialog_yes_no_message_vpn_download">Laitteesi on yhteydessä nettiin VPN:n kautta. Ladataanko jakso silti\?</string>
     <string name="dialog_yes_no_message_update_covers">Ladataanko kaikkien podcastien uusimmat kansikuvat\?</string>
