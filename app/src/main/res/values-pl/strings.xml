@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Escapepod</string>
     <string name="dialog_add_podcast_button">Dodaj</string>
-    <string name="dialog_add_podcast_howto">Proszę wpisać adres podcastu. Poszukaj symbolu RSS na stronie głównej danego podcastu.</string>
+    <string name="dialog_add_podcast_howto">Proszę podać adres kanału podcastu. Poszukaj symbolu RSS na stronie głównej danego podcastu.</string>
     <string name="dialog_add_podcast_input_hint">Wprowadź link do podcastu</string>
     <string name="dialog_add_podcast_title">Dodaj nowy Podcast</string>
     <string name="dialog_episode_shownotes_close">Zamknij</string>
@@ -53,7 +53,7 @@
     <string name="toast_message_adding_podcast">Dodawanie podcastu.</string>
     <string name="toast_message_adding_podcasts">Dodawanie podcastów.</string>
     <string name="toast_message_collection_update_not_necessary">Kolekcja Podcastów jest aktualna.</string>
-    <string name="toast_message_downloading_episode">Pobieranie odcinka.</string>
+    <string name="toast_message_downloading_episode">Pobranie odcinka.</string>
     <string name="toast_message_error_feed_not_supported">Nieobsługiwany kanał (application/Atom + XML).</string>
     <string name="toast_message_error_missing_storage_permission">Udziel uprawnienia „Odczytu pamięci”, aby otworzyć ten plik.</string>
     <string name="toast_message_error_no_podcast_found">Nie można rozpocząć odtwarzania. Proszę najpierw dodać podcast.</string>
@@ -135,4 +135,26 @@
     <string name="pref_delete_all_summary">Usuń pobrane odcinki, aby zwolnić miejsce na urządzeniu. Możesz pobrać je ponownie w każdej chwili.</string>
     <string name="toast_message_install_file_helper">Najpierw zainstaluj menedżera plików lub odtwarzacz podcastów.</string>
     <string name="dialog_episode_shownotes_title">Pokaż notatki</string>
+    <string name="toast_message_deleting_downloads">Usuwanie pobranych odcinków.</string>
+    <string name="toast_message_error_download_error">Błąd pobierania</string>
+    <string name="toast_message_error_file_type_unknown">Nie można przetworzyć pobierania. Typ pliku:</string>
+    <string name="notification_dismiss">Oddalenie powiadomienia</string>
+    <string name="pref_about_title">O</string>
+    <string name="pref_advanced_title">Zaawansowane</string>
+    <string name="pref_app_version_summary">Wersja</string>
+    <string name="pref_app_version_title">Wersja aplikacji</string>
+    <string name="pref_background_refresh_summary_enabled">Szukanie odcinków podcastów w tle.</string>
+    <string name="pref_background_refresh_summary_disabled">Nie szukam odcinków podcastów w tle.</string>
+    <string name="pref_background_refresh_title">Odświeżanie tła</string>
+    <string name="pref_delete_all_storage_space_available">Dostępny</string>
+    <string name="pref_delete_all_storage_space_used">Używane</string>
+    <string name="pref_episode_download_over_mobile_summary_enabled">Pobieranie odcinków podcastu za pośrednictwem sieci Wi-Fi i sieci komórkowej. Mogą obowiązywać opłaty za transmisję danych.</string>
+    <string name="pref_episode_download_over_mobile_summary_disabled">Pobieranie odcinków podcastów tylko przez sieć Wi-Fi.</string>
+    <string name="pref_episode_download_over_mobile_title">Pobieranie przez sieć komórkową</string>
+    <string name="pref_opml_import_summary">Wybierz plik OPML z pamięci masowej urządzenia.</string>
+    <string name="pref_opml_import_title">Importuj OPML</string>
+    <string name="pref_report_issue_summary">Zgłaszaj błędy i proponuj ulepszenia na GitHubie.</string>
+    <string name="pref_report_issue_title">Raport Wydanie</string>
+    <string name="pref_search_provider_selection_summary">Obecnie używam:</string>
+    <string name="pref_search_provider_selection_title">Szukaj dostawcy</string>
 </resources>
