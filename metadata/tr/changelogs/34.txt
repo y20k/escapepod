@@ -1,5 +1,6 @@
 # v1.0.3 - Sag Alles Ab
 
-**20 Mart 2021**
+**24 Mart 2021**
 
+- podcast kapak resmi için RSS ayrıştırmasını iyileştirir
 - bir hata mesajı görüntülerken meydana gelen çökmeyi düzeltir
