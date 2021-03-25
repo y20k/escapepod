@@ -126,7 +126,7 @@
     <string name="dialog_error_message_podcast_duplicate">Podcast on jo kokoelmassasi.</string>
     <string name="dialog_error_message_no_network">Yhdistä internetiin.</string>
     <string name="dialog_error_message_default">Virhe tapahtui</string>
-    <string name="dialog_episode_shownotes_website">Nettisivu</string>
+    <string name="dialog_episode_shownotes_website">Verkkosivusto</string>
     <string name="dialog_episode_shownotes_title">Näytä muistiinpanot</string>
     <string name="dialog_episode_shownotes_feed">Syöte</string>
     <string name="dialog_episode_shownotes_close">Sulje</string>
