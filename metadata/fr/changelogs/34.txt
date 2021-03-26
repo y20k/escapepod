@@ -2,4 +2,5 @@
 
 **20/03/2021**
 
+- Amélioration de l'analyse du flux RSS pour récupérer la pochette des podcasts
 - Correction d'un plantage lors de l'affichage d'un message d'erreur
