@@ -2,7 +2,7 @@
 <resources>
     <string name="fragment_settings_title">Ezarpenak</string>
     <string name="dialog_add_podcast_button">Gehitu</string>
-    <string name="dialog_add_podcast_howto">Mesedez idatzi ezazu podcast jario baten helbidea. Bilatu RSS ikurra podcast bakoitzaren webgunean.</string>
+    <string name="dialog_add_podcast_howto">Mesedez, idatzi bat podcast-elikaduraren helbidea. Begiratu RSS sinbolo hasiera dagozkien podcast.</string>
     <string name="dialog_add_podcast_input_hint">Idatzi podcast jarioaren lotura</string>
     <string name="dialog_add_podcast_title">Podcast berria gehitu</string>
     <string name="dialog_episode_shownotes_close">Itxi</string>
@@ -59,7 +59,7 @@
     <string name="toast_message_adding_podcast">Podcast-a gehitzen.</string>
     <string name="toast_message_adding_podcasts">Podcast-a gehitzen.</string>
     <string name="toast_message_collection_update_not_necessary">Podcast-en bilduma eguneratuta.</string>
-    <string name="toast_message_downloading_episode">Pasartea deskargatzen.</string>
+    <string name="toast_message_downloading_episode">Deskargatzeko pasarte.</string>
     <string name="toast_message_error_feed_not_supported">Jario ez onartua (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Onartu \"Edukia irakurri\" baimena fitxategi hau irekitzeko.</string>
     <string name="toast_message_error_no_podcast_found">Ezin da erreprodukzioa hasi. Mesedez gehitu podcast bat lehenago.</string>
