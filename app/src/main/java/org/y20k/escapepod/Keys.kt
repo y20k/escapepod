@@ -139,14 +139,15 @@ object Keys {
     const val MIME_TYPE_JPG = "image/jpeg"
     const val MIME_TYPE_PNG = "image/png"
     const val MIME_TYPE_MP3 = "audio/mpeg"
+    const val MIME_TYPE_MP4 = "audio/mp4"
     const val MIME_TYPE_XML = "text/xml"
     const val MIME_TYPE_OCTET_STREAM = "application/octet-stream"
     const val MIME_TYPE_UNSUPPORTED = "unsupported"
     val MIME_TYPES_IMAGE = arrayOf("image/png", "image/jpeg")
-    val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3")
+    val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3", "audio/mp4")
     val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml")
     val MIME_TYPES_ATOM = arrayOf("application/atom+xml")
-    val FILE_EXTENSIONS_AUDIO = arrayOf("mp3")
+    val FILE_EXTENSIONS_AUDIO = arrayOf("mp3", "m4a")
     val FILE_EXTENSIONS_IMAGE = arrayOf("png", "jpeg", "jpg")
 
     // folder names

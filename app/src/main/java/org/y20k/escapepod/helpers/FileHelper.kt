@@ -121,6 +121,7 @@ object FileHelper {
         if (fileName.endsWith("xml", true)) return Keys.MIME_TYPE_XML
         if (fileName.endsWith("rss", true)) return Keys.MIME_TYPE_XML
         if (fileName.endsWith("mp3", true)) return Keys.MIME_TYPE_MP3
+        if (fileName.endsWith("m4a", true)) return Keys.MIME_TYPE_MP4
         if (fileName.endsWith("png", true)) return Keys.MIME_TYPE_PNG
         if (fileName.endsWith("jpg", true)) return Keys.MIME_TYPE_JPG
         if (fileName.endsWith("jpeg", true)) return Keys.MIME_TYPE_JPG
