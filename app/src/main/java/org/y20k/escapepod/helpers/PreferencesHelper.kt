@@ -66,6 +66,22 @@ object PreferencesHelper {
     }
 
 
+    /* Load feed location of the podcast in the podcast list which is currently expanded */
+    fun loadPodcastListExpandedFeedLocation(context: Context): String {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        return settings.getString(Keys.PREF_PODCAST_LIST_EXPANDED_FEED_LOCATION, String()) ?: String()
+    }
+
+
+    /* Save feed location of the podcast in the podcast list which is currently expanded */
+    fun savePodcastListExpandedFeedLocation(context: Context, podcastFeedLocation: String = String()) {
+        val settings = PreferenceManager.getDefaultSharedPreferences(context)
+        settings.edit {
+            putString(Keys.PREF_PODCAST_LIST_EXPANDED_FEED_LOCATION, podcastFeedLocation)
+        }
+    }
+
+
     /* Loads keepDebugLog true or false */
     fun loadKeepDebugLog(context: Context): Boolean {
         val settings = PreferenceManager.getDefaultSharedPreferences(context)
