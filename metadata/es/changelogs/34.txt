@@ -1,5 +1,6 @@
 # v1.0.3: Sag alles ab
 
-**2021-03-20**
+**2021-03-24**
 
+- Mejora el procesamiento del RSS de las portadas de los pódcast
 - Corrige un cierre inesperado al mostrar un mensaje de error
