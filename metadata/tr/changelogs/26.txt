@@ -3,4 +3,4 @@
 **25 Mart 2020**
 
 - podcast ana sayfa adresinin ayrıştırılmasını düzeltir
-- güncellenmiş çeviriler
+- çeviriler güncellendi

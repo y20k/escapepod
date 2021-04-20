@@ -1,0 +1,7 @@
+# v1.0.4 - Sag Alles Ab
+
+**28 Nisan 2021**
+
+- oynatma konumunun kaydedilmesiyle ilgili bir hatayı düzeltir
+- ilk MP4 desteği
+- çeviriler güncellendi

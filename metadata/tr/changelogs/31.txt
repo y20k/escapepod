@@ -6,5 +6,5 @@
 - yeni podcast arama sağlayıcısı: podcastindex.org
 - arka planda: Escapepod, podcast verilerini JSON metin dosyası yerine bir Room veri tabanında saklıyor
 - ayarlar aracılığıyla OPML olarak içe aktarma
-- güncellenmiş çeviriler
+- çeviriler güncellendi
 - birkaç küçük hata düzeltmesi
