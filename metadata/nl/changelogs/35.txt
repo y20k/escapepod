@@ -1,0 +1,7 @@
+# v1.0.4 - Sag Alles Ab
+
+**2021-04-28**
+
+- Opgelost: probleem omtrent opslaan van de afspeelpositie
+- Nieuw: initiële mp4-ondersteuning
+- Bijgewerkt: vertalingen
