@@ -300,9 +300,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
         // TODO check if episode is in up-next queue - reset up next - save PreferencesHelper.saveUpNextMediaId
 
-        // stop playback if necessary
-        if (player.isPlaying) { player.pause() }
-
         // reset playback position if necessary
         if (episode.isFinished()) {
             episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
@@ -580,6 +577,10 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         }
 
         override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+            // save state of current episode before starting playback of new one
+            if (this@PlayerService::episode.isInitialized && (player.isPlaying)) {
+                handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+            }
             CoroutineScope(IO).launch {
                 // get episode
                 val newEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId)
