@@ -1,0 +1,7 @@
+# v1.0.4 - Sag Alles Ab
+
+**2021-04-28**
+
+- behebt einen Fehler beim Speichern der Abspielposition
+- initiale MP4-Unterstützung
+- aktualisierte Übersetzungen
