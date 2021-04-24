@@ -1,0 +1,7 @@
+# v1.0.4 - Sag Alles Ab
+
+**2021-04-28**
+
+- corrige une erreur avec l'enregistrement de la position de lecture
+- prise en charge initial de MP4
+- traductions mises à jour

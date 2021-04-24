@@ -3,4 +3,4 @@
 **01/10/2020**
 
 - Traductions mises à jour et nouvelles traductions
-- Quelques corrections de bug
+- Quelques corrections d'erreurs

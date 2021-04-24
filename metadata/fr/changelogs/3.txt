@@ -5,4 +5,4 @@
 - Minuteur de sommeil
 - Prise en charge de base pour Android Auto et Wear OS
 - Fonctionnalité de fichier journal de débogage
-- Corrections de bugs
+- Corrections d'erreurs

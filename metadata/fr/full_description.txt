@@ -19,7 +19,7 @@ Escapepod tente de réduire le nombre d'épisodes qu'il conserve. Voici les règ
 EST-CE QU'ESCAPEPOD PREND EN CHARGE LE FORMAT OPML ?
 Vous pouvez importer une liste de podcasts utilisant le format d'échange OPML en utilisant l'option respective dans l'application. La sélection de podcasts courante peut être exportée via les paramètres également. De plus Escapepod conserve un fichier OPML à jour dans le dossier /Android/data/org.y20k.escapepod/files/collection/.
 
-You can import a podcast list using the OPML exchange format using the respective option in the app's Settings. The current podcast collection can be exported via Settings, too. Additionally Escapepod keeps an up-to-date OPML file in the folder /Android/data/org.y20k.escapepod/files/collection/.
+Vous pouvez importer une liste de podcasts en utilisant le format d'échange OPML en utilisant l'option correspondante dans les paramètres de l'application. La collection de podcasts actuelle peut également être exportée via les paramètres. De plus, Escapepod conserve un fichier OPML à jour dans le dossier /Android/data/org.y20k.escapepod/files/collection/.
 
 JE NE PEUX PAS AJOUTER LE PODCAST X. POURQUOI ?
 Veuillez signaler tous les flux de podcast qui ne fonctionnent pas en utilisant le modèle de ticket sur GitHub « Feed Issue » (en anglais) (https://github.com/y20k/escapepod/issues/). Remarque : Escapepod ne prend pas en charge les podcasts vidéo.
