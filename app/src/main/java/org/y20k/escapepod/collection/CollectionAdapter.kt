@@ -248,8 +248,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
 
     /* Fills the list of older episodes */
     private fun setOlderEpisodesList(podcastViewHolder: PodcastViewHolder, position: Int, podcast: PodcastWithRecentEpisodesWrapper) {
-        // set up Older Episodes button
-        setOlderEpisodesButton(podcastViewHolder)
+        // set up Older Episodes toggle button
         if (podcast.episodes.size > 1) {
             podcastViewHolder.olderEpisodesButtonView.setOnClickListener {
                 toggleEpisodeList(position, podcast.data.remotePodcastFeedLocation)
@@ -265,8 +264,10 @@ class CollectionAdapter(private val context: Context, private val collectionData
             podcastViewHolder.olderEpisodesList.adapter = episodeListAdapter
             podcastViewHolder.olderEpisodesList.layoutManager = LinearLayoutManager(context)
             podcastViewHolder.olderEpisodesList.itemAnimator = DefaultItemAnimator()
+            podcastViewHolder.olderEpisodesButtonView.text = context.getString(R.string.podcast_list_button_toggle_hide_older_episodes)
         } else {
             podcastViewHolder.olderEpisodesList.isGone = true
+            podcastViewHolder.olderEpisodesButtonView.text = context.getString(R.string.podcast_list_button_toggle_show_older_episodes)
         }
     }
 
@@ -277,9 +278,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
             // CASE: this podcast is already expanded
             remotePodcastFeedLocation -> {
                 // reset currently expanded info
-                expandedPodcastFeedLocation = String()
-                expandedPodcastPosition = -1
-                PreferencesHelper.savePodcastListExpandedFeedLocation(context, expandedPodcastFeedLocation)
+                savePodcastListExpandedState(context)
                 // update podcast card
                 notifyItemChanged(position)
             }
@@ -290,26 +289,9 @@ class CollectionAdapter(private val context: Context, private val collectionData
                 // if podcast was expanded - collapse it
                 if (previousExpandedPodcastPosition > -1 && previousExpandedPodcastPosition < collection.size) notifyItemChanged(previousExpandedPodcastPosition)
                 // store current podcast as the expanded one
-                expandedPodcastFeedLocation = remotePodcastFeedLocation
-                expandedPodcastPosition = position
-                PreferencesHelper.savePodcastListExpandedFeedLocation(context, expandedPodcastFeedLocation)
+                savePodcastListExpandedState(context, position, remotePodcastFeedLocation)
                 // update podcast card
                 notifyItemChanged(expandedPodcastPosition)
-            }
-        }
-    }
-
-
-    /* Sets / updates the older episodes button text */
-    private fun setOlderEpisodesButton(podcastViewHolder: PodcastViewHolder) {
-        when (podcastViewHolder.olderEpisodesList.visibility) {
-            // CASE: older episode list is hidden -> set button to "show"
-            View.GONE -> {
-                podcastViewHolder.olderEpisodesButtonView.text = context.getString(R.string.podcast_list_button_toggle_show_older_episodes)
-            }
-            // CASE: older episode list is visible -> set button to "hide"
-            View.VISIBLE -> {
-                podcastViewHolder.olderEpisodesButtonView.text = context.getString(R.string.podcast_list_button_toggle_hide_older_episodes)
             }
         }
     }
@@ -423,6 +405,14 @@ class CollectionAdapter(private val context: Context, private val collectionData
     }
 
 
+    /* Updates and saves state of expanded podcast card in list */
+    private fun savePodcastListExpandedState(context: Context, position: Int = -1, remotePodcastFeedLocation: String = String()) {
+        expandedPodcastFeedLocation = remotePodcastFeedLocation
+        expandedPodcastPosition = position
+        PreferencesHelper.savePodcastListExpandedFeedLocation(context, expandedPodcastFeedLocation)
+    }
+
+
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
         collectionViewModel.collectionLiveData.observe(owner, Observer<List<PodcastWithRecentEpisodesWrapper>> { newCollection ->
@@ -503,6 +493,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
             if (oldPodcast.data.name != newPodcast.data.name) return false
             if (oldPodcast.data.website != newPodcast.data.website) return false
             if (oldPodcast.data.remoteImageFileLocation != newPodcast.data.remoteImageFileLocation) return false
+            if (oldPodcast.data.remotePodcastFeedLocation == expandedPodcastFeedLocation) return false // todo test and remove again if necessary
             if (FileHelper.getFileSize(oldPodcast.data.cover.toUri()) != FileHelper.getFileSize(newPodcast.data.cover.toUri())) return false
             if (FileHelper.getFileSize(oldPodcast.data.smallCover.toUri()) != FileHelper.getFileSize(newPodcast.data.smallCover.toUri())) return false
 

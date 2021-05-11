@@ -114,6 +114,8 @@ object DownloadHelper {
             }
             // enqueue downloads to DownloadManager
             enqueueDownloadSuspended(context, uris, Keys.FILE_TYPE_RSS)
+            // reset expanded state of podcast list
+            PreferencesHelper.savePodcastListExpandedFeedLocation(context)
         }
     }
 
