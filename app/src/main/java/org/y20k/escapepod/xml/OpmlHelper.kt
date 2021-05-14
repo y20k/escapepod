@@ -45,7 +45,7 @@ object OpmlHelper {
 
 
     /* Main class variables */
-    private var feedUrlList: ArrayList<String> = arrayListOf()
+    private lateinit var feedUrlList: ArrayList<String>
 
 
     /* Share podcast collection as OPML file via share sheet */
@@ -80,7 +80,9 @@ object OpmlHelper {
     /* Suspend function: Read OPML feed from given input stream - async using coroutine */
     suspend fun readSuspended(context: Context, localFileUri: Uri): Array<String> {
         return suspendCoroutine {cont ->
-           LogHelper.v(TAG, "Reading OPML feed - Thread: ${Thread.currentThread().name}")
+            LogHelper.v(TAG, "Reading OPML feed - Thread: ${Thread.currentThread().name}")
+            // initialize / reset feed url list
+            feedUrlList = arrayListOf()
             // try parsing
             val stream: InputStream? = FileHelper.getTextFileStream(context, localFileUri)
             try {

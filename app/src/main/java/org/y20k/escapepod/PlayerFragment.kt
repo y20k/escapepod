@@ -765,8 +765,9 @@ class PlayerFragment: Fragment(), CoroutineScope,
     /* Handles arguments handed over by navigation (from SettingsFragment) */
     private fun handleNavigationArguments() {
         val opmlFileString: String? = arguments?.getString(Keys.ARG_OPEN_OPML)
-        if (opmlFileString != null) {
+        if (!opmlFileString.isNullOrEmpty()) {
             readOpmlFile(opmlFileString.toUri())
+            arguments?.clear()
         }
     }
 
