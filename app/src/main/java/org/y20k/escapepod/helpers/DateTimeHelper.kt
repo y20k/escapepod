@@ -75,6 +75,14 @@ object DateTimeHelper {
     }
 
 
+    /* Determines if a date is too far in the future. Used to determine, if date is unrealistic */
+    fun isSignificantlyInTheFuture(date: Date, hoursInTheFuture: Int = 48): Boolean {
+        val now = GregorianCalendar.getInstance().timeInMillis
+        val significantlyInTheFuture = now + (hoursInTheFuture * 3600 * 1000) // hours to milliseconds
+        return date.time > significantlyInTheFuture
+    }
+
+
     /* Converts RFC 2822 string representation of a date to DATE - using alternative patterns */
     private fun tryAlternativeRfc2822Parsing(dateString: String): Date {
         var date: Date = Keys.DEFAULT_DATE
