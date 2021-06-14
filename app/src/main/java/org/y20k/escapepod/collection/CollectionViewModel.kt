@@ -15,7 +15,6 @@
 package org.y20k.escapepod.collection
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.CoroutineScope
@@ -46,7 +45,6 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
 
     private val backgroundJob = Job()
     private var collectionDatabase: CollectionDatabase = CollectionDatabase.getInstance(application)
-    private val context: Context = application
 
 
     /* Init constructor */
@@ -70,10 +68,10 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             val podcast: PodcastWithAllEpisodesWrapper? = collectionDatabase.podcastDao().getWithRemotePodcastFeedLocation(remotePodcastFeedLocation)
             if (podcast != null) {
                 // reset media id in player state if necessary
-                val currentMediaId: String = PreferencesHelper.loadCurrentMediaId(context)
+                val currentMediaId: String = PreferencesHelper.loadCurrentMediaId(getApplication())
                 podcast.episodes.forEach { episode ->
                     if (episode.mediaId == currentMediaId) {
-                        PreferencesHelper.resetPlayerState(context)
+                        PreferencesHelper.resetPlayerState(getApplication())
                     }
                 }
                 // remove all relevant entries for given podcast
@@ -92,8 +90,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             // mark as played
             collectionDatabase.episodeDao().markPlayed(mediaId = mediaId)
             // reset media id in player state if necessary
-            if (PreferencesHelper.loadCurrentMediaId(context) == mediaId) {
-                PreferencesHelper.resetPlayerState(context)
+            if (PreferencesHelper.loadCurrentMediaId(getApplication()) == mediaId) {
+                PreferencesHelper.resetPlayerState(getApplication())
             }
         }
     }
@@ -107,8 +105,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
                 // update episode (remove audio reference and mark as not downloaded)
                 collectionDatabase.episodeDao().update(CollectionHelper.deleteEpisodeAudioFile(episode = episode, manuallyDeleted = true))
                 // update media id in player state if necessary
-                if (PreferencesHelper.loadCurrentMediaId(context) == mediaId) {
-                    PreferencesHelper.resetPlayerState(context)
+                if (PreferencesHelper.loadCurrentMediaId(getApplication()) == mediaId) {
+                    PreferencesHelper.resetPlayerState(getApplication())
                 }
             }
         }
