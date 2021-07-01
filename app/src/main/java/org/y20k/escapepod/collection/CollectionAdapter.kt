@@ -65,7 +65,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
     /* Main class variables */
     private lateinit var collectionViewModel: CollectionViewModel
     private var collection: List<PodcastWithRecentEpisodesWrapper> = listOf()
-    private var expandedPodcastFeedLocation: String = PreferencesHelper.loadPodcastListExpandedFeedLocation(context)
+    private var expandedPodcastFeedLocation: String = PreferencesHelper.loadPodcastListExpandedFeedLocation()
     private var expandedPodcastPosition: Int = -1
 
 
@@ -278,7 +278,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
             // CASE: this podcast is already expanded
             remotePodcastFeedLocation -> {
                 // reset currently expanded info
-                savePodcastListExpandedState(context)
+                savePodcastListExpandedState()
                 // update podcast card
                 notifyItemChanged(position)
             }
@@ -289,7 +289,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
                 // if podcast was expanded - collapse it
                 if (previousExpandedPodcastPosition > -1 && previousExpandedPodcastPosition < collection.size) notifyItemChanged(previousExpandedPodcastPosition)
                 // store current podcast as the expanded one
-                savePodcastListExpandedState(context, position, remotePodcastFeedLocation)
+                savePodcastListExpandedState(position, remotePodcastFeedLocation)
                 // update podcast card
                 notifyItemChanged(expandedPodcastPosition)
             }
@@ -406,10 +406,10 @@ class CollectionAdapter(private val context: Context, private val collectionData
 
 
     /* Updates and saves state of expanded podcast card in list */
-    private fun savePodcastListExpandedState(context: Context, position: Int = -1, remotePodcastFeedLocation: String = String()) {
+    private fun savePodcastListExpandedState(position: Int = -1, remotePodcastFeedLocation: String = String()) {
         expandedPodcastFeedLocation = remotePodcastFeedLocation
         expandedPodcastPosition = position
-        PreferencesHelper.savePodcastListExpandedFeedLocation(context, expandedPodcastFeedLocation)
+        PreferencesHelper.savePodcastListExpandedFeedLocation(expandedPodcastFeedLocation)
     }
 
 

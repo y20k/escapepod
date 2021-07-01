@@ -18,6 +18,7 @@ import android.app.Application
 import org.y20k.escapepod.helpers.AppThemeHelper
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
+import org.y20k.escapepod.helpers.PreferencesHelper.initPreferences
 
 
 /**
@@ -33,8 +34,9 @@ class Escapepod: Application () {
     override fun onCreate() {
         super.onCreate()
         LogHelper.v(TAG, "Escapepod application started.")
+        initPreferences()
         // set Dark / Light theme state
-        AppThemeHelper.setTheme(PreferencesHelper.loadThemeSelection(this))
+        AppThemeHelper.setTheme(PreferencesHelper.loadThemeSelection())
     }
 
 

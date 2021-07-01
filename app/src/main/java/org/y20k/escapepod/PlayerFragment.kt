@@ -120,13 +120,13 @@ class PlayerFragment: Fragment(), CoroutineScope,
         WorkerHelper.schedulePeriodicUpdateWorker()
 
         // import old podcasts
-        if (PreferencesHelper.isHouseKeepingNecessary(activity as Context)) {
+        if (PreferencesHelper.isHouseKeepingNecessary()) {
             // import podcasts from json into database
             ImportHelper.importLegacyCollection(activity as Context, collectionDatabase)
             // reset the player
-            PreferencesHelper.resetPlayerState(activity as Context, keepUpNextMediaId = false)
+            PreferencesHelper.resetPlayerState(keepUpNextMediaId = false)
             // housekeeping finished - save state
-            PreferencesHelper.saveHouseKeepingNecessaryState(activity as Context)
+            PreferencesHelper.saveHouseKeepingNecessaryState()
         }
 
     }
@@ -180,7 +180,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // assign volume buttons to music volume
         activity?.volumeControlStream = AudioManager.STREAM_MUSIC
         // load player state
-        playerState = PreferencesHelper.loadPlayerState(activity as Context)
+        playerState = PreferencesHelper.loadPlayerState()
         // recreate player ui
         CoroutineScope(IO).launch {
             // get current and up-next episode
@@ -190,7 +190,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
             withContext(Main) {
                 setupPlayer()
                 setupList()
-                layout.toggleDownloadProgressIndicator(activity as Context)
+                layout.toggleDownloadProgressIndicator()
             }
         }
         // handle navigation arguments
@@ -198,7 +198,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // handle start intent - if started via tap on rss link
         handleStartIntent()
         // start watching for changes in shared preferences
-        PreferencesHelper.registerPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
+        PreferencesHelper.registerPreferenceChangeListener(this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
 
 
@@ -206,11 +206,11 @@ class PlayerFragment: Fragment(), CoroutineScope,
     override fun onPause() {
         super.onPause()
         // save player state
-        PreferencesHelper.savePlayerState(activity as Context, playerState)
+        PreferencesHelper.savePlayerState(playerState)
         // stop receiving playback progress updates
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
         // stop watching for changes in shared preferences
-        PreferencesHelper.unregisterPreferenceChangeListener(activity as Context, this as SharedPreferences.OnSharedPreferenceChangeListener)
+        PreferencesHelper.unregisterPreferenceChangeListener(this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
 
 
@@ -228,7 +228,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             Keys.PREF_ACTIVE_DOWNLOADS -> {
-                layout.toggleDownloadProgressIndicator(activity as Context)
+                layout.toggleDownloadProgressIndicator()
             }
             Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID -> {
                 CoroutineScope(IO).launch {
@@ -349,7 +349,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 when (dialogResult) {
                     // user tapped update collection
                     true -> {
-                        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate(activity as Context)) {
+                        if (CollectionHelper.hasEnoughTimePassedSinceLastUpdate()) {
                             updateCollection()
                         } else {
                             Toast.makeText(activity as Context, R.string.toast_message_collection_update_not_necessary, Toast.LENGTH_LONG).show()
@@ -458,7 +458,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
     private fun buildPlaybackControls() {
         CoroutineScope(IO).launch {
             // get player state
-            playerState = PreferencesHelper.loadPlayerState(activity as Context)
+            playerState = PreferencesHelper.loadPlayerState()
 
             // get current and up-next episode
             episode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
@@ -605,7 +605,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
     /* Updates the Up Next queue */
     private fun updateUpNext(upNextEpisodeMediaId: String) {
-        PreferencesHelper.saveUpNextMediaId(activity as Context, upNextEpisodeMediaId)
+        PreferencesHelper.saveUpNextMediaId(upNextEpisodeMediaId)
         if (upNextEpisodeMediaId.isNotEmpty()) {
             Toast.makeText(activity as Context, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
         }
@@ -628,7 +628,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
         if (NetworkHelper.isConnectedToWifi(activity as Context)) {
             Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
             DownloadHelper.downloadEpisode(activity as Context, episodeMediaId, ignoreWifiRestriction = true, manuallyDownloaded = true)
-        } else if (NetworkHelper.isConnectedToCellular(activity as Context) && PreferencesHelper.loadEpisodeDownloadOverMobile(activity as Context)) {
+        } else if (NetworkHelper.isConnectedToCellular(activity as Context) && PreferencesHelper.loadEpisodeDownloadOverMobile()) {
             Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
             DownloadHelper.downloadEpisode(activity as Context, episodeMediaId, ignoreWifiRestriction = true, manuallyDownloaded = true)
         } else if (NetworkHelper.isConnectedToCellular(activity as Context)) {
@@ -678,7 +678,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 if (urls.isNotEmpty()) {
                     withContext(Main) { Toast.makeText(activity as Context, R.string.toast_message_adding_podcast, Toast.LENGTH_LONG).show() }
                     DownloadHelper.downloadPodcasts(activity as Context, urls)
-                    PreferencesHelper.saveLastUpdateCollection(activity as Context)
+                    PreferencesHelper.saveLastUpdateCollection()
                 }
             }
         } else {

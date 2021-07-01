@@ -82,7 +82,7 @@ object LogHelper {
     }
 
     fun save(context: Context, tag: String, t: Throwable?, vararg messages: Any) {
-        if (PreferencesHelper.loadKeepDebugLog(context)) {
+        if (PreferencesHelper.loadKeepDebugLog()) {
             val sb = StringBuilder()
             sb.append(DateTimeHelper.convertToRfc2822(Calendar.getInstance().time))
             sb.append(" | ")
@@ -102,16 +102,16 @@ object LogHelper {
     }
 
     fun toggleDebugLogFileCreation(context: Context) {
-        when (PreferencesHelper.loadKeepDebugLog(context)) {
+        when (PreferencesHelper.loadKeepDebugLog()) {
             true -> {
                 // turn off log
-                PreferencesHelper.saveKeepDebugLog(context, false)
+                PreferencesHelper.saveKeepDebugLog(false)
                 FileHelper.deleteLog(context)
                 Toast.makeText(context, R.string.toast_message_debug_logging_to_file_stopped, Toast.LENGTH_LONG).show()
             }
             false -> {
                 // turn on log
-                PreferencesHelper.saveKeepDebugLog(context, true)
+                PreferencesHelper.saveKeepDebugLog(true)
                 Toast.makeText(context, R.string.toast_message_debug_logging_to_file_started, Toast.LENGTH_LONG).show()
             }
         }
