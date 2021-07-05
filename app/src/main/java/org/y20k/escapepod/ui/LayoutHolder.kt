@@ -279,8 +279,8 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Toggles visibility of the download progress indicator */
-    fun toggleDownloadProgressIndicator(context: Context) {
-        when (PreferencesHelper.loadActiveDownloads(context)) {
+    fun toggleDownloadProgressIndicator() {
+        when (PreferencesHelper.loadActiveDownloads()) {
             Keys.ACTIVE_DOWNLOADS_EMPTY -> downloadProgressIndicator.isGone = true
             else -> downloadProgressIndicator.isVisible = true
         }

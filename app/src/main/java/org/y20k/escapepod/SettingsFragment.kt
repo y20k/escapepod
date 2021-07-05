@@ -330,9 +330,9 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
         }
         // reset current and up next media id
-        PreferencesHelper.saveCurrentMediaId(activity as Context)
-        PreferencesHelper.saveUpNextMediaId(activity as Context)
-        PreferencesHelper.savePlayerPlaybackState(activity as Context, PlaybackStateCompat.STATE_STOPPED)
+        PreferencesHelper.saveCurrentMediaId()
+        PreferencesHelper.saveUpNextMediaId()
+        PreferencesHelper.savePlayerPlaybackState(PlaybackStateCompat.STATE_STOPPED)
         // update summary
         preferenceDeleteAll.summary = "${getString(R.string.pref_delete_all_summary)} ${getAvailableSpace()}"
         Toast.makeText(activity as Context, R.string.toast_message_deleting_downloads, Toast.LENGTH_LONG).show()

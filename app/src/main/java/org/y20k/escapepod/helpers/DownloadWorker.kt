@@ -46,9 +46,9 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
 
     /* Updates podcast collection */
     private fun updateCollection() {
-        if (!CollectionHelper.hasEnoughTimePassedSinceLastUpdate(applicationContext)) {
+        if (!CollectionHelper.hasEnoughTimePassedSinceLastUpdate()) {
             LogHelper.w(TAG, "Background update not initiated: not enough time has passed since last update.")
-        } else if (!PreferencesHelper.loadBackgroundRefresh(applicationContext)) {
+        } else if (!PreferencesHelper.loadBackgroundRefresh()) {
             LogHelper.w(TAG, "Background update not initiated: Background refresh has been set to manual.")
         } else {
             DownloadHelper.updateCollection(applicationContext)
@@ -58,10 +58,10 @@ class DownloadWorker(context : Context, params : WorkerParameters): Worker(conte
 
     /* Execute one-time housekeeping */
     private fun doOneTimeHousekeeping() {
-        if (PreferencesHelper.isHouseKeepingNecessary(applicationContext)) {
+        if (PreferencesHelper.isHouseKeepingNecessary()) {
             /* add whatever housekeeping is necessary here */
             // housekeeping finished - save state
-            PreferencesHelper.saveHouseKeepingNecessaryState(applicationContext)
+            PreferencesHelper.saveHouseKeepingNecessaryState()
         }
     }
 

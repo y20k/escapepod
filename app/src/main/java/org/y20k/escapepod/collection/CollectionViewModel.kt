@@ -68,10 +68,10 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             val podcast: PodcastWithAllEpisodesWrapper? = collectionDatabase.podcastDao().getWithRemotePodcastFeedLocation(remotePodcastFeedLocation)
             if (podcast != null) {
                 // reset media id in player state if necessary
-                val currentMediaId: String = PreferencesHelper.loadCurrentMediaId(getApplication())
+                val currentMediaId: String = PreferencesHelper.loadCurrentMediaId()
                 podcast.episodes.forEach { episode ->
                     if (episode.mediaId == currentMediaId) {
-                        PreferencesHelper.resetPlayerState(getApplication())
+                        PreferencesHelper.resetPlayerState()
                     }
                 }
                 // remove all relevant entries for given podcast
@@ -90,8 +90,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
             // mark as played
             collectionDatabase.episodeDao().markPlayed(mediaId = mediaId)
             // reset media id in player state if necessary
-            if (PreferencesHelper.loadCurrentMediaId(getApplication()) == mediaId) {
-                PreferencesHelper.resetPlayerState(getApplication())
+            if (PreferencesHelper.loadCurrentMediaId() == mediaId) {
+                PreferencesHelper.resetPlayerState()
             }
         }
     }
@@ -105,8 +105,8 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
                 // update episode (remove audio reference and mark as not downloaded)
                 collectionDatabase.episodeDao().update(CollectionHelper.deleteEpisodeAudioFile(episode = episode, manuallyDeleted = true))
                 // update media id in player state if necessary
-                if (PreferencesHelper.loadCurrentMediaId(getApplication()) == mediaId) {
-                    PreferencesHelper.resetPlayerState(getApplication())
+                if (PreferencesHelper.loadCurrentMediaId() == mediaId) {
+                    PreferencesHelper.resetPlayerState()
                 }
             }
         }

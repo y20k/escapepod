@@ -107,7 +107,7 @@ object DownloadHelper {
         initialize(context)
         CoroutineScope(IO).launch {
             // re-download all podcast xml episode lists
-            PreferencesHelper.saveLastUpdateCollection(context)
+            PreferencesHelper.saveLastUpdateCollection()
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()
             val uris: Array<Uri> = Array(podcasts.size) { it ->
                 podcasts[it].remotePodcastFeedLocation.toUri()
@@ -115,7 +115,7 @@ object DownloadHelper {
             // enqueue downloads to DownloadManager
             enqueueDownloadSuspended(context, uris, Keys.FILE_TYPE_RSS)
             // reset expanded state of podcast list
-            PreferencesHelper.savePodcastListExpandedFeedLocation(context)
+            PreferencesHelper.savePodcastListExpandedFeedLocation()
         }
     }
 
@@ -126,7 +126,7 @@ object DownloadHelper {
         initialize(context)
         // re-download all podcast covers
         CoroutineScope(IO).launch {
-            PreferencesHelper.saveLastUpdateCollection(context)
+            PreferencesHelper.saveLastUpdateCollection()
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()
             val uris: Array<Uri> = Array(podcasts.size) { it ->
                 podcasts[it].remoteImageFileLocation.toUri()
@@ -148,7 +148,7 @@ object DownloadHelper {
             val downloadErrorFileName: String = getDownloadFileName(downloadManager, downloadId)
             Toast.makeText(context, "${context.getString(R.string.toast_message_error_download_error)}: $downloadErrorFileName ($downloadErrorCode)", Toast.LENGTH_LONG).show()
             LogHelper.w(TAG, "Download not successful: File name = $downloadErrorFileName Error code = $downloadErrorCode")
-            removeFromActiveDownloads(context, arrayOf(downloadId), deleteDownload = true)
+            removeFromActiveDownloads(arrayOf(downloadId), deleteDownload = true)
             return
         } else {
             val localFileUri: Uri = downloadResult
@@ -164,7 +164,7 @@ object DownloadHelper {
                 else -> Toast.makeText(context, "${context.getString(R.string.toast_message_error_file_type_unknown)} $fileType", Toast.LENGTH_LONG).show()
             }
             // remove ID from active downloads
-            removeFromActiveDownloads(context, arrayOf(downloadId))
+            removeFromActiveDownloads(arrayOf(downloadId))
         }
     }
 
@@ -172,7 +172,7 @@ object DownloadHelper {
     /* Initializes main class variables of DownloadHelper, if necessary */
     private fun initialize(context: Context) {
         if (!this::modificationDate.isInitialized) {
-            modificationDate = PreferencesHelper.loadCollectionModificationDate(context)
+            modificationDate = PreferencesHelper.loadCollectionModificationDate()
         }
         if (!this::collectionDatabase.isInitialized) {
             collectionDatabase = CollectionDatabase.getInstance(context)
@@ -182,7 +182,7 @@ object DownloadHelper {
             downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         }
         if (!this::activeDownloads.isInitialized) {
-            activeDownloads = getActiveDownloads(context)
+            activeDownloads = getActiveDownloads()
         }
     }
 
@@ -193,7 +193,7 @@ object DownloadHelper {
         val ioScope = CoroutineScope(Dispatchers.IO + backgroundJob)
         ioScope.launch {
             // determine allowed network types
-            val allowedNetworkTypes: Int = determineAllowedNetworkTypes(context, type, ignoreWifiRestriction)
+            val allowedNetworkTypes: Int = determineAllowedNetworkTypes(type, ignoreWifiRestriction)
             // enqueue downloads
             val newIds = LongArray(uris.size)
             for (i in uris.indices) {
@@ -216,7 +216,7 @@ object DownloadHelper {
                     activeDownloads.add(newIds[i])
                 }
             }
-            setActiveDownloads(context, activeDownloads)
+            setActiveDownloads(activeDownloads)
             backgroundJob.cancel()
         }
     }
@@ -239,7 +239,7 @@ object DownloadHelper {
             enqueueDownload(context, coverUris, Keys.FILE_TYPE_IMAGE)
         }
         // download audio files only when connected to wifi - or if user chose otherwise
-        if (ignoreWifiRestriction || PreferencesHelper.loadEpisodeDownloadOverMobile(context) || NetworkHelper.isConnectedToWifi(context)) {
+        if (ignoreWifiRestriction || PreferencesHelper.loadEpisodeDownloadOverMobile() || NetworkHelper.isConnectedToWifi(context)) {
             // download only if podcast has episodes
             if (episodes.isNotEmpty()) {
                 // delete oldest audio file
@@ -332,7 +332,7 @@ object DownloadHelper {
                 val podcast: PodcastWithAllEpisodesWrapper? = collectionDatabase.podcastDao().getWithRemotePodcastFeedLocation(episode.episodeRemotePodcastFeedLocation)
                 if (podcast != null) {
                     // delete un-needed audio files
-                    val updatedEpisodes: List<Episode> = CollectionHelper.deleteUnneededAudioFiles(context, podcast)
+                    val updatedEpisodes: List<Episode> = CollectionHelper.deleteUnneededAudioFiles(podcast)
                     // update episodes in database
                     collectionDatabase.episodeDao().upsertAll(updatedEpisodes)
                 }
@@ -356,11 +356,11 @@ object DownloadHelper {
 
 
     /* Safely remove given download IDs from activeDownloads and delete download if requested */
-    private fun removeFromActiveDownloads(context: Context, downloadIds: Array<Long>, deleteDownload: Boolean = false): Boolean {
+    private fun removeFromActiveDownloads(downloadIds: Array<Long>, deleteDownload: Boolean = false): Boolean {
         // remove download ids from activeDownloads
         val success: Boolean = activeDownloads.removeAll { downloadId -> downloadIds.contains(downloadId) }
         if (success) {
-            setActiveDownloads(context, activeDownloads)
+            setActiveDownloads(activeDownloads)
         }
         // optionally: delete download
         if (deleteDownload) {
@@ -400,7 +400,7 @@ object DownloadHelper {
 
 
     /* Saves active downloads (IntArray) to shared preferences */
-    private fun setActiveDownloads(context: Context, activeDownloads: ArrayList<Long>) {
+    private fun setActiveDownloads(activeDownloads: ArrayList<Long>) {
         val builder = StringBuilder()
         for (i in activeDownloads.indices) {
             builder.append(activeDownloads[i]).append(",")
@@ -409,15 +409,15 @@ object DownloadHelper {
         if (activeDownloadsString.isEmpty()) {
             activeDownloadsString = Keys.ACTIVE_DOWNLOADS_EMPTY
         }
-        PreferencesHelper.saveActiveDownloads(context, activeDownloadsString)
+        PreferencesHelper.saveActiveDownloads(activeDownloadsString)
     }
 
 
     /* Loads active downloads (IntArray) from shared preferences */
-    private fun getActiveDownloads(context: Context): ArrayList<Long> {
+    private fun getActiveDownloads(): ArrayList<Long> {
         var inactiveDownloadsFound: Boolean = false
         val activeDownloadsList: ArrayList<Long> = arrayListOf<Long>()
-        val activeDownloadsString: String = PreferencesHelper.loadActiveDownloads(context)
+        val activeDownloadsString: String = PreferencesHelper.loadActiveDownloads()
         val count = activeDownloadsString.split(",").size - 1
         val tokenizer = StringTokenizer(activeDownloadsString, ",")
         repeat(count) {
@@ -427,7 +427,7 @@ object DownloadHelper {
                 false -> inactiveDownloadsFound = true
             }
         }
-        if (inactiveDownloadsFound) setActiveDownloads(context, activeDownloadsList)
+        if (inactiveDownloadsFound) setActiveDownloads(activeDownloadsList)
         return activeDownloadsList
     }
 
@@ -508,11 +508,11 @@ object DownloadHelper {
 
 
     /* Determine allowed network type */
-    private fun determineAllowedNetworkTypes(context: Context, type: Int, ignoreWifiRestriction: Boolean): Int {
+    private fun determineAllowedNetworkTypes(type: Int, ignoreWifiRestriction: Boolean): Int {
         var allowedNetworkTypes: Int =  (DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
         // restrict download of audio files to WiFi if necessary
         if (type == Keys.FILE_TYPE_AUDIO) {
-            val downloadOverMobileAllowed: Boolean = PreferencesHelper.loadEpisodeDownloadOverMobile(context)
+            val downloadOverMobileAllowed: Boolean = PreferencesHelper.loadEpisodeDownloadOverMobile()
             if (!ignoreWifiRestriction && !downloadOverMobileAllowed) {
                 allowedNetworkTypes = DownloadManager.Request.NETWORK_WIFI
             }

@@ -103,7 +103,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         packageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
 
         // fetch the player state
-        playerState = PreferencesHelper.loadPlayerState(this)
+        playerState = PreferencesHelper.loadPlayerState()
 
         // create MediaSession
         createMediaSession()
@@ -133,7 +133,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         }
 
         // start watching for changes in shared preferences
-        PreferencesHelper.registerPreferenceChangeListener(this, this as SharedPreferences.OnSharedPreferenceChangeListener)
+        PreferencesHelper.registerPreferenceChangeListener(this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
 
 
@@ -161,7 +161,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         player.removeListener(playerListener)
         player.release()
         // stop watching for changes in shared preferences
-        PreferencesHelper.unregisterPreferenceChangeListener(this, this as SharedPreferences.OnSharedPreferenceChangeListener)
+        PreferencesHelper.unregisterPreferenceChangeListener(this as SharedPreferences.OnSharedPreferenceChangeListener)
     }
 
 
@@ -379,7 +379,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         player.setPlaybackParameters(PlaybackParameters(speed))
         // save speed
         playerState.playbackSpeed = speed
-        PreferencesHelper.savePlayerPlaybackSpeed(this, speed)
+        PreferencesHelper.savePlayerPlaybackSpeed(speed)
     }
 
 
@@ -411,7 +411,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         playerState.playbackState = playbackState
         playerState.upNextEpisodeMediaId = upNextEpisode?.mediaId ?: String()
         // playerState.playbackSpeed is updated separately
-        PreferencesHelper.savePlayerState(this, playerState)
+        PreferencesHelper.savePlayerState(playerState)
     }
 
 
@@ -571,7 +571,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             if (this@PlayerService::episode.isInitialized) {
                 preparePlayer(playWhenReady)
             } else {
-                val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId(this@PlayerService)
+                val currentEpisodeMediaId: String = PreferencesHelper.loadCurrentMediaId()
                 onPrepareFromMediaId(currentEpisodeMediaId, playWhenReady, null)
             }
         }
@@ -641,7 +641,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         override fun onCommand(player: Player, controlDispatcher: ControlDispatcher, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
             when (command) {
                 Keys.CMD_RELOAD_PLAYER_STATE -> {
-                    playerState = PreferencesHelper.loadPlayerState(this@PlayerService)
+                    playerState = PreferencesHelper.loadPlayerState()
                     return true
                 }
                 Keys.CMD_REQUEST_PROGRESS_UPDATE -> {

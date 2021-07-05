@@ -24,7 +24,6 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -61,8 +60,8 @@ object CollectionHelper {
 
 
     /* Checks if enough time passed since last update */
-    fun hasEnoughTimePassedSinceLastUpdate(context: Context): Boolean {
-        val lastUpdate: Date = PreferencesHelper.loadLastUpdateCollection(context)
+    fun hasEnoughTimePassedSinceLastUpdate(): Boolean {
+        val lastUpdate: Date = PreferencesHelper.loadLastUpdateCollection()
         val currentDate: Date = Calendar.getInstance().time
         return currentDate.time - lastUpdate.time  > Keys.MINIMUM_TIME_BETWEEN_UPDATES
     }
@@ -177,17 +176,17 @@ object CollectionHelper {
 
 
     /* Deletes audio files that are no longer needed - but keep episodes */
-    fun deleteUnneededAudioFiles(context: Context, podcast: PodcastWithAllEpisodesWrapper): List<Episode> {
+    fun deleteUnneededAudioFiles(podcast: PodcastWithAllEpisodesWrapper): List<Episode> {
         val episodes: List<Episode> = podcast.episodes.sortedByDescending { episode -> episode.publicationDate }.toMutableList()
         val updatedEpisodes: MutableList<Episode> = mutableListOf()
-        val numberOfAudioFilesToKeep: Int = PreferenceManager.getDefaultSharedPreferences(context).getInt(Keys.PREF_NUMBER_OF_AUDIO_FILES_TO_KEEP, Keys.DEFAULT_NUMBER_OF_AUDIO_FILES_TO_KEEP)
+        val numberOfAudioFilesToKeep: Int = PreferencesHelper.numberOfAudioFilesToKeep()
         val numberOfEpisodes: Int = episodes.size
 
         if (numberOfEpisodes > numberOfAudioFilesToKeep) {
             for (i in numberOfEpisodes -1 downTo numberOfAudioFilesToKeep) {
                 val episode: Episode = episodes[i]
                 // check if episode can be deleted
-                if (canBeDeleted(context, episode)) {
+                if (canBeDeleted(episode)) {
                     // delete audio file
                     try {
                         episode.audio.toUri().toFile().delete()
@@ -255,8 +254,8 @@ object CollectionHelper {
 
 
     /* Determines if an episode can be deleted */
-    private fun canBeDeleted(context: Context, episode: Episode): Boolean {
-        if (episode.guid == PreferencesHelper.loadUpNextMediaId(context)) {
+    private fun canBeDeleted(episode: Episode): Boolean {
+        if (episode.guid == PreferencesHelper.loadUpNextMediaId()) {
             // episode is in Up Next queue
             return false
         } else if (episode.hasBeenStarted() && !episode.isFinished()) {

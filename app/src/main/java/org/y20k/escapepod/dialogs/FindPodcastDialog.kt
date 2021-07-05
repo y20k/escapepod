@@ -70,7 +70,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
     private lateinit var podcastSearchResultList: RecyclerView
     private lateinit var searchResultAdapter: SearchResultAdapter
     private lateinit var requestQueue: RequestQueue
-    private val searchIndex: String = PreferencesHelper.loadCurrentPodcastSearchIndex(context)
+    private val searchIndex: String = PreferencesHelper.loadCurrentPodcastSearchIndex()
     private var currentSearchString: String = String()
     private var result: Array<SearchResult> = arrayOf()
     private val handler: Handler = Handler()
