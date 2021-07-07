@@ -453,9 +453,9 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
      */
 
     /*
-     * EventListener: Listener for ExoPlayer Events
+     * Player.Listener: Listens for ExoPlayer Events
      */
-    private val playerListener = object : Player.EventListener {
+    private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean){
             if (isPlaying) {
                 // active playback

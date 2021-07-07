@@ -102,10 +102,13 @@ object DownloadHelper {
 
 
     /* Updates podcast collection */
-    fun updateCollection(context: Context) {
+    fun updateCollection(context: Context, clearTempFolder: Boolean = false) {
         // initialize main class variables, if necessary
         initialize(context)
         CoroutineScope(IO).launch {
+            if (clearTempFolder && activeDownloads.isEmpty()) {
+                FileHelper.clearFolder(context.getExternalFilesDir(Keys.FOLDER_TEMP), 0)
+            }
             // re-download all podcast xml episode lists
             PreferencesHelper.saveLastUpdateCollection()
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()

@@ -267,6 +267,17 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     }
 
 
+    /* Minimizes player sheet if expanded */
+    fun minimizePlayerIfExpanded(): Boolean {
+        return if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            true
+        } else {
+            false
+        }
+    }
+
+
     /* Toggles visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
     fun togglePlayerVisibility(context: Context, playbackState: Int): Boolean {
         when (playbackState) {

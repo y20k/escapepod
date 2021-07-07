@@ -33,6 +33,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -104,6 +105,17 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // initialize background job
         backgroundJob = Job()
 
+        // handle back tap/gesture
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                // minimize player sheet - or if already minimized let activity handle back
+                if (isEnabled && this@PlayerFragment::layout.isInitialized && !layout.minimizePlayerIfExpanded()) {
+                    isEnabled = false
+                    activity?.onBackPressed()
+                }
+            }
+        })
+
         // create view model and observe changes in collection view model
         collectionViewModel = ViewModelProvider(this).get(CollectionViewModel::class.java)
 
@@ -145,6 +157,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
         return rootView
     }
+
 
     /* Overrides onResume from Fragment */
     override fun onStart() {
