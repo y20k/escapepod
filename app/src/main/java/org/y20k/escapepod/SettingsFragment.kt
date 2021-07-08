@@ -25,6 +25,8 @@ import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
@@ -285,37 +287,38 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
     }
 
+    /* Register the ActivityResultLauncher for saving OPML */
+    private val requestSaveOpmlLauncher =
+        registerForActivityResult(StartActivityForResult(), this::requestSaveOpmlResult)
 
-    /* Overrides onActivityResult from Fragment */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            // save OPML file to result file location
-            Keys.REQUEST_SAVE_OPML -> {
-                if (resultCode == RESULT_OK && data != null) {
-                    val sourceUri: Uri = OpmlHelper.getOpmlUri(activity as Activity)
-                    val targetUri: Uri? = data.data
-                    if (targetUri != null) {
-                        // copy file async (= fire & forget - no return value needed)
-                        CoroutineScope(IO).launch { FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri) }
-                        Toast.makeText(activity as Context, R.string.toast_message_save_opml, Toast.LENGTH_LONG).show()
-                    }
-                }
+    /* save OPML file to result file location */
+    private fun requestSaveOpmlResult(result: ActivityResult) {
+        if (result.resultCode == RESULT_OK && result.data != null) {
+            val sourceUri: Uri = OpmlHelper.getOpmlUri(activity as Activity)
+            val targetUri: Uri? = result.data?.data
+            if (targetUri != null) {
+                // copy file async (= fire & forget - no return value needed)
+                CoroutineScope(IO).launch { FileHelper.saveCopyOfFileSuspended(activity as Context, sourceUri, targetUri) }
+                Toast.makeText(activity as Context, R.string.toast_message_save_opml, Toast.LENGTH_LONG).show()
             }
-            // open OPML file selected in file picker and import
-            Keys.REQUEST_OPEN_OPML -> {
-                if (resultCode == RESULT_OK && data != null) {
-                    val targetUri: Uri? = data.data
-                    if (targetUri != null) {
-                        // open and import opml in player fragment
-                        val bundle: Bundle = bundleOf(
-                                Keys.ARG_OPEN_OPML to targetUri.toString()
-                        )
-                        this.findNavController().navigate(R.id.podcast_player_destination, bundle)
-                    }
-                }
+        }
+    }
+
+    /* Register the ActivityResultLauncher for opening OPML */
+    private val requestOpenOpmlLauncher =
+        registerForActivityResult(StartActivityForResult(), this::requestOpenOpmlResult)
+
+    /* open OPML file selected in file picker and import */
+    private fun requestOpenOpmlResult(result: ActivityResult) {
+        if (result.resultCode == RESULT_OK && result.data != null) {
+            val targetUri: Uri? = result.data?.data
+            if (targetUri != null) {
+                // open and import OPML in player fragment
+                val bundle: Bundle = bundleOf(
+                    Keys.ARG_OPEN_OPML to "$targetUri"
+                )
+                this.findNavController().navigate(R.id.podcast_player_destination, bundle)
             }
-            // let activity handle result
-            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -346,9 +349,9 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             type = Keys.MIME_TYPE_XML
             putExtra(Intent.EXTRA_TITLE, Keys.COLLECTION_OPML_FILE)
         }
-        // file gets saved in onActivityResult
+        // file gets saved in the ActivityResult
         try {
-            startActivityForResult(intent, Keys.REQUEST_SAVE_OPML)
+            requestSaveOpmlLauncher.launch(intent)
         } catch (exception: Exception) {
             LogHelper.e(TAG, "Unable to save OPML.\n$exception")
             Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
@@ -363,9 +366,9 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             type = Keys.MIME_TYPE_XML
             putExtra(Intent.EXTRA_TITLE, Keys.COLLECTION_OPML_FILE)
         }
-        // file gets saved in onActivityResult
+        // file gets saved in the ActivityResult
         try {
-            startActivityForResult(intent, Keys.REQUEST_OPEN_OPML)
+            requestOpenOpmlLauncher.launch(intent)
         } catch (exception: Exception) {
             LogHelper.e(TAG, "Unable to open file picker for OPML.\n$exception")
             // Toast.makeText(activity as Context, R.string.toast_message_install_file_helper, Toast.LENGTH_LONG).show()
