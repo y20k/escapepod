@@ -129,7 +129,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
         mediaBrowser = MediaBrowserCompat(activity as Context, ComponentName(activity as Context, PlayerService::class.java), mediaBrowserConnectionCallback, null)
 
         // start worker that periodically updates the podcast collection
-        WorkerHelper.schedulePeriodicUpdateWorker()
+        WorkerHelper.schedulePeriodicUpdateWorker(activity as Context)
 
         // import old podcasts
         if (PreferencesHelper.isHouseKeepingNecessary()) {
