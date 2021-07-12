@@ -75,7 +75,7 @@ object ImageHelper {
     /* Extracts color from an image */
     fun getMainColor(context: Context, imageUri: String): Int {
 
-        // extract color palette from station image
+        // extract color palette from image
         val palette: Palette = Palette.from(decodeSampledBitmapFromUri(context, imageUri, 72, 72)).generate()
         // get muted and vibrant swatches
         val vibrantSwatch = palette.vibrantSwatch

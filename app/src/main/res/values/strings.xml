@@ -161,6 +161,7 @@
     <string name="descr_expanded_player_previous_chapter_button">Previous chapter</string>
     <string name="descr_expanded_player_replay_button">Replay last 10 seconds</string>
     <string name="descr_expanded_player_seekbar">Episode playback time</string>
+    <string name="descr_expanded_player_shownotes_symbol">Show notes symbol</string>
     <string name="descr_expanded_player_sleep_timer_cancel_button">Cancel sleep timer</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">Time remaining on sleep timer</string>
     <string name="descr_expanded_player_sleep_timer_start_button">Start sleep timer</string>
