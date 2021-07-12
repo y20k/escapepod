@@ -157,4 +157,5 @@
     <string name="toast_message_deleting_downloads">İndirilen bölümler siliniyor.</string>
     <string name="notification_dismiss">Bildirimi kapat</string>
     <string name="toast_message_error_file_type_unknown">İndirme işlenemiyor. Dosya türü:</string>
+    <string name="descr_expanded_player_shownotes_symbol">Bölüm notları sembolü</string>
 </resources>
