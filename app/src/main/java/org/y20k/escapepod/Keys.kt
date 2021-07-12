@@ -181,9 +181,6 @@ object Keys {
 
     // requests
     const val REQUEST_UPDATE_COLLECTION: Int = 1
-    const val REQUEST_SAVE_OPML: Int = 2
-    const val REQUEST_OPEN_OPML: Int = 3
-    const val PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE: Int = 23
 
     // arguments
     const val ARG_OPEN_OPML: String = "ArgOpenOpml"
