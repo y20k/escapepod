@@ -157,4 +157,5 @@
     <string name="pref_opml_import_summary">נא לבחור קובץ OPML מאחסון המכשיר.</string>
     <string name="notification_dismiss">התעלמות מההתראה</string>
     <string name="toast_message_error_file_type_unknown">לא ניתן לעבד את ההורדה. סוג הקובץ:</string>
+    <string name="descr_expanded_player_shownotes_symbol">הצגת סמל הערות</string>
 </resources>
