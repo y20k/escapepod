@@ -157,4 +157,5 @@
     <string name="pref_opml_import_summary">Sélectionnez un fichier OPML depuis les fichiers du périphérique.</string>
     <string name="notification_dismiss">Masquer la notification</string>
     <string name="toast_message_error_file_type_unknown">Impossible de traiter le téléchargement. Type de fichier :</string>
+    <string name="descr_expanded_player_shownotes_symbol">Symbole des descriptions de programme</string>
 </resources>
