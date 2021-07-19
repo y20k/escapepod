@@ -157,4 +157,5 @@
     <string name="pref_opml_import_title">OPML importieren</string>
     <string name="notification_dismiss">Benachrichtigung verwerfen</string>
     <string name="toast_message_error_file_type_unknown">Datenübertagung kann nicht verarbeitet werden. Dateityp:</string>
+    <string name="descr_expanded_player_shownotes_symbol">Symbol der Sendungsnotizen anzeigen</string>
 </resources>

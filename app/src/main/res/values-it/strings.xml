@@ -157,4 +157,5 @@
     <string name="app_name">Escapepod</string>
     <string name="notification_dismiss">Ignora la notifica</string>
     <string name="toast_message_error_file_type_unknown">Impossibile elaborare lo scaricamento. Tipo di file:</string>
+    <string name="descr_expanded_player_shownotes_symbol">Simbolo note del programma</string>
 </resources>

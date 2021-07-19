@@ -169,4 +169,5 @@
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
     <string name="toast_message_error_file_type_unknown">无法处理下载。文件类型：</string>
+    <string name="descr_expanded_player_shownotes_symbol">显示注释符号</string>
 </resources>
