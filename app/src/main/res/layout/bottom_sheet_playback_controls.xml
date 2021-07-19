@@ -32,13 +32,20 @@
 
     <ImageView
         android:id="@+id/sheet_cover_shownotes_symbol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/sheet_large_podcast_cover"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/descr_expanded_player_shownotes_symbol"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_large_podcast_cover"
-        app:srcCompat="@drawable/ic_show_notes_36dp" />
+        app:layout_constraintEnd_toEndOf="@+id/sheet_large_podcast_cover"
+        app:layout_constraintStart_toStartOf="@+id/sheet_large_podcast_cover"
+        app:layout_constraintTop_toTopOf="@+id/sheet_large_podcast_cover"
+        app:srcCompat="@drawable/ic_shownotes_36dp"
+        tools:visibility="visible" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_episode_current_chapter_name"
@@ -85,8 +92,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         android:contentDescription="@string/descr_expanded_player_seekbar"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/sheet_episode_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -96,6 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="26dp"
         android:clickable="true"
         android:contentDescription="@string/descr_expanded_player_time_played"
         android:focusable="true"
@@ -103,20 +113,20 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sheet_playback_seek_bar"
+        app:layout_constraintTop_toTopOf="@+id/sheet_playback_seek_bar"
         tools:text="@string/sample_text_episode_0_played_time" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_duration_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
+        android:layout_marginTop="26dp"
         android:contentDescription="@string/descr_expanded_episode_length"
         android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/player_sheet_text_details"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sheet_playback_seek_bar"
+        app:layout_constraintEnd_toEndOf="@+id/sheet_playback_seek_bar"
+        app:layout_constraintTop_toTopOf="@+id/sheet_playback_seek_bar"
         tools:text="@string/sample_text_episode_0_length" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -412,7 +422,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
-        app:constraint_referenced_ids="sheet_previous_chapter_button,sheet_next_chapter_button,sheet_episode_current_chapter_name" />
+        app:constraint_referenced_ids="sheet_previous_chapter_button,sheet_next_chapter_button,sheet_episode_current_chapter_name"
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/up_next_views"

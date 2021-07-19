@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dialog_show_notes"
+    android:id="@+id/dialog_shownotes"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -50,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/podcast_feed"
-        app:srcCompat="@color/show_notes_divider" />
+        app:srcCompat="@color/shownotes_divider" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_title"
@@ -114,7 +114,7 @@
         app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/show_notes_title"
+        android:id="@+id/shownotes_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -138,10 +138,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/show_notes_title">
+        app:layout_constraintTop_toBottomOf="@+id/shownotes_title">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/episodes_show_notes_view"
+            android:id="@+id/episodes_shownotes_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"

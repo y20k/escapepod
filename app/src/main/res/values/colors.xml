@@ -25,7 +25,7 @@
     <color name="player_sheet_up_next_background">@color/escapepod_grey</color>
     <color name="player_sheet_icon">@color/escapepod_white</color>
 
-    <color name="show_notes_divider">@color/escapepod_grey_very_light</color>
+    <color name="shownotes_divider">@color/escapepod_grey_very_light</color>
 
     <color name="list_card_background">@color/escapepod_white</color>
     <color name="list_card_cover_background">@color/escapepod_grey_very_light</color>
@@ -42,6 +42,7 @@
     <color name="escapepod_grey_light">#FF7D7D7D</color>
     <color name="escapepod_grey_lighter">#FFDADADA</color>
     <color name="escapepod_grey_very_light">#FFF2F2F2</color>
+    <color name="escapepod_grey_very_light_50_percent">#80F2F2F2</color>
     <color name="escapepod_grey_dark">#FF414141</color>
     <color name="escapepod_grey_darker">#FF2D2D2D</color>
 
