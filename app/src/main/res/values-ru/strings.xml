@@ -157,4 +157,5 @@
     <string name="pref_opml_import_summary">Выберите файл OPML из хранилища устройства.</string>
     <string name="notification_dismiss">Закрыть уведомление</string>
     <string name="toast_message_error_file_type_unknown">Невозможно обработать загрузку. Тип файла:</string>
+    <string name="descr_expanded_player_shownotes_symbol">Показать символ нот</string>
 </resources>
