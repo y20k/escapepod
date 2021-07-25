@@ -107,11 +107,11 @@
     <string name="toast_message_adding_podcast">Añadiendo el pódcast.</string>
     <string name="player_up_next_headline">A continuación:</string>
     <string name="dialog_yes_no_title_default">Decidir</string>
-    <string name="dialog_yes_no_positive_button_vpn_download">Descargar de todas maneras</string>
+    <string name="dialog_yes_no_positive_button_vpn_download">Descargar de todos modos</string>
     <string name="dialog_yes_no_positive_button_update_covers">Actualizar</string>
     <string name="dialog_yes_no_positive_button_update_collection">Actualizar</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Quitar</string>
-    <string name="dialog_yes_no_positive_button_non_wifi_download">Descargar de todas maneras</string>
+    <string name="dialog_yes_no_positive_button_non_wifi_download">Descargar de todos modos</string>
     <string name="dialog_yes_no_positive_button_mark_episode_played">Marcar como reproducido</string>
     <string name="dialog_yes_no_positive_button_delete_episode">Eliminar</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Eliminar todo</string>
@@ -120,7 +120,7 @@
     <string name="dialog_yes_no_negative_button_default">No</string>
     <string name="dialog_yes_no_negative_button_cancel">Cancelar</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Añadir a «A continuación»</string>
-    <string name="dialog_yes_no_message_vpn_download">El dispositivo está conectado vía VPN. ¿Quiere descargar el episodio de todas maneras\?</string>
+    <string name="dialog_yes_no_message_vpn_download">El dispositivo está conectado vía VPN. ¿Quiere descargar el episodio de todos modos\?</string>
     <string name="dialog_yes_no_message_update_collection">¿Quiere buscar episodios nuevos\?</string>
     <string name="dialog_yes_no_message_remove_podcast">¿Quiere quitar este pódcast\?</string>
     <string name="dialog_yes_no_message_non_wifi_download">El dispositivo no está conectado a la wifi. ¿Quiere descargar el episodio de todas formas\?</string>
@@ -157,4 +157,5 @@
     <string name="pref_search_provider_selection_title">Proveedor de búsquedas</string>
     <string name="pref_search_provider_selection_summary">Actualmente se usa:</string>
     <string name="toast_message_deleting_downloads">Eliminando los episodios descargados.</string>
+    <string name="descr_expanded_player_shownotes_symbol">Mostrar símbolo de notas</string>
 </resources>
