@@ -170,7 +170,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: readSuspended name */
+    /* PODCAST: read name */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastName(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_NAME)
@@ -180,7 +180,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: readSuspended description */
+    /* PODCAST: read description */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastDescription(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_DESCRIPTION)
@@ -190,7 +190,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: readSuspended website */
+    /* PODCAST: read website */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastWebsite(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_WEBSITE)
@@ -200,7 +200,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: readSuspended GUID */
+    /* EPISODE: read GUID */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeGuid(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_GUID)
@@ -210,7 +210,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: readSuspended title */
+    /* EPISODE: read title */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeTitle(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_TITLE)
@@ -220,7 +220,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: readSuspended description */
+    /* EPISODE: read description */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeDescription(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION)
@@ -230,7 +230,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: readSuspended description / summary - iTunes variant */
+    /* EPISODE: read description / summary - iTunes variant */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeDescriptionItunes(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_DESCRIPTION_ITUNES)
@@ -240,17 +240,21 @@ class RssHelper {
     }
 
 
-    /* EPISODE: readSuspended publication date */
+    /* EPISODE: read publication date */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodePublicationDate(parser: XmlPullParser, nameSpace: String?): Date {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        val publicationDate = XmlHelper.readText(parser)
+        var publicationDate: Date = DateTimeHelper.convertFromRfc2822(XmlHelper.readText(parser))
+        if (publicationDate != Keys.DEFAULT_DATE && DateTimeHelper.isSignificantlyInTheFuture(publicationDate)) {
+            LogHelper.e(TAG, "Parsing issue. Publication date is significantly in the future: ${DateTimeHelper.getDateString(publicationDate)}")
+            publicationDate = Keys.DEFAULT_DATE
+        }
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        return DateTimeHelper.convertFromRfc2822(publicationDate)
+        return publicationDate
     }
 
 
-    /* PODCAST: readSuspended remoteImageFileLocation - standard tag variant */
+    /* PODCAST: read remoteImageFileLocation - standard tag variant */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastCover(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
@@ -282,7 +286,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: readSuspended remoteImageFileLocation URL - within remoteImageFileLocation*/
+    /* PODCAST: read remoteImageFileLocation URL - within remoteImageFileLocation*/
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastCoverUrl(parser: XmlPullParser, nameSpace: String?): String {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_PODCAST_COVER_URL)
@@ -292,7 +296,7 @@ class RssHelper {
     }
 
 
-    /* PODCAST: readSuspended remoteImageFileLocation - itunes tag variant */
+    /* PODCAST: read remoteImageFileLocation - itunes tag variant */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readPodcastCoverItunes(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
@@ -307,7 +311,7 @@ class RssHelper {
     }
 
 
-    /* EPISODE: readSuspended audio link */
+    /* EPISODE: read audio link */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodeAudioLink(parser: XmlPullParser, nameSpace: String?): String {
         var link = String()
