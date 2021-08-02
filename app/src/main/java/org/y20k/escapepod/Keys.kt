@@ -148,6 +148,7 @@ object Keys {
     val MIME_TYPES_AUDIO = arrayOf("audio/mpeg", "audio/mpeg3", "audio/mp3", "audio/mp4")
     val MIME_TYPES_RSS = arrayOf("text/xml", "application/rss+xml", "application/xml")
     val MIME_TYPES_ATOM = arrayOf("application/atom+xml")
+    val MIME_TYPES_OPML = arrayOf("application/xml", "text/xml", "text/x-opml")
     val FILE_EXTENSIONS_AUDIO = arrayOf("mp3", "m4a")
     val FILE_EXTENSIONS_IMAGE = arrayOf("png", "jpeg", "jpg")
 
