@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/streaming_episode_background"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/list_card_episode_background" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/streaming_episode_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="4dp"
+        android:elevation="2dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/text_lightweight"
+        app:layout_constraintEnd_toStartOf="@+id/streaming_episode_play_button"
+        app:layout_constraintStart_toStartOf="@+id/streaming_episode_background"
+        app:layout_constraintTop_toTopOf="@+id/streaming_episode_background"
+        tools:text="@string/sample_text_episode_0_date" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/streaming_episode_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="6dp"
+        android:elevation="2dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        android:textColor="@color/text_lightweight"
+        app:layout_constraintBottom_toBottomOf="@+id/streaming_episode_background"
+        app:layout_constraintEnd_toStartOf="@+id/streaming_episode_play_button"
+        app:layout_constraintStart_toStartOf="@+id/streaming_episode_date"
+        tools:text="@string/sample_text_episode_0_title" />
+
+    <ImageView
+        android:id="@+id/streaming_episode_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:backgroundTint="@color/escapepod_transparent"
+        android:clickable="true"
+        android:contentDescription="@string/descr_card_small_playback_button"
+        android:paddingStart="2dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="2dp"
+        android:paddingBottom="4dp"
+        android:focusable="true"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/streaming_episode_background"
+        app:layout_constraintEnd_toEndOf="@+id/streaming_episode_background"
+        app:layout_constraintTop_toTopOf="@+id/streaming_episode_background"
+        app:srcCompat="@drawable/ic_cloud_play_36dp" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/streaming_episode_playback_views"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:constraint_referenced_ids="streaming_episode_play_button" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
