@@ -244,11 +244,11 @@ class RssHelper {
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readEpisodePublicationDate(parser: XmlPullParser, nameSpace: String?): Date {
         parser.require(XmlPullParser.START_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
-        var publicationDate: Date = DateTimeHelper.convertFromRfc2822(XmlHelper.readText(parser))
-        if (publicationDate != Keys.DEFAULT_DATE && DateTimeHelper.isSignificantlyInTheFuture(publicationDate)) {
-            LogHelper.e(TAG, "Parsing issue. Publication date is significantly in the future: ${DateTimeHelper.getDateString(publicationDate)}")
-            publicationDate = Keys.DEFAULT_DATE
-        }
+        val publicationDate: Date = DateTimeHelper.convertFromRfc2822(XmlHelper.readText(parser))
+//        if (publicationDate != Keys.DEFAULT_DATE && DateTimeHelper.isSignificantlyInTheFuture(publicationDate)) {
+//            LogHelper.e(TAG, "Parsing issue. Publication date is significantly in the future: ${DateTimeHelper.getDateString(publicationDate)}")
+//            publicationDate = Keys.DEFAULT_DATE
+//        }
         parser.require(XmlPullParser.END_TAG, nameSpace, Keys.RSS_EPISODE_PUBLICATION_DATE)
         return publicationDate
     }
