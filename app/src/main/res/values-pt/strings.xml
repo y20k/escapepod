@@ -157,4 +157,5 @@
     <string name="toast_message_deleting_downloads">A eliminar episódios descarregados.</string>
     <string name="notification_dismiss">Dispensar notificação</string>
     <string name="toast_message_error_file_type_unknown">Não foi possível processar a transferência. Tipo:</string>
+    <string name="descr_expanded_player_shownotes_symbol">Mostrar símbolo de notas</string>
 </resources>
