@@ -18,13 +18,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import org.y20k.escapepod.helpers.*
-
-import java.util.*
+import org.y20k.escapepod.helpers.AppThemeHelper
+import org.y20k.escapepod.helpers.FileHelper
+import org.y20k.escapepod.helpers.LogHelper
+import org.y20k.escapepod.helpers.PreferencesHelper
 
 class MainActivity: AppCompatActivity() {
 
@@ -54,15 +54,6 @@ class MainActivity: AppCompatActivity() {
 
         // register listener for changes in shared preferences
         PreferencesHelper.registerPreferenceChangeListener(sharedPreferenceChangeListener)
-
-        // todo remove
-        val testDateString1: String = "Mon, 3 Feb 2020 16:00:00 CET"
-        val testDateString2: String = "Mon, 3 Feb 2020 16:00 CET"
-        val testDateString3: String = "Mon, 03 Feb 2020 16:00:00"
-        val testDateString4: String = "Sat, 03 Jul 2021 03:00:00 +0000"
-        val date1: Date = DateTimeHelper.convertFromRfc2822(testDateString2)
-        LogHelper.e(TAG, "DING => ${DateTimeHelper.convertToRfc2822(date1)}")
-        // todo remove
 
     }
 
