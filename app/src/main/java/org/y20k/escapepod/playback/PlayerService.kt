@@ -117,7 +117,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                 // create media description - used in notification
                 return CollectionHelper.buildEpisodeMediaDescription(this@PlayerService, episode)
             }
-
         })
 
         // initialize notification helper
@@ -303,6 +302,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         // reset playback position if necessary
         if (episode.isFinished()) {
             episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
+            player.seekTo(0L)
         }
 
         // check if not already prepared
@@ -381,7 +381,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         playerState.playbackSpeed = speed
         PreferencesHelper.savePlayerPlaybackSpeed(speed)
     }
-
 
 
     /* Loads media items into result - assumes that collectionProvider is initialized */

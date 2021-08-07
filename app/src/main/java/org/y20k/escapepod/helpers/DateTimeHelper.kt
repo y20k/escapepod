@@ -103,14 +103,14 @@ object DateTimeHelper {
             } catch (e: Exception) {
                 LogHelper.w(TAG, "Unable to parse. Trying an alternative Date formatter. $e")
                 try {
-                    // 3nd try: parse without time zone
+                    // 3rd try: parse without time zone
                     val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(rfc2822patternWithoutTimezone, Locale.ENGLISH).withZone(ZoneId.systemDefault())
                     val zonedDateTime: ZonedDateTime = ZonedDateTime.from(formatter.parse(dateString))
                     date =  Date.from(zonedDateTime.toInstant()) ?: Keys.DEFAULT_DATE
                 } catch (e: Exception) {
                     LogHelper.w(TAG, "Unable to parse. Trying an alternative Date formatter. $e")
                     try {
-                        // 4rd try: parse without seconds
+                        // 4th try: parse without seconds
                         val dateStringTrimmed: String = dateString.substring(0, (dateString.lastIndexOf(":")+3)) // remove anything after HH:mm
                         val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(rfc2822patternWithoutSeconds, Locale.ENGLISH).withZone(ZoneId.systemDefault())
                         val zonedDateTime: ZonedDateTime = ZonedDateTime.from(formatter.parse(dateStringTrimmed))
