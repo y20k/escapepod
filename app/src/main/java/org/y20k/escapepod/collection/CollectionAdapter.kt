@@ -49,6 +49,7 @@ import org.y20k.escapepod.database.objects.EpisodeDescription
 import org.y20k.escapepod.database.objects.Podcast
 import org.y20k.escapepod.database.wrappers.EpisodeMostRecentView
 import org.y20k.escapepod.database.wrappers.PodcastWithRecentEpisodesWrapper
+import org.y20k.escapepod.dialogs.ShowAllEpisodesDialog
 import org.y20k.escapepod.dialogs.ShowNotesDialog
 import org.y20k.escapepod.helpers.*
 
@@ -253,6 +254,27 @@ class CollectionAdapter(private val context: Context, private val collectionData
             podcastViewHolder.olderEpisodesButtonView.setOnClickListener {
                 toggleEpisodeList(position, podcast.data.remotePodcastFeedLocation)
             }
+
+            // todo just a test ... remove
+            podcastViewHolder.olderEpisodesButtonView.setOnLongClickListener {
+                CoroutineScope(IO).launch {
+                    val episodes: List<Episode> = collectionDatabase.episodeDao().getChronological(100)
+                    val podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener = object: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener {
+                        override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
+                            LogHelper.e(TAG, "Tapped on $mediaId")
+                        }
+                    }
+                    if (episodes.isNotEmpty()) {
+                        withContext(Main) { ShowAllEpisodesDialog().show(context, episodes, podcastAllEpisodesAdapterListener) }
+                    }
+                }
+                val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                v.vibrate(50)
+                // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+                return@setOnLongClickListener true
+            }
+            // todo just a test ... remove
+
         }
         // decide whether to show and populate the older episodes list or to hide it
         if (podcast.episodes.size > 1 && expandedPodcastFeedLocation == podcast.data.remotePodcastFeedLocation) {

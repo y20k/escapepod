@@ -30,7 +30,7 @@ import org.y20k.escapepod.helpers.LogHelper
 /*
  * PodcastAllEpisodesAdapter class
  */
-class PodcastAllEpisodesAdapter (private val context: Context, private  val episodes: MutableList<Episode>, private val adapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PodcastAllEpisodesAdapter (private val context: Context, private  val episodes: List<Episode>, private val adapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastAllEpisodesAdapter::class.java)
@@ -95,7 +95,7 @@ class PodcastAllEpisodesAdapter (private val context: Context, private  val epis
     private inner class EpisodeViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
         val episodeDateView: TextView = podcastCardLayout.findViewById(R.id.streaming_episode_date)
         val episodeTitleView: TextView = podcastCardLayout.findViewById(R.id.streaming_episode_title)
-        val episodePlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.episode_play_button)
+        val episodePlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.streaming_episode_play_button)
     }
     /*
      * End of inner class

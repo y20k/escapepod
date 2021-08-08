@@ -38,6 +38,9 @@ import org.y20k.escapepod.helpers.DateTimeHelper
 import org.y20k.escapepod.helpers.LogHelper
 
 
+/*
+ * ShowNotesDialog class
+ */
 class ShowNotesDialog () {
 
     /* Define log tag */
