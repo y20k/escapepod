@@ -65,6 +65,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
     private lateinit var collectionDatabase: CollectionDatabase
     private var collectionProvider: CollectionProvider = CollectionProvider()
     private var isForegroundService: Boolean = false
+    private var streaming: Boolean = false
     private var upNextEpisode: Episode? = null
     private lateinit var episode: Episode
     private lateinit var playerState: PlayerState
@@ -197,7 +198,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
     /* Overrides onLoadChildren from MediaBrowserService */
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        LogHelper.e(TAG, "onLoadChildren => $parentId")
         if (!collectionProvider.isInitialized()) {
             // use result.detach to allow calling result.sendResult from another thread:
             result.detach()
@@ -245,7 +245,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             LogHelper.d(TAG, "Playback Started. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
         } else {
             handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
-            episode = Episode(episode, playbackPosition = player.contentPosition, playbackState = PlaybackStateCompat.STATE_PAUSED)
+            episode = Episode(episode, playbackPosition = playbackPosition, playbackState = PlaybackStateCompat.STATE_PAUSED)
             // notification is hidden via CMD_DISMISS_NOTIFICATION
             LogHelper.d(TAG, "Playback Stopped. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
         }
@@ -299,16 +299,32 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
         // TODO check if episode is in up-next queue - reset up next - save PreferencesHelper.saveUpNextMediaId
 
-        // reset playback position if necessary
-        if (episode.isFinished()) {
+        // reset playback position if necessary // todo
+        if (episode.duration != 0L && episode.isFinished()) {
             episode = Episode(episode, playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L)
             player.seekTo(0L)
         }
 
-        // check if not already prepared
-        if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
-            player.setMediaItem(MediaItem.fromUri(episode.audio), episode.playbackPosition)
+        when (episode.audio.isEmpty()) {
+            // CASE: Streaming Playback
+            true -> {
+                // check if not already prepared
+                if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.remoteAudioFileLocation) {
+                    player.setMediaItem(MediaItem.fromUri(episode.remoteAudioFileLocation))
+                }
+            }
+            // CASE: Offline Playback (default usage pattern)
+            false -> {
+                // check if not already prepared
+                if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
+                    player.setMediaItem(MediaItem.fromUri(episode.audio))
+                }
+            }
         }
+
+        // jump to playback position
+        player.seekTo(episode.playbackPosition)
+
         // prepare
         player.prepare()
 
@@ -458,6 +474,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         override fun onIsPlayingChanged(isPlaying: Boolean){
             if (isPlaying) {
                 // active playback
+                if (episode.duration == 0L) episode = Episode(episode, duration = player.duration)
                 handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
             } else {
                 // handled in onPlayWhenReadyChanged
@@ -471,7 +488,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                 if (player.mediaItemCount == 0) {
                     stopSelf()
                 }
-
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
@@ -529,9 +545,9 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             when (event?.keyCode) {
                 KeyEvent.KEYCODE_MEDIA_NEXT -> {
                     if (event.action == KeyEvent.ACTION_UP && player.isPlaying && this@PlayerService::episode.isInitialized) {
-                        val episodeDuration = episode.duration
+                        val episodeDuration: Long = episode.duration
                         var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
-                        if (position > episode.duration) position = episodeDuration
+                        if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
                         player.seekTo(position)
                     }
                     return true

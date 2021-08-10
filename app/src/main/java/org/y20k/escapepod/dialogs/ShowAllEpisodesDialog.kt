@@ -14,15 +14,25 @@
 
 package org.y20k.escapepod.dialogs
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textview.MaterialTextView
 import org.y20k.escapepod.R
 import org.y20k.escapepod.collection.PodcastAllEpisodesAdapter
 import org.y20k.escapepod.database.objects.Episode
+import org.y20k.escapepod.database.objects.Podcast
 import org.y20k.escapepod.helpers.LogHelper
 
 
@@ -34,27 +44,56 @@ class ShowAllEpisodesDialog {
     /* Define log tag */
     private val TAG = LogHelper.makeLogTag(ShowAllEpisodesDialog::class.java.simpleName)
 
+    /* Listener Interface */
+    interface ShowAllEpisodesDialogListener {
+        fun onPlayButtonTapped(mediaId: String, playbackState: Int)
+    }
+
 
     /* Main class variables */
-    private lateinit var episodesAdapter: PodcastAllEpisodesAdapter
-    private lateinit var podcastEpisodesList: RecyclerView
+    private lateinit var allEpisodesDialog: AlertDialog
 
 
     /* Construct and show dialog */
-    fun show(context: Context, episodes: List<Episode>, adapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener) {
+    fun show(context: Context, podcast: Podcast, episodes: List<Episode>, podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener) {
         // prepare dialog builder
         val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
 
         // set title
-        builder.setTitle(episodes[0].podcastName)
+        //builder.setTitle()
 
         // get views
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.dialog_show_all_epidodes, null)
-        podcastEpisodesList = view.findViewById(R.id.podcast_episodes_list)
+        val podcastNameView: MaterialTextView = view.findViewById(R.id.podcast_name)
+        val podcastWebsiteView: TextView = view.findViewById(R.id.podcast_website)
+        //val podcastEpisodeListDivider: ImageView = view.findViewById(R.id.divider_centered_dot)
+        val podcastFeedView: TextView = view.findViewById(R.id.podcast_feed)
+        val podcastEpisodesList: RecyclerView = view.findViewById(R.id.podcast_episodes_list)
 
-        // set up list of search results
-        episodesAdapter = PodcastAllEpisodesAdapter(context, episodes, adapterListener)
+        // set dialog view
+        builder.setView(view)
+
+        // set views
+        podcastNameView.text = podcast.name
+        podcastWebsiteView.setOnClickListener {
+            startActivity(context, Intent(Intent.ACTION_VIEW, podcast.website.toUri()), null)
+        }
+        podcastFeedView.setOnClickListener {
+            val clip: ClipData = ClipData.newPlainText("simple text", podcast.remotePodcastFeedLocation)
+            val cm: ClipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            cm.setPrimaryClip(clip)
+            Toast.makeText(context, R.string.toast_message_copied_to_clipboard, Toast.LENGTH_LONG).show()
+        }
+
+        // set up list of episodes
+        val showAllEpisodesDialogListener: ShowAllEpisodesDialogListener = object : ShowAllEpisodesDialogListener {
+            override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
+                allEpisodesDialog.dismiss()
+                podcastAllEpisodesAdapterListener.onPlayButtonTapped(mediaId, playbackState)
+            }
+        }
+        val episodesAdapter: PodcastAllEpisodesAdapter = PodcastAllEpisodesAdapter(context, episodes, showAllEpisodesDialogListener)
         podcastEpisodesList.adapter = episodesAdapter
         val layoutManager: LinearLayoutManager = object: LinearLayoutManager(context) {
             override fun supportsPredictiveItemAnimations(): Boolean {
@@ -73,8 +112,7 @@ class ShowAllEpisodesDialog {
             // do nothing
         }
 
-        // display add dialog
-        builder.show()
+        // display dialog
+        allEpisodesDialog = builder.show()
     }
-
 }

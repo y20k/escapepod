@@ -23,6 +23,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.objects.Episode
+import org.y20k.escapepod.dialogs.ShowAllEpisodesDialog
 import org.y20k.escapepod.helpers.DateTimeHelper
 import org.y20k.escapepod.helpers.LogHelper
 
@@ -30,7 +31,7 @@ import org.y20k.escapepod.helpers.LogHelper
 /*
  * PodcastAllEpisodesAdapter class
  */
-class PodcastAllEpisodesAdapter (private val context: Context, private  val episodes: List<Episode>, private val adapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PodcastAllEpisodesAdapter (private val context: Context, private  val episodes: List<Episode>, private val showAllEpisodesDialogListener: ShowAllEpisodesDialog.ShowAllEpisodesDialogListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PodcastAllEpisodesAdapter::class.java)
@@ -84,7 +85,7 @@ class PodcastAllEpisodesAdapter (private val context: Context, private  val epis
             else -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_play_36dp)
         }
         episodeViewHolder.episodePlayButtonView.setOnClickListener {
-            adapterListener.onPlayButtonTapped(episode.mediaId, playbackState)
+            showAllEpisodesDialogListener.onPlayButtonTapped(episode.mediaId, playbackState)
         }
     }
 

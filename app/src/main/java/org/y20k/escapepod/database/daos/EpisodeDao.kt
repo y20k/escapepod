@@ -52,7 +52,7 @@ interface EpisodeDao {
     suspend fun findByMediaIdSuspended(mediaId: String): Episode?
 
 
-    @Query("SELECT * FROM episodes WHERE episode_remote_podcast_feed_location IS :episodeRemotePodcastFeedLocation")
+    @Query("SELECT * FROM episodes WHERE episode_remote_podcast_feed_location IS :episodeRemotePodcastFeedLocation ORDER BY publication_date DESC")
     fun findByEpisodeRemotePodcastFeedLocation(episodeRemotePodcastFeedLocation: String): List<Episode>
 
 

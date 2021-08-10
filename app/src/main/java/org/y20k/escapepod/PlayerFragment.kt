@@ -264,7 +264,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
 
     /* Overrides onPlayButtonTapped from CollectionAdapterListener */
-    override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
+    override fun onPlayButtonTapped(mediaId: String, playbackState: Int, streaming: Boolean) {
         when (playerState.playbackState) {
             // PLAYER STATE: PLAYING
             PlaybackStateCompat.STATE_PLAYING -> {
@@ -512,10 +512,10 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     var position: Int = 0
                     override fun onStartTrackingTouch(seekBar: SeekBar?) { }
                     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                        position = progress
+                        if (position > 0) position = progress
                     }
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                        playerController.seekTo(position.toLong())
+                        if (layout.sheetProgressBarView.max > 0L) playerController.seekTo(position.toLong())
                     }
                 })
 

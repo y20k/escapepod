@@ -138,11 +138,11 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Updates the player views */
-//    @SuppressLint("ClickableViewAccessibility")
     @SuppressLint("ClickableViewAccessibility")
     fun updatePlayerViews(context: Context, episode: Episode?) {
         if (episode != null) {
-            val duration: String = DateTimeHelper.convertToMinutesAndSeconds(episode.duration)
+            val duration: String
+            if (episode.duration > 0L) duration = DateTimeHelper.convertToMinutesAndSeconds(episode.duration) else duration = "∞"
             coverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.smallCover))
             coverView.clipToOutline = true // apply rounded corner mask to covers
             coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
