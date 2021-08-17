@@ -170,4 +170,7 @@
     <string name="onboarding_app_get_started">开始</string>
     <string name="toast_message_error_file_type_unknown">无法处理下载。文件类型：</string>
     <string name="descr_expanded_player_shownotes_symbol">显示注释符号</string>
+    <string name="toast_message_error_no_internet_connection">无法开始播放。 设备没有网络连接。</string>
+    <string name="toast_message_entering_streaming_view">私密流播放视图</string>
+    <string name="dialog_all_episodes_list_title">所有节目 | 仅在线播放</string>
 </resources>
