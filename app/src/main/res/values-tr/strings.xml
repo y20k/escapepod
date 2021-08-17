@@ -158,4 +158,7 @@
     <string name="notification_dismiss">Bildirimi kapat</string>
     <string name="toast_message_error_file_type_unknown">İndirme işlenemiyor. Dosya türü:</string>
     <string name="descr_expanded_player_shownotes_symbol">Bölüm notları sembolü</string>
+    <string name="toast_message_error_no_internet_connection">Oynatma başlatılamıyor. Aygıtın ağ bağlantısı yok.</string>
+    <string name="toast_message_entering_streaming_view">Gizli Yayın Görünümü</string>
+    <string name="dialog_all_episodes_list_title">Tüm bölümler | yalnızca yayın</string>
 </resources>
