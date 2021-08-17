@@ -248,32 +248,16 @@ class CollectionAdapter(private val context: Context, private val collectionData
     private fun setOlderEpisodesList(podcastViewHolder: PodcastViewHolder, position: Int, podcast: PodcastWithRecentEpisodesWrapper) {
         // set up Older Episodes toggle button
         if (podcast.episodes.size > 1) {
+            // single tap: toggle Older Episodes
             podcastViewHolder.olderEpisodesButtonView.setOnClickListener {
                 toggleEpisodeList(position, podcast.data.remotePodcastFeedLocation)
             }
-            // todo just a test ... remove
+            // long press: show all Episodes
             podcastViewHolder.olderEpisodesButtonView.setOnLongClickListener {
-                if (podcastViewHolder.olderEpisodesList.isVisible == true) {
-                    CoroutineScope(IO).launch {
-                        val episodes: List<Episode> = collectionDatabase.episodeDao().findByEpisodeRemotePodcastFeedLocation(podcast.data.remotePodcastFeedLocation)
-                        if (episodes.isNotEmpty()) {
-                            withContext(Main) {
-                                val podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener = object: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener {
-                                    override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
-                                        collectionAdapterListener.onPlayButtonTapped(mediaId, playbackState, streaming = true)
-                                    }
-                                }
-                                Toast.makeText(context, "Entering Secret Streaming View", Toast.LENGTH_LONG).show()
-                                ShowAllEpisodesDialog().show(context, podcast.data, episodes, podcastAllEpisodesAdapterListener) }
-                        }
-                    }
-                    val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                    v.vibrate(50)
-                    // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-                }
+                Toast.makeText(context, R.string.toast_message_entering_streaming_view, Toast.LENGTH_LONG).show()
+                showAllEpisodes(podcastViewHolder, podcast.data)
                 return@setOnLongClickListener true
             }
-            // todo just a test ... remove
         }
         // decide whether to show and populate the older episodes list or to hide it
         if (podcast.episodes.size > 1 && expandedPodcastFeedLocation == podcast.data.remotePodcastFeedLocation) {
@@ -316,6 +300,32 @@ class CollectionAdapter(private val context: Context, private val collectionData
             }
         }
     }
+
+
+    /* Displays a dialog containing ALL episodes of a podcast */
+    private fun showAllEpisodes(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
+        if (podcastViewHolder.olderEpisodesList.isVisible) {
+            CoroutineScope(IO).launch {
+                // get list of all episodes
+                val episodes: List<Episode> = collectionDatabase.episodeDao().findByEpisodeRemotePodcastFeedLocation(podcast.remotePodcastFeedLocation)
+                if (episodes.isNotEmpty()) {
+                    withContext(Main) {
+                        // listener that lets player fragment start streaming playback
+                        val podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener = object: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener {
+                            override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
+                                collectionAdapterListener.onPlayButtonTapped(mediaId, playbackState, streaming = true)
+                            }
+                        }
+                        // display Show All Episodes dialog
+                        ShowAllEpisodesDialog().show(context, podcast, episodes, podcastAllEpisodesAdapterListener) }
+                }
+            }
+            val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            v.vibrate(50)
+            // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
+        }
+    }
+
 
 
     /* Overrides onBindViewHolder */

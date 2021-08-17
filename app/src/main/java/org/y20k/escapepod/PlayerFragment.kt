@@ -244,11 +244,13 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 layout.toggleDownloadProgressIndicator()
             }
             Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID -> {
-                CoroutineScope(IO).launch {
-                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
-                    playerState.episodeMediaId = mediaId
-                    episode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-                    withContext(Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+                val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
+                if (playerState.episodeMediaId != mediaId) {
+                    CoroutineScope(IO).launch {
+                        playerState.episodeMediaId = mediaId
+                        episode = collectionDatabase.episodeDao().findByMediaId(mediaId)
+                        withContext(Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+                    }
                 }
             }
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
@@ -606,6 +608,13 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
     /* Starts / pauses playback */
     private fun togglePlayback(startPlayback: Boolean, mediaId: String, playbackState: Int = PlaybackStateCompat.STATE_STOPPED) {
+        if (playerState.episodeMediaId != mediaId) {
+            CoroutineScope(IO).launch {
+                playerState.episodeMediaId = mediaId
+                episode = collectionDatabase.episodeDao().findByMediaId(mediaId)
+                withContext(Main) { layout.updatePlayerViews(activity as Context, episode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+            }
+        }
         playerState.episodeMediaId = mediaId
         playerState.playbackState = playbackState // = current state BEFORE desired startPlayback action
         // start / pause playback

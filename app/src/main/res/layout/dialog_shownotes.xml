@@ -50,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/podcast_feed"
-        app:srcCompat="@color/shownotes_divider" />
+        app:srcCompat="@color/divider_line" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/episode_title"

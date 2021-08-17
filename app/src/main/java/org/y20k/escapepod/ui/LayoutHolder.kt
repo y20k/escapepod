@@ -71,6 +71,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     private var podcastNameView: TextView
     private var episodeTitleView: TextView
     var playButtonView: ImageView
+    var bufferingIndicator: ProgressBar
     private var sheetCoverView: ImageView
     private var sheetShownotesSymbolView: ImageView
     var sheetProgressBarView: SeekBar
@@ -107,6 +108,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
         podcastNameView = rootView.findViewById(R.id.podcast_name)
         episodeTitleView = rootView.findViewById(R.id.player_episode_title)
         playButtonView = rootView.findViewById(R.id.player_play_button)
+        bufferingIndicator = rootView.findViewById(R.id.player_buffering_indicator)
         sheetCoverView = rootView.findViewById(R.id.sheet_large_podcast_cover)
         sheetShownotesSymbolView = rootView.findViewById(R.id.sheet_cover_shownotes_symbol)
         sheetProgressBarView = rootView.findViewById(R.id.sheet_playback_seek_bar)
@@ -219,6 +221,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             sheetDurationView.text = timeRemaining
             sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: ${timeRemaining}"
         }
+        if (duration != 0L && sheetDurationView.text == "∞") sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(duration)
     }
 
 
@@ -278,10 +281,17 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             PlaybackStateCompat.STATE_PLAYING -> {
                 playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
+                bufferingIndicator.isVisible = false
+            }
+            PlaybackStateCompat.STATE_BUFFERING -> {
+                playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
+                bufferingIndicator.isVisible = true
             }
             else -> {
                 playButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_54dp)
+                bufferingIndicator.isVisible = false
             }
         }
     }

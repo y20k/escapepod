@@ -34,6 +34,7 @@ import org.y20k.escapepod.collection.PodcastAllEpisodesAdapter
 import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.database.objects.Podcast
 import org.y20k.escapepod.helpers.LogHelper
+import org.y20k.escapepod.helpers.NetworkHelper
 
 
 /*
@@ -89,8 +90,12 @@ class ShowAllEpisodesDialog {
         // set up list of episodes
         val showAllEpisodesDialogListener: ShowAllEpisodesDialogListener = object : ShowAllEpisodesDialogListener {
             override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
-                allEpisodesDialog.dismiss()
-                podcastAllEpisodesAdapterListener.onPlayButtonTapped(mediaId, playbackState)
+                if (NetworkHelper.isConnectedToNetwork(context)) {
+                    allEpisodesDialog.dismiss()
+                    podcastAllEpisodesAdapterListener.onPlayButtonTapped(mediaId, playbackState)
+                } else {
+                    Toast.makeText(context, R.string.toast_message_error_no_internet_connection, Toast.LENGTH_LONG).show()
+                }
             }
         }
         val episodesAdapter: PodcastAllEpisodesAdapter = PodcastAllEpisodesAdapter(context, episodes, showAllEpisodesDialogListener)

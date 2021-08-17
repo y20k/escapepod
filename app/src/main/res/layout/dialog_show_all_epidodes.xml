@@ -36,8 +36,7 @@
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:singleLine="true"
-
-        android:text="All episodes | streaming only"
+        android:text="@string/dialog_all_episodes_list_title"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="@color/text_default"
         android:textStyle="bold"
@@ -57,7 +56,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/podcast_website"
-        app:srcCompat="@color/shownotes_divider" />
+        app:srcCompat="@color/divider_line" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_website"

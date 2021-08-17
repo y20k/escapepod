@@ -312,8 +312,15 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                 if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.remoteAudioFileLocation) {
                     player.setMediaItem(MediaItem.fromUri(episode.remoteAudioFileLocation))
                 }
+                if (episode.duration == 0L) {
+                    CoroutineScope(IO).launch {
+                        val duration: Long = AudioHelper.getDuration(episode.remoteAudioFileLocation)
+                        episode = Episode(episode, duration = duration)
+                        collectionDatabase.episodeDao().update(episode)
+                    }
+                }
             }
-            // CASE: Offline Playback (default usage pattern)
+            // CASE: Offline Playback (default)
             false -> {
                 // check if not already prepared
                 if (player.currentMediaItem?.playbackProperties?.uri.toString() != episode.audio) {
@@ -474,7 +481,6 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
         override fun onIsPlayingChanged(isPlaying: Boolean){
             if (isPlaying) {
                 // active playback
-                if (episode.duration == 0L) episode = Episode(episode, duration = player.duration)
                 handlePlaybackChange(PlaybackStateCompat.STATE_PLAYING)
             } else {
                 // handled in onPlayWhenReadyChanged

@@ -11,6 +11,7 @@
     <string name="dialog_add_podcast_howto">Please enter a podcast feed address. Look for the RSS symbol on the homepage of the respective podcast.</string>
     <string name="dialog_add_podcast_input_hint">Enter podcast feed link</string>
     <string name="dialog_add_podcast_title">Add New Podcast</string>
+    <string name="dialog_all_episodes_list_title">All episodes | streaming only</string>
     <string name="dialog_episode_shownotes_close">Close</string>
     <string name="dialog_episode_shownotes_feed">Feed</string>
     <string name="dialog_episode_shownotes_title">Show Notes</string>
@@ -71,10 +72,12 @@
     <string name="toast_message_copied_to_clipboard">Copied to clipboard.</string>
     <string name="toast_message_deleting_downloads">Deleting downloaded episodes.</string>
     <string name="toast_message_downloading_episode">Downloading episode.</string>
+    <string name="toast_message_entering_streaming_view">Secret Streaming View</string>
     <string name="toast_message_error_download_error">Download error</string>
     <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
     <string name="toast_message_error_file_type_unknown">Unable to process download. File type:</string>
     <string name="toast_message_error_missing_storage_permission">Grant \"Read Storage\" permission to open this file.</string>
+    <string name="toast_message_error_no_internet_connection">Unable to start playback. Device has no network connection.</string>
     <string name="toast_message_error_no_podcast_found">Unable to start playback. Please add a podcast first.</string>
     <string name="toast_message_error_no_podcast_matches_search">Unable to find a podcast that matches your search.</string>
     <string name="toast_message_error_refreshing_cover">Could not refresh cover. The feed does not contain a cover reference.</string>
