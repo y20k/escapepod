@@ -59,6 +59,7 @@ object Keys {
     // custom MediaController commands
     const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"
     const val CMD_REQUEST_PROGRESS_UPDATE: String = "REQUEST_PROGRESS_UPDATE"
+    const val CMD_REQUEST_EPISODE_DURATION: String = "REQUEST_EPISODE_DURATION"
     const val CMD_START_SLEEP_TIMER: String = "START_SLEEP_TIMER"
     const val CMD_CANCEL_SLEEP_TIMER: String = "CANCEL_SLEEP_TIMER"
     const val CMD_CHANGE_PLAYBACK_SPEED: String = "CHANGE_PLAYBACK_SPEED"
@@ -187,11 +188,13 @@ object Keys {
     const val ARG_OPEN_OPML: String = "ArgOpenOpml"
 
     // results
-    const val RESULT_DATA_SLEEP_TIMER_REMAINING: String = "DATA_SLEEP_TIMER_REMAINING"
     const val RESULT_CODE_PROGRESS_UPDATE: Int = 1
     const val RESULT_DATA_PLAYBACK_PROGRESS: String = "DATA_PLAYBACK_PROGRESS"
+    const val RESULT_DATA_SLEEP_TIMER_REMAINING: String = "DATA_SLEEP_TIMER_REMAINING"
     const val RESULT_CODE_PLAYBACK_SPEED: Int = 2
     const val RESULT_DATA_PLAYBACK_SPEED: String = "DATA_PLAYBACK_SPEED"
+    const val RESULT_CODE_EPISODE_DURATION: Int = 3
+    const val RESULT_DATA_EPISODE_DURATION: String = "DATA_EPISODE_DURATION"
 
     // podcast validation states
     const val PODCAST_VALIDATION_SUCESS: Int = 0

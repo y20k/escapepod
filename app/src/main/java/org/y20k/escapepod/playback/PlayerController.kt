@@ -97,6 +97,12 @@ class PlayerController (private val mediaController: MediaControllerCompat) {
     }
 
 
+    /* Send command to request episode duration - used to update ui (when streaming) */
+    fun requestEpisodeDuration(resultReceiver: ResultReceiver) {
+        mediaController.sendCommand(Keys.CMD_REQUEST_EPISODE_DURATION, null, resultReceiver)
+    }
+
+
     /* Register MediaController callback to get notified about player state changes */
     fun registerCallback(callback: MediaControllerCompat.Callback) {
         mediaController.registerCallback(callback)

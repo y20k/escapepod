@@ -682,6 +682,20 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
                         return false
                     }
                 }
+                Keys.CMD_REQUEST_EPISODE_DURATION -> {
+                    if (cb != null) {
+                        // check if episode has been prepared - assumes that then the player has been prepared as well
+                        if (this@PlayerService::episode.isInitialized) {
+                            val playbackProgressBundle: Bundle = bundleOf(Keys.RESULT_DATA_EPISODE_DURATION to episode.duration)
+                            cb.send(Keys.RESULT_CODE_EPISODE_DURATION, playbackProgressBundle)
+                            return true
+                        } else {
+                            return false
+                        }
+                    } else {
+                        return false
+                    }
+                }
                 Keys.CMD_START_SLEEP_TIMER -> {
                     startSleepTimer()
                     return true

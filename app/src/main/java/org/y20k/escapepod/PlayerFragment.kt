@@ -916,9 +916,18 @@ class PlayerFragment: Fragment(), CoroutineScope,
     var resultReceiver: ResultReceiver = object: ResultReceiver(Handler(Looper.getMainLooper())) {
         override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
             when (resultCode) {
+                Keys.RESULT_CODE_EPISODE_DURATION -> {
+                    if(episode != null && episode?.duration == 0L && resultData != null && resultData.containsKey(Keys.RESULT_DATA_EPISODE_DURATION)) {
+                        val episodeDuration: Long = resultData.getLong(Keys.RESULT_DATA_EPISODE_DURATION, 0L)
+                        episode = Episode(episode!!, duration = episodeDuration)
+                    }
+                }
                 Keys.RESULT_CODE_PROGRESS_UPDATE -> {
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_PLAYBACK_PROGRESS)) {
                         layout.updateProgressbar(activity as Context, resultData.getLong(Keys.RESULT_DATA_PLAYBACK_PROGRESS, 0L), episode?.duration ?: 0L)
+                        if (episode?.duration == 0L) {
+                            playerController.requestEpisodeDuration(this)
+                        }
                     }
                     if (resultData != null && resultData.containsKey(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING)) {
                         layout.updateSleepTimer(activity as Context, resultData.getLong(Keys.RESULT_DATA_SLEEP_TIMER_REMAINING, 0L))
