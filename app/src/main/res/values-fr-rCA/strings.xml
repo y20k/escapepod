@@ -158,4 +158,7 @@
     <string name="notification_dismiss">Masquer la notification</string>
     <string name="toast_message_error_file_type_unknown">Impossible de traiter le téléchargement. Type de fichier :</string>
     <string name="descr_expanded_player_shownotes_symbol">Symbole des descriptions de programme</string>
+    <string name="toast_message_error_no_internet_connection">Impossible de démarrer la lecture. L\'appareil n\'a pas de connexion réseau.</string>
+    <string name="toast_message_entering_streaming_view">Vue secrète en diffusion continue</string>
+    <string name="dialog_all_episodes_list_title">Tous les épisodes | diffusion en continu uniquement</string>
 </resources>
