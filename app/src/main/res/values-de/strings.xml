@@ -158,4 +158,7 @@
     <string name="notification_dismiss">Benachrichtigung verwerfen</string>
     <string name="toast_message_error_file_type_unknown">Datenübertagung kann nicht verarbeitet werden. Dateityp:</string>
     <string name="descr_expanded_player_shownotes_symbol">Symbol der Sendungsnotizen anzeigen</string>
+    <string name="toast_message_error_no_internet_connection">Die Wiedergabe kann nicht gestartet werden. Das Gerät hat keine Netzwerkverbindung.</string>
+    <string name="toast_message_entering_streaming_view">Geheime Streaming-Ansicht</string>
+    <string name="dialog_all_episodes_list_title">Alle Episoden | nur Streaming</string>
 </resources>
