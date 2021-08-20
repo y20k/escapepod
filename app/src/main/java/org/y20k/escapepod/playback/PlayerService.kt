@@ -55,7 +55,7 @@ import kotlin.collections.ArrayList
 /*
  * PlayerService class
  */
-class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(PlayerService::class.java)
@@ -167,7 +167,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
 
     /* Overrides onGetRoot from MediaBrowserService */ // todo: implement a hierarchical structure -> https://github.com/googlesamples/android-UniversalMusicPlayer/blob/47da058112cee0b70442bcd0370c1e46e830c66b/media/src/main/java/com/example/android/uamp/media/library/BrowseTree.kt
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot {
-        LogHelper.d(TAG, "onGetRoot ${rootHints} | is recent request = ${rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false}") // todo remove
+        LogHelper.d(TAG, "onGetRoot $rootHints| is recent request = ${rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false}") // todo remove
         // Credit: https://github.com/googlesamples/android-UniversalMusicPlayer (->  MusicService)
         // LogHelper.d(TAG, "OnGetRoot: clientPackageName=$clientPackageName; clientUid=$clientUid ; rootHints=$rootHints")
         // to ensure you are not allowing any arbitrary app to browse your app's contents, you need to check the origin
@@ -546,6 +546,7 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
      * MediaButtonEventHandler: overrides headphone next/previous button behavior
      */
     private val buttonEventHandler = object : MediaSessionConnector.MediaButtonEventHandler {
+
         override fun onMediaButtonEvent(player: Player, controlDispatcher: ControlDispatcher, mediaButtonEvent: Intent): Boolean {
             val event: KeyEvent? = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
             when (event?.keyCode) {
@@ -631,10 +632,10 @@ class PlayerService(): MediaBrowserServiceCompat(), SharedPreferences.OnSharedPr
             }
             // NORMAL CASE: Try to match podcast name and voice query
             else {
-                val queryLowercase: String = query.toLowerCase(Locale.getDefault())
+                val queryLowercase: String = query.lowercase(Locale.getDefault())
                 collectionProvider.episodeListByDate.forEach { mediaItem ->
                     // get podcast name (here -> subtitle)
-                    val podcastName: String = mediaItem.description.subtitle.toString().toLowerCase(Locale.getDefault())
+                    val podcastName: String = mediaItem.description.subtitle.toString().lowercase(Locale.getDefault())
                     // FIRST: try to match the whole query
                     if (podcastName == queryLowercase) {
                         // start playback of newest podcast episode

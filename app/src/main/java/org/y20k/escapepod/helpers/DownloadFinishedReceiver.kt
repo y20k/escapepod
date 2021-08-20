@@ -23,7 +23,7 @@ import android.content.Intent
 /*
  * DownloadFinishedReceiver class
  */
-class DownloadFinishedReceiver(): BroadcastReceiver() {
+class DownloadFinishedReceiver: BroadcastReceiver() {
 
 
     /* Define log tag */

@@ -53,13 +53,13 @@ data class LegacyEpisode (@Expose var guid: String = String(),
         val episodeShortDescriptionLength: Int = if (description.length <= descriptionMaxLength) description.length -1 else descriptionMaxLength
 //        val episodeShortDescription: String = description.trim().substring(0, episodeShortDescriptionLength)
         val episodeShortDescription: String = description
-        stringBuilder.append("\nGUID: ${guid} (playback = ${playbackState})\n")
-        stringBuilder.append("Title: ${title}\n")
+        stringBuilder.append("\nGUID: $guid (playback = $playbackState)\n")
+        stringBuilder.append("Title: $title\n")
         //stringBuilder.append("$episodeShortDescription ...\n")
-        stringBuilder.append("${publicationDate}\n")
+        stringBuilder.append("$publicationDate\n")
         stringBuilder.append("Audio: $audio \n")
         stringBuilder.append("Cover: $cover \n")
-        stringBuilder.append("Audio URL: ${remoteAudioFileLocation} \n")
+        stringBuilder.append("Audio URL: $remoteAudioFileLocation \n")
         // stringBuilder.append("Manually downloaded: $manuallyDownloaded \n")
         return stringBuilder.toString()
     }

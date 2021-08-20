@@ -67,22 +67,23 @@ class SearchResultAdapter(private val listener: SearchResultAdapterListener, var
 
     /* Overrides onBindViewHolder from RecyclerView.Adapter */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val pos: Int = position
         // get reference to ViewHolder
         val searchResultViewHolder: SearchResultViewHolder = holder as SearchResultViewHolder
-        val searchResult: SearchResult = searchResults[position]
+        val searchResult: SearchResult = searchResults[pos]
         // update text
         searchResultViewHolder.podcastNameView.text = searchResult.title
         searchResultViewHolder.podcastDescriptionView.text = searchResult.description
         // mark selected if necessary
-        searchResultViewHolder.searchResultLayout.isSelected = selectedPosition == position
+        searchResultViewHolder.searchResultLayout.isSelected = selectedPosition == pos
         // toggle text scrolling (marquee) if necessary
-        searchResultViewHolder.podcastNameView.isSelected = selectedPosition == position
-        searchResultViewHolder.podcastDescriptionView.isSelected = selectedPosition == position
+        searchResultViewHolder.podcastNameView.isSelected = selectedPosition == pos
+        searchResultViewHolder.podcastDescriptionView.isSelected = selectedPosition == pos
         // attach touch listener
         searchResultViewHolder.searchResultLayout.setOnClickListener {
             // move marked position
             notifyItemChanged(selectedPosition)
-            selectedPosition = position
+            selectedPosition = pos
             notifyItemChanged(selectedPosition)
             // hand over url
             listener.onSearchResultTapped(searchResult.url)

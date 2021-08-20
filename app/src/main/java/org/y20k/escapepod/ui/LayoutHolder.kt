@@ -214,12 +214,12 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     fun updateProgressbar(context: Context, position: Long, duration: Long = 0L) {
         val timePlayed = DateTimeHelper.convertToMinutesAndSeconds(position)
         sheetTimePlayedView.text = timePlayed
-        sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: ${timePlayed}"
+        sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: $timePlayed"
         sheetProgressBarView.progress = position.toInt()
         if (displayTimeRemaining) {
             val timeRemaining = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
             sheetDurationView.text = timeRemaining
-            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: ${timeRemaining}"
+            sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: $timeRemaining"
         }
         if (duration != 0L && sheetDurationView.text == "∞") sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(duration)
     }
@@ -229,7 +229,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     fun updatePlaybackSpeedView(context: Context, speed: Float = 1f) {
         val playbackSpeedButtonText: String = "$speed x"
         sheetPlaybackSpeedButtonView.text = playbackSpeedButtonText
-        sheetPlaybackSpeedButtonView.contentDescription = "${playbackSpeedButtonText} - ${context.getString(R.string.descr_expanded_player_playback_speed_button)}"
+        sheetPlaybackSpeedButtonView.contentDescription = "$playbackSpeedButtonText - ${context.getString(R.string.descr_expanded_player_playback_speed_button)}"
     }
 
 
@@ -268,7 +268,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
                     sleepTimerRunningViews.isVisible = true
                     val sleepTimerTimeRemaining: String = DateTimeHelper.convertToMinutesAndSeconds(timeRemaining)
                     sheetSleepTimerRemainingTimeView.text = sleepTimerTimeRemaining
-                    sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: ${sleepTimerTimeRemaining}"
+                    sheetSleepTimerRemainingTimeView.contentDescription = "${context.getString(R.string.descr_expanded_player_sleep_timer_remaining_time)}: $sleepTimerTimeRemaining"
                 }
             }
         }

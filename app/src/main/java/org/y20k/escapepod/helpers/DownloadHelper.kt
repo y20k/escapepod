@@ -112,9 +112,7 @@ object DownloadHelper {
             // re-download all podcast xml episode lists
             PreferencesHelper.saveLastUpdateCollection()
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()
-            val uris: Array<Uri> = Array(podcasts.size) { it ->
-                podcasts[it].remotePodcastFeedLocation.toUri()
-            }
+            val uris: Array<Uri> = Array(podcasts.size) {podcasts[it].remotePodcastFeedLocation.toUri()}
             // enqueue downloads to DownloadManager
             enqueueDownloadSuspended(context, uris, Keys.FILE_TYPE_RSS)
             // reset expanded state of podcast list
@@ -131,9 +129,7 @@ object DownloadHelper {
         CoroutineScope(IO).launch {
             PreferencesHelper.saveLastUpdateCollection()
             val podcasts: List<Podcast> = collectionDatabase.podcastDao().getAll()
-            val uris: Array<Uri> = Array(podcasts.size) { it ->
-                podcasts[it].remoteImageFileLocation.toUri()
-            }
+            val uris: Array<Uri> = Array(podcasts.size) { podcasts[it].remoteImageFileLocation.toUri() }
             enqueueDownload(context, uris, Keys.FILE_TYPE_IMAGE)
             LogHelper.i(TAG, "Updating all covers.")
         }

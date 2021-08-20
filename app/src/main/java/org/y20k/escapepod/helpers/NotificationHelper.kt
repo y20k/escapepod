@@ -52,15 +52,16 @@ class NotificationHelper(private val context: Context, sessionToken: MediaSessio
 
     /* Constructor */
     init {
-        notificationManager = PlayerNotificationManager.createWithNotificationChannel(
-                context,
-                Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID,
-                R.string.notification_now_playing_channel_name,
-                R.string.notification_now_playing_channel_description,
-                Keys.NOW_PLAYING_NOTIFICATION_ID,
-                DescriptionAdapter(mediaController),
-                notificationListener
-        ).apply {
+        val notificationBuilder = PlayerNotificationManager.Builder(context, Keys.NOW_PLAYING_NOTIFICATION_ID, Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID)
+        notificationBuilder.apply {
+            setChannelNameResourceId(R.string.notification_now_playing_channel_name)
+            setChannelDescriptionResourceId(R.string.notification_now_playing_channel_description)
+            setMediaDescriptionAdapter(DescriptionAdapter(mediaController))
+            setNotificationListener(notificationListener)
+        }
+        // create and configure the notification manager
+        notificationManager = notificationBuilder.build()
+        notificationManager.apply {
             // note: notification icons are customized in values.xml
             setMediaSessionToken(sessionToken)
             setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)

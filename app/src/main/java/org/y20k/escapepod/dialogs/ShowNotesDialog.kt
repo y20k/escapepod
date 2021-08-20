@@ -41,7 +41,7 @@ import org.y20k.escapepod.helpers.LogHelper
 /*
  * ShowNotesDialog class
  */
-class ShowNotesDialog () {
+class ShowNotesDialog {
 
     /* Define log tag */
     private val TAG = LogHelper.makeLogTag(ShowNotesDialog::class.java.simpleName)

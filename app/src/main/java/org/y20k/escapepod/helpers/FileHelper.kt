@@ -95,8 +95,7 @@ object FileHelper {
     /* Parses out file name from URL */
     fun getFileNameFromUrl(remoteFileLocation: String): String {
         // val fileName: String = remoteFileLocation.substring(remoteFileLocation.lastIndexOf('/')+1, remoteFileLocation.length)
-        val fileName: String = URLUtil.guessFileName(remoteFileLocation, null, null)
-        return fileName
+        return URLUtil.guessFileName(remoteFileLocation, null, null)
     }
 
 
@@ -212,7 +211,7 @@ object FileHelper {
     /* Appends a message to an existing log - and saves it */
     fun saveLog(context: Context, logMessage: String) {
         var log: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.DEBUG_LOG_FILE)
-        log = "${log} {$logMessage}"
+        log = "$log $logMessage"
         writeTextFile(context, log, Keys.FOLDER_COLLECTION, Keys.DEBUG_LOG_FILE)
     }
 

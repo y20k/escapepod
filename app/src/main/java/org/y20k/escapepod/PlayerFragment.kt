@@ -145,10 +145,10 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
 
     /* Overrides onCreate from Fragment*/
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         // find views and set them up
-        val rootView: View = inflater.inflate(R.layout.fragment_podcast_player, container, false);
+        val rootView: View = inflater.inflate(R.layout.fragment_podcast_player, container, false)
         layout = LayoutHolder(rootView, collectionDatabase)
         initializeViews()
 
@@ -428,9 +428,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 val adapterPosition: Int = viewHolder.adapterPosition
                 val podcast = collectionAdapter.getPodcast(adapterPosition)
                 // stop playback, if necessary
-                podcast.episodes.forEach { it ->
-                    if (it.data.mediaId == episode?.mediaId) playerController.pause()
-                }
+                podcast.episodes.forEach { if (it.data.mediaId == episode?.mediaId) playerController.pause() }
                 // ask user
                 val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n - ${podcast.data.name}"
                 YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
@@ -535,7 +533,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                             layout.displayTimeRemaining = false
                             val duration = DateTimeHelper.convertToMinutesAndSeconds(episode?.duration ?: 0L)
                             layout.sheetDurationView.text = duration
-                            layout.sheetDurationView.contentDescription = "${getString(R.string.descr_expanded_episode_length)}: ${duration}"
+                            layout.sheetDurationView.contentDescription = "${getString(R.string.descr_expanded_episode_length)}: $duration"
                         }
                         else -> return@setOnTouchListener false
                     }
