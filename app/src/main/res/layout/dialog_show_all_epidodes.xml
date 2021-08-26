@@ -26,7 +26,7 @@
         tools:text="@string/sample_text_podcast_name" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/podcast_name2"
+        android:id="@+id/text_streaming_only"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -112,6 +112,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/podcast_name2"
+        app:layout_constraintTop_toBottomOf="@+id/text_streaming_only"
         tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

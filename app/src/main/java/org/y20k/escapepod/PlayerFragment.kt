@@ -512,7 +512,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                     var position: Int = 0
                     override fun onStartTrackingTouch(seekBar: SeekBar?) { }
                     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                        if (position > 0) position = progress
+                        position = progress
                     }
                     override fun onStopTrackingTouch(seekBar: SeekBar?) {
                         if (layout.sheetProgressBarView.max > 0L) playerController.seekTo(position.toLong())

@@ -18,7 +18,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Vibrator
 import android.support.v4.media.session.PlaybackStateCompat
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -73,7 +72,6 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     var playButtonView: ImageView
     var bufferingIndicator: ProgressBar
     private var sheetCoverView: ImageView
-    private var sheetShownotesSymbolView: ImageView
     var sheetProgressBarView: SeekBar
     var sheetTimePlayedView: TextView
     var sheetDurationView: TextView
@@ -110,7 +108,6 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
         playButtonView = rootView.findViewById(R.id.player_play_button)
         bufferingIndicator = rootView.findViewById(R.id.player_buffering_indicator)
         sheetCoverView = rootView.findViewById(R.id.sheet_large_podcast_cover)
-        sheetShownotesSymbolView = rootView.findViewById(R.id.sheet_cover_shownotes_symbol)
         sheetProgressBarView = rootView.findViewById(R.id.sheet_playback_seek_bar)
         sheetTimePlayedView = rootView.findViewById(R.id.sheet_time_played_view)
         sheetDurationView = rootView.findViewById(R.id.sheet_duration_view)
@@ -162,23 +159,9 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             updateProgressbar(context, episode.playbackPosition, episode.duration)
 
             // update click listeners
-            sheetCoverView.setOnTouchListener(View.OnTouchListener { view, motionEvent ->
-                when (motionEvent.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        sheetShownotesSymbolView.visibility = View.VISIBLE
-                        return@OnTouchListener true
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        sheetShownotesSymbolView.visibility = View.GONE
-                        displayShowNotes(context, episode)
-                        return@OnTouchListener true
-                    }
-                    else -> return@OnTouchListener false
-                }
-            })
-//            sheetCoverView.setOnClickListener{
-//                displayShowNotes(context, episode)
-//            }
+            sheetCoverView.setOnClickListener{
+                displayShowNotes(context, episode)
+            }
             sheetEpisodeTitleView.setOnClickListener {
                 displayShowNotes(context, episode)
             }
@@ -420,7 +403,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             override fun onStateChanged(view: View, state: Int) {
                 when (state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> showPlayerViews()
-                    BottomSheetBehavior.STATE_DRAGGING -> sheetShownotesSymbolView.visibility = View.GONE
+                    BottomSheetBehavior.STATE_DRAGGING -> Unit // do nothing
                     BottomSheetBehavior.STATE_EXPANDED -> hidePlayerViews()
                     BottomSheetBehavior.STATE_HALF_EXPANDED ->  Unit // do nothing
                     BottomSheetBehavior.STATE_SETTLING -> Unit // do nothing
