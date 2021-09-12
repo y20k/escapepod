@@ -121,7 +121,7 @@
     <string name="pref_opml_export_summary">Spremi svoje feedove podcasta u OPML datoteku koja se može uvesti u druge playere.</string>
     <string name="descr_expanded_player_forward_button">Skoči 30 sekundi naprijed</string>
     <string name="notification_play">Sviraj</string>
-    <string name="toast_message_error_no_podcast_found">Nemoguće pokrenuti reprodukciju. Najprije dodaj jedan podcast.</string>
+    <string name="toast_message_error_no_podcast_found">Nije moguće pokrenuti reprodukciju. Najprije dodaj jedan podcast.</string>
     <string name="dialog_yes_no_positive_button_add_up_next">Pokreni sada</string>
     <string name="toast_message_up_next_added_episode">Epizoda je dodana u popis „Sljedeća”.</string>
     <string name="player_up_next_headline">Sljedeća:</string>
@@ -158,4 +158,7 @@
     <string name="notification_dismiss">Odbaci obavijest</string>
     <string name="toast_message_error_file_type_unknown">Nije moguće obraditi preuzimanje. Vrsta datoteke:</string>
     <string name="descr_expanded_player_shownotes_symbol">Prikaži simbol za napomene</string>
+    <string name="toast_message_error_no_internet_connection">Nije moguće pokrenuti reprodukciju. Uređaj nije povezan na mrežu.</string>
+    <string name="toast_message_entering_streaming_view">Tajni prikaz strujanja</string>
+    <string name="dialog_all_episodes_list_title">Sve epizode | samo prijenos</string>
 </resources>
