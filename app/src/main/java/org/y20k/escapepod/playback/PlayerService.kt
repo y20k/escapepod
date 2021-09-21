@@ -65,7 +65,6 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
     private lateinit var collectionDatabase: CollectionDatabase
     private var collectionProvider: CollectionProvider = CollectionProvider()
     private var isForegroundService: Boolean = false
-    private var streaming: Boolean = false
     private var upNextEpisode: Episode? = null
     private lateinit var episode: Episode
     private lateinit var playerState: PlayerState
@@ -267,12 +266,20 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
             // get up next episode
             episode = upNextEpisode as Episode
             // clear up-next
-            upNextEpisode = null
+            clearUpNext()
             // prepare player and start playback
             preparePlayer(true)
         } else {
             notificationHelper.hideNotification()
         }
+    }
+
+
+    /* clears the up-next queue */
+    private fun clearUpNext() {
+        upNextEpisode = null
+        playerState.upNextEpisodeMediaId = String()
+        PreferencesHelper.saveUpNextMediaId(String())
     }
 
 
@@ -602,6 +609,9 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
             // save state of current episode before starting playback of new one
             if (this@PlayerService::episode.isInitialized && (player.isPlaying)) {
                 handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
+            }
+            if (mediaId == playerState.upNextEpisodeMediaId) {
+                clearUpNext()
             }
             CoroutineScope(IO).launch {
                 // get episode

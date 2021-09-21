@@ -20,7 +20,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkCapabilities.*
 import android.net.Uri
-import com.android.volley.BuildConfig
+import org.y20k.escapepod.BuildConfig
 import org.y20k.escapepod.Keys
 import java.net.HttpURLConnection
 import java.net.URL
