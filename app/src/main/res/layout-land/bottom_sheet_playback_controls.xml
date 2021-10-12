@@ -30,22 +30,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/sheet_cover_shownotes_symbol"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_marginStart="8dp"-->
-<!--        android:layout_marginTop="8dp"-->
-<!--        android:layout_marginEnd="8dp"-->
-<!--        android:layout_marginBottom="8dp"-->
-<!--        android:contentDescription="@string/descr_expanded_player_shownotes_symbol"-->
-<!--        android:visibility="gone"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/sheet_large_podcast_cover"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/sheet_large_podcast_cover"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/sheet_large_podcast_cover"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/sheet_large_podcast_cover"-->
-<!--        app:srcCompat="@drawable/ic_shownotes_36dp"-->
-<!--        tools:visibility="visible" />-->
+    <ImageView
+        android:id="@+id/sheet_episode_shownotes_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/descr_expanded_player_shownotes_symbol"
+        app:layout_constraintEnd_toEndOf="@+id/sheet_large_podcast_cover"
+        app:layout_constraintTop_toTopOf="@+id/sheet_large_podcast_cover"
+        app:srcCompat="@drawable/ic_info_badge_36dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/sheet_episode_current_chapter_name"

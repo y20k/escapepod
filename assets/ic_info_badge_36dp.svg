@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg width="36" height="36" viewBox="0 0 9.5249998 9.5250003" version="1.1" id="svg109"
+    inkscape:version="1.2-dev (9ee32be, 2021-06-19)" sodipodi:docname="ic_info_badge_36dp.svg"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview111"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="false"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     inkscape:snap-page="false"
+     inkscape:zoom="12"
+     inkscape:cx="16.25"
+     inkscape:cy="10.166667"
+     inkscape:window-width="1603"
+     inkscape:window-height="1124"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs106" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect135"
+       style="fill:#595959;fill-opacity:1;stroke-width:0.264583"
+       d="M 1.9073487e-7,1.9073487e-7 H 9.5249998 V 9.5249998"
+       sodipodi:nodetypes="ccc"
+       inkscape:label="triangle" />
+    <path
+       d="M 6.5616662,1.8520834 H 6.9320829 V 2.2225 H 6.5616662 Z m 0,0.7408333 h 0.3704167 v 1.11125 H 6.5616662 Z M 6.746875,0.92604167 c -1.02235,0 -1.8520833,0.82973333 -1.8520833,1.85208333 0,1.0223501 0.8297333,1.8520834 1.8520833,1.8520834 1.02235,0 1.8520834,-0.8297333 1.8520834,-1.8520834 0,-1.02235 -0.8297334,-1.85208333 -1.8520834,-1.85208333 z m 0,3.33375003 c -0.8167684,0 -1.4816666,-0.664898 -1.4816666,-1.4816667 0,-0.8167687 0.6648982,-1.4816666 1.4816666,-1.4816666 0.8167684,0 1.4816667,0.6648979 1.4816667,1.4816666 0,0.8167687 -0.6648983,1.4816667 -1.4816667,1.4816667 z"
+       id="path11"
+       style="display:inline;fill:#ffffff;stroke-width:0.185207"
+       inkscape:label="info icon" />
+  </g>
+</svg>
