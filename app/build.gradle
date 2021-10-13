@@ -4,13 +4,13 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     // buildToolsVersion is optional because the plugin uses a recommended version by default
 
     defaultConfig {
         applicationId 'org.y20k.escapepod'
         minSdkVersion 25
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 36
         versionName '1.0.5'
         resConfigs "de", "en", "es", "eu", "fi", "fr", "fr-rCA", "he", "hr", "it", "nb-rNO", "nl", "pl", "pt", "ru", "tr", "zh-rCN"
