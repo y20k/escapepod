@@ -4,16 +4,16 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     // buildToolsVersion is optional because the plugin uses a recommended version by default
 
     defaultConfig {
         applicationId 'org.y20k.escapepod'
         minSdkVersion 25
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 36
         versionName '1.0.5'
-        resConfigs "de", "en", "es", "eu", "fi", "fr", "fr-rCA", "he", "hr", "it", "nb-rNO", "nl", "pl", "pt", "ru", "tr", "zh-rCN"
+        resConfigs "ca", "de", "en", "es", "eu", "fi", "fr", "fr-rCA", "he", "hr", "it", "nb-rNO", "nl", "pl", "pt", "ru", "tr", "zh-rCN"
     }
 
     kotlinOptions {
@@ -63,14 +63,14 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
 
-    def coroutinesVersion = "1.4.3"
+    def coroutinesVersion = "1.5.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     implementation "com.google.android.material:material:1.4.0"
 
     implementation "androidx.appcompat:appcompat:1.3.1"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.1"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation "androidx.core:core-ktx:1.6.0"
     implementation "androidx.activity:activity-ktx:1.3.1"
@@ -88,11 +88,11 @@ dependencies {
 
     implementation 'androidx.work:work-runtime-ktx:2.6.0'
 
-    def exoplayerVersion = "2.15.0"
+    def exoplayerVersion = "2.15.1"
     implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
 
-    implementation "com.google.code.gson:gson:2.8.7"
+    implementation "com.google.code.gson:gson:2.8.8"
     implementation 'com.android.volley:volley:1.2.1'
 
 }

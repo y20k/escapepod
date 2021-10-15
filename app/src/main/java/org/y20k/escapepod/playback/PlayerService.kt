@@ -286,7 +286,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
     /* Creates a new MediaSession */
     private fun createMediaSession() {
         val sessionActivityPendingIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let { sessionIntent ->
-            PendingIntent.getActivity(this, 0, sessionIntent, 0)
+            PendingIntent.getActivity(this, 0, sessionIntent, PendingIntent.FLAG_IMMUTABLE)
         }
         mediaSession = MediaSessionCompat(this, TAG).apply {
             setSessionActivity(sessionActivityPendingIntent)

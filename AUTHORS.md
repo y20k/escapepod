@@ -4,9 +4,13 @@ AUTHORS
 ### Development
 Escapepod is designed, developed and maintained by: [y20k](https://github.com/y20k)
 
+Contributing developer: [TacoTheDank](https://github.com/TacoTheDank)
+
 ### Translations
 
 Basque version: [beriain](https://hosted.weblate.org/user/beriain/) | [weblate version history](https://hosted.weblate.org/changes/?lang=eu&project=escapepod)
+
+Catalan version: [Adolfo Jayme Barrientos](https://hosted.weblate.org/user/Fito/) | [weblate version history](https://hosted.weblate.org/changes/?lang=ca&project=escapepod)
 
 Chinese version: [Zo Shin](https://github.com/zo-shin) | [weblate version history](https://hosted.weblate.org/changes/?lang=zh_Hans&project=escapepod)
 

@@ -252,9 +252,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
             podcastViewHolder.olderEpisodesButtonView.setOnClickListener {
                 toggleEpisodeList(position, podcast.data.remotePodcastFeedLocation)
             }
-            // long press: show all Episodes
+            // long press: show all Episodes - if expanded
             podcastViewHolder.olderEpisodesButtonView.setOnLongClickListener {
-                Toast.makeText(context, R.string.toast_message_entering_streaming_view, Toast.LENGTH_LONG).show()
                 showAllEpisodes(podcastViewHolder, podcast.data)
                 return@setOnLongClickListener true
             }
@@ -305,6 +304,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
     /* Displays a dialog containing ALL episodes of a podcast */
     private fun showAllEpisodes(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
         if (podcastViewHolder.olderEpisodesList.isVisible) {
+            Toast.makeText(context, R.string.toast_message_entering_streaming_view, Toast.LENGTH_LONG).show()
             CoroutineScope(IO).launch {
                 // get list of all episodes
                 val episodes: List<Episode> = collectionDatabase.episodeDao().findByEpisodeRemotePodcastFeedLocation(podcast.remotePodcastFeedLocation)

@@ -54,7 +54,6 @@
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/podcast_search_box_view"
-        app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toStartOf="@+id/podcast_search_box_view"
         app:layout_constraintTop_toBottomOf="@+id/no_results_text_view"
         app:layout_constraintVertical_bias="0" />

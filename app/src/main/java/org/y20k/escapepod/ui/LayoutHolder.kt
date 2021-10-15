@@ -89,6 +89,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     private var onboardingLayout: ConstraintLayout
     private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     var displayTimeRemaining: Boolean
+    var isBuffering: Boolean
 
 
     /* Init block */
@@ -125,6 +126,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
         onboardingLayout = rootView.findViewById(R.id.onboarding_layout)
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
         displayTimeRemaining = false
+        isBuffering = false
 
         // set up RecyclerView
         layoutManager = CustomLayoutManager(rootView.context)
@@ -204,7 +206,10 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             sheetDurationView.text = timeRemaining
             sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: $timeRemaining"
         }
-        if (duration != 0L && sheetDurationView.text == "∞") sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(duration)
+        if (duration != 0L && sheetDurationView.text == "∞") {
+            sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(duration)
+            sheetProgressBarView.max = duration.toInt()
+        }
     }
 
 
@@ -265,16 +270,19 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
                 playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
                 bufferingIndicator.isVisible = false
+                isBuffering = false
             }
             PlaybackStateCompat.STATE_BUFFERING -> {
                 playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
                 bufferingIndicator.isVisible = true
+                isBuffering = true
             }
             else -> {
                 playButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_54dp)
                 bufferingIndicator.isVisible = false
+                isBuffering = false
             }
         }
     }
@@ -423,6 +431,9 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     private fun showPlayerViews() {
         playerViews.isVisible = true
         topButtonViews.isGone = true
+        if (isBuffering) {
+            bufferingIndicator.isVisible = true
+        }
     }
 
 
@@ -430,6 +441,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     private fun hidePlayerViews() {
         playerViews.isGone = true
         topButtonViews.isVisible = true
+        bufferingIndicator.isVisible = false
         if (sheetSleepTimerRemainingTimeView.text.isEmpty()) {
             sleepTimerRunningViews.isGone = true
         }

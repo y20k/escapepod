@@ -1,0 +1,7 @@
+# v1.0.5 - Sag Alles Ab
+
+**2021-10-27**
+
+- updated translations
+- removes a handful of paper cuts in the user interface
+- introduces a well hidden streaming view, that I need for testing purposes
