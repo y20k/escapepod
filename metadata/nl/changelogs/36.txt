@@ -1,0 +1,7 @@
+# v1.0.5 - Sag Alles Ab
+
+**2021-10-27**
+
+- Opgelost: allerlei kleine probleempjes met de vormgeving;
+- Nieuw: verborgen streamingweergave die ik nodig heb voor testdoeleinden;
+- Bijgewerkt: vertalingen.
