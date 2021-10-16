@@ -1,0 +1,7 @@
+# v1.0.5 - Sag Alles Ab
+
+**27 Ekim 2021**
+
+- çeviriler güncellendi
+- kullanıcı arayüzündeki birkaç küçük sorun kaldırıldı
+- test amacıyla ihtiyacım olan iyi gizlenmiş bir akış görünümü eklendi
