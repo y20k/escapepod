@@ -1,6 +1,6 @@
 # v1.0.5 - Sag Alles Ab
 
-**2021-10-27**
+**2021-10-21**
 
 - aktualisierte Übersetzungen
 - entfernt ein paar Zuschnitte in der Benutzeroberfläche
