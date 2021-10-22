@@ -1,0 +1,7 @@
+# v1.0.5 - Sag Alles Ab
+
+**21/10/2021**
+
+- Mise à jour des traductions
+- Améliorations de l'interface
+- Introduction d'une vue de streaming bien cachée, dont j'ai besoin à des fins de test
