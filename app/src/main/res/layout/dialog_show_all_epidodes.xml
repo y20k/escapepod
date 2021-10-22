@@ -70,7 +70,7 @@
         android:singleLine="true"
         android:text="@string/dialog_episode_shownotes_website"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:textColor="@color/escapepod_red"
+        android:textColor="@color/escapepod_accent_intense"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/podcast_name"
         app:layout_constraintTop_toBottomOf="@+id/podcast_name"
@@ -99,7 +99,7 @@
         android:singleLine="true"
         android:text="@string/dialog_episode_shownotes_feed"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:textColor="@color/escapepod_red"
+        android:textColor="@color/escapepod_accent_intense"
         app:layout_constraintStart_toEndOf="@+id/divider_centered_dot"
         app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 

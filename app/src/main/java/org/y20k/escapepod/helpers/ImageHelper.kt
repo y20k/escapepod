@@ -94,7 +94,7 @@ object ImageHelper {
             }
             else -> {
                 // default return
-                return context.resources.getColor(R.color.escapepod_grey_light, null)
+                return context.resources.getColor(R.color.escapepod_neutral_medium_light, null)
             }
         }
     }
