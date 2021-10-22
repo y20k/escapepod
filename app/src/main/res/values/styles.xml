@@ -7,10 +7,10 @@
         <!-- Set AppCompat’s colors -->
         <item name="colorPrimary">@color/escapepod_neutral_darker</item>
         <item name="colorPrimaryDark">@color/escapepod_neutral_very_dark</item>
-        <item name="colorAccent">@color/escapepod_accent_intense</item>
+        <item name="colorAccent">@color/escapepod_accent_dimmed</item>
 
         <!-- List divider -->
-        <item name="android:listDivider">@drawable/list_divider</item>
+        <!-- <item name="android:listDivider">@drawable/list_divider</item> -->
 
         <!-- Show white status bar -->
         <item name="android:windowLightStatusBar">true</item>

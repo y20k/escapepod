@@ -156,7 +156,7 @@
         app:layout_constraintBottom_toTopOf="@+id/sheet_up_next_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/vertical_center"
-        app:srcCompat="@drawable/ic_play_symbol_white_54dp" />
+        app:srcCompat="@drawable/ic_player_play_symbol_54dp" />
 
     <ImageView
         android:id="@+id/sheet_skip_back_button"
@@ -315,7 +315,7 @@
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/player_background"
-        app:srcCompat="@drawable/ic_play_symbol_white_36dp" />
+        app:srcCompat="@drawable/ic_player_play_symbol_36dp" />
 
 
     <ProgressBar
@@ -325,7 +325,7 @@
         android:layout_height="68dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
-        android:indeterminateTint="@color/escapepod_red_lighter"
+        android:indeterminateTint="@color/escapepod_accent_light"
         android:indeterminateTintMode="src_in"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"

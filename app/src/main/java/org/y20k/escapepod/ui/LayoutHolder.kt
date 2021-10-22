@@ -267,20 +267,20 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     fun togglePlayButtons(playbackState: Int) {
         when (playbackState) {
             PlaybackStateCompat.STATE_PLAYING -> {
-                playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
+                playButtonView.setImageResource(R.drawable.ic_player_pause_symbol_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_player_pause_symbol_54dp)
                 bufferingIndicator.isVisible = false
                 isBuffering = false
             }
             PlaybackStateCompat.STATE_BUFFERING -> {
-                playButtonView.setImageResource(R.drawable.ic_pause_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_pause_symbol_white_54dp)
+                playButtonView.setImageResource(R.drawable.ic_player_pause_symbol_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_player_pause_symbol_54dp)
                 bufferingIndicator.isVisible = true
                 isBuffering = true
             }
             else -> {
-                playButtonView.setImageResource(R.drawable.ic_play_symbol_white_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_play_symbol_white_54dp)
+                playButtonView.setImageResource(R.drawable.ic_player_play_symbol_36dp)
+                sheetPlayButtonView.setImageResource(R.drawable.ic_player_play_symbol_54dp)
                 bufferingIndicator.isVisible = false
                 isBuffering = false
             }

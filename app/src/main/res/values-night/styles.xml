@@ -5,7 +5,7 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <!-- Set AppCompat’s colors -->
-        <item name="colorPrimary">@color/escapepod_grey_very_light</item>
+        <item name="colorPrimary">@color/escapepod_neutral_very_light</item>
         <item name="colorPrimaryDark">@color/escapepod_neutral_white</item>
         <item name="colorAccent">@color/escapepod_accent_intense</item>
 
