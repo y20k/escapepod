@@ -1,4 +1,4 @@
-# v0.4.0-alpha: An Diesen Langweiligen Tagen
+# v0.4.0-alpha: An diesen langweiligen Tagen
 
 **2019-07-19**
 
