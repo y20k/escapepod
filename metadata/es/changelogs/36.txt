@@ -1,0 +1,7 @@
+# v1.0.5 - Sag alles ab
+
+**2021-10-21**
+
+- Traducciones puestas al día
+- Soluciona detalles menores en la interfaz de usuario
+- Incorpora una vista de emisión bien oculta, la cual necesito para efectuar pruebas

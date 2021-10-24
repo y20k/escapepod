@@ -1,0 +1,7 @@
+# v1.0.4: Sag alles ab
+
+**2021-04-28**
+
+- Corrige un defecto al guardar la posición de reproducción
+- Compatibilidad inicial con MP4
+- Traducciones puestas al día
