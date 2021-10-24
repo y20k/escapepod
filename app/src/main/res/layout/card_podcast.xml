@@ -52,23 +52,11 @@
             app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
-        <ImageView
-            android:id="@+id/divider_horizontal_line"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:importantForAccessibility="no"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
-            app:layout_constraintTop_toBottomOf="@+id/episode_current"
-            app:srcCompat="@color/list_card_episode_background" />
-
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/older_episodes_toggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
@@ -88,12 +76,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:paddingTop="16dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider_horizontal_line" />
+            app:layout_constraintTop_toBottomOf="@+id/episode_current" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
