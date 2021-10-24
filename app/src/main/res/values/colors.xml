@@ -20,7 +20,7 @@
 
     <color name="player_play_pause_icon">@color/escapepod_neutral_very_light</color>
     <color name="player_button_background">@color/escapepod_accent_intense</color>
-    <color name="player_button_buffering">@color/escapepod_accent_intense</color>
+    <color name="player_button_buffering">@color/escapepod_accent_light</color>
     <color name="player_sheet_text_main">@color/escapepod_neutral_white</color>
     <color name="player_sheet_background">@color/escapepod_neutral_darker</color>
     <color name="player_sheet_background_border">@color/escapepod_neutral_dark</color>
