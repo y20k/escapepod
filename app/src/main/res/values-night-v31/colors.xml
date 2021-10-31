@@ -4,5 +4,7 @@
 
     <!-- NIGHT THEME COLORS -->
     <color name="player_play_pause_icon">@color/escapepod_neutral_very_dark</color>
+    <color name="player_info_icon">@color/escapepod_neutral_very_dark</color>
+    <color name="player_info_badge_background">@color/escapepod_accent_intense</color>
 
 </resources>

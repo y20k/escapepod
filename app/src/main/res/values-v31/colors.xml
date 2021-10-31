@@ -4,6 +4,8 @@
 
     <!-- DAY THEME COLORS -->
     <color name="player_play_pause_icon">@color/escapepod_neutral_very_dark</color>
+    <color name="player_info_icon">@color/escapepod_neutral_very_dark</color>
+    <color name="player_info_badge_background">@color/escapepod_accent_intense</color>
 
     <!-- ADAPTIVE BASE COLORS - Android S - https://developer.android.com/reference/android/R.color#system_accent1_0 -->
     <color name="escapepod_neutral_dark1">#FF595959</color>
