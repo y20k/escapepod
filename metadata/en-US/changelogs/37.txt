@@ -1,0 +1,6 @@
+# v1.0.6 - Sag Alles Ab
+
+**2021-11-05**
+
+- app theme now uses "dynamic colors" (Material You) on Android 12
+- updated translations

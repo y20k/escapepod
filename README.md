@@ -4,7 +4,7 @@ README
 # Escapepod - Podcast Player for Android
 <img src="https://raw.githubusercontent.com/y20k/escapepod/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" width="192" />
 
-**Version 1.0.0 ("Sag Alles Ab")**
+**Version 1.0.x ("Sag Alles Ab")**
 
 Escapepod is a simple and lightweight app with a minimalistic approach for listening to podcasts, which may not be to everyone's liking. The app has only a single screen. Playback controls and a list of podcasts that shows the five most recent episodes each. Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
 

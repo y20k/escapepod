@@ -3,10 +3,10 @@
 <resources>
     <!-- DAY THEME COLORS -->
     <color name="app_window_background">@color/escapepod_neutral_lighter</color>
-    <color name="status_bar_background">@color/escapepod_neutral_white</color>
+    <color name="status_bar_background">@color/escapepod_neutral_light</color>
     <color name="app_onboarding_icons">@color/escapepod_neutral_darker</color>
 
-    <color name="toolbar_background">@color/escapepod_neutral_white</color>
+    <color name="toolbar_background">@color/escapepod_neutral_light</color>
 
     <color name="text_default">@color/escapepod_neutral_darker</color>
     <color name="text_lightweight">@color/escapepod_neutral_dark</color>

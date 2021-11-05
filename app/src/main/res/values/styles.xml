@@ -12,7 +12,7 @@
         <!-- List divider -->
         <!-- <item name="android:listDivider">@drawable/list_divider</item> -->
 
-        <!-- Show white status bar -->
+        <!-- Show light status bar -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/status_bar_background</item>
 
