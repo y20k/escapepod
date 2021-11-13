@@ -4,4 +4,4 @@
 
 - gpodder.net hizmetinde temel podcast araması
 - Portekizce sürümü
-- Flemenkçe sürümü
+- Felemenkçe sürümü
