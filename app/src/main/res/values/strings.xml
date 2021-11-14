@@ -77,7 +77,7 @@
     <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
     <string name="toast_message_error_file_type_unknown">Unable to process download. File type:</string>
     <string name="toast_message_error_missing_storage_permission">Grant \"Read Storage\" permission to open this file.</string>
-    <string name="toast_message_error_no_internet_connection">Unable to start playback. Device has no network connection.</string>
+    <string name="toast_message_error_no_internet_connection">Unable to start playback. The device has no network connection.</string>
     <string name="toast_message_error_no_podcast_found">Unable to start playback. Please add a podcast first.</string>
     <string name="toast_message_error_no_podcast_matches_search">Unable to find a podcast that matches your search.</string>
     <string name="toast_message_error_refreshing_cover">Could not refresh cover. The feed does not contain a cover reference.</string>
