@@ -1,0 +1,6 @@
+# v1.0.6 - Sag Alles Ab
+
+**2021-11-05**
+
+- Het appthema gebruikt voortaan dynamische kleuren (‘Material You’) op Android 12;
+- Bijgewerkt: vertalingen.
