@@ -181,4 +181,8 @@
     <string name="pref_opml_import_summary">Velg en OPML-fil fra enhetslager.</string>
     <string name="notification_dismiss">Avfei merknad</string>
     <string name="toast_message_error_file_type_unknown">Klarte ikke å behandle nedlastning. Filtype:</string>
+    <string name="dialog_all_episodes_list_title">Alle episoder | kun strømming</string>
+    <string name="toast_message_entering_streaming_view">Visnings av hemmeling strøm</string>
+    <string name="toast_message_error_no_internet_connection">Kunne ikke starte avspilling. Enheten har ingen nettverkstilkobling.</string>
+    <string name="descr_expanded_player_shownotes_symbol">Vis notatsymbol</string>
 </resources>
