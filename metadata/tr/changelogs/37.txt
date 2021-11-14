@@ -1,0 +1,6 @@
+# v1.0.6 - Sag Alles Ab
+
+**5 Kasım 2021**
+
+- uygulama teması artık Android 12'de "dinamik renkler" (Material You) kullanıyor
+- çeviriler güncellendi
