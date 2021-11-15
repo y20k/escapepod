@@ -157,7 +157,7 @@
     <string name="app_name">Escapepod</string>
     <string name="notification_dismiss">Ignora la notifica</string>
     <string name="toast_message_error_file_type_unknown">Impossibile elaborare lo scaricamento. Tipo di file:</string>
-    <string name="descr_expanded_player_shownotes_symbol">Simbolo note del programma</string>
+    <string name="descr_expanded_player_shownotes_symbol">Mostra simbolo delle note</string>
     <string name="toast_message_error_no_internet_connection">Impossibile avviare la riproduzione. Il dispositivo non ha una connessione di rete.</string>
     <string name="toast_message_entering_streaming_view">Visualizzazione streaming segreta</string>
     <string name="dialog_all_episodes_list_title">Tutti gli episodi | solo streaming</string>
