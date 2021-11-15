@@ -1,5 +1,5 @@
 One screen shows playback controls and the five most recent episodes of added podcasts.
-A simple search feature from podcastindex.org or optionally https://gpodder.net/directory is the only way of discovery.
+A simple search feature from podcastindex.org or optionally gpodder.net/directory is the only way of discovery.
 Tapping RSS podcast links in a web browser also works.
 Add something to the "Up-next" playlist/playback queue by tapping "Play" on an episode while listening to another.
 Up to five episodes are kept if manually downloaded or started, and always the two most recent ones.
