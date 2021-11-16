@@ -1,0 +1,6 @@
+# v1.0.6 - Sag Alles Ab
+
+**2021-11-05**
+
+- App-Design verwendet jetzt "dynamische Farben" (Material You) auf Android 12
+- Übersetzungen aktualisiert
