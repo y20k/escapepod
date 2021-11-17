@@ -51,10 +51,10 @@
     <!-- Player -->
     <string name="player_up_next_headline">Spilles etterpå:</string>
     <!-- Toasts -->
-    <string name="toast_message_adding_podcast">Legger til nettradioopptak.</string>
-    <string name="toast_message_adding_podcasts">Legger til nettradioopptak.</string>
+    <string name="toast_message_adding_podcast">Legger til nettradioopptak …</string>
+    <string name="toast_message_adding_podcasts">Legger til nettradioopptak …</string>
     <string name="toast_message_collection_update_not_necessary">Nettradioopptakssamling oppdatert.</string>
-    <string name="toast_message_downloading_episode">Laster ned episode.</string>
+    <string name="toast_message_downloading_episode">Laster ned episode …</string>
     <string name="toast_message_error_missing_storage_permission">Innvilg tilgang for \"Les lagring\" for å åpne denne filen.</string>
     <string name="toast_message_error_refreshing_cover">Kunne ikke oppdatere omslag. Informasjonskanalen inneholder ikke omslagsreferanse.</string>
     <string name="toast_message_error_validation_no_valid_episodes">RSS-bekreftelse: Informasjonskanalen inneholder ikke en lydreferanse.</string>
@@ -71,7 +71,7 @@
     <string name="toast_message_theme_night">Bytter til \'Nattmodus\' (langt trykk oppdaget)</string>
     <string name="toast_message_up_next_added_episode">Episode lagt til i \'Spilles etterpå\'-kø.</string>
     <string name="toast_message_up_next_removed_episode">Fjernet epsiode fra \'Spilles etterpå\'-kø.</string>
-    <string name="toast_message_up_next_start_playback">Starter neste episode.</string>
+    <string name="toast_message_up_next_start_playback">Starter neste episode …</string>
     <string name="toast_message_updating_collection">Oppdaterer nettradioopptakssamling.</string>
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">Legg til nytt nettradioopptak</string>
@@ -82,7 +82,7 @@
     <string name="notification_now_playing_channel_name">Avspillingskontroller</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Spill av</string>
-    <string name="notification_playing">Spiller</string>
+    <string name="notification_playing">Spiller …</string>
     <string name="notification_skip_back">Hopp bakover</string>
     <string name="notification_skip_forward">Hopp forover</string>
     <!-- Accessibility Descriptions -->
@@ -139,7 +139,7 @@
     <string name="toast_message_error_no_podcast_found">Kunne ikke starte avspilling. Legg til et nettradioopptak først.</string>
     <string name="toast_message_error_no_podcast_matches_search">Fant ingen nettradioopptak som samsvarer med søket ditt.</string>
     <string name="descr_card_settings_button">Innstillinger</string>
-    <string name="pref_maintenance_title">Avansert</string>
+    <string name="pref_maintenance_title">Vedlikehold</string>
     <string name="pref_general_title">Generelt</string>
     <string name="pref_theme_selection_mode_dark">Mørkt modus</string>
     <string name="pref_theme_selection_mode_device_default">Samme som enhet</string>
@@ -167,7 +167,7 @@
     <string name="pref_episode_download_over_mobile_summary_enabled">Laster ned nettradioopptak over Wi-Fi og mobilnettverk. Datakostnader kan tilkomme.</string>
     <string name="pref_background_refresh_title">Bakgrunnsoppdatering</string>
     <string name="pref_background_refresh_summary_disabled">Ser ikke etter nettradioopptak.</string>
-    <string name="pref_background_refresh_summary_enabled">Ser etter nettradioopptak i bakgrunnen.</string>
+    <string name="pref_background_refresh_summary_enabled">Ser etter nettradioopptak i bakgrunnen …</string>
     <string name="pref_app_version_title">Programversjon</string>
     <string name="pref_app_version_summary">Versjon</string>
     <string name="pref_about_title">Om</string>
@@ -176,7 +176,7 @@
     <string name="pref_advanced_title">Avansert</string>
     <string name="pref_delete_all_storage_space_used">Brukt</string>
     <string name="pref_delete_all_storage_space_available">Tilgjengelig</string>
-    <string name="toast_message_deleting_downloads">Sletter nedlastede episoder.</string>
+    <string name="toast_message_deleting_downloads">Sletter nedlastede episoder …</string>
     <string name="pref_opml_import_title">Importer OPML</string>
     <string name="pref_opml_import_summary">Velg en OPML-fil fra enhetslager.</string>
     <string name="notification_dismiss">Avfei merknad</string>
@@ -184,5 +184,5 @@
     <string name="dialog_all_episodes_list_title">Alle episoder | kun strømming</string>
     <string name="toast_message_entering_streaming_view">Visnings av hemmeling strøm</string>
     <string name="toast_message_error_no_internet_connection">Kunne ikke starte avspilling. Enheten har ingen nettverkstilkobling.</string>
-    <string name="descr_expanded_player_shownotes_symbol">Vis notatsymbol</string>
+    <string name="descr_expanded_player_shownotes_symbol">Episodeinnholdssymbol</string>
 </resources>
