@@ -52,8 +52,8 @@
     <string name="dialog_yes_no_positive_button_vpn_download">להוריד בכל זאת</string>
     <string name="dialog_yes_no_title_default">החלטה</string>
     <string name="player_up_next_headline">באים בתור:</string>
-    <string name="toast_message_adding_podcast">פודקאסט מתווסף.</string>
-    <string name="toast_message_adding_podcasts">פודקאסטים מתווספים.</string>
+    <string name="toast_message_adding_podcast">פודקאסט מתווסף…</string>
+    <string name="toast_message_adding_podcasts">פודקאסטים מתווספים…</string>
     <string name="toast_message_collection_update_not_necessary">אוסף הפודקאסטים עדכני.</string>
     <string name="toast_message_downloading_episode">הפרק מתקבל.</string>
     <string name="toast_message_error_feed_not_supported">הזנה בלתי נתמכת (application/Atom+XML).</string>
