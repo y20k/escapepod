@@ -66,12 +66,12 @@
     <!-- Player -->
     <string name="player_up_next_headline">Up Next:</string>
     <!-- Toasts -->
-    <string name="toast_message_adding_podcast">Adding podcast.</string>
-    <string name="toast_message_adding_podcasts">Adding podcasts.</string>
+    <string name="toast_message_adding_podcast">Adding podcast…</string>
+    <string name="toast_message_adding_podcasts">Adding podcasts…</string>
     <string name="toast_message_collection_update_not_necessary">Podcast collection up-to-date.</string>
     <string name="toast_message_copied_to_clipboard">Copied to clipboard.</string>
-    <string name="toast_message_deleting_downloads">Deleting downloaded episodes.</string>
-    <string name="toast_message_downloading_episode">Downloading episode.</string>
+    <string name="toast_message_deleting_downloads">Deleting downloaded episodes…</string>
+    <string name="toast_message_downloading_episode">Downloading episode…</string>
     <string name="toast_message_entering_streaming_view">Secret Streaming View</string>
     <string name="toast_message_error_download_error">Download error</string>
     <string name="toast_message_error_feed_not_supported">Unsupported feed (application/Atom+XML).</string>
@@ -96,7 +96,7 @@
     <string name="toast_message_theme_night">Switching to \'Night mode\' (long press detected)</string>
     <string name="toast_message_up_next_added_episode">Added episode to \'Up Next\' queue.</string>
     <string name="toast_message_up_next_removed_episode">Removed episode from \'Up Next\' queue.</string>
-    <string name="toast_message_up_next_start_playback">Starting next episode.</string>
+    <string name="toast_message_up_next_start_playback">Starting next episode…</string>
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">Add new podcast</string>
@@ -108,7 +108,7 @@
     <string name="notification_dismiss">Dismiss notification</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Play</string>
-    <string name="notification_playing">Playing</string>
+    <string name="notification_playing">Playing…</string>
     <string name="notification_skip_back">Skip back</string>
     <string name="notification_skip_forward">Skip forward</string>
     <!-- Settings -->
@@ -116,7 +116,7 @@
     <string name="pref_advanced_title">Advanced</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_app_version_title">App Version</string>
-    <string name="pref_background_refresh_summary_enabled">Looking for podcast episodes in background.</string>
+    <string name="pref_background_refresh_summary_enabled">Looking for podcast episodes in background…</string>
     <string name="pref_background_refresh_summary_disabled">Not looking for podcast episodes in background.</string>
     <string name="pref_background_refresh_title">Background Refresh</string>
     <string name="pref_delete_all_summary">Delete downloaded episodes to free up space on your device. You can download them again at any time.</string>
@@ -164,7 +164,7 @@
     <string name="descr_expanded_player_previous_chapter_button">Previous chapter</string>
     <string name="descr_expanded_player_replay_button">Replay last 10 seconds</string>
     <string name="descr_expanded_player_seekbar">Episode playback time</string>
-    <string name="descr_expanded_player_shownotes_symbol">Show notes symbol</string>
+    <string name="descr_expanded_player_shownotes_symbol">Show-notes symbol</string>
     <string name="descr_expanded_player_sleep_timer_cancel_button">Cancel sleep timer</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">Time remaining on sleep timer</string>
     <string name="descr_expanded_player_sleep_timer_start_button">Start sleep timer</string>
