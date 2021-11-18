@@ -64,12 +64,12 @@
     <!-- Player -->
     <string name="player_up_next_headline">下一个：</string>
     <!-- Toasts -->
-    <string name="toast_message_adding_podcast">正在添加播客。</string>
-    <string name="toast_message_adding_podcasts">正在添加播客。</string>
+    <string name="toast_message_adding_podcast">正在添加播客…</string>
+    <string name="toast_message_adding_podcasts">正在添加播客…</string>
     <string name="toast_message_collection_update_not_necessary">播客集已是最新。</string>
     <string name="toast_message_copied_to_clipboard">已复制到剪贴板。</string>
-    <string name="toast_message_deleting_downloads">正在删除已下载的节目。</string>
-    <string name="toast_message_downloading_episode">正在下载节目。</string>
+    <string name="toast_message_deleting_downloads">正在删除已下载的节目…</string>
+    <string name="toast_message_downloading_episode">正在下载节目…</string>
     <string name="toast_message_error_download_error">下载错误</string>
     <string name="toast_message_error_feed_not_supported">不支持的源（application/Atom+XML）。</string>
     <string name="toast_message_error_missing_storage_permission">请授予“读取存储“权限以打开此文件。</string>
@@ -103,7 +103,7 @@
     <string name="notification_dismiss">忽略通知</string>
     <string name="notification_pause">暂停</string>
     <string name="notification_play">播放</string>
-    <string name="notification_playing">正在播放</string>
+    <string name="notification_playing">正在播放…</string>
     <string name="notification_skip_back">后跳</string>
     <string name="notification_skip_forward">前跳</string>
     <!-- Settings -->
@@ -111,7 +111,7 @@
     <string name="pref_advanced_title">高级</string>
     <string name="pref_app_version_summary">版本</string>
     <string name="pref_app_version_title">程序版本</string>
-    <string name="pref_background_refresh_summary_enabled">正在后台寻找播客节目。</string>
+    <string name="pref_background_refresh_summary_enabled">正在后台寻找播客节目…</string>
     <string name="pref_background_refresh_summary_disabled">未在后台寻找播客节目。</string>
     <string name="pref_background_refresh_title">后台刷新</string>
     <string name="pref_delete_all_summary">删除已下载的节目以便释放您的设备空间。您可以随时再次下载它们。</string>
@@ -169,7 +169,7 @@
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
     <string name="toast_message_error_file_type_unknown">无法处理下载。文件类型：</string>
-    <string name="descr_expanded_player_shownotes_symbol">显示注释符号</string>
+    <string name="descr_expanded_player_shownotes_symbol">节目注释符号</string>
     <string name="toast_message_error_no_internet_connection">无法开始播放。 设备没有网络连接。</string>
     <string name="toast_message_entering_streaming_view">私密流播放视图</string>
     <string name="dialog_all_episodes_list_title">所有节目 | 仅在线播放</string>
