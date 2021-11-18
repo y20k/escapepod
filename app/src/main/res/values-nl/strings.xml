@@ -80,7 +80,7 @@
     <string name="notification_now_playing_channel_name">Afspeelbediening</string>
     <string name="notification_pause">Pauzeren</string>
     <string name="notification_play">Afspelen</string>
-    <string name="notification_playing">Aan het afspelen</string>
+    <string name="notification_playing">Aan het afspelen…</string>
     <string name="notification_skip_back">Terugspoelen</string>
     <string name="notification_skip_forward">Vooruitspoelen</string>
     <string name="descr_app_icon">App-pictogram dat lijkt op een ruimtecapsule</string>
@@ -143,7 +143,7 @@
     <string name="pref_episode_download_over_mobile_summary_enabled">Podcastafleveringen worden gedownload via wifi en mobiel internet. Je provider kan hiervoor kosten in rekening brengen.</string>
     <string name="pref_background_refresh_title">Verversen op achtergrond</string>
     <string name="pref_background_refresh_summary_disabled">Niet op achtergrond zoeken naar podcastafleveringen.</string>
-    <string name="pref_background_refresh_summary_enabled">Op achtergrond zoeken naar podcastafleveringen.</string>
+    <string name="pref_background_refresh_summary_enabled">Bezig met zoeken naar podcastafleveringen…</string>
     <string name="pref_app_version_title">Appversie</string>
     <string name="pref_app_version_summary">Versie</string>
     <string name="pref_about_title">Over</string>
