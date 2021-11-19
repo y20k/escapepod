@@ -52,10 +52,10 @@
     <string name="dialog_yes_no_positive_button_vpn_download">Télécharger quand même</string>
     <string name="dialog_yes_no_title_default">Décider</string>
     <string name="player_up_next_headline">À suivre :</string>
-    <string name="toast_message_adding_podcast">Ajout du podcast.</string>
-    <string name="toast_message_adding_podcasts">Ajout des podcasts.</string>
+    <string name="toast_message_adding_podcast">Ajout du podcast…</string>
+    <string name="toast_message_adding_podcasts">Ajout des podcasts…</string>
     <string name="toast_message_collection_update_not_necessary">La collection de podcasts est à jour.</string>
-    <string name="toast_message_downloading_episode">Téléchargement de l\'épisode.</string>
+    <string name="toast_message_downloading_episode">Téléchargement de l\'épisode…</string>
     <string name="toast_message_error_feed_not_supported">Flux non pris en charge (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">Veuillez accorder l\'autorisation « Stockage » pour ouvrir ce fichier.</string>
     <string name="toast_message_error_no_podcast_found">Impossible de démarrer le lecture. Veuillez d\'abord ajouter un podcast.</string>
@@ -75,7 +75,7 @@
     <string name="toast_message_theme_night">Passage à « thème sombre » (appui long détecté)</string>
     <string name="toast_message_up_next_added_episode">Épisode ajouté à la file d\'attente.</string>
     <string name="toast_message_up_next_removed_episode">Épisode supprimé de la file d\'attente.</string>
-    <string name="toast_message_up_next_start_playback">Lecture de l\'épisode suivant.</string>
+    <string name="toast_message_up_next_start_playback">Lecture de l\'épisode suivant…</string>
     <string name="toast_message_updating_collection">Mise à jour de la collection des podcasts.</string>
     <string name="podcast_list_button_add_new_podcast">Ajouter un nouveau podcast</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Masquer les anciens épisodes</string>
@@ -84,7 +84,7 @@
     <string name="notification_now_playing_channel_name">Contrôles de lecture</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Lecture</string>
-    <string name="notification_playing">Lecture en cours</string>
+    <string name="notification_playing">Lecture en cours…</string>
     <string name="notification_skip_back">Précédent</string>
     <string name="notification_skip_forward">Suivant</string>
     <string name="descr_app_icon">Icône d\'application représentant une capsule de survie dans l\'espace</string>
@@ -143,7 +143,7 @@
     <string name="pref_episode_download_over_mobile_summary_enabled">Téléchargement des épisodes de podcast via le réseau Wi-Fi et les données mobiles. Des frais d\'utilisation des données peuvent s\'appliquer.</string>
     <string name="pref_background_refresh_title">Recherche en arrière-plan</string>
     <string name="pref_background_refresh_summary_disabled">Recherche en arrière-plan désactivée.</string>
-    <string name="pref_background_refresh_summary_enabled">Recherche d\'épisodes de podcast en arrière-plan.</string>
+    <string name="pref_background_refresh_summary_enabled">Recherche d\'épisodes de podcast en arrière-plan…</string>
     <string name="pref_app_version_title">Version de l\'application</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_about_title">À propos</string>
@@ -152,7 +152,7 @@
     <string name="pref_advanced_title">Avancé</string>
     <string name="pref_delete_all_storage_space_used">Utilisé</string>
     <string name="pref_delete_all_storage_space_available">Disponible</string>
-    <string name="toast_message_deleting_downloads">Suppression de tous les épisodes téléchargés.</string>
+    <string name="toast_message_deleting_downloads">Suppression des épisodes téléchargés…</string>
     <string name="pref_opml_import_title">Importer un fichier OPML</string>
     <string name="pref_opml_import_summary">Sélectionnez un fichier OPML depuis les fichiers du périphérique.</string>
     <string name="notification_dismiss">Masquer la notification</string>
