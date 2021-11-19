@@ -1,0 +1,6 @@
+# v1.0.6 - Sag alles ab
+
+**2021-11-05**
+
+- El tema de la aplicación emplea ahora «colores dinámicos» (Material You) en Android 12
+- Traducciones actualizadas
