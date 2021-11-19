@@ -44,11 +44,11 @@
     <string name="dialog_yes_no_positive_button_remove_podcast">Entfernen</string>
     <string name="dialog_yes_no_positive_button_update_collection">Aktualisieren</string>
     <string name="dialog_yes_no_title_default">Entscheiden</string>
-    <string name="toast_message_adding_podcast">Podcast hinzufügen.</string>
-    <string name="toast_message_adding_podcasts">Podcasts hinzufügen.</string>
+    <string name="toast_message_adding_podcast">Podcast wird hinzugefügt …</string>
+    <string name="toast_message_adding_podcasts">Podcasts werden hinzugefügt …</string>
     <string name="toast_message_collection_update_not_necessary">Podcast-Sammlung ist aktuell.</string>
     <string name="toast_message_copied_to_clipboard">In die Zwischenablage kopiert.</string>
-    <string name="toast_message_downloading_episode">Episode wird heruntergeladen.</string>
+    <string name="toast_message_downloading_episode">Episode wird heruntergeladen …</string>
     <string name="toast_message_error_missing_storage_permission">Erteile die Berechtigung „Speicher lesen“, um diese Datei zu öffnen.</string>
     <string name="toast_message_error_refreshing_cover">Titelbild kann nicht aktualisiert werden. Der Feed enthält keinen Verweis dazu.</string>
     <string name="toast_message_error_validation_no_valid_episodes">RSS-Überprüfung: Der Feed enthält keine Audioinhalte.</string>
@@ -66,7 +66,7 @@
     <string name="toast_message_theme_night">Wechsle zu Nachtmodus (Langes Tippen erkannt)</string>
     <string name="toast_message_up_next_added_episode">Episode zur „Als Nächstes“ Warteschlange hinzugefügt.</string>
     <string name="toast_message_up_next_removed_episode">Episode von „Als Nächstes“-Warteschlange entfernt.</string>
-    <string name="toast_message_up_next_start_playback">Nächste Episode starten.</string>
+    <string name="toast_message_up_next_start_playback">Nächste Episode wird gestartet …</string>
     <string name="toast_message_updating_collection">Podcast-Sammlung aktualisieren.</string>
     <string name="podcast_list_button_add_new_podcast">Neuen Podcast hinzufügen</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Ältere Episoden verbergen</string>
@@ -75,7 +75,7 @@
     <string name="notification_now_playing_channel_name">Wiedergabesteuerung</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_play">Wiedergabe</string>
-    <string name="notification_playing">Wiedergabe</string>
+    <string name="notification_playing">Wiedergabe …</string>
     <string name="notification_skip_back">Zurück springen</string>
     <string name="notification_skip_forward">Vorwärts springen</string>
     <string name="descr_app_icon">App-Symbol, das eine Rettungskapsel im Weltraum darstellt</string>
@@ -143,7 +143,7 @@
     <string name="pref_episode_download_over_mobile_summary_enabled">Herunterladen von Podcast-Episoden über WLAN und Mobilfunknetz. Für das Herunterladen von Daten können Gebühren anfallen.</string>
     <string name="pref_background_refresh_title">Hintergrundaktualisierung</string>
     <string name="pref_background_refresh_summary_disabled">Keine Suche nach Podcast-Episoden im Hintergrund.</string>
-    <string name="pref_background_refresh_summary_enabled">Suche nach Podcast-Episoden im Hintergrund.</string>
+    <string name="pref_background_refresh_summary_enabled">Suche nach Podcast-Episoden im Hintergrund …</string>
     <string name="pref_app_version_title">Anwendungsversion</string>
     <string name="pref_app_version_summary">Version</string>
     <string name="pref_about_title">Über</string>
@@ -152,12 +152,12 @@
     <string name="pref_advanced_title">Erweitert</string>
     <string name="pref_delete_all_storage_space_used">Verwendet</string>
     <string name="pref_delete_all_storage_space_available">Verfügbar</string>
-    <string name="toast_message_deleting_downloads">Heruntergeladene Folgen werden gelöscht.</string>
+    <string name="toast_message_deleting_downloads">Heruntergeladene Folgen werden gelöscht …</string>
     <string name="pref_opml_import_summary">Wähle eine OPML-Datei aus dem Gerätespeicher.</string>
     <string name="pref_opml_import_title">OPML importieren</string>
     <string name="notification_dismiss">Benachrichtigung verwerfen</string>
     <string name="toast_message_error_file_type_unknown">Datenübertagung kann nicht verarbeitet werden. Dateityp:</string>
-    <string name="descr_expanded_player_shownotes_symbol">Symbol der Sendungsnotizen anzeigen</string>
+    <string name="descr_expanded_player_shownotes_symbol">Symbol der Sendungsnotizen</string>
     <string name="toast_message_error_no_internet_connection">Die Wiedergabe kann nicht gestartet werden. Das Gerät hat keine Netzwerkverbindung.</string>
     <string name="toast_message_entering_streaming_view">Geheime Streaming-Ansicht</string>
     <string name="dialog_all_episodes_list_title">Alle Episoden | nur Streaming</string>
