@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="toast_message_adding_podcast">Lisätään podcastia.</string>
+    <string name="toast_message_adding_podcast">Lisätään podcastia…</string>
     <string name="descr_player_podcast_cover">Podcastin pieni kansikuva</string>
     <string name="descr_card_playback_indicator">Toiston edistyminen</string>
     <string name="pref_delete_all_summary">Poista ladatut jaksot vapauttaaksesi tallennustilaa laitteestasi. Voit ladata ne uudestaan milloin tahansa.</string>
@@ -45,7 +45,7 @@
     <string name="toast_message_copied_to_clipboard">Syötteen osoite kopioitu leikepöydälle.</string>
     <string name="toast_message_debug_logging_to_file_started">Virheenkorjaus: Aloita paikalliseen lokitiedostoon kirjoittaminen.</string>
     <string name="toast_message_error_no_podcast_matches_search">Hakuasi vastaavaa podcastia ei löydy.</string>
-    <string name="toast_message_downloading_episode">Jakson lataaminen.</string>
+    <string name="toast_message_downloading_episode">Jaksoa ladataan…</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Poista</string>
     <string name="dialog_yes_no_positive_button_delete_downloads">Poista kaikki</string>
     <string name="dialog_yes_no_negative_button_cancel">Peruuta</string>
@@ -64,7 +64,7 @@
     <string name="pref_maintenance_title">Huolto</string>
     <string name="pref_delete_all_title">Poista lautaukset</string>
     <string name="notification_skip_forward">Ohita</string>
-    <string name="notification_playing">Toistetaan</string>
+    <string name="notification_playing">Toistetaan…</string>
     <string name="notification_pause">Tauko</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Vanhemmat jaksot</string>
     <string name="podcast_list_button_add_new_podcast">Lisää uusi podcast</string>
@@ -80,7 +80,7 @@
     <string name="toast_message_error_feed_not_supported">Tukematon syöte (application/Atom+XML).</string>
     <string name="toast_message_collection_update_not_necessary">Podcast-kokoelma on ajan tasalla.</string>
     <string name="dialog_yes_no_positive_button_update_covers">Päivitä</string>
-    <string name="toast_message_adding_podcasts">Lisätään podcastia.</string>
+    <string name="toast_message_adding_podcasts">Lisätään podcastia…</string>
     <string name="dialog_yes_no_positive_button_vpn_download">Lataa silti</string>
     <string name="dialog_yes_no_positive_button_update_collection">Päivitä</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Lataa silti</string>
@@ -89,7 +89,7 @@
     <string name="dialog_yes_no_negative_button_default">Ei</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Lisää toistojonoon</string>
     <string name="descr_expanded_player_up_next_clear_button">Tyhjennä toistojono</string>
-    <string name="toast_message_up_next_start_playback">Aloitetaan seuraava jakso.</string>
+    <string name="toast_message_up_next_start_playback">Seuraava jakso alkaa.</string>
     <string name="toast_message_up_next_removed_episode">Jakso poistettu toistojonosta.</string>
     <string name="toast_message_up_next_added_episode">Lisätty jakso toistojonoon.</string>
     <string name="player_up_next_headline">Seuraavaksi:</string>
@@ -135,7 +135,7 @@
     <string name="dialog_add_podcast_button">Lisää</string>
     <string name="fragment_settings_title">Asetukset</string>
     <string name="app_name">Escapepod</string>
-    <string name="toast_message_deleting_downloads">Poistetaan ladattuja jaksoja.</string>
+    <string name="toast_message_deleting_downloads">Poistetaan ladattuja jaksoja…</string>
     <string name="toast_message_error_download_error">Latausvirhe</string>
     <string name="toast_message_error_file_type_unknown">Latausta ei voitu käsitellä. Tiedostotyyppi:</string>
     <string name="notification_dismiss">Irtisanomisilmoitus</string>
@@ -143,7 +143,7 @@
     <string name="pref_advanced_title">Edistyksellinen</string>
     <string name="pref_app_version_summary">Versio</string>
     <string name="pref_app_version_title">Sovelluksen Versio</string>
-    <string name="pref_background_refresh_summary_enabled">Etsitään podcast-jaksoja taustalta.</string>
+    <string name="pref_background_refresh_summary_enabled">Etsitään podcast-jaksoja taustalta…</string>
     <string name="pref_background_refresh_summary_disabled">Ei etsi podcast-jaksoja taustalla.</string>
     <string name="pref_background_refresh_title">Taustan Päivitys</string>
     <string name="pref_delete_all_storage_space_available">Käytettävissä</string>
@@ -157,4 +157,8 @@
     <string name="pref_report_issue_title">Raportti</string>
     <string name="pref_search_provider_selection_summary">Tällä hetkellä käytössä:</string>
     <string name="pref_search_provider_selection_title">Hakupalvelujen Tarjoaja</string>
+    <string name="toast_message_entering_streaming_view">Salainen suoratoistonäkymä</string>
+    <string name="toast_message_error_no_internet_connection">Toiston käynnistäminen ei onnistu. Laitteella ei ole verkkoyhteyttä.</string>
+    <string name="descr_expanded_player_shownotes_symbol">Ohjelmankuvauksen symboli</string>
+    <string name="dialog_all_episodes_list_title">Kaikki jaksot | vain suoratoisto</string>
 </resources>
