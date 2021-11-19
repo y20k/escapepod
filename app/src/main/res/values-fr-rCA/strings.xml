@@ -17,7 +17,7 @@
     <string name="pref_opml_export_summary">Enregistre les flux de baladodiffusion dans un fichier OPML pouvant être importé dans d\'autres lecteurs.</string>
     <string name="pref_episode_download_over_mobile_summary_disabled">Téléchargement des épisodes de balado via le réseau Wi-Fi seulement.</string>
     <string name="pref_episode_download_over_mobile_summary_enabled">Téléchargement des épisodes de balado via le réseau Wi-Fi et les données mobiles. Des frais d\'utilisation des données peuvent s\'appliquer.</string>
-    <string name="pref_background_refresh_summary_enabled">Recherche d\'épisodes de balado en arrière-plan.</string>
+    <string name="pref_background_refresh_summary_enabled">Recherche d\'épisodes de balado en arrière-plan…</string>
     <string name="podcast_list_button_add_new_podcast">Ajouter un nouveau balado</string>
     <string name="toast_message_updating_collection">Mise à jour de la collection des balados.</string>
     <string name="toast_message_save_opml">Enregistrement de la collection de balados au format OPML.</string>
@@ -26,8 +26,8 @@
     <string name="toast_message_error_no_podcast_matches_search">Impossible de trouver un balado correspondant à votre recherche.</string>
     <string name="toast_message_error_no_podcast_found">Impossible de démarrer le lecture. Veuillez d\'abord ajouter un balado.</string>
     <string name="toast_message_collection_update_not_necessary">La collection de balados est à jour.</string>
-    <string name="toast_message_adding_podcasts">Ajout des balados.</string>
-    <string name="toast_message_adding_podcast">Ajout du balado.</string>
+    <string name="toast_message_adding_podcasts">Ajout des balados…</string>
+    <string name="toast_message_adding_podcast">Ajout du balado…</string>
     <string name="dialog_yes_no_message_update_covers">Télécharger la dernière version de toutes les pochettes de balado\?</string>
     <string name="dialog_yes_no_message_remove_podcast">Supprimer ce balado\?</string>
     <string name="dialog_opml_import_message">Ajouter de nouveaux balados\? Les doublons seront supprimés avant l\'importation. Nombre de balados trouvés :</string>
@@ -90,14 +90,14 @@
     <string name="pref_about_title">À propos</string>
     <string name="notification_skip_forward">Suivant</string>
     <string name="notification_skip_back">Précédent</string>
-    <string name="notification_playing">Lecture en cours</string>
+    <string name="notification_playing">Lecture en cours…</string>
     <string name="notification_play">Lecture</string>
     <string name="notification_pause">Pause</string>
     <string name="notification_now_playing_channel_name">Contrôles de lecture</string>
     <string name="notification_now_playing_channel_description">Contrôles de lecture, nom de l\'épisode et pochette.</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Anciens épisodes</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Masquer les anciens épisodes</string>
-    <string name="toast_message_up_next_start_playback">Lecture de l\'épisode suivant.</string>
+    <string name="toast_message_up_next_start_playback">Lecture de l\'épisode suivant…</string>
     <string name="toast_message_up_next_removed_episode">Épisode supprimé de la file d\'attente.</string>
     <string name="toast_message_up_next_added_episode">Épisode ajouté à la file d\'attente.</string>
     <string name="toast_message_theme_night">Passage à « thème sombre » (appui long détecté)</string>
@@ -114,8 +114,8 @@
     <string name="toast_message_error_missing_storage_permission">Veuillez accorder l\'autorisation « Stockage » pour ouvrir ce fichier.</string>
     <string name="toast_message_error_feed_not_supported">Flux non pris en charge (application/Atom+XML).</string>
     <string name="toast_message_error_download_error">Erreur de téléchargement</string>
-    <string name="toast_message_downloading_episode">Téléchargement de l\'épisode.</string>
-    <string name="toast_message_deleting_downloads">Suppression de tous les épisodes téléchargés.</string>
+    <string name="toast_message_downloading_episode">Téléchargement de l\'épisode…</string>
+    <string name="toast_message_deleting_downloads">Suppression des épisodes téléchargés…</string>
     <string name="toast_message_copied_to_clipboard">Copiée dans le presse-papiers.</string>
     <string name="player_up_next_headline">À suivre :</string>
     <string name="dialog_yes_no_title_default">Décider</string>
