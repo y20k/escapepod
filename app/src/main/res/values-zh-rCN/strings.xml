@@ -10,6 +10,7 @@
     <string name="dialog_add_podcast_howto">请输入一个播客源地址。可在相应播客主页上寻找 RSS 标志。</string>
     <string name="dialog_add_podcast_input_hint">请输入播客源链接</string>
     <string name="dialog_add_podcast_title">添加新播客</string>
+    <string name="dialog_all_episodes_list_title">所有节目 | 仅在线播放</string>
     <string name="dialog_episode_shownotes_close">关闭</string>
     <string name="dialog_episode_shownotes_feed">源</string>
     <string name="dialog_episode_shownotes_title">显示笔记</string>
@@ -70,9 +71,12 @@
     <string name="toast_message_copied_to_clipboard">已复制到剪贴板。</string>
     <string name="toast_message_deleting_downloads">正在删除已下载的节目…</string>
     <string name="toast_message_downloading_episode">正在下载节目…</string>
+    <string name="toast_message_entering_streaming_view">私密流播放视图</string>
     <string name="toast_message_error_download_error">下载错误</string>
     <string name="toast_message_error_feed_not_supported">不支持的源（application/Atom+XML）。</string>
+    <string name="toast_message_error_file_type_unknown">无法处理下载。文件类型：</string>
     <string name="toast_message_error_missing_storage_permission">请授予“读取存储“权限以打开此文件。</string>
+    <string name="toast_message_error_no_internet_connection">无法开始播放。设备没有网络连接。</string>
     <string name="toast_message_error_no_podcast_found">无法开始回放。请先添加一个播客。</string>
     <string name="toast_message_error_no_podcast_matches_search">找不到符合您搜索条件的播客。</string>
     <string name="toast_message_error_refreshing_cover">无法刷新封面。此源不包含参考封面。</string>
@@ -91,7 +95,7 @@
     <string name="toast_message_theme_night">正在切换到“夜间模式“（检测到长按）</string>
     <string name="toast_message_up_next_added_episode">已添加本节目到“下一个“队列。</string>
     <string name="toast_message_up_next_removed_episode">本节目已从“下一个“队列移除。</string>
-    <string name="toast_message_up_next_start_playback">开始下一集。</string>
+    <string name="toast_message_up_next_start_playback">正在开始下一个节目…</string>
     <string name="toast_message_updating_collection">正在更新播客集。</string>
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">添加新播客</string>
@@ -157,6 +161,7 @@
     <string name="descr_expanded_player_previous_chapter_button">上一章</string>
     <string name="descr_expanded_player_replay_button">重复最后 10 秒</string>
     <string name="descr_expanded_player_seekbar">节目回放时间</string>
+    <string name="descr_expanded_player_shownotes_symbol">节目注释符号</string>
     <string name="descr_expanded_player_sleep_timer_cancel_button">取消睡眠定时器</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">睡眠定时器剩余时间</string>
     <string name="descr_expanded_player_sleep_timer_start_button">启动睡眠定时器</string>
@@ -168,9 +173,4 @@
     <!-- Onboarding -->
     <string name="onboarding_app_description">播客程序</string>
     <string name="onboarding_app_get_started">开始</string>
-    <string name="toast_message_error_file_type_unknown">无法处理下载。文件类型：</string>
-    <string name="descr_expanded_player_shownotes_symbol">节目注释符号</string>
-    <string name="toast_message_error_no_internet_connection">无法开始播放。 设备没有网络连接。</string>
-    <string name="toast_message_entering_streaming_view">私密流播放视图</string>
-    <string name="dialog_all_episodes_list_title">所有节目 | 仅在线播放</string>
 </resources>
