@@ -55,7 +55,7 @@
     <string name="toast_message_adding_podcast">פודקאסט מתווסף…</string>
     <string name="toast_message_adding_podcasts">פודקאסטים מתווספים…</string>
     <string name="toast_message_collection_update_not_necessary">אוסף הפודקאסטים עדכני.</string>
-    <string name="toast_message_downloading_episode">הפרק מתקבל.</string>
+    <string name="toast_message_downloading_episode">הפרק מתקבל…</string>
     <string name="toast_message_error_feed_not_supported">הזנה בלתי נתמכת (application/Atom+XML).</string>
     <string name="toast_message_error_missing_storage_permission">יש להעניק את ההרשאה „קריאת אחסון” כדי לפתוח את הקובץ הזה.</string>
     <string name="toast_message_error_no_podcast_found">לא ניתן להתחיל את הנגינה. נא להוסיף פודקאסט תחילה.</string>
@@ -84,7 +84,7 @@
     <string name="notification_now_playing_channel_name">פקדי נגינה</string>
     <string name="notification_pause">השהיה</string>
     <string name="notification_play">לנגן</string>
-    <string name="notification_playing">מתנגן</string>
+    <string name="notification_playing">מתנגן…</string>
     <string name="notification_skip_back">לדלג אחורה</string>
     <string name="notification_skip_forward">לדלג קדימה</string>
     <string name="descr_app_icon">סמל יישומון שמציג תא מילוט בחלל</string>
@@ -135,7 +135,7 @@
     <string name="pref_delete_all_summary">למחוק פרקים שהורדו כדי לפנות מקום בתהקן שלך. ניתן להוריד אותם שוב בכל עת.</string>
     <string name="pref_background_refresh_title">רענון ברקע</string>
     <string name="pref_background_refresh_summary_disabled">לא מתבצע חיפוש אחר פרקי פודקאסטים ברקע.</string>
-    <string name="pref_background_refresh_summary_enabled">מתבצע חיפוש אחר פרקי פודקאסטים ברקע.</string>
+    <string name="pref_background_refresh_summary_enabled">מתבצע חיפוש אחר פרקי פודקאסטים ברקע…</string>
     <string name="pref_app_version_title">גרסת היישומון</string>
     <string name="pref_app_version_summary">גרסה</string>
     <string name="pref_about_title">על אודות</string>
@@ -152,12 +152,12 @@
     <string name="pref_advanced_title">מתקדם</string>
     <string name="pref_delete_all_storage_space_used">בשימוש</string>
     <string name="pref_delete_all_storage_space_available">פנוי</string>
-    <string name="toast_message_deleting_downloads">ההורדות שהתקבלו נמחקות.</string>
+    <string name="toast_message_deleting_downloads">ההורדות שהתקבלו נמחקות…</string>
     <string name="pref_opml_import_title">ייבוא OPML</string>
     <string name="pref_opml_import_summary">נא לבחור קובץ OPML מאחסון המכשיר.</string>
     <string name="notification_dismiss">התעלמות מההתראה</string>
     <string name="toast_message_error_file_type_unknown">לא ניתן לעבד את ההורדה. סוג הקובץ:</string>
-    <string name="descr_expanded_player_shownotes_symbol">הצגת סמל הערות</string>
+    <string name="descr_expanded_player_shownotes_symbol">סמל הערות פרק</string>
     <string name="toast_message_error_no_internet_connection">לא ניתן להתחיל את הנגינה. למכשיר אין חיבור לרשת.</string>
     <string name="toast_message_entering_streaming_view">תצוגת תזרים סודית</string>
     <string name="dialog_all_episodes_list_title">כל הפרקים | הזרמה בלבד</string>
