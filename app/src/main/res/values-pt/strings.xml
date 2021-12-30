@@ -46,10 +46,10 @@
     <string name="dialog_yes_no_positive_button_update_collection">Atualizar</string>
     <string name="dialog_yes_no_title_default">Decidir</string>
     <string name="player_up_next_headline">Seguinte:</string>
-    <string name="toast_message_adding_podcast">A adicionar podcast.</string>
-    <string name="toast_message_adding_podcasts">A adicionar podcasts.</string>
+    <string name="toast_message_adding_podcast">A adicionar podcast…</string>
+    <string name="toast_message_adding_podcasts">A adicionar podcasts…</string>
     <string name="toast_message_collection_update_not_necessary">Coleção atualizada.</string>
-    <string name="toast_message_downloading_episode">A descarregar episódio.</string>
+    <string name="toast_message_downloading_episode">A descarregar episódio…</string>
     <string name="toast_message_error_missing_storage_permission">Tem que conceder a permissão \'Read Storage\' para abrir este ficheiro.</string>
     <string name="toast_message_error_refreshing_cover">Não foi possível atualizar a imagem. A fonte não possui qualquer referência à imagem.</string>
     <string name="toast_message_error_validation_no_valid_episodes">Validação de RSS: a fonte não possui quaisquer referências áudio.</string>
@@ -66,7 +66,7 @@
     <string name="toast_message_theme_night">A trocar para \'Modo noturno\' (detetado toque longo)</string>
     <string name="toast_message_up_next_added_episode">Episódio adicionado à fila.</string>
     <string name="toast_message_up_next_removed_episode">Episódio removido da fila.</string>
-    <string name="toast_message_up_next_start_playback">A iniciar episódio seguinte.</string>
+    <string name="toast_message_up_next_start_playback">A iniciar o episódio seguinte…</string>
     <string name="toast_message_updating_collection">A atualizar coleção de podcasts.</string>
     <string name="podcast_list_button_add_new_podcast">Adicionar novo</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Ocultar episódios antigos</string>
@@ -75,7 +75,7 @@
     <string name="notification_now_playing_channel_name">Controlos de reprodução</string>
     <string name="notification_pause">Pausa</string>
     <string name="notification_play">Reproduzir</string>
-    <string name="notification_playing">A reproduzir</string>
+    <string name="notification_playing">A reproduzir…</string>
     <string name="notification_skip_back">Recuar</string>
     <string name="notification_skip_forward">Avançar</string>
     <string name="descr_card_add_new_button">Adicionar fonte</string>
@@ -142,7 +142,7 @@
     <string name="pref_episode_download_over_mobile_summary_enabled">Descarregar episódios em redes Wi-fi ou móveis. Podem ser aplicadas taxas ao descarregar em dados móveis.</string>
     <string name="pref_background_refresh_title">Atualização em segundo plano</string>
     <string name="pref_background_refresh_summary_disabled">Não pesquisar episódios em segundo plano.</string>
-    <string name="pref_background_refresh_summary_enabled">Pesquisar podcasts em segundo plano.</string>
+    <string name="pref_background_refresh_summary_enabled">Pesquisar podcasts em segundo plano…</string>
     <string name="pref_app_version_title">Versão da app</string>
     <string name="pref_app_version_summary">Versão</string>
     <string name="pref_about_title">Acerca</string>
@@ -154,8 +154,11 @@
     <string name="pref_delete_all_storage_space_used">Utilizado</string>
     <string name="pref_delete_all_storage_space_available">Disponível</string>
     <string name="pref_advanced_title">Avançado</string>
-    <string name="toast_message_deleting_downloads">A eliminar episódios descarregados.</string>
+    <string name="toast_message_deleting_downloads">A eliminar episódios descarregados…</string>
     <string name="notification_dismiss">Dispensar notificação</string>
     <string name="toast_message_error_file_type_unknown">Não foi possível processar a transferência. Tipo:</string>
-    <string name="descr_expanded_player_shownotes_symbol">Mostrar símbolo de notas</string>
+    <string name="descr_expanded_player_shownotes_symbol">Símbolo de exibição de notas</string>
+    <string name="dialog_all_episodes_list_title">Todos os episódios | apenas streaming</string>
+    <string name="toast_message_entering_streaming_view">Visualização de streaming secreto</string>
+    <string name="toast_message_error_no_internet_connection">Não é possível iniciar a reprodução. O aparelho não tem conexão à rede.</string>
 </resources>
