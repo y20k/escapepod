@@ -1,0 +1,5 @@
+# v0.8.1 - Gehen Die Leute
+
+** 05/12/2019 **
+
+- evita uma falha causada pelo comando de reprodução emitido via controle de voz, quando a lista de podcasts ainda está vazia

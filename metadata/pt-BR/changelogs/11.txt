@@ -1,0 +1,5 @@
+# v0.7.6 - Drüben Auf Dem Hügel
+
+**16/10/2019**
+
+- correção no Android Auto (a versão anterior foi rejeitada na Play Store)

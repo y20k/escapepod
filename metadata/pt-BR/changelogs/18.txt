@@ -1,0 +1,7 @@
+# v0.8.0 - Gehen Die Leute
+
+** 05/12/2019 **
+
+- pesquisa básica de podcasts no serviço gpodder.net
+- versão em português
+- versão em holandês

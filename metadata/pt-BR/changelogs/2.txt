@@ -1,0 +1,7 @@
+# v0.4.1-alpha - An Diesen Langweiligen Tagen
+
+** 25/07/2019 **
+
+- corrige problemas com podcasts usando o FeedBurner
+- melhor desempenho na rolagem
+- novo recurso de arquivo de log de depuração

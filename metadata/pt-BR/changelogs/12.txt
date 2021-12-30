@@ -1,0 +1,5 @@
+# v0.7.7 - Drüben Auf Dem Hügel
+
+**16/10/2019**
+
+- corrige um bug onde a posição da reprodução não foi salva corretamente

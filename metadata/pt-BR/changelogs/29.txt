@@ -1,0 +1,6 @@
+# v0.9.4 - Aber Hier Leben, Nein Danke
+
+**01/10/2020**
+
+- traduções novas e atualizadas
+- algumas pequenas correções de bugs

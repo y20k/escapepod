@@ -1,0 +1,7 @@
+# v0.7.1 - Drüben Auf Dem Hügel
+
+**02/10/2019**
+
+- novo botão de controle de velocidade de reprodução 
+- descrições de episódios mais longas são exibidas nas notas do programa, se disponíveis no feed RSS
+- correções de bugs

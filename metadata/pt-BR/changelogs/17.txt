@@ -1,0 +1,5 @@
+# v0.7.12 - Drüben Auf Dem Hügel
+
+** 25/11/2019 **
+
+- botão excluir episódio corrigido

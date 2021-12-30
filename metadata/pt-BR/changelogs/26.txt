@@ -1,0 +1,6 @@
+# v0.9.1 - Aber Hier Leben, Nein Danke
+
+**25/03/2020**
+
+- corrige a análise do endereço da página inicial do podcast
+- traduções atualizadas

@@ -1,0 +1,7 @@
+# v0.8.3 - Gehen Die Leute
+
+** 06-12-2019 **
+
+- notifica o usuário quando a pesquisa iniciada por voz não foi bem-sucedida.
+
+Nota: Desculpa, essa é a 3ª atualização em dois dias. Os aplicativos parecem ser rejeitados na Play Store, porque o teste automatizado para compatibilidade do Android Auto assume que o aplicativo reage ao comando de voz "Tocar música", mesmo que nenhum podcast tenha sido adicionado. Não estou certo do que fazer. Talvez eu simplesmente abandone o suporte ao Android Auto.

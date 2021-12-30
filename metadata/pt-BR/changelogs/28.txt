@@ -1,0 +1,5 @@
+# v0.9.3 - Aber Hier Leben, Nein Danke
+
+**27/07/2020**
+
+- melhor desempenho na rolagem

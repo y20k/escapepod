@@ -1,0 +1,6 @@
+# v1.0.6 - Sag Alles Ab
+
+**05/11/2021**
+
+- o tema do aplicativo agora usa "cores dinâmicas" (Material You) no Android 12
+- traduções atualizadas

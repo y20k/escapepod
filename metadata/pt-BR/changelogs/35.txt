@@ -1,0 +1,7 @@
+# v1.0.4 - Sag Alles Ab
+
+**28/04/2021**
+
+- corrige um bug no salvamento da posição de reprodução
+- suporte inicial a mp4
+- traduções atualizadas

@@ -1,0 +1,8 @@
+# v0.5.0-beta - Der Cousin
+
+**02/08/2019**
+
+- despertador
+- suporte básico para Android Auto e Wear OS
+- recurso de arquivo de log de depuração
+- correções de bugs

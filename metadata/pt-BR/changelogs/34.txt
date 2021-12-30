@@ -1,0 +1,6 @@
+# v1.0.3 - Sag Alles Ab
+
+**24/03/2021**
+
+- melhora a análise de RSS para a arte da capa do podcast
+- corrige uma falha ao exibir uma mensagem de erro

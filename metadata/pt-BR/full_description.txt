@@ -1,0 +1,26 @@
+Escapepod é um tocador de podcast com uma abordagem minimalista, que pode não agradar a todos. O aplicativo tem apenas uma tela. Controles de reprodução e uma lista de podcasts que mostra os cinco episódios mais recentes cada. O Escapepod não tem nenhum recurso de descoberta de podcasts. Ele só oferece uma opção de pesquisa muito simples e abre links de podcasts RSS quando você os toca em um navegador da Web.
+
+
+PERGUNTAS FREQUENTES
+
+O ESCAPEPOD TEM UMA FILA DE REPRODUÇÃO?
+O Escapepod tem um recurso simples de 'Próximo'. Toque em reproduzir um episódio enquanto ouve outro. Você terá a oportunidade de adicioná-lo ao espaço 'Próximo'.
+
+QUAIS SÃO AS CONFIGURAÇÕES PADRÃO?
+- A atualização automática não faz o download de arquivos pelos dados móveis
+- O Escapepod por padrão só mantém dois episódios
+
+O ESCAPEPOD PODE MANTER MAIS DE DOIS EPISÓDIOS?
+O Escapepod tenta reduzir o número de episódios que mantém. Aqui estão as regras para isso:
+- O Escapepod mantém os dois últimos episódios
+- Os episódios iniciados ou baixados manualmente também são mantidos
+- O número máximo de episódios disponíveis (e mantidos) é de cinco
+
+O ESCAPEPOD SUPORTA OPML?
+Você pode importar uma lista de podcasts usando o formato de troca OPML usando a respectiva opção nas configurações do aplicativo. A coleção de podcasts atual também pode ser exportada nas configurações. Além disso, o Escapepod mantém um arquivo OPML atualizado na pasta /Android/data/org.y20k.escapepod/files/collection/.
+
+NÃO CONSIGO ADICIONAR O PODCAST X. POR QUÊ?
+Relate quaisquer feeds de podcast que não estejam funcionando no momento usando o modelo de problema do GitHub "Feed Issue" (https://github.com/y20k/escapepod/issues/). Nota: O Escapepod não oferece suporte a podcasts de vídeo.
+
+DE ONDE VÊM OS RESULTADOS DA PESQUISA DO PODCAST?
+O Escapepod procura por padrão no banco de dados online Podcastindex.org (https://podcastindex.org/) - ou se você mudar a respectiva configuração, o banco de dados online gpodder.net (https://gpodder.net/directory/).

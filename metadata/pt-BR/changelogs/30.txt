@@ -1,0 +1,5 @@
+# v0.9.5 - Aber Hier Leben, Nein Danke
+
+**07/10/2020**
+
+- o último podcast restante na lista pode ser excluído (novamente)

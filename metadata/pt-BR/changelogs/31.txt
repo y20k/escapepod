@@ -1,0 +1,10 @@
+# v1.0.0 - Sag Alles Ab
+
+**04/03/2021**
+
+- retomar por meio dos botões do fone de ouvido funciona de maneira confiável
+- novo provedor de pesquisa de podcast: podcastindex.org
+- debaixo do capô: o Escapepod armazena dados de podcast em um banco de dados da Room em vez de um arquivo de texto JSON
+- importação de OPML por meio das configurações
+- traduções atualizadas
+- várias pequenas correções de bugs

@@ -1,0 +1,6 @@
+# v0.8.5 - Gehen Die Leute (23 Special Edition)
+
+**19/12/2019**
+
+- Removido o suporte para Android Auto
+-> Não pergunte (⊙_☉)

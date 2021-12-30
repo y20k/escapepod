@@ -1,0 +1,5 @@
+# v0.7.2 - Drüben Auf Dem Hügel
+
+**02/10/2019**
+
+- tive que remover a integração do equalizador AudioFX devido a um bug

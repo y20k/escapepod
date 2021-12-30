@@ -1,0 +1,5 @@
+# v0.7.10 - Drüben Auf Dem Hügel
+
+** 20/11/2019 **
+
+- limpeza automática corrigida (deve liberar algum espaço no seu dispositivo)
