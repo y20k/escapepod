@@ -167,6 +167,7 @@ object CollectionHelper {
         return MediaDescriptionCompat.Builder().apply {
             setMediaId(episode.mediaId)
             setIconBitmap(coverBitmap)
+            setIconUri(episode.cover.toUri())
             setTitle(episode.title)
             setSubtitle(episode.podcastName)
             //setDescription(episode.podcastName)
