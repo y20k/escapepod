@@ -33,7 +33,7 @@
     <color name="list_card_cover_background">@color/escapepod_neutral_very_dark</color>
     <color name="list_card_delete_background">@color/escapepod_red</color>
     <color name="list_card_episode_background">@color/escapepod_neutral_black</color>
-    <color name="list_card_episode_progress_background">@color/escapepod_neutral_medium_light</color>
+    <color name="list_card_episode_progress_background">@color/escapepod_neutral_dark</color>
 
     <color name="search_result_background">@color/escapepod_neutral_darker</color>
     <color name="search_result_background_selected">@color/escapepod_neutral_dark</color>

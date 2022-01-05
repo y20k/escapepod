@@ -6,7 +6,7 @@
  * This file is part of
  * ESCAPEPOD - Free and Open Podcast App
  *
- * Copyright (c) 2018-21 - Y20K.org
+ * Copyright (c) 2018-22 - Y20K.org
  * Licensed under the MIT-License
  * http://opensource.org/licenses/MIT
  */

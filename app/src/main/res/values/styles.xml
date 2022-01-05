@@ -4,7 +4,7 @@
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
-        <!-- Set AppCompat’s colors -->
+        <!-- Set theme colors -->
         <item name="colorPrimary">@color/escapepod_neutral_darker</item>
         <item name="colorPrimaryDark">@color/escapepod_neutral_very_dark</item>
         <item name="colorAccent">@color/escapepod_accent_dimmed</item>
