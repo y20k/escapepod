@@ -24,10 +24,12 @@
             android:id="@+id/text_add_new_podcast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:letterSpacing="0.05"
             android:padding="8dp"
             android:text="@string/podcast_list_button_add_new_podcast"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
             android:textColor="@color/text_default" />
 
     </androidx.cardview.widget.CardView>

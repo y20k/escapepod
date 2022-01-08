@@ -87,7 +87,7 @@ class FindPodcastDialog (private var context: Context, private var listener: Fin
     fun show() {
 
         // prepare dialog builder
-        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
 
         // set title
         builder.setTitle(R.string.dialog_find_podcast_title)

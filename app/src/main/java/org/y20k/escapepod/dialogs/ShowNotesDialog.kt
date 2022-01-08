@@ -50,7 +50,7 @@ class ShowNotesDialog {
     /* Construct and show dialog */
     fun show(context: Context, podcast: Podcast, episode: Episode, episodeDescription: EpisodeDescription) {
         // prepare dialog builder
-        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
 
         // get views
         val inflater: LayoutInflater = LayoutInflater.from(context)

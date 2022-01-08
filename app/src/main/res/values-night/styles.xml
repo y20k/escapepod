@@ -2,26 +2,17 @@
 <resources>
 
     <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <!-- Set AppCompat’s colors -->
-        <item name="colorPrimary">@color/escapepod_neutral_very_light</item>
-        <item name="colorPrimaryDark">@color/escapepod_neutral_white</item>
-        <item name="colorAccent">@color/escapepod_accent_intense</item>
+        <!-- colorPrimary is used in dialog buttons for example -->
+        <item name="colorPrimary">@color/escapepod_neutral_lighter</item>
 
-        <!-- List divider -->
-        <item name="android:listDivider">@drawable/list_divider</item>
+        <!-- Do not use primary colored elevation overlays to present a visual hierarchy - TOO COLORFUL  -->
+        <item name="elevationOverlayEnabled">false</item>
 
         <!-- Don't show light status bar -->
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:statusBarColor">@color/status_bar_background</item>
-
-        <!-- Default window background used for resizing on v24 -->
-        <item name="android:windowBackgroundFallback">@color/escapepod_neutral_black</item>
-
-        <!-- Colors used by playback seek bar -->
-        <!-- <item name="android:colorControlActivated"></item> -->
-        <!-- <item name="android:colorControlNormal"></item> -->
 
     </style>
 

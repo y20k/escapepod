@@ -2,28 +2,23 @@
 <resources>
 
     <!-- Base application theme -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <!-- Set theme colors -->
+        <!-- colorPrimary is used in dialog buttons for example -->
         <item name="colorPrimary">@color/escapepod_neutral_darker</item>
-        <item name="colorPrimaryDark">@color/escapepod_neutral_very_dark</item>
-        <item name="colorAccent">@color/escapepod_accent_dimmed</item>
 
-        <!-- List divider -->
-        <!-- <item name="android:listDivider">@drawable/list_divider</item> -->
+        <!-- Do not use primary colored elevation overlays to present a visual hierarchy - TOO COLORFUL  -->
+        <item name="elevationOverlayEnabled">false</item>
 
-        <!-- Show light status bar -->
+        <!-- Use "light" Status Bar -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/status_bar_background</item>
 
-        <!-- Default window background used for resizing on v24) -->
-        <item name="android:windowBackgroundFallback">@color/escapepod_neutral_very_dark</item>
-
-        <!-- Colors used by playback seek bar -->
-        <!-- <item name="android:colorControlActivated"></item> -->
-        <!-- <item name="android:colorControlNormal"></item> -->
-
     </style>
 
+    <!-- Override background color and button color in AlertDialog -->
+    <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.Dialog.Alert">
+        <item name="colorSurface">@color/dialog_background</item>
+    </style>
 
 </resources>

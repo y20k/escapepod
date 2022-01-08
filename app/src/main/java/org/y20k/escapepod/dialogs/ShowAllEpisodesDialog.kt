@@ -58,7 +58,7 @@ class ShowAllEpisodesDialog {
     /* Construct and show dialog */
     fun show(context: Context, podcast: Podcast, episodes: List<Episode>, podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener) {
         // prepare dialog builder
-        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
 
         // set title
         //builder.setTitle()

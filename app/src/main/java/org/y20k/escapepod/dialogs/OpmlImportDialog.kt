@@ -40,7 +40,7 @@ class OpmlImportDialog(private var opmlImportDialogListener: OpmlImportDialogLis
     /* Construct and show dialog */
     fun show(context: Context, feedUrls: Array<String>) {
         // prepare dialog builder
-        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context)
+        val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
 
         // set title
         builder.setTitle(R.string.dialog_opml_import_title)
