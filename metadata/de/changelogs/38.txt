@@ -1,0 +1,6 @@
+# v1.0.7 - Sag Alles Ab
+
+**2022-01-14**
+
+- kleinere Layoutänderungen zur besseren Anpassung an das mit Android 12 eingeführte "Material Design 3"
+- aktualisierte Übersetzungen
