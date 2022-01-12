@@ -1,0 +1,6 @@
+# v1.0.7 - Sag Alles Ab
+
+**2022-01-14**
+
+- Kleine aanpassingen voor het ‘Material Design 3’-thema van Android 12;
+ -Bijgewerkt: vertalingen.
