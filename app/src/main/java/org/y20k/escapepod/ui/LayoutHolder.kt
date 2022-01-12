@@ -145,12 +145,12 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
             val duration: String
             if (episode.duration > 0L) duration = DateTimeHelper.convertToMinutesAndSeconds(episode.duration) else duration = "∞"
             coverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.smallCover))
-            coverView.clipToOutline = true // apply rounded corner mask to covers
+            // coverView.clipToOutline = true // apply rounded corner mask to covers
             coverView.contentDescription = "${context.getString(R.string.descr_player_podcast_cover)}: ${episode.podcastName}"
             podcastNameView.text = episode.podcastName
             episodeTitleView.text = episode.title
             sheetCoverView.setImageBitmap(ImageHelper.getPodcastCover(context, episode.cover))
-            sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
+            // sheetCoverView.clipToOutline = true // apply rounded corner mask to covers
             sheetCoverView.contentDescription = "${context.getString(R.string.descr_expanded_player_podcast_cover)}: ${episode.podcastName}"
             sheetEpisodeTitleView.text = episode.title
             sheetDurationView.text = duration

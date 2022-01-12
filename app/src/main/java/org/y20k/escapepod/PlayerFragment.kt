@@ -430,7 +430,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // stop playback, if necessary
                 podcast.episodes.forEach { if (it.data.mediaId == episode?.mediaId) playerController.pause() }
                 // ask user
-                val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n - ${podcast.data.name}"
+                val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_remove_podcast)}\n\n- ${podcast.data.name}"
                 YesNoDialog(this@PlayerFragment as YesNoDialog.YesNoDialogListener).show(context = activity as Context, type = Keys.DIALOG_REMOVE_PODCAST, messageString = dialogMessage, yesButton = R.string.dialog_yes_no_positive_button_remove_podcast, payload = adapterPosition)
             }
         }

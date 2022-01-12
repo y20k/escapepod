@@ -22,6 +22,7 @@
         android:layout_marginTop="84dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/shape_cover_large"
         android:contentDescription="@string/descr_expanded_player_podcast_cover"
         app:layout_constraintBottom_toTopOf="@+id/sheet_episode_current_chapter_name"
         app:layout_constraintDimensionRatio="1:1"
@@ -29,6 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+    <!-- set clipToOutline = true in code to apply rounded the corner shapes that are set as background -->
 
     <ImageView
         android:id="@+id/sheet_episode_shownotes_info"
@@ -266,6 +268,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+    <!-- set clipToOutline = true in code to apply rounded the corner shapes that are set as background -->
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_name"

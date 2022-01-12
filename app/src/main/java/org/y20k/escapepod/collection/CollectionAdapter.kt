@@ -161,6 +161,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
     /* Sets the podcast image view */
     private fun setPodcastImage(podcastViewHolder: PodcastViewHolder, podcast: Podcast) {
         podcastViewHolder.podcastImageView.setImageBitmap(ImageHelper.getPodcastCover(context, podcast.smallCover))
+        // podcastViewHolder.podcastImageView.clipToOutline = true // apply rounded corner mask to covers
         podcastViewHolder.podcastImageView.setOnLongClickListener {
             DownloadHelper.refreshCover(context, podcast)
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -469,7 +470,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
      * Inner class: ViewHolder for a podcast
      */
     private inner class PodcastViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
-        val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.player_podcast_cover)
+        val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.podcast_cover)
         val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val currentEpisodeViews: EpisodeViewHolder = EpisodeViewHolder(podcastCardLayout)
         val olderEpisodesButtonView: TextView = podcastCardLayout.findViewById(R.id.older_episodes_toggle)

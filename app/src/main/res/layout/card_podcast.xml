@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/player_podcast_cover"
+            android:id="@+id/podcast_cover"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginStart="8dp"
@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+        <!-- set clipToOutline = true in code to apply rounded the corner shapes that are set as background -->
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/podcast_name"
@@ -39,7 +40,7 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="@color/text_lightweight"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
+            app:layout_constraintStart_toEndOf="@+id/podcast_cover"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/sample_text_podcast_name" />
 
@@ -52,7 +53,7 @@
             android:layout_marginTop="6dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/player_podcast_cover"
+            app:layout_constraintStart_toEndOf="@+id/podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -85,7 +86,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_podcast_cover" />
+            app:layout_constraintTop_toBottomOf="@+id/podcast_cover" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
