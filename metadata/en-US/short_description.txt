@@ -1,1 +1,1 @@
-Escapepod is a simple and lightweight app for listening to podcasts.
+Minimal non-video podcast player.

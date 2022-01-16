@@ -1,26 +1,10 @@
-Escapepod is a podcast player with a minimalistic approach, that may not be to everyone's liking. The app has only a single screen. Playback controls and a list of podcasts that shows the five most recent episodes each. Escapepod has no podcast discovery feature. It only offers a very simple search option and it opens RSS podcasts links when you tap them in a web browser.
+One screen shows playback controls and the five most recent episodes of added podcasts.
+A simple search feature from podcastindex.org or optionally gpodder.net/directory is the only way of discovery.
+Tapping RSS podcast links in a web browser also works.
+Add something to the "Up-next" playlist/playback queue by tapping "Play" on an episode while listening to another.
+Up to five episodes are kept if manually downloaded or started, and always the two most recent ones.
+It is possible to also download over cellular network if turned on in the app.
+Import (or export) a podcasts in the OPML format from the app settings.
+All subscriptions are in /Android/data/org.y20k.escapepod/files/collection/collection_opml.xml
 
-
-FREQUENT QUESTIONS
-
-DOES ESCAPEPOD HAVE PLAYBACK QUEUE?
-Escapepod has a simple up-next feature. Tap play on an episode while listening to another one. You will be be given the opportunity add it to the up-next slot.
-
-WHAT ARE THE DEFAULT SETTINGS?
-- Auto-update does not download files over cellular network
-- Escapepod by default only keeps two episodes
-
-CAN ESCAPEPOD KEEPS MORE THAN TWO EPISODES?
-Escapepod tries to reduce the number of episodes it keeps. Here are the rules for that:
-- Escapepod keeps the latest two episodes
-- Episodes, that have been started, or that have been downloaded manually, are kept, too
-- The maximum number of episodes available (and kept) is five
-
-DOES ESCAPEPOD SUPPORT OPML?
-You can import a podcast list using the OPML exchange format using the respective option in the app's Settings. The current podcast collection can be exported via Settings, too. Additionally Escapepod keeps an up-to-date OPML file in the folder /Android/data/org.y20k.escapepod/files/collection/.
-
-I CAN NOT ADD PODCAST X. WHY?
-Please report any podcast feeds, that are currently not working, using the GitHub Issue template "Feed Issue" (https://github.com/y20k/escapepod/issues/). Note: Escapepod does not support video podcasts.
-
-WHERE DO THE PODCAST SEARCH RESULTS COME FROM?
-Escapepod searches by default the Podcastindex.org (https://podcastindex.org/) online database - or if you toggle the respective setting the gpodder.net (https://gpodder.net/directory/) online database.
+Report problems with podcasts or this libre app using https://github.com/y20k/escapepod/issues
