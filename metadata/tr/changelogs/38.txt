@@ -1,0 +1,6 @@
+# v1.0.7 - Sag Alles Ab
+
+**14 Ocak 2022**
+
+- Android 12'de tanıtılan "Material Tasarım 3" temasına daha iyi uyması için küçük düzen değişiklikleri
+- çeviriler güncellendi
