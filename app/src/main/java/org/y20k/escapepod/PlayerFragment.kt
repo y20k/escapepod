@@ -502,7 +502,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // bottom sheet skip forward button
                 layout.sheetSkipForwardButtonView.setOnClickListener {
                     when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
-                        true -> playerController.skipForward(episode?.duration ?: 0L)
+                        true -> playerController.skipForward()
                         false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
                     }
                 }

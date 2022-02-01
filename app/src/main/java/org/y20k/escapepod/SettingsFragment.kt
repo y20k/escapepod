@@ -168,7 +168,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         }
 
         // set up "Search Provider" preference
-        preferenceSearchProviderSelection = ListPreference(context)
+        preferenceSearchProviderSelection = ListPreference(activity as Context)
         preferenceSearchProviderSelection.title = getString(R.string.pref_search_provider_selection_title)
         preferenceSearchProviderSelection.setIcon(R.drawable.ic_search_24dp)
         preferenceSearchProviderSelection.key = Keys.PREF_PODCAST_SEARCH_PROVIDER_SELECTION
@@ -217,24 +217,24 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
 
         // set preference categories
-        val preferenceCategoryGeneral: PreferenceCategory = PreferenceCategory(context)
+        val preferenceCategoryGeneral: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryGeneral.title = getString(R.string.pref_general_title)
         preferenceCategoryGeneral.contains(preferenceThemeSelection)
         preferenceCategoryGeneral.contains(preferenceBackgroundRefresh)
         preferenceCategoryGeneral.contains(preferenceEpisodeDownloadOverMobile)
 
-        val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(context)
+        val preferenceCategoryMaintenance: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryMaintenance.title = getString(R.string.pref_maintenance_title)
         preferenceCategoryMaintenance.contains(preferenceOpmlExport)
         preferenceCategoryMaintenance.contains(preferenceOpmlImport)
         preferenceCategoryMaintenance.contains(preferenceUpdateCovers)
         preferenceCategoryMaintenance.contains(preferenceDeleteAll)
 
-        val preferenceCategoryAdvanced: PreferenceCategory = PreferenceCategory(context)
+        val preferenceCategoryAdvanced: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryAdvanced.title = getString(R.string.pref_advanced_title)
         preferenceCategoryAdvanced.contains(preferenceSearchProviderSelection)
 
-        val preferenceCategoryAbout: PreferenceCategory = PreferenceCategory(context)
+        val preferenceCategoryAbout: PreferenceCategory = PreferenceCategory(activity as Context)
         preferenceCategoryAbout.title = getString(R.string.pref_about_title)
         preferenceCategoryAbout.contains(preferenceAppVersion)
         preferenceCategoryAbout.contains(preferenceReportIssue)

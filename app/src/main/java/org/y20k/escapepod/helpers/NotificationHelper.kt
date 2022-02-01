@@ -20,7 +20,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
-import com.google.android.exoplayer2.DefaultControlDispatcher
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import kotlinx.coroutines.CoroutineScope
@@ -66,7 +65,6 @@ class NotificationHelper(private val context: Context, sessionToken: MediaSessio
             setMediaSessionToken(sessionToken)
             setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
             setUsePlayPauseActions(true)
-            setControlDispatcher(Dispatcher())
             setUseStopAction(true) // set true to display the dismiss button
             setUsePreviousAction(false)
             setUsePreviousActionInCompactView(false)
@@ -87,20 +85,10 @@ class NotificationHelper(private val context: Context, sessionToken: MediaSessio
         notificationManager.setPlayer(player)
     }
 
-
-    /*
-     * Inner class: Intercept stop button tap
-     */
-    private inner class Dispatcher: DefaultControlDispatcher(Keys.SKIP_FORWARD_TIME_SPAN, Keys.SKIP_BACK_TIME_SPAN) {
-        override fun dispatchStop(player: Player, reset: Boolean): Boolean {
-            // Default implementation see: https://github.com/google/ExoPlayer/blob/b1000940eaec9e1202d9abf341a48a58b728053f/library/core/src/main/java/com/google/android/exoplayer2/DefaultControlDispatcher.java#L137
-            mediaController.sendCommand(Keys.CMD_DISMISS_NOTIFICATION, null, null)
-            return true
-        }
+    /* Triggers notification */
+    fun updateNotification() {
+        notificationManager.invalidate()
     }
-    /*
-     * End of inner class
-     */
 
 
     /*

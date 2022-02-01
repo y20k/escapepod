@@ -64,7 +64,6 @@ object Keys {
     const val CMD_CANCEL_SLEEP_TIMER: String = "CANCEL_SLEEP_TIMER"
     const val CMD_CHANGE_PLAYBACK_SPEED: String = "CHANGE_PLAYBACK_SPEED"
     const val CMD_RESET_PLAYBACK_SPEED: String = "RESET_PLAYBACK_SPEED"
-    const val CMD_DISMISS_NOTIFICATION: String = "DISMISS_NOTIFICATION"
 
     // preferences
     const val PREF_ONE_TIME_HOUSEKEEPING_NECESSARY = "ONE_TIME_HOUSEKEEPING_NECESSARY_VERSIONCODE_31" // increment to current app version code to trigger housekeeping that runs only once

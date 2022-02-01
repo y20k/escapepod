@@ -48,16 +48,12 @@ class PlayerController (private val mediaController: MediaControllerCompat) {
 
     /* Skip back 10 seconds */
     fun skipBack() {
-        var position: Long = mediaController.playbackState.position - Keys.SKIP_BACK_TIME_SPAN
-        if (position < 0L) position = 0L
-        transportControls.seekTo(position)
+        transportControls.skipToPrevious()
     }
 
     /* Skip forward 30 seconds */
-    fun skipForward(episodeDuration: Long) {
-        var position: Long = mediaController.playbackState.position + Keys.SKIP_FORWARD_TIME_SPAN
-        if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
-        transportControls.seekTo(position)
+    fun skipForward() {
+        transportControls.skipToNext()
     }
 
 

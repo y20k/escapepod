@@ -26,7 +26,6 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.view.KeyEvent
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -38,9 +37,12 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.util.Util
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.collection.CollectionProvider
@@ -49,7 +51,6 @@ import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.helpers.*
 import org.y20k.escapepod.ui.PlayerState
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 /*
@@ -66,6 +67,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
     private var collectionProvider: CollectionProvider = CollectionProvider()
     private var isForegroundService: Boolean = false
     private var upNextEpisode: Episode? = null
+    private lateinit var forwardingPlayer: ForwardingPlayer
     private lateinit var episode: Episode
     private lateinit var playerState: PlayerState
     private lateinit var packageValidator: PackageValidator
@@ -82,8 +84,8 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
             .setUsage(C.USAGE_MEDIA)
             .build()
 
-    private val player: SimpleExoPlayer by lazy {
-        SimpleExoPlayer.Builder(this).build().apply {
+    private val player: ExoPlayer by lazy {
+        ExoPlayer.Builder(this).build().apply {
             setAudioAttributes(attributes, true)
             setHandleAudioBecomingNoisy(true)
             setPauseAtEndOfMediaItems(true)
@@ -108,10 +110,12 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
         // create MediaSession
         createMediaSession()
 
+        // create custom ForwardingPlayer used in Notification and playback control
+        forwardingPlayer = createForwardingPlayer()
+
         // ExoPlayer manages MediaSession
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlaybackPreparer(preparer)
-        mediaSessionConnector.setMediaButtonEventHandler(buttonEventHandler)
         mediaSessionConnector.setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
             override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
                 // create media description - used in notification
@@ -121,7 +125,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
 
         // initialize notification helper
         notificationHelper = NotificationHelper(this, mediaSession.sessionToken, notificationListener)
-        notificationHelper.showNotificationForPlayer(player)
+//        notificationHelper.showNotificationForPlayer(forwardingPlayer)
 
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
@@ -147,7 +151,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
     /* Overrides onDestroy from Service */
     override fun onDestroy() {
         // set playback state if possible / necessary
-        if (this::episode.isInitialized && (player.isPlaying)) {
+        if (this::episode.isInitialized && player.isPlaying) {
             handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
         }
         // release media session
@@ -245,7 +249,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
         } else {
             handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
             episode = Episode(episode, playbackPosition = playbackPosition, playbackState = PlaybackStateCompat.STATE_PAUSED)
-            // notification is hidden via CMD_DISMISS_NOTIFICATION
+            // notification is hidden in custom ForwardingPlayer
             LogHelper.d(TAG, "Playback Stopped. Position: ${episode.playbackPosition}. Duration: ${episode.duration}")
         }
         // save episode
@@ -280,6 +284,41 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
         upNextEpisode = null
         playerState.upNextEpisodeMediaId = String()
         PreferencesHelper.saveUpNextMediaId(String())
+    }
+
+
+    /* Creates a forwardingPlayer that overrides default exoplayer behavior */
+    private fun createForwardingPlayer() : ForwardingPlayer {
+        return object : ForwardingPlayer(player) {
+            // emulate headphone buttons
+            // start/pause: adb shell input keyevent 85
+            // next: adb shell input keyevent 87
+            // prev: adb shell input keyevent 88
+            override fun stop(reset: Boolean) {
+                stop()
+            }
+            override fun stop() {
+                player.pause()
+                notificationHelper.hideNotification()
+            }
+            override fun seekForward() {
+                val episodeDuration: Long = episode.duration
+                var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
+                if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
+                player.seekTo(position)
+            }
+            override fun seekBack() {
+                var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
+                if (position < 0L) position = 0L
+                player.seekTo(position)
+            }
+            override fun seekToNext() {
+                seekForward()
+            }
+            override fun seekToPrevious() {
+                seekBack()
+            }
+        }
     }
 
 
@@ -343,7 +382,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
         player.prepare()
 
         // update media session connector
-        mediaSessionConnector.setPlayer(player)
+        mediaSessionConnector.setPlayer(forwardingPlayer)
 
         // set playWhenReady state
         player.playWhenReady = playWhenReady
@@ -550,40 +589,6 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
 
 
     /*
-     * MediaButtonEventHandler: overrides headphone next/previous button behavior
-     */
-    private val buttonEventHandler = object : MediaSessionConnector.MediaButtonEventHandler {
-
-        override fun onMediaButtonEvent(player: Player, controlDispatcher: ControlDispatcher, mediaButtonEvent: Intent): Boolean {
-            val event: KeyEvent? = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
-            when (event?.keyCode) {
-                KeyEvent.KEYCODE_MEDIA_NEXT -> {
-                    if (event.action == KeyEvent.ACTION_UP && player.isPlaying && this@PlayerService::episode.isInitialized) {
-                        val episodeDuration: Long = episode.duration
-                        var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
-                        if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
-                        player.seekTo(position)
-                    }
-                    return true
-                }
-                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
-                    if (event.action == KeyEvent.ACTION_UP && player.isPlaying) {
-                        var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
-                        if (position < 0L) position = 0L
-                        player.seekTo(position)
-                    }
-                    return true
-                }
-                else -> return false
-            }
-        }
-    }
-    /*
-     * End of declaration
-     */
-
-
-    /*
      * PlaybackPreparer: Handles prepare and play requests - as well as custom commands like sleep timer control
      */
     private val preparer = object : MediaSessionConnector.PlaybackPreparer {
@@ -670,7 +675,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
             }
         }
 
-        override fun onCommand(player: Player, controlDispatcher: ControlDispatcher, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
+        override fun onCommand(player: Player, command: String, extras: Bundle?, cb: ResultReceiver?): Boolean {
             when (command) {
                 Keys.CMD_RELOAD_PLAYER_STATE -> {
                     playerState = PreferencesHelper.loadPlayerState()
@@ -739,12 +744,6 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                     } else {
                         return false
                     }
-                }
-                Keys.CMD_DISMISS_NOTIFICATION -> {
-                    // stop service
-                    player.pause()
-                    notificationHelper.hideNotification()
-                    return true
                 }
                 else -> {
                     return false
