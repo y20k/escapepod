@@ -26,6 +26,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.view.KeyEvent
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -116,6 +117,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
         // ExoPlayer manages MediaSession
         mediaSessionConnector = MediaSessionConnector(mediaSession)
         mediaSessionConnector.setPlaybackPreparer(preparer)
+        mediaSessionConnector.setMediaButtonEventHandler(buttonEventHandler)
         mediaSessionConnector.setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
             override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
                 // create media description - used in notification
@@ -580,6 +582,34 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                 ContextCompat.startForegroundService(applicationContext, Intent(applicationContext, this@PlayerService.javaClass))
                 startForeground(Keys.NOW_PLAYING_NOTIFICATION_ID, notification)
                 isForegroundService = true
+            }
+        }
+    }
+    /*
+     * End of declaration
+     */
+
+
+    /*
+     * MediaButtonEventHandler: overrides headphone next/previous button behavior
+     */
+    private val buttonEventHandler = object : MediaSessionConnector.MediaButtonEventHandler {
+        override fun onMediaButtonEvent(player: Player, mediaButtonEvent: Intent): Boolean {
+            val event: KeyEvent? = mediaButtonEvent.getParcelableExtra(Intent.EXTRA_KEY_EVENT)
+            when (event?.keyCode) {
+                KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                    if (event.action == KeyEvent.ACTION_UP && player.isPlaying && this@PlayerService::episode.isInitialized) {
+                        player.seekForward()
+                    }
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                    if (event.action == KeyEvent.ACTION_UP && player.isPlaying) {
+                        player.seekBack()
+                    }
+                    return true
+                }
+                else -> return false
             }
         }
     }
