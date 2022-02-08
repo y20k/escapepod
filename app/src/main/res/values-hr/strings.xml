@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="dialog_add_podcast_title">Dodaj novi podcast</string>
-    <string name="toast_message_adding_podcast">Dodavanje podcasta.</string>
+    <string name="toast_message_adding_podcast">Dodavanje podcasta …</string>
     <string name="descr_expanded_player_playback_speed_button">Povećaj brzinu reprodukcije</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Starije epizode</string>
     <string name="pref_opml_export_title">Izvezi OPML</string>
@@ -28,7 +28,7 @@
     <string name="dialog_yes_no_message_update_covers">Preuzeti najnovije verzije omota svih podcasta\?</string>
     <string name="toast_message_error_refreshing_cover">Nije bilo moguće aktualizirati omot. Feed ne sadrži referencu za omot.</string>
     <string name="dialog_generic_details_button">Prikaži detalje</string>
-    <string name="toast_message_downloading_episode">Preuzimanje epizode.</string>
+    <string name="toast_message_downloading_episode">Preuzimanje epizode …</string>
     <string name="dialog_yes_no_negative_button_default">Ne</string>
     <string name="dialog_error_title_podcast_invalid_feed">Neispravni feed podcasta</string>
     <string name="dialog_yes_no_message_remove_podcast">Ukloniti ovaj podcast\?</string>
@@ -51,14 +51,14 @@
     <string name="pref_report_issue_title">Prijavi problem</string>
     <string name="dialog_opml_import_message">Dodati novi podcaste\? Duplikati će se ukloniti prije uvoza. Broj pronađenih podcasta:</string>
     <string name="descr_card_playback_indicator">Napredak reprodukcije</string>
-    <string name="notification_skip_forward">Preskoči sljedeću</string>
+    <string name="notification_skip_forward">Skoči naprijed</string>
     <string name="dialog_yes_no_positive_button_update_collection">Aktualiziraj</string>
     <string name="dialog_opml_import_details_button">Prikaži detalje</string>
     <string name="pref_update_covers_title">Aktualiziraj omote</string>
     <string name="toast_message_theme_night">Mijenjanje u „Tamni modus” (otkriven dugi pritisak)</string>
     <string name="toast_message_debug_logging_to_file_started">Otklanjanja grešaka: Počni zapisivati u lokalnu log-datoteku.</string>
     <string name="dialog_error_message_podcast_invalid_feed">Ova adresa nije RSS feed.</string>
-    <string name="notification_skip_back">Preskoči prethodnu</string>
+    <string name="notification_skip_back">Skoči natrag</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Sakrij starije epizode</string>
     <string name="descr_card_delete_episode_button">Ukloni preuzetu epizodu</string>
     <string name="descr_expanded_player_next_chapter_button">Sljedeće poglavlje</string>
@@ -71,7 +71,7 @@
     <string name="dialog_opml_import_message_error">Nije bilo moguće uvesti OPML datoteku. Nije pronađen nijedan podcast.</string>
     <string name="pref_app_version_summary">Verzija</string>
     <string name="dialog_episode_shownotes_title">Prikaži napomene</string>
-    <string name="toast_message_up_next_start_playback">Pokretanje sljedeće epizode.</string>
+    <string name="toast_message_up_next_start_playback">Pokretanje sljedeće epizode …</string>
     <string name="podcast_list_button_add_new_podcast">Dodaj novi podcast</string>
     <string name="pref_theme_selection_mode_dark">Tamni modus</string>
     <string name="descr_player_playback_button">Sviraj/zaustavi</string>
@@ -92,7 +92,7 @@
     <string name="descr_expanded_player_playback_button">Sviraj/zaustavi</string>
     <string name="pref_background_refresh_title">Aktualiziranje pozadine</string>
     <string name="toast_message_theme_follow_system">Mijenjanje u modus „Prati postavke sustava” (otkriven dugi pritisak)</string>
-    <string name="toast_message_adding_podcasts">Dodavanje podcasta.</string>
+    <string name="toast_message_adding_podcasts">Dodavanje podcastova …</string>
     <string name="toast_message_error_no_podcast_matches_search">Nemoguće pronaći podcast koji se poklapa s tvojom pretragom.</string>
     <string name="dialog_find_podcast_no_results">Nema rezultata.</string>
     <string name="descr_expanded_player_previous_chapter_button">Prethodno poglavlje</string>
@@ -117,10 +117,10 @@
     <string name="toast_message_install_file_helper">Najprije instaliraj jedan upravljač datoteka ili podcast player.</string>
     <string name="dialog_yes_no_positive_button_non_wifi_download">Svejedno preuzmi</string>
     <string name="pref_theme_selection_mode_device_default">Isto kao uređaj</string>
-    <string name="notification_playing">Svira</string>
+    <string name="notification_playing">Pokretanje …</string>
     <string name="pref_opml_export_summary">Spremi svoje feedove podcasta u OPML datoteku koja se može uvesti u druge playere.</string>
     <string name="descr_expanded_player_forward_button">Skoči 30 sekundi naprijed</string>
-    <string name="notification_play">Sviraj</string>
+    <string name="notification_play">Pokreni</string>
     <string name="toast_message_error_no_podcast_found">Nije moguće pokrenuti reprodukciju. Najprije dodaj jedan podcast.</string>
     <string name="dialog_yes_no_positive_button_add_up_next">Pokreni sada</string>
     <string name="toast_message_up_next_added_episode">Epizoda je dodana u popis „Sljedeća”.</string>
@@ -130,7 +130,7 @@
     <string name="toast_message_up_next_removed_episode">Epizoda je uklonjena iz popisa „Sljedeća”.</string>
     <string name="pref_about_title">Informacije</string>
     <string name="descr_card_small_download_button">Preuzmi</string>
-    <string name="pref_background_refresh_summary_enabled">Traži podcast epizode u pozadini.</string>
+    <string name="pref_background_refresh_summary_enabled">Traži podcast epizode u pozadini …</string>
     <string name="dialog_yes_no_positive_button_remove_podcast">Ukloni</string>
     <string name="pref_theme_selection_mode_light">Svijetli modus</string>
     <string name="descr_expanded_player_sleep_timer_cancel_button">Prekini odbrojavanje</string>
@@ -152,12 +152,12 @@
     <string name="pref_advanced_title">Napredno</string>
     <string name="pref_delete_all_storage_space_used">Korišteno</string>
     <string name="pref_delete_all_storage_space_available">Dostupno</string>
-    <string name="toast_message_deleting_downloads">Brisanje preuzetih epizoda.</string>
+    <string name="toast_message_deleting_downloads">Brisanje preuzetih epizoda …</string>
     <string name="pref_opml_import_title">Uvezi OPML</string>
     <string name="pref_opml_import_summary">Odaberi OPML datoteku iz memorije uređaja.</string>
     <string name="notification_dismiss">Odbaci obavijest</string>
     <string name="toast_message_error_file_type_unknown">Nije moguće obraditi preuzimanje. Vrsta datoteke:</string>
-    <string name="descr_expanded_player_shownotes_symbol">Prikaži simbol za napomene</string>
+    <string name="descr_expanded_player_shownotes_symbol">Simbol za prikaz napomena</string>
     <string name="toast_message_error_no_internet_connection">Nije moguće pokrenuti reprodukciju. Uređaj nije povezan na mrežu.</string>
     <string name="toast_message_entering_streaming_view">Tajni prikaz strujanja</string>
     <string name="dialog_all_episodes_list_title">Sve epizode | samo prijenos</string>
