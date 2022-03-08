@@ -206,7 +206,7 @@ object OpmlHelper {
         // add <outline> tags containing name and URL for each podcast
         podcastList.forEach { podcast ->
             opmlString.append("\t\t\t<outline type=\"rss\" text=\"")
-            opmlString.append(podcast.name)
+            opmlString.append(xmlEscapeText(podcast.name))
             opmlString.append("\" xmlUrl=\"")
             opmlString.append(podcast.remotePodcastFeedLocation)
             opmlString.append("\" />\n")
@@ -220,6 +220,27 @@ object OpmlHelper {
         opmlString.append("</opml>\n")
 
         return opmlString.toString()
+    }
+
+
+    /* Escapes XML special characters in text. Credit: https://stackoverflow.com/a/10035382 */
+    private fun xmlEscapeText(text: String): String {
+        val sb = StringBuilder()
+        for (element in text) {
+            val character: Char = element
+            when (character) {
+                '<' -> sb.append("&lt;")
+                '>' -> sb.append("&gt;")
+                '\"' -> sb.append("&quot;")
+                '&' -> sb.append("&amp;")
+                '\'' -> sb.append("&apos;")
+                else -> {
+                    if (character.code > 0x7e) { sb.append("&#" + character.code + ";") }
+                    else sb.append(character)
+                }
+            }
+        }
+        return sb.toString()
     }
 
 }
