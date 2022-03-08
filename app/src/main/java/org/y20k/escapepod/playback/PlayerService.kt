@@ -377,6 +377,9 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
             }
         }
 
+        // set playback speed
+        player.playbackParameters = PlaybackParameters(playerState.playbackSpeed)
+
         // jump to playback position
         player.seekTo(episode.playbackPosition)
 
@@ -425,7 +428,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
 
 
     /* Updates / increases the playback speed */
-    private fun updatePlaybackSpeed(currentSpeed: Float = 1f): Float {
+    private fun changePlaybackSpeed(currentSpeed: Float = 1f): Float {
         var newSpeed: Float = 1f
         // circle through the speed presets
         val iterator = Keys.PLAYBACK_SPEEDS.iterator()
@@ -438,7 +441,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                 break
             }
         }
-        // apply new speed
+        // apply new speed and save playback state
         setPlaybackSpeed(newSpeed)
         return newSpeed
     }
@@ -447,7 +450,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
     /* Sets playback speed */
     private fun setPlaybackSpeed(speed: Float = 1f) {
         // update playback parameters - speed up playback
-        player.setPlaybackParameters(PlaybackParameters(speed))
+        player.playbackParameters = PlaybackParameters(speed)
         // save speed
         playerState.playbackSpeed = speed
         PreferencesHelper.savePlayerPlaybackSpeed(speed)
@@ -752,8 +755,10 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                 }
                 Keys.CMD_CHANGE_PLAYBACK_SPEED -> {
                     if (cb != null) {
-                        // change player speed
-                        val newPlaybackSpeed: Float = updatePlaybackSpeed(playerState.playbackSpeed)
+                        // get new playback speed
+                        val newPlaybackSpeed: Float = changePlaybackSpeed(playerState.playbackSpeed)
+                        // change playback speed
+                        setPlaybackSpeed(newPlaybackSpeed)
                         // send back new playback speed
                         val playbackSpeedBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_SPEED to newPlaybackSpeed)
                         cb.send(Keys.RESULT_CODE_PLAYBACK_SPEED, playbackSpeedBundle)
@@ -765,7 +770,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                 }
                 Keys.CMD_RESET_PLAYBACK_SPEED -> {
                     if (cb != null) {
-                        // change player speed
+                        // change playback speed
                         setPlaybackSpeed(1f)
                         // send back new playback speed
                         val playbackSpeedBundle: Bundle = bundleOf(Keys.RESULT_DATA_PLAYBACK_SPEED to 1f)

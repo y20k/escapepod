@@ -485,10 +485,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
                 // bottom sheet play/pause button
                 layout.sheetPlayButtonView.setOnClickListener {
-                    when (playerController.getPlaybackState()) {
-                        PlaybackStateCompat.STATE_PLAYING -> playerController.transportControls.pause()
-                        else -> playerController.transportControls.playFromMediaId(playerState.episodeMediaId, null)
-                    }
+                    onPlayButtonTapped(playerState.episodeMediaId, playerController.getPlaybackState())
                 }
 
                 // bottom sheet skip back button
@@ -589,8 +586,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
             layout.togglePlayButtons(playerState.playbackState)
             if (playerState.episodeMediaId.isNotEmpty()) {
                 layout.updatePlayerViews(activity as Context, episode)
-                layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
             }
+            layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
             layout.updateUpNextViews(upNextEpisode)
         }
     }
