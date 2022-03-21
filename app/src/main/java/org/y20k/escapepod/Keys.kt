@@ -99,9 +99,9 @@ object Keys {
     const val DEFAULT_EPISODE_DOWNLOAD_OVER_MOBILE_MODE: Boolean = false
 
     // media browser
-    const val MEDIA_BROWSABLE_ROOT = "__ROOT__"
-    const val MEDIA_RECENT_ROOT = "__RECENT__"
-    const val MEDIA_EMPTY_ROOT = "__EMPTY__"
+    const val MEDIA_BROWSER_ROOT = "__ROOT__"
+    const val MEDIA_BROWSER_ROOT_RECENT = "__RECENT__"
+    const val MEDIA_BROWSER_ROOT_EMPTY = "__EMPTY__"
 
     // view types
     const val VIEW_TYPE_ADD_NEW: Int = 1

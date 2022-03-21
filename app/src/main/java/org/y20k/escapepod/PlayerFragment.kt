@@ -357,8 +357,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
 
 
     /* Overrides onYesNoDialog from YesNoDialogListener */
-    override fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String) {
-        super.onYesNoDialog(type, dialogResult, payload, payloadString)
+    override fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String, dialogCancelled: Boolean) {
+        super.onYesNoDialog(type, dialogResult, payload, payloadString, dialogCancelled)
         when (type) {
             Keys.DIALOG_UPDATE_COLLECTION -> {
                 when (dialogResult) {
@@ -401,8 +401,8 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 when (dialogResult) {
                     // user tapped: start playback
                     true -> togglePlayback(true, payloadString)
-                    // user tapped: add to up next
-                    false -> updateUpNext(payloadString)
+                    // user tapped: add to up next (only if dialog has not been cancelled)
+                    false -> if (!dialogCancelled) updateUpNext(payloadString)
                 }
             }
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
@@ -425,7 +425,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
         // enable swipe to delete
         val swipeHandler = object : UiHelper.SwipeToDeleteCallback(activity as Context) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val adapterPosition: Int = viewHolder.adapterPosition
+                val adapterPosition: Int = viewHolder.bindingAdapterPosition
                 val podcast = collectionAdapter.getPodcast(adapterPosition)
                 // stop playback, if necessary
                 podcast.episodes.forEach { if (it.data.mediaId == episode?.mediaId) playerController.pause() }
@@ -499,7 +499,7 @@ class PlayerFragment: Fragment(), CoroutineScope,
                 // bottom sheet skip forward button
                 layout.sheetSkipForwardButtonView.setOnClickListener {
                     when (playerState.playbackState == PlaybackStateCompat.STATE_PLAYING) {
-                        true -> playerController.skipForward()
+                        true -> playerController.skipForward(episode?.duration ?: 0L)
                         false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
                     }
                 }

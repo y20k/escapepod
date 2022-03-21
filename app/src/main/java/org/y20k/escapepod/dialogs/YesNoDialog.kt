@@ -28,7 +28,7 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
 
     /* Interface used to communicate back to activity */
     interface YesNoDialogListener {
-        fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String) {
+        fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String, dialogCancelled: Boolean) {
         }
     }
 
@@ -74,18 +74,18 @@ class YesNoDialog (private var yesNoDialogListener: YesNoDialogListener) {
         // add yes button
         builder.setPositiveButton(yesButton) { _, _ ->
             // listen for click on yes button
-            yesNoDialogListener.onYesNoDialog(type, true, payload, payloadString)
+            yesNoDialogListener.onYesNoDialog(type, true, payload, payloadString, false)
         }
 
         // add no button
         builder.setNegativeButton(noButton) { _, _ ->
             // listen for click on no button
-            yesNoDialogListener.onYesNoDialog(type, false, payload, payloadString)
+            yesNoDialogListener.onYesNoDialog(type, false, payload, payloadString, false)
         }
 
         // handle outside-click as "no"
         builder.setOnCancelListener {
-            yesNoDialogListener.onYesNoDialog(type, false, payload, payloadString)
+            yesNoDialogListener.onYesNoDialog(type, false, payload, payloadString, true)
         }
 
         // display dialog

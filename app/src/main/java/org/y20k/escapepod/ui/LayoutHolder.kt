@@ -34,9 +34,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.CollectionDatabase
@@ -468,6 +470,4 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     /*
      * End of inner class
      */
-
-
 }

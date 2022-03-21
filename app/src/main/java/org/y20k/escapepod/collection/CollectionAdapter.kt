@@ -35,9 +35,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 import org.y20k.escapepod.database.CollectionDatabase
@@ -448,6 +450,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
     /* Observe view model of podcast collection*/
     private fun observeCollectionViewModel(owner: LifecycleOwner) {
         collectionViewModel.collectionLiveData.observe(owner, Observer<List<PodcastWithRecentEpisodesWrapper>> { newCollection ->
+            //LogHelper.v(TAG, "Time to load episode list from database: ${System.currentTimeMillis() - collectionViewModel.initializedTimestamp} ms.")
             val sortedCollection: List<PodcastWithRecentEpisodesWrapper> = newCollection.sortedByDescending { podcast -> podcast.data.latestEpisodeDate }
             updateRecyclerView(sortedCollection)
         } )
@@ -590,7 +593,5 @@ class CollectionAdapter(private val context: Context, private val collectionData
     /*
      * End of inner class
      */
-
-
 
 }

@@ -42,10 +42,10 @@ class CollectionViewModel(application: Application) : AndroidViewModel(applicati
     /* Main class variables */
     val collectionLiveData: LiveData<List<PodcastWithRecentEpisodesWrapper>>
     val numberOfPodcastsLiveData: LiveData<Int>
+    //val initializedTimestamp: Long = System.currentTimeMillis() // used for debugging in CollectionAdapter.observeCollectionViewModel()
 
     private val backgroundJob = Job()
     private var collectionDatabase: CollectionDatabase = CollectionDatabase.getInstance(application)
-
 
     /* Init constructor */
     init {

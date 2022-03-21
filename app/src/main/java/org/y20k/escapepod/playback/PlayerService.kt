@@ -181,7 +181,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
             LogHelper.i(TAG, "OnGetRoot: Browsing NOT ALLOWED for unknown caller. "
                     + "Returning empty browser root so all apps can use MediaController."
                     + clientPackageName)
-            return BrowserRoot(Keys.MEDIA_EMPTY_ROOT, null)
+            return BrowserRoot(Keys.MEDIA_BROWSER_ROOT_EMPTY, null)
         } else {
             // content style extras: see https://developer.android.com/training/cars/media#apply_content_style
             val CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED"
@@ -195,7 +195,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                     CONTENT_STYLE_PLAYABLE_HINT to CONTENT_STYLE_LIST_ITEM_HINT_VALUE
             )
             val isRecentRequest = rootHints?.getBoolean(BrowserRoot.EXTRA_RECENT) ?: false
-            val browserRootPath = if (isRecentRequest) Keys.MEDIA_RECENT_ROOT else Keys.MEDIA_BROWSABLE_ROOT
+            val browserRootPath = if (isRecentRequest) Keys.MEDIA_BROWSER_ROOT_RECENT else Keys.MEDIA_BROWSER_ROOT
             return BrowserRoot(browserRootPath, extras)
         }
     }
@@ -315,6 +315,7 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
                 player.seekTo(position)
             }
             override fun seekToNext() {
+                /* Note: seekToNext() is only called from MediaController if Player.hasNextMediaItem() ist true */
                 seekForward()
             }
             override fun seekToPrevious() {
@@ -461,13 +462,15 @@ class PlayerService: MediaBrowserServiceCompat(), SharedPreferences.OnSharedPref
     private fun loadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         val mediaItems = ArrayList<MediaBrowserCompat.MediaItem>()
         when (parentId) {
-            Keys.MEDIA_BROWSABLE_ROOT -> {
+            Keys.MEDIA_BROWSER_ROOT -> {
                 collectionProvider.episodeListByDate.forEach { item ->
                     mediaItems.add(item)
                 }
             }
-            Keys.MEDIA_RECENT_ROOT -> {
-                // todo implement
+            Keys.MEDIA_BROWSER_ROOT_RECENT -> {
+                // implement, if you want the media resumption notification to be shown
+                // val recentEpisode = collectionProvider.getRecentEpisode()
+                // mediaItems.add(recentEpisode)
             }
             else -> {
                 // log error

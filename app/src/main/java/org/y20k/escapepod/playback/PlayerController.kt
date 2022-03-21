@@ -30,7 +30,7 @@ class PlayerController (private val mediaController: MediaControllerCompat) {
 
 
     /* Main class variables */
-    val transportControls: MediaControllerCompat.TransportControls = mediaController.transportControls
+    private val transportControls: MediaControllerCompat.TransportControls = mediaController.transportControls
 
 
     /* Start playback for given media id */
@@ -46,14 +46,20 @@ class PlayerController (private val mediaController: MediaControllerCompat) {
         transportControls.pause()
     }
 
+
     /* Skip back 10 seconds */
     fun skipBack() {
-        transportControls.skipToPrevious()
+        var position: Long = mediaController.playbackState.position - Keys.SKIP_BACK_TIME_SPAN
+        if (position < 0L) position = 0L
+        transportControls.seekTo(position)
     }
 
+
     /* Skip forward 30 seconds */
-    fun skipForward() {
-        transportControls.skipToNext()
+    fun skipForward(episodeDuration: Long) {
+        var position: Long = mediaController.playbackState.position + Keys.SKIP_FORWARD_TIME_SPAN
+        if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
+        transportControls.seekTo(position)
     }
 
 

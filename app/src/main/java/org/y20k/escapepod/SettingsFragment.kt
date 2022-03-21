@@ -261,8 +261,8 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
 
 
     /* Overrides onYesNoDialog from YesNoDialogListener */
-    override fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String) {
-        super.onYesNoDialog(type, dialogResult, payload, payloadString)
+    override fun onYesNoDialog(type: Int, dialogResult: Boolean, payload: Int, payloadString: String, dialogCancelled: Boolean) {
+        super.onYesNoDialog(type, dialogResult, payload, payloadString, dialogCancelled)
 
         when (type) {
             Keys.DIALOG_DELETE_DOWNLOADS -> {
