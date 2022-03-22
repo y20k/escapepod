@@ -114,7 +114,7 @@
     <string name="descr_player_podcast_cover">תמונת שער קטנה לפודקאסט</string>
     <string name="onboarding_app_description">יישומון פודקאסטים</string>
     <string name="onboarding_app_get_started">איך מתחילים</string>
-    <string name="descr_card_settings_button">הגדרות</string>
+    <string name="podcast_list_button_settings">הגדרות</string>
     <string name="pref_theme_selection_title">ערכת העיצוב של היישומון</string>
     <string name="pref_theme_selection_summary">ערכת עיצוב נוכחית:</string>
     <string name="pref_theme_selection_mode_light">מצב בהיר</string>

@@ -93,7 +93,7 @@
     <string name="descr_app_icon">Ícone do app que representa uma cápsula de fuga no espaço</string>
     <string name="descr_card_add_new_button">Adicionar novo feed de podcast</string>
     <string name="descr_card_podcast_cover">Capa do podcast</string>
-    <string name="descr_card_settings_button">Configurações</string>
+    <string name="podcast_list_button_settings">Configurações</string>
     <string name="descr_card_small_download_button">Baixar</string>
     <string name="descr_expanded_episode_length">Duração do episódio</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Ligar/desligar arquivo de registro de depuração</string>

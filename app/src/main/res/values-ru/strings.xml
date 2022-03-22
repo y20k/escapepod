@@ -23,7 +23,7 @@
     <string name="descr_expanded_episode_length">Длина эпизода</string>
     <string name="descr_card_small_playback_button">Играть/пауза</string>
     <string name="descr_card_small_download_button">Скачать</string>
-    <string name="descr_card_settings_button">Настройки</string>
+    <string name="podcast_list_button_settings">Настройки</string>
     <string name="descr_card_podcast_cover">Изображение обложки подкаста</string>
     <string name="descr_card_playback_indicator">Прогресс воспроизведения</string>
     <string name="descr_card_add_new_button">Добавить новый канал подкаста</string>

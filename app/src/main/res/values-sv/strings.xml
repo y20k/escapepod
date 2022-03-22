@@ -155,7 +155,7 @@
     <string name="pref_opml_import_summary">Välj en OPML-fil från enhetens lagring.</string>
     <string name="pref_theme_selection_title">Programläge</string>
     <string name="pref_report_issue_summary">Rapportera fel och föreslå förbättringar på GitHub.</string>
-    <string name="descr_card_settings_button">Inställningar</string>
+    <string name="podcast_list_button_settings">Inställningar</string>
     <string name="descr_expanded_player_next_chapter_button">Nästa kapitel</string>
     <string name="descr_expanded_player_sleep_timer_remaining_time">Återstående tid på sömntimer</string>
     <string name="descr_expanded_player_time_played">Tid spelad</string>

@@ -11,7 +11,7 @@
     <string name="toast_message_error_download_error">Error de baixada</string>
     <string name="descr_card_small_playback_button">Reprodueix/pausa</string>
     <string name="descr_card_small_download_button">Baixa</string>
-    <string name="descr_card_settings_button">Paràmetres</string>
+    <string name="podcast_list_button_settings">Paràmetres</string>
     <string name="pref_update_covers_title">Actualitza les cobertes</string>
     <string name="pref_theme_selection_summary">Tema actual:</string>
     <string name="pref_theme_selection_mode_light">Mode clar</string>

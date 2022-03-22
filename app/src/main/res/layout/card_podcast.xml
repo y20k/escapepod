@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="?attr/materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
@@ -17,10 +19,8 @@
 
         <ImageView
             android:id="@+id/podcast_cover"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
             android:background="@drawable/shape_cover_small"
             android:contentDescription="@string/descr_card_podcast_cover"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,12 +32,12 @@
             android:id="@+id/podcast_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:elevation="2dp"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             android:textColor="@color/text_lightweight"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/podcast_cover"
@@ -50,26 +50,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/older_episodes_toggle"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginTop="0dp"
             android:clickable="true"
             android:focusable="true"
             android:paddingStart="32dp"
             android:paddingTop="0dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="0dp"
             android:text="@string/podcast_list_button_toggle_show_older_episodes"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
             android:textColor="@color/text_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -82,12 +81,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:visibility="visible"
+            android:paddingBottom="0dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/podcast_cover" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

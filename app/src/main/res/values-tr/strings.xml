@@ -23,7 +23,7 @@
     <string name="descr_expanded_episode_length">Bölüm uzunluğu</string>
     <string name="descr_card_small_playback_button">Oynat/duraklat</string>
     <string name="descr_card_small_download_button">İndir</string>
-    <string name="descr_card_settings_button">Ayarlar</string>
+    <string name="podcast_list_button_settings">Ayarlar</string>
     <string name="descr_card_podcast_cover">Podcast kapak resmi</string>
     <string name="descr_card_playback_indicator">Oynatma ilerlemesi</string>
     <string name="descr_card_delete_episode_button">İndirilen bölümü kaldır</string>

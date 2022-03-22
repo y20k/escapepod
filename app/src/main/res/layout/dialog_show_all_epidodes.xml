@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/sample_text_podcast_name" />
 
-    <ImageView
+    <View
         android:id="@+id/divider_horizontal_line"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -33,11 +33,25 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:importantForAccessibility="no"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="?android:attr/listDivider"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/podcast_website"
-        app:srcCompat="@color/divider_line" />
+        app:layout_constraintTop_toBottomOf="@+id/podcast_website" />
+
+<!--    <ImageView-->
+<!--        android:id="@+id/divider_horizontal_line2"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginEnd="24dp"-->
+<!--        android:importantForAccessibility="no"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/podcast_website"-->
+<!--        app:srcCompat="@color/divider_line" />-->
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_website"

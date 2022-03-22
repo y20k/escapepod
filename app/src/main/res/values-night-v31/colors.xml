@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-
     <!-- NIGHT THEME COLORS -->
-    <color name="player_play_pause_icon">@color/escapepod_neutral_very_dark</color>
-    <color name="player_info_icon">@color/escapepod_neutral_very_dark</color>
-    <color name="player_info_badge_background">@color/escapepod_accent_intense</color>
+
+    <!-- app colors -->
+    <color name="app_window_background">@android:color/system_neutral1_900</color> <!-- android:colorBackground / colorSurface -->
+    <color name="status_bar_background">@android:color/system_neutral1_900</color> <!-- android:colorBackground / colorSurface -->
+    <color name="dialog_background">@android:color/system_neutral2_700</color> <!-- colorSurfaceVariant -->
+    <color name="app_onboarding_icons">@android:color/system_neutral1_100</color> <!-- colorOnBackground / colorOnSurface-->
+    <color name="toolbar_background">@android:color/system_neutral1_800</color> <!-- colorSurfaceInverse, Light Theme-->
+
+    <!-- text & icons -->
+    <color name="text_default">@android:color/system_neutral1_100</color> <!-- colorOnBackground / colorOnSurface-->
+    <color name="text_lightweight">@android:color/system_neutral2_200</color> <!-- colorOnSurfaceVariant -->
+    <color name="text_link">@android:color/system_accent1_200</color> <!-- colorPrimary -->
+    <color name="text_link_separator">@android:color/system_accent1_200</color> <!-- colorPrimary -->
+    <color name="icon_default">@android:color/system_neutral1_100</color> <!-- colorOnBackground / colorOnSurface-->
+    <color name="icon_lightweight">@android:color/system_neutral2_200</color> <!-- colorOnSurfaceVariant -->
+    <color name="icon_lightweight_background">@android:color/system_neutral1_900</color> <!-- android:colorBackground / colorSurface -->
+    <color name="divider_line">@android:color/system_neutral2_400</color> <!-- colorOutline -->
+
+    <!-- list -->
+    <color name="list_card_background">@android:color/system_neutral1_800</color> <!-- colorSurfaceInverse, Light Theme-->
+    <color name="list_card_episode_background">@android:color/system_neutral1_800</color> <!-- colorSurfaceInverse, Light Theme-->
+    <color name="list_card_episode_progress_background">@android:color/system_neutral2_400</color> <!-- colorOutline -->
+    <color name="list_card_cover_background">@android:color/system_neutral1_900</color> <!-- android:colorBackground / colorSurface -->
+    <color name="list_card_delete_background">#fff2b8b5</color> <!-- colorError -->
+    <color name="list_card_delete_icon">#ff601410</color> <!-- colorOnError -->
+    <color name="list_card_mark_starred_background">@android:color/system_accent1_200</color> <!-- colorPrimary -->
+    <color name="list_card_mark_starred_star">@android:color/system_accent1_800</color> <!-- colorOnPrimary -->
+    <color name="list_card_streaming_episode_background">@android:color/system_neutral2_700</color> <!-- colorSurfaceVariant -->
+    <color name="search_result_background">@android:color/system_neutral2_700</color> <!-- colorSurfaceVariant -->
+    <color name="search_result_background_selected">@android:color/system_neutral1_800</color> <!-- colorSurfaceInverse, Light Theme-->
+
+    <!-- player sheet -->
+    <!-- player sheet has the same colors scheme in Day and Night theme -->
 
 </resources>

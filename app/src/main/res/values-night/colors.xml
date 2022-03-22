@@ -1,42 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- NIGHT THEME COLORS -->
-    <color name="app_window_background">@color/escapepod_neutral_black</color>
-    <color name="status_bar_background">@color/escapepod_neutral_darker</color>
-    <color name="dialog_background">@color/escapepod_neutral_darker</color>
-    <color name="app_onboarding_icons">@color/escapepod_neutral_white</color>
 
-    <color name="toolbar_background">@color/escapepod_neutral_darker</color>
+    <!-- app colors -->
+    <color name="app_window_background">#ff1c1b1f</color> <!-- android:colorBackground / colorSurface -->
+    <color name="status_bar_background">#ff1c1b1f</color> <!-- android:colorBackground / colorSurface -->
+    <color name="dialog_background">#ff49454f</color> <!-- colorSurfaceVariant -->
+    <color name="app_onboarding_icons">#ffe6e1e5</color> <!-- colorOnBackground / colorOnSurface-->
+    <color name="toolbar_background">#ff313033</color> <!-- colorSurfaceInverse, Light Theme-->
 
-    <color name="text_default">@color/escapepod_neutral_lighter</color>
-    <color name="text_lightweight">@color/escapepod_neutral_light</color>
-    <color name="text_link">@color/escapepod_accent_intense</color>
+    <!-- text & icons -->
+    <color name="text_default">#ffe6e1e5</color> <!-- colorOnBackground / colorOnSurface-->
+    <color name="text_lightweight">#ffcac4d0</color> <!-- colorOnSurfaceVariant -->
+    <color name="text_link">#ffd0bcff</color> <!-- colorPrimary -->
+    <color name="text_link_separator">#ffd0bcff</color> <!-- colorPrimary -->
+    <color name="icon_default">#ffe6e1e5</color> <!-- colorOnBackground / colorOnSurface-->
+    <color name="icon_lightweight">#ffcac4d0</color> <!-- colorOnSurfaceVariant -->
+    <color name="icon_lightweight_background">#ff1c1b1f</color> <!-- android:colorBackground / colorSurface -->
+    <color name="divider_line">#ff938f99</color> <!-- colorOutline -->
 
-    <color name="divider_line">@color/escapepod_neutral_darker</color>
+    <!-- list -->
+    <color name="list_card_background">#ff313033</color> <!-- colorSurfaceInverse, Light Theme-->
+    <color name="list_card_episode_background">#ff313033</color> <!-- colorSurfaceInverse, Light Theme-->
+    <color name="list_card_episode_progress_background">#ff938f99</color> <!-- colorOutline -->
+    <color name="list_card_cover_background">#ff1c1b1f</color> <!-- android:colorBackground / colorSurface -->
+    <color name="list_card_delete_background">#fff2b8b5</color> <!-- colorError -->
+    <color name="list_card_delete_icon">#ff601410</color> <!-- colorOnError -->
+    <color name="list_card_mark_starred_background">#ffd0bcff</color> <!-- colorPrimary -->
+    <color name="list_card_mark_starred_star">#ff381e72</color> <!-- colorOnPrimary -->
+    <color name="list_card_streaming_episode_background">#ff49454f</color> <!-- colorSurfaceVariant -->
+    <color name="search_result_background">#ff49454f</color> <!-- colorSurfaceVariant -->
+    <color name="search_result_background_selected">#ff313033</color> <!-- colorSurfaceInverse, Light Theme-->
 
-    <color name="icon_default">@color/escapepod_neutral_lighter</color>
-    <color name="icon_lightweight">@color/escapepod_neutral_light</color>
-
-    <color name="player_play_pause_icon">@color/escapepod_neutral_very_light</color>
-    <color name="player_button_background">@color/escapepod_accent_intense</color>
-    <color name="player_button_buffering">@color/escapepod_accent_light</color>
-    <color name="player_sheet_background">@color/escapepod_neutral_very_dark</color>
-    <color name="player_sheet_background_border">@color/escapepod_neutral_darker</color>
-    <color name="player_sheet_text_main">@color/escapepod_neutral_lighter</color>
-    <color name="player_sheet_text_details">@color/escapepod_neutral_lighter</color>
-    <color name="player_sheet_icon">@color/escapepod_neutral_lighter</color>
-    <color name="player_sheet_up_next_background">@color/escapepod_neutral_dark</color>
-    <color name="player_info_icon">@color/escapepod_neutral_white</color>
-    <color name="player_info_badge_background">@color/escapepod_neutral_dark</color>
-
-    <color name="list_card_background">@color/escapepod_neutral_very_dark</color>
-    <color name="list_card_cover_background">@color/escapepod_neutral_very_dark</color>
-    <color name="list_card_delete_background">@color/escapepod_red</color>
-    <color name="list_card_episode_background">@color/escapepod_neutral_black</color>
-    <color name="list_card_episode_progress_background">@color/escapepod_neutral_dark</color>
-
-    <color name="search_result_background">@color/escapepod_neutral_darker</color>
-    <color name="search_result_background_selected">@color/escapepod_neutral_dark</color>
+    <!-- player sheet -->
+    <!-- player sheet has the same colors scheme in Day and Night theme -->
 
 </resources>

@@ -148,7 +148,7 @@
     <string name="descr_card_delete_episode_button">移除已下载的节目</string>
     <string name="descr_card_playback_indicator">回放进度</string>
     <string name="descr_card_podcast_cover">播客封面图像</string>
-    <string name="descr_card_settings_button">设置</string>
+    <string name="podcast_list_button_settings">设置</string>
     <string name="descr_card_small_download_button">下载</string>
     <string name="descr_card_small_playback_button">播放/暂停</string>
     <string name="descr_expanded_episode_length">节目长度</string>
