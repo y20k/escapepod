@@ -75,7 +75,7 @@
     <string name="toast_message_theme_night">מעבר ל‚מצב לילה’ (זוהתה לחיצה ארוכה)</string>
     <string name="toast_message_up_next_added_episode">הפרק נוסף ל‚באים בתור’.</string>
     <string name="toast_message_up_next_removed_episode">הפרק הוסר מה‚באים בתור’.</string>
-    <string name="toast_message_up_next_start_playback">הפרק הבא מתחיל.</string>
+    <string name="toast_message_up_next_start_playback">הפרק הבא מתחיל…</string>
     <string name="toast_message_updating_collection">אוסף הפודקאסטים מתעדכן.</string>
     <string name="podcast_list_button_add_new_podcast">הוספת פודקאסט חדש</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">הסתרת פרקים ישנים</string>
