@@ -100,6 +100,7 @@
     <string name="toast_message_updating_collection">Updating podcast collection.</string>
     <!-- Podcast List -->
     <string name="podcast_list_button_add_new_podcast">Add new podcast</string>
+    <string name="podcast_list_button_settings">Settings</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Hide older episodes</string>
     <string name="podcast_list_button_toggle_show_older_episodes">Older episodes</string>
     <!-- Notification -->
@@ -151,7 +152,6 @@
     <string name="descr_card_delete_episode_button">Remove downloaded episode</string>
     <string name="descr_card_playback_indicator">Playback progress</string>
     <string name="descr_card_podcast_cover">Podcast cover image</string>
-    <string name="descr_card_settings_button">Settings</string>
     <string name="descr_card_small_download_button">Download</string>
     <string name="descr_card_small_playback_button">Play/pause</string>
     <string name="descr_expanded_episode_length">Episode length</string>

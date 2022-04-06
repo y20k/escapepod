@@ -21,10 +21,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.SeekBar
-import android.widget.TextView
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.isGone
@@ -71,23 +68,23 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     private var coverView: ImageView
     private var podcastNameView: TextView
     private var episodeTitleView: TextView
-    var playButtonView: ImageView
+    var playButtonView: ImageButton
     var bufferingIndicator: ProgressBar
     private var sheetCoverView: ImageView
     var sheetProgressBarView: SeekBar
     var sheetTimePlayedView: TextView
     var sheetDurationView: TextView
     private var sheetEpisodeTitleView: TextView
-    var sheetPlayButtonView: ImageView
-    var sheetSkipBackButtonView: ImageView
-    var sheetSkipForwardButtonView: ImageView
-    var sheetSleepTimerStartButtonView: ImageView
-    var sheetSleepTimerCancelButtonView: ImageView
+    var sheetPlayButtonView: ImageButton
+    var sheetSkipBackButtonView: ImageButton
+    var sheetSkipForwardButtonView: ImageButton
+    var sheetSleepTimerStartButtonView: ImageButton
+    var sheetSleepTimerCancelButtonView: ImageButton
     var sheetSleepTimerRemainingTimeView: TextView
-    var sheetDebugToggleButtonView: ImageView
-    var sheetPlaybackSpeedButtonView: TextView
+    var sheetDebugToggleButtonView: ImageButton
+    var sheetPlaybackSpeedButtonView: Button
     var sheetUpNextName: TextView
-    var sheetUpNextClearButton: ImageView
+    var sheetUpNextClearButton: ImageButton
     private var onboardingLayout: ConstraintLayout
     private var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     var displayTimeRemaining: Boolean

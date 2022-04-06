@@ -43,7 +43,7 @@
     <string name="descr_expanded_episode_length">Duración del episodio</string>
     <string name="descr_card_small_playback_button">Reproducir/pausar</string>
     <string name="descr_card_small_download_button">Descargar</string>
-    <string name="descr_card_settings_button">Configuración</string>
+    <string name="podcast_list_button_settings">Configuración</string>
     <string name="descr_card_podcast_cover">Imagen de cubierta del pódcast</string>
     <string name="descr_card_playback_indicator">Progreso de la reproducción</string>
     <string name="descr_card_delete_episode_button">Eliminar episodio descargado</string>

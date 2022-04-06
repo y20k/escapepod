@@ -114,7 +114,7 @@
     <string name="dialog_yes_no_message_vpn_download">Dein Gerät ist mit einem VPN verbunden. Möchtest du diese Episode trotzdem herunterladen?</string>
     <string name="toast_message_error_no_podcast_found">Die Wiedergabe kann nicht gestartet werden. Bitte füge zuerst einen Podcast hinzu.</string>
     <string name="toast_message_error_no_podcast_matches_search">Es konnte kein Podcast gefunden werden, der deiner Suche entspricht.</string>
-    <string name="descr_card_settings_button">Einstellungen</string>
+    <string name="podcast_list_button_settings">Einstellungen</string>
     <string name="pref_maintenance_title">Erweitert</string>
     <string name="pref_general_title">Allgemein</string>
     <string name="pref_theme_selection_mode_dark">Dunkler Modus</string>

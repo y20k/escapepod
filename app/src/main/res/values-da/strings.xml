@@ -77,7 +77,7 @@
     <string name="pref_theme_selection_mode_light">Lys dragt</string>
     <string name="pref_theme_selection_summary">Nuværende dragt:</string>
     <string name="pref_theme_selection_title">Programdragt</string>
-    <string name="descr_card_settings_button">Indstillinger</string>
+    <string name="podcast_list_button_settings">Indstillinger</string>
     <string name="descr_card_small_download_button">Last ned</string>
     <string name="descr_card_small_playback_button">Spil/pause</string>
     <string name="descr_expanded_episode_length">Episodelengde</string>

@@ -20,9 +20,11 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.Group
 import androidx.core.net.toUri
 import androidx.core.view.isGone
@@ -35,6 +37,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -117,7 +120,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
             is AddNewViewHolder -> {
                 // get reference to StationViewHolder
                 val addNewViewHolder: AddNewViewHolder = holder
-                addNewViewHolder.addNewPodcastView.setOnClickListener {
+                addNewViewHolder.addNewPodcastButtonView.setOnClickListener {
                     // show the add podcast dialog
                     collectionAdapterListener.onAddNewButtonTapped()
                 }
@@ -461,8 +464,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
      * Inner class: ViewHolder for the Add New podcast action
      */
     private inner class AddNewViewHolder (listItemAddNewLayout: View) : RecyclerView.ViewHolder(listItemAddNewLayout) {
-        val addNewPodcastView: CardView = listItemAddNewLayout.findViewById(R.id.card_add_new_podcast)
-        val settingsButtonView: ImageButton = listItemAddNewLayout.findViewById(R.id.settings_button)
+        val addNewPodcastButtonView: MaterialButton = listItemAddNewLayout.findViewById(R.id.card_add_new_station)
+        val settingsButtonView: MaterialButton = listItemAddNewLayout.findViewById(R.id.card_settings)
     }
     /*
      * End of inner class
@@ -476,7 +479,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
         val podcastImageView: ImageView = podcastCardLayout.findViewById(R.id.podcast_cover)
         val podcastNameView: TextView = podcastCardLayout.findViewById(R.id.podcast_name)
         val currentEpisodeViews: EpisodeViewHolder = EpisodeViewHolder(podcastCardLayout)
-        val olderEpisodesButtonView: TextView = podcastCardLayout.findViewById(R.id.older_episodes_toggle)
+        val olderEpisodesButtonView: MaterialButton = podcastCardLayout.findViewById(R.id.older_episodes_toggle)
         val olderEpisodesList: RecyclerView = podcastCardLayout.findViewById(R.id.older_episode_list)
     }
     /*

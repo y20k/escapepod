@@ -58,7 +58,7 @@
     <string name="descr_expanded_episode_length">Durée de l\'épisode</string>
     <string name="descr_card_small_playback_button">Lecture/Pause</string>
     <string name="descr_card_small_download_button">Télécharger</string>
-    <string name="descr_card_settings_button">Paramètres</string>
+    <string name="podcast_list_button_settings">Paramètres</string>
     <string name="descr_card_playback_indicator">Indicateur de lecture</string>
     <string name="descr_card_delete_episode_button">Supprimer l\'épisode téléchargé</string>
     <string name="descr_app_icon">Icône d\'application représentant une capsule de survie dans l\'espace</string>

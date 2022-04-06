@@ -18,7 +18,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.y20k.escapepod.R
@@ -96,7 +96,7 @@ class PodcastAllEpisodesAdapter (private val context: Context, private  val epis
     private inner class EpisodeViewHolder (podcastCardLayout: View): RecyclerView.ViewHolder(podcastCardLayout) {
         val episodeDateView: TextView = podcastCardLayout.findViewById(R.id.streaming_episode_date)
         val episodeTitleView: TextView = podcastCardLayout.findViewById(R.id.streaming_episode_title)
-        val episodePlayButtonView: ImageView = podcastCardLayout.findViewById(R.id.streaming_episode_play_button)
+        val episodePlayButtonView: ImageButton = podcastCardLayout.findViewById(R.id.streaming_episode_play_button)
     }
     /*
      * End of inner class

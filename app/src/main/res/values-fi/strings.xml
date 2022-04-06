@@ -18,7 +18,7 @@
     <string name="descr_expanded_player_next_chapter_button">Seuraava kappale</string>
     <string name="descr_expanded_player_debug_log_toggle_button">Virheenkorjausloki päälle/pois</string>
     <string name="descr_card_small_playback_button">Toista/tauota</string>
-    <string name="descr_card_settings_button">Asetukset</string>
+    <string name="podcast_list_button_settings">Asetukset</string>
     <string name="descr_card_add_new_button">Lisää uuden podcastin syöte</string>
     <string name="pref_update_covers_summary">Lataa uusin versio kaikkien podcastien kansikuvista.</string>
     <string name="pref_opml_export_summary">Tallenna podcast-syötteet OPML-tiedostoon joka voidaan siirtää muihin soittimiin.</string>

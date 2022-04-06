@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet"
@@ -14,7 +15,7 @@
     app:layout_behavior="@string/bottom_sheet_behavior"
     tools:showIn="@layout/fragment_podcast_player">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/sheet_large_podcast_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -22,15 +23,14 @@
         android:layout_marginTop="84dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/shape_cover_large"
         android:contentDescription="@string/descr_expanded_player_podcast_cover"
+        app:shapeAppearanceOverlay="@style/StraightCornerTopRight"
         app:layout_constraintBottom_toTopOf="@+id/sheet_episode_current_chapter_name"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
-    <!-- set clipToOutline = true in code to apply rounded the corner shapes that are set as background -->
 
     <ImageView
         android:id="@+id/sheet_episode_shownotes_info"
@@ -58,22 +58,24 @@
         app:layout_constraintStart_toEndOf="@+id/sheet_previous_chapter_button"
         tools:text="@string/sample_text_episode_0_chapter" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sheet_previous_chapter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_previous_chapter_button"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_episode_current_chapter_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/sheet_episode_current_chapter_name"
         app:srcCompat="@drawable/ic_chevron_left_24dp" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sheet_next_chapter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_next_chapter_button"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_episode_current_chapter_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,8 +90,8 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="24dp"
         android:contentDescription="@string/descr_expanded_player_seekbar"
-        android:progressTint="@color/escapepod_accent_intense"
-        android:thumbTint="@color/escapepod_accent_intense"
+        android:progressTint="@color/player_sheet_seek_bar_progress"
+        android:thumbTint="@color/player_sheet_seek_bar_thumb"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/sheet_episode_title"
@@ -135,14 +137,14 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toTopOf="@+id/sheet_play_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/sample_text_episode_0_title" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sheet_play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -150,38 +152,32 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/ic_circular_button_playback_84dp"
-        android:clickable="true"
         android:contentDescription="@string/descr_expanded_player_playback_button"
-        android:focusable="true"
         android:scaleType="center"
         app:layout_constraintBottom_toTopOf="@+id/sheet_up_next_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_player_play_symbol_54dp" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sheet_skip_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_replay_button"
-        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
         app:layout_constraintEnd_toStartOf="@+id/sheet_play_button"
         app:layout_constraintTop_toTopOf="@+id/sheet_play_button"
         app:srcCompat="@drawable/ic_replay_10sek_56dp" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sheet_skip_forward_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_forward_button"
-        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_play_button"
         app:layout_constraintStart_toEndOf="@+id/sheet_play_button"
         app:layout_constraintTop_toTopOf="@+id/sheet_play_button"
@@ -225,13 +221,12 @@
         app:layout_constraintTop_toTopOf="@+id/sheet_up_next_background"
         tools:text="@string/sample_text_up_next_name" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sheet_up_next_clear_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_up_next_clear_button"
-        android:focusable="true"
         android:paddingStart="16dp"
         android:paddingTop="4dp"
         android:paddingEnd="16dp"
@@ -245,42 +240,28 @@
     <!-- main player views -->
     <!-- ... down here, because lower views are in a layout are above the higher views -->
 
-    <View
-        android:id="@+id/player_background"
-        android:layout_width="0dp"
-        android:layout_height="80dp"
-        android:background="@drawable/shape_player_background"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/player_podcast_cover"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/shape_cover_small"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:contentDescription="@string/descr_player_podcast_cover"
-        app:layout_constraintBottom_toBottomOf="@+id/player_background"
+        app:shapeAppearanceOverlay="@style/RoundedCornerLeftTop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
-    <!-- set clipToOutline = true in code to apply rounded the corner shapes that are set as background -->
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:letterSpacing="0"
         android:singleLine="true"
         android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:textColor="@color/player_sheet_text_main"
         app:layout_constraintBottom_toTopOf="@+id/player_episode_title"
         app:layout_constraintEnd_toStartOf="@+id/player_play_button"
@@ -294,6 +275,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:ellipsize="end"
         android:letterSpacing="0"
         android:singleLine="true"
@@ -306,19 +288,17 @@
         app:layout_constraintTop_toBottomOf="@+id/podcast_name"
         tools:text="@string/sample_text_episode_0_title" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/player_play_button"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/ic_circular_button_playback_56dp"
-        android:clickable="true"
         android:contentDescription="@string/descr_player_playback_button"
-        android:focusable="true"
         android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="@+id/player_background"
+        app:layout_constraintBottom_toBottomOf="@+id/player_podcast_cover"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player_background"
+        app:layout_constraintTop_toTopOf="@id/player_podcast_cover"
         app:srcCompat="@drawable/ic_player_play_symbol_36dp" />
 
     <ProgressBar
@@ -326,54 +306,49 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="3dp"
         android:indeterminateTint="@color/player_button_buffering"
         android:indeterminateTintMode="src_in"
-        android:visibility="invisible"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/player_podcast_cover"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player_background" />
+        app:layout_constraintTop_toTopOf="@+id/player_podcast_cover" />
 
-    <com.google.android.material.textview.MaterialTextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/playback_speed_button"
+        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/descr_expanded_player_playback_speed_button"
-        android:padding="16dp"
-        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
         android:textColor="@color/player_sheet_text_main"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@string/sample_text_playback_speed" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/debug_log_toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_debug_log_toggle_button"
-        android:focusable="true"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_developer_mode_24dp" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sleep_timer_start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_sleep_timer_start_button"
-        android:focusable="true"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -391,14 +366,12 @@
         app:layout_constraintTop_toTopOf="@+id/sleep_timer_start_button"
         tools:text="@string/sample_text_sleep_timer_remaining_time" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/sleep_timer_cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_expanded_player_sleep_timer_cancel_button"
-        android:focusable="true"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/sleep_timer_remaining_time"
         app:layout_constraintEnd_toStartOf="@+id/sleep_timer_remaining_time"
@@ -427,7 +400,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="visible"
-        app:constraint_referenced_ids="player_background,player_podcast_cover,podcast_name,player_episode_title,player_play_button" />
+        app:constraint_referenced_ids="player_podcast_cover,podcast_name,player_episode_title,player_play_button" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/chapter_views"
@@ -441,7 +414,7 @@
         android:id="@+id/up_next_views"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:constraint_referenced_ids="sheet_up_next_background,sheet_up_next_headline,sheet_up_next_name,sheet_up_next_clear_button" />
 
 

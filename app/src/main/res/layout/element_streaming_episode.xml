@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:background="@color/list_card_episode_background">
+    android:background="@color/list_card_streaming_episode_background">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:importantForAccessibility="no"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/streaming_episode_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:elevation="2dp"
         android:ellipsize="end"
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-        android:textColor="@color/text_lightweight"
+        android:textColor="@color/text_default"
         app:layout_constraintEnd_toStartOf="@+id/streaming_episode_play_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,20 +52,18 @@
         app:layout_constraintTop_toBottomOf="@+id/streaming_episode_date"
         tools:text="@string/sample_text_episode_0_title" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/streaming_episode_play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="4dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:backgroundTint="@color/escapepod_transparent"
-        android:clickable="true"
+        android:backgroundTint="@color/default_transparent"
         android:contentDescription="@string/descr_card_small_playback_button"
-        android:focusable="true"
-        android:paddingStart="2dp"
-        android:paddingTop="4dp"
-        android:paddingEnd="2dp"
-        android:paddingBottom="4dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
