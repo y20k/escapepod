@@ -16,7 +16,7 @@
     <color name="text_link_separator">@android:color/system_accent1_200</color> <!-- colorPrimary -->
     <color name="icon_default">@android:color/system_neutral1_100</color> <!-- colorOnBackground / colorOnSurface-->
     <color name="icon_lightweight">@android:color/system_neutral2_200</color> <!-- colorOnSurfaceVariant -->
-    <color name="icon_lightweight_background">@android:color/system_neutral1_900</color> <!-- android:colorBackground / colorSurface -->
+    <color name="icon_lightweight_background">@android:color/system_neutral2_700</color> <!-- colorSurfaceVariant -->
     <color name="divider_line">@android:color/system_neutral2_400</color> <!-- colorOutline -->
 
     <!-- list -->

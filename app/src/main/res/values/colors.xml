@@ -55,7 +55,8 @@
     <color name="default_neutral_dark">#ff595959</color> <!-- system_neutral1_600 todo check-->
     <color name="default_neutral_darker">#ff1c1b1f</color> <!-- system_neutral1_900-->
     <!-- transparency -->
-    <color name="default_neutral_85percent">#d9313033</color> <!-- 85% system_neutral1_800 -->
+    <color name="default_neutral_lighter_85percent">#d9e6e1e5</color> <!-- 85% system_neutral1_100 -->
+    <color name="default_neutral_darker_85percent">#d91c1b1f</color> <!-- 85% system_neutral1_900 -->
     <color name="default_transparent">#00ffffff</color>
 
 </resources>

@@ -19,8 +19,8 @@
 
         <ImageView
             android:id="@+id/podcast_cover"
-            android:layout_width="88dp"
-            android:layout_height="88dp"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
             android:background="@drawable/shape_cover_small"
             android:contentDescription="@string/descr_card_podcast_cover"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,14 +56,24 @@
             app:layout_constraintStart_toEndOf="@+id/podcast_cover"
             app:layout_constraintTop_toBottomOf="@+id/podcast_name" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/older_episode_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="42dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/podcast_cover" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/older_episodes_toggle"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:clickable="true"
-            android:focusable="true"
             android:paddingStart="32dp"
             android:paddingTop="0dp"
             android:paddingEnd="8dp"
@@ -72,20 +82,8 @@
             android:textColor="@color/text_default"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/older_episode_list" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/older_episode_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="0dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/podcast_cover" />
+            app:layout_constraintTop_toBottomOf="@+id/episode_current"
+            app:layout_constraintVertical_bias="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

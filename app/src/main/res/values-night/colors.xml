@@ -16,7 +16,7 @@
     <color name="text_link_separator">#ffd0bcff</color> <!-- colorPrimary -->
     <color name="icon_default">#ffe6e1e5</color> <!-- colorOnBackground / colorOnSurface-->
     <color name="icon_lightweight">#ffcac4d0</color> <!-- colorOnSurfaceVariant -->
-    <color name="icon_lightweight_background">#ff1c1b1f</color> <!-- android:colorBackground / colorSurface -->
+    <color name="icon_lightweight_background">#ff49454f</color> <!-- colorSurfaceVariant -->
     <color name="divider_line">#ff938f99</color> <!-- colorOutline -->
 
     <!-- list -->
