@@ -25,8 +25,7 @@
             android:contentDescription="@string/descr_card_podcast_cover"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
-        <!-- set clipToOutline = true in code to apply rounded the corner shapes that are set as background -->
+            tools:srcCompat="@drawable/ic_default_cover_rss_icon_192dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/podcast_name"

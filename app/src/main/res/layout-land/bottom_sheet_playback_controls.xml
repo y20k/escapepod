@@ -30,7 +30,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+        tools:srcCompat="@drawable/ic_default_cover_rss_icon_192dp" />
 
     <ImageView
         android:id="@+id/sheet_episode_shownotes_info"
@@ -249,7 +249,7 @@
         app:shapeAppearanceOverlay="@style/RoundedCornerLeftTop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_default_cover_rss_icon_24dp" />
+        tools:srcCompat="@drawable/ic_default_cover_rss_icon_192dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/podcast_name"

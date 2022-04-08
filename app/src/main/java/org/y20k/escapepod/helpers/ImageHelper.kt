@@ -65,7 +65,7 @@ object ImageHelper {
 
         // get default image
         if (bitmap == null) {
-            bitmap = ContextCompat.getDrawable(context, R.drawable.ic_default_cover_rss_icon_24dp)!!.toBitmap()
+            bitmap = ContextCompat.getDrawable(context, R.drawable.ic_default_cover_rss_icon_192dp)!!.toBitmap()
         }
 
         return bitmap
@@ -130,7 +130,7 @@ object ImageHelper {
 
         // get default image
         if (bitmap == null) {
-            bitmap = ContextCompat.getDrawable(context, R.drawable.ic_default_cover_rss_icon_24dp)!!.toBitmap()
+            bitmap = ContextCompat.getDrawable(context, R.drawable.ic_default_cover_rss_icon_192dp)!!.toBitmap()
         }
 
         return bitmap
