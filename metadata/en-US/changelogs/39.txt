@@ -1,0 +1,7 @@
+# v1.1.0 - Mein Neues Hobby
+
+**2022-04-12**
+
+- design overhaul that makes use of "Material Design 3" elements and colors
+- better handling of playback speed changes
+- updated translations
