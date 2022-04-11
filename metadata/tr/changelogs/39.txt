@@ -1,0 +1,7 @@
+# v1.1.0 - Mein Neues Hobi
+
+**12 Nisan 2022**
+
+- "Material Tasarım 3" ögelerini ve renklerini kullanan tasarım yenilemesi
+- oynatma hızı değişikliklerinin daha iyi ele alınması
+- güncellenmiş çeviriler
