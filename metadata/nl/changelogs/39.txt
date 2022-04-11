@@ -1,0 +1,7 @@
+# v1.1.0 - Mein Neues Hobby
+
+**2022-04-12**
+
+- Nieuw: nieuw ontwerp op basis van Material Design 3;
+- Verbeterd: betere afhandling van snelheidsaanpassingen;
+- Bijgewerkt: vertalingen.
