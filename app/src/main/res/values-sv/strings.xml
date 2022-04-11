@@ -67,7 +67,7 @@
     <string name="toast_message_theme_night">Växlar till «Nattmodus» (lång-tryck upptäcks)</string>
     <string name="toast_message_up_next_added_episode">La till episod i «Spelas efteråt»-kö.</string>
     <string name="toast_message_up_next_removed_episode">Tog bort episod från «Spelas efteråt»-kö.</string>
-    <string name="toast_message_up_next_start_playback">Startar nästa episod …</string>
+    <string name="toast_message_up_next_start_playback">Startar nästa episod…</string>
     <string name="toast_message_updating_collection">Uppdaterar podcast-samling.</string>
     <string name="podcast_list_button_add_new_podcast">Lägg till ny podcst</string>
     <string name="podcast_list_button_toggle_hide_older_episodes">Dölj äldre episoder</string>
