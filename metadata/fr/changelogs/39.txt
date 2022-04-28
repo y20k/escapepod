@@ -1,0 +1,7 @@
+# v1.1.0 - Mein Neues Hobby
+
+**12/04/2022**
+
+- Refonte graphique qui fait appel aux éléments et aux couleurs du « Material Design 3 »
+- Meilleure gestion des changements de vitesse de lecture
+- Mise à jour des traductions
