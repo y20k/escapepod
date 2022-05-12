@@ -77,11 +77,13 @@
 
         <!-- Player Service -->
         <service
-            android:name=".playback.PlayerService"
+            android:name=".PlayerService"
+            android:foregroundServiceType="mediaPlayback"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService"/>
                 <action android:name="android.media.browse.MediaBrowserService"/>
             </intent-filter>
         </service>

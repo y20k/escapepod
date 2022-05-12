@@ -14,14 +14,14 @@
 
 package org.y20k.escapepod.ui
 
-import android.support.v4.media.session.PlaybackStateCompat
 import com.google.gson.annotations.Expose
 
 
 /*
  * PlayerState class
  */
-data class PlayerState (@Expose var episodeMediaId: String = String(),
-                        @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
+data class PlayerState (@Expose var currentEpisodeMediaId: String = String(),
+                        @Expose var isPlaying: Boolean = false,
+                        @Expose var streaming: Boolean = false,
                         @Expose var playbackSpeed: Float = 1f,
                         @Expose var upNextEpisodeMediaId: String = String())

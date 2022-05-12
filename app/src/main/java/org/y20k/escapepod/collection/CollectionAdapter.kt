@@ -16,7 +16,6 @@ package org.y20k.escapepod.collection
 
 import android.content.Context
 import android.os.Vibrator
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,8 +73,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
 
     /* Listener Interface */
     interface CollectionAdapterListener {
-        fun onPlayButtonTapped(mediaId: String, playbackState: Int, streaming: Boolean = false)
-        fun onMarkListenedButtonTapped(mediaId: String)
+        fun onPlayButtonTapped(selectedEpisode: Episode, streaming: Boolean = false)
+        fun onMarkListenedButtonTapped(selectedEpisode: Episode)
         fun onDownloadButtonTapped(selectedEpisode: Episode)
         fun onDeleteButtonTapped(selectedEpisode: Episode)
         fun onAddNewButtonTapped()
@@ -219,22 +218,22 @@ class CollectionAdapter(private val context: Context, private val collectionData
 
     /* Sets up an episode's play, download and delete button views */
     private fun setEpisodeButtons(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        val playbackState: Int = episode.playbackState
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
-            else -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
+        val episodeIsPlaying: Boolean = episode.isPlaying()
+        when (episodeIsPlaying) {
+            true -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
+            false -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
         }
         episodeViewHolder.episodeDownloadButtonView.setOnClickListener {
             collectionAdapterListener.onDownloadButtonTapped(episode)
         }
         episodeViewHolder.episodePlayButtonView.setOnClickListener {
-            collectionAdapterListener.onPlayButtonTapped(episode.mediaId, playbackState)
+            collectionAdapterListener.onPlayButtonTapped(episode, streaming = false)
         }
         episodeViewHolder.episodePlayButtonView.setOnLongClickListener {
             val v = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
             v.vibrate(50)
             // v.vibrate(VibrationEffect.createOneShot(50, android.os.VibrationEffect.DEFAULT_AMPLITUDE)); // todo check if there is an androidx vibrator
-            collectionAdapterListener.onMarkListenedButtonTapped(episode.mediaId)
+            collectionAdapterListener.onMarkListenedButtonTapped(episode)
             return@setOnLongClickListener true
         }
         episodeViewHolder.episodeDeleteButtonView.setOnClickListener {
@@ -318,8 +317,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
                     withContext(Main) {
                         // listener that lets player fragment start streaming playback
                         val podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener = object: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener {
-                            override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
-                                collectionAdapterListener.onPlayButtonTapped(mediaId, playbackState, streaming = true)
+                            override fun onPlayButtonTapped(episode: Episode, streaming: Boolean) {
+                                collectionAdapterListener.onPlayButtonTapped(episode, streaming)
                             }
                         }
                         // display Show All Episodes dialog

@@ -39,6 +39,11 @@ object Keys {
     // ranges
     val PLAYBACK_SPEEDS = arrayOf(1.0f, 1.2f, 1.4f, 1.6f, 1.8f, 2.0f)
 
+    // episode playback states
+    val EPISODE_IS_PLAYING: Int = 3 // = STATE_PLAYING (https://developer.android.com/reference/android/support/v4/media/session/PlaybackStateCompat#STATE_PLAYING)
+    val EPISODE_IS_PAUSED: Int = 2 // = STATE_PAUSED (https://developer.android.com/reference/android/support/v4/media/session/PlaybackStateCompat#STATE_PAUSED)
+    val EPISODE_IS_STOPPED: Int = 1 // = STATE_STOPPED (https://developer.android.com/reference/android/support/v4/media/session/PlaybackStateCompat#STATE_STOPPED)
+
     // notification
     const val NOW_PLAYING_NOTIFICATION_ID: Int = 42
     const val NOW_PLAYING_NOTIFICATION_CHANNEL_ID: String = "notificationChannelIdPlaybackChannel"
@@ -81,6 +86,8 @@ object Keys {
     const val PREF_PODCAST_LIST_EXPANDED_FEED_LOCATION = "PODCAST_LIST_EXPANDED_FEED_LOCATION"
     const val PREF_PLAYER_STATE_EPISODE_MEDIA_ID: String = "PLAYER_STATE_EPISODE_MEDIA_ID"
     const val PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID: String = "PLAYER_STATE_UP_NEXT_MEDIA_ID"
+    const val PREF_PLAYER_STATE_IS_PLAYING: String = "PLAYER_STATE_IS_PLAYING"
+    const val PREF_PLAYER_STATE_STREAMING: String = "PLAYER_STATE_STREAMING"
     const val PREF_PLAYER_STATE_PLAYBACK_STATE: String = "PLAYER_STATE_PLAYBACK_STATE"
     const val PREF_PLAYER_STATE_PLAYBACK_SPEED: String = "PLAYER_STATE_PLAYBACK_SPEED"
     const val PREF_PLAYER_STATE_BOTTOM_SHEET_STATE: String = "PLAYER_STATE_BOTTOM_SHEET_STATE"

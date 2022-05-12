@@ -16,7 +16,6 @@ package org.y20k.escapepod.helpers
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import org.y20k.escapepod.Keys
@@ -98,16 +97,16 @@ object PreferencesHelper {
     }
 
 
-    /* Loads state of playback for player / PlayerService from shared preferences */
-    fun loadPlayerPlaybackState(): Int {
-        return sharedPreferences.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+    /* Loads state of playback for PlayerService from shared preferences */
+    fun loadPlayerPlaybackState(): Boolean {
+        return sharedPreferences.getBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, false)
     }
 
 
-    /* Saves state of playback for player / PlayerService to shared preferences */
-    fun savePlayerPlaybackState(playbackState: Int) {
+    /* Saves state of playback for player to shared preferences */
+    fun savePlayerPlaybackState(isPlaying: Boolean) {
         sharedPreferences.edit {
-            putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playbackState)
+            putBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, isPlaying)
         }
     }
 
@@ -215,8 +214,9 @@ object PreferencesHelper {
     /* Loads state of player user interface from shared preferences */
     fun loadPlayerState(): PlayerState {
         return PlayerState().apply {
-            episodeMediaId = sharedPreferences.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
-            playbackState = sharedPreferences.getInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+            currentEpisodeMediaId = sharedPreferences.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
+            isPlaying = sharedPreferences.getBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, false)
+            streaming = sharedPreferences.getBoolean(Keys.PREF_PLAYER_STATE_STREAMING, false)
             playbackSpeed = sharedPreferences.getFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
             upNextEpisodeMediaId = sharedPreferences.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
         }
@@ -226,8 +226,9 @@ object PreferencesHelper {
     /* Saves state of player user interface to shared preferences */
     fun savePlayerState(playerState: PlayerState) {
         sharedPreferences.edit {
-            putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.episodeMediaId)
-            putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, playerState.playbackState)
+            putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, playerState.currentEpisodeMediaId)
+            putBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, playerState.isPlaying)
+            putBoolean(Keys.PREF_PLAYER_STATE_STREAMING, playerState.streaming)
             putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, playerState.playbackSpeed)
             putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, playerState.upNextEpisodeMediaId)
         }
@@ -241,7 +242,8 @@ object PreferencesHelper {
                 // reset player state - keep up next
                 sharedPreferences.edit {
                     putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String())
-                    putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+                    putBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, false)
+                    putBoolean(Keys.PREF_PLAYER_STATE_STREAMING, false)
                     putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
                 }
             }
@@ -249,7 +251,8 @@ object PreferencesHelper {
                 // reset player state - also reset up next
                 sharedPreferences.edit {
                     putString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String())
-                    putInt(Keys.PREF_PLAYER_STATE_PLAYBACK_STATE, PlaybackStateCompat.STATE_STOPPED)
+                    putBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, false)
+                    putBoolean(Keys.PREF_PLAYER_STATE_STREAMING, false)
                     putFloat(Keys.PREF_PLAYER_STATE_PLAYBACK_SPEED, 1f)
                     putString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String())
                 }

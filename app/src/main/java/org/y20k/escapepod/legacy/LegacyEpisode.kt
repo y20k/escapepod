@@ -14,7 +14,6 @@
 
 package org.y20k.escapepod.legacy
 
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 import org.y20k.escapepod.Keys
@@ -34,7 +33,7 @@ data class LegacyEpisode (@Expose var guid: String = String(),
                           @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
                           @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
                           @Expose var publicationDate: Date = Keys.DEFAULT_DATE,
-                          @Expose var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
+                          @Expose var playbackState: Int = Keys.EPISODE_IS_STOPPED,
                           @Expose var playbackPosition: Long = 0L,
                           @Expose var duration: Long = 0L,
                           @Expose var manuallyDownloaded: Boolean = false,

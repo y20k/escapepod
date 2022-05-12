@@ -13,12 +13,11 @@
 
 package org.y20k.escapepod.database.objects
 
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.y20k.escapepod.Keys
 import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
@@ -128,15 +127,19 @@ data class Episode (
     fun hasBeenStarted(): Boolean = playbackPosition > 0L
 
 
-    /* Creates MediaItem for a single episode - used by collection provider */
-    fun toMediaMetaItem():  MediaBrowserCompat.MediaItem {
-        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
-        mediaDescriptionBuilder.setMediaId(mediaId)
-        mediaDescriptionBuilder.setTitle(title)
-        mediaDescriptionBuilder.setSubtitle(podcastName)
-        mediaDescriptionBuilder.setDescription(podcastName)
-        //mediaDescriptionBuilder.setIconUri(episode.cover.toUri())
-        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
-    }
+    /* Return if an episode is currently playing */
+    fun isPlaying(): Boolean = playbackState == Keys.EPISODE_IS_PLAYING
+
+
+//    /* Creates MediaItem for a single episode - used by collection provider */
+//    fun toMediaMetaItem():  MediaBrowserCompat.MediaItem {
+//        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
+//        mediaDescriptionBuilder.setMediaId(mediaId)
+//        mediaDescriptionBuilder.setTitle(title)
+//        mediaDescriptionBuilder.setSubtitle(podcastName)
+//        mediaDescriptionBuilder.setDescription(podcastName)
+//        //mediaDescriptionBuilder.setIconUri(episode.cover.toUri())
+//        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+//    }
 
 }

@@ -22,7 +22,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -38,7 +37,6 @@ import kotlinx.coroutines.launch
 import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.dialogs.YesNoDialog
 import org.y20k.escapepod.helpers.*
-import org.y20k.escapepod.playback.PlayerService
 import org.y20k.escapepod.xml.OpmlHelper
 
 
@@ -333,9 +331,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
         }
         // reset current and up next media id
-        PreferencesHelper.saveCurrentMediaId()
-        PreferencesHelper.saveUpNextMediaId()
-        PreferencesHelper.savePlayerPlaybackState(PlaybackStateCompat.STATE_STOPPED)
+        PreferencesHelper.resetPlayerState(keepUpNextMediaId = false)
         // update summary
         preferenceDeleteAll.summary = "${getString(R.string.pref_delete_all_summary)} ${getAvailableSpace()}"
         Toast.makeText(activity as Context, R.string.toast_message_deleting_downloads, Toast.LENGTH_LONG).show()
