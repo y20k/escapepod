@@ -18,6 +18,7 @@ import android.app.TaskStackBuilder
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -95,7 +96,22 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
         mediaSession = MediaSession.Builder(this, player)
             .setSessionActivity(pendingIntent)
+            .setMediaItemFiller(CustomMediaItemFiller())
             .build()
+    }
+
+
+    /* Custom MediaItemFiller needed to prevent a NullPointerException with MediaItems created in PlayerFragment */ // todo check if this is only occurs in the alpha versions of media3
+    /* Credit: https://stackoverflow.com/a/70103460 */
+    class CustomMediaItemFiller : MediaSession.MediaItemFiller {
+        override fun fillInLocalConfiguration(session: MediaSession, controller: MediaSession.ControllerInfo, mediaItem: MediaItem): MediaItem {
+            // return the media item that it will be played
+            return MediaItem.Builder()
+                // use the metadata values to fill our media item
+                .setUri(mediaItem.mediaMetadata.mediaUri)
+                .setMediaMetadata(mediaItem.mediaMetadata)
+                .build()
+        }
     }
 
 }

@@ -175,7 +175,6 @@ class PlayerFragment: Fragment(),
             val upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
             // setup player and user interface
             withContext(Main) {
-                preparePlayer(currentEpisode, upNextEpisode)
                 setupPlaybackSheet(currentEpisode, upNextEpisode)
                 setupList()
             }
@@ -457,7 +456,7 @@ class PlayerFragment: Fragment(),
     /* Sets up the playback views */
     private fun setupPlaybackSheet(currentEpisode: Episode?, upNextEpisode: Episode?) {
         if (currentEpisode != null) {
-            layout.togglePlayButtons(playerState.isPlaying, controller?.playbackState)
+            layout.togglePlayButtons(playerState.isPlaying)
             layout.updatePlayerViews(activity as Context, currentEpisode)
             layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
             layout.updateUpNextViews(upNextEpisode)
@@ -604,30 +603,23 @@ class PlayerFragment: Fragment(),
 
     /* Starts / pauses playback */
     private fun togglePlayback(startPlayback: Boolean, selectedEpisode: Episode) {
-
         when (startPlayback) {
             // CASE: Start playback was requested
             true -> {
-                if (playerState.currentEpisodeMediaId == selectedEpisode.mediaId) {
-                    controller?.prepare()
-                    controller?.play()
-                } else {
-                    // load new episode if necessary
-                    CoroutineScope(IO).launch {
-                        withContext(Main) {
-                            layout.updatePlayerViews(activity as Context, selectedEpisode) // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
-                            controller?.play(selectedEpisode, playerState.streaming)
-                        }
-                    }
+                // load new episode if necessary
+                if (playerState.currentEpisodeMediaId != selectedEpisode.mediaId) {
+                    layout.updatePlayerViews(activity as Context, selectedEpisode) // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
                 }
+                controller?.play(selectedEpisode, playerState.streaming)
             }
             // CASE: Pause playback was requested
             false -> controller?.pause()
         }
+        // update buttons // todo move in own function
+        layout.playButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
+        layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
         // update player state
         playerState.currentEpisodeMediaId = selectedEpisode.mediaId
-//        playerState.isPlaying = isPlaying // = current state BEFORE desired startPlayback action
-        // todo update player state again in listener AND SAVE player sate
     }
 
 
@@ -838,15 +830,10 @@ class PlayerFragment: Fragment(),
             // super.onIsPlayingChanged(isPlaying)
             // store state of playback
             playerState.isPlaying = isPlaying
-
             // animate state transition of play button(s)
-            if (layout.togglePlayerVisibility(activity as Context, controller?.playbackState)) {
-                // CASE: Player is visible
-                layout.animatePlaybackButtonStateTransition(activity as Context, isPlaying, controller?.playbackState)
-            }
-
+            layout.animatePlaybackButtonStateTransition(activity as Context, isPlaying, controller?.playbackState)
+            // toggle
             togglePeriodicProgressUpdateRequest()
-
 
             if (isPlaying) {
                 // playback is active
@@ -859,21 +846,28 @@ class PlayerFragment: Fragment(),
                 when (controller?.playbackState) {
                     // player is able to immediately play from its current position
                     Player.STATE_READY -> {
-
+                        layout.showBufferingIndicator(buffering = false)
                     }
                     // buffering - data needs to be loaded
                     Player.STATE_BUFFERING -> {
-
+                        layout.showBufferingIndicator(buffering = true)
                     }
                     // player finished playing all media
                     Player.STATE_ENDED -> {
-
+                        layout.hidePlayer(activity as Context)
+                        layout.showBufferingIndicator(buffering = false)
                     }
                     // initial state or player is stopped or playback failed
                     Player.STATE_IDLE -> {
-
+                        layout.hidePlayer(activity as Context)
+                        layout.showBufferingIndicator(buffering = false)
                     }
                 }
+
+                // store current position in Episode
+                val episodeMediaID = controller?.currentMediaId() ?: String()
+                val playbackPosition = controller?.currentPosition ?: 0L
+                CoroutineScope(IO). launch { collectionDatabase.episodeDao().updatePlaybackPosition(episodeMediaID, playbackPosition) }
             }
         }
 

@@ -153,12 +153,13 @@ object CollectionHelper {
 //            .setFolderType(folderType)
 //            .setIsPlayable(isPlayable)
             .setArtworkUri(episode.cover.toUri())
+            .setMediaUri(source.toUri())
             .build()
         // build MediaItem and return it
         return MediaItem.Builder()
             .setMediaId(episode.mediaId)
             .setMediaMetadata(metadata)
-            .setUri(source.toUri())
+//            .setUri(source.toUri())
             .build()
     }
 

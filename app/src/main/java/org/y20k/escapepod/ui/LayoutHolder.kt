@@ -263,8 +263,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Toggles play/pause buttons */
-    fun togglePlayButtons(isPlaying: Boolean, playbackState: Int?) {
-        // toggle play/pause icons
+    fun togglePlayButtons(isPlaying: Boolean) {
         when (isPlaying) {
             true -> {
                 playButtonView.setImageResource(R.drawable.ic_player_pause_symbol_36dp)
@@ -275,17 +274,12 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
                 sheetPlayButtonView.setImageResource(R.drawable.ic_player_play_symbol_54dp)
             }
         }
-        // toggle buffering indicator
-        when (playbackState) {
-            Player.STATE_BUFFERING -> {
-                bufferingIndicator.isVisible = true
-                isBuffering = true
-            }
-            else -> {
-                bufferingIndicator.isVisible = false
-                isBuffering = false
-            }
-        }
+    }
+
+    /* Toggles buffering indicator */
+    fun showBufferingIndicator(buffering: Boolean) {
+        bufferingIndicator.isVisible = buffering
+        isBuffering = buffering
     }
 
 
@@ -319,6 +313,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     }
 
 
+    /* Toggle the onboarding layout */
     fun toggleOnboarding(context: Context, collectionSize: Int): Boolean {
         if (collectionSize == 0) {
             onboardingLayout.isVisible = true
@@ -337,21 +332,21 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
         when (isPlaying) {
             true -> {
                 val rotateClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_clockwise_slow)
-                rotateClockwise.setAnimationListener(createAnimationListener(isPlaying, playbackState))
+                rotateClockwise.setAnimationListener(createAnimationListener(isPlaying))
                 when (bottomSheetBehavior.state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateClockwise)
                     BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateClockwise)
-                    else -> togglePlayButtons(isPlaying, playbackState)
+                    else -> togglePlayButtons(isPlaying)
                 }
             }
 
             false -> {
                 val rotateCounterClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_counterclockwise_fast)
-                rotateCounterClockwise.setAnimationListener(createAnimationListener(isPlaying, playbackState))
+                rotateCounterClockwise.setAnimationListener(createAnimationListener(isPlaying))
                 when (bottomSheetBehavior.state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateCounterClockwise)
                     BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateCounterClockwise)
-                    else -> togglePlayButtons(isPlaying, playbackState)
+                    else -> togglePlayButtons(isPlaying)
                 }
             }
 
@@ -378,12 +373,12 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Creates AnimationListener for play button */
-    private fun createAnimationListener(isPlaying: Boolean, playbackState: Int?): Animation.AnimationListener {
+    private fun createAnimationListener(isPlaying: Boolean): Animation.AnimationListener {
         return object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
                 // set up button symbol and playback indicator afterwards
-                togglePlayButtons(isPlaying, playbackState)
+                togglePlayButtons(isPlaying)
             }
             override fun onAnimationRepeat(animation: Animation) {}
         }
