@@ -14,7 +14,9 @@
 
 package org.y20k.escapepod.extensions
 
+import android.os.Bundle
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionCommand
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.helpers.CollectionHelper
@@ -27,32 +29,24 @@ private val TAG: String = "MediaControllerExt"
 
 /* Starts the sleep timer */
 fun MediaController.startSleepTimer() {
-    // todo implement
+    sendCustomCommand(SessionCommand(Keys.CMD_START_SLEEP_TIMER, Bundle.EMPTY), Bundle.EMPTY)
 }
 
 
 /* Cancels the sleep timer */
 fun MediaController.cancelSleepTimer() {
-    // todo implement
+    sendCustomCommand(SessionCommand(Keys.CMD_CANCEL_SLEEP_TIMER, Bundle.EMPTY), Bundle.EMPTY)
 }
 
 
 /* Starts playback with a new media item */
-fun MediaController.play(episode: Episode?, streaming: Boolean) {
-    if (episode != null) {
-        // start playing right away if episode is already prepared
-        if (episode.mediaId == currentMediaItem?.mediaId) {
-            play()
-        } else {
-            // set media item, prepare and play
-            setMediaItem(CollectionHelper.buildMediaItem(episode, streaming))
-            seekTo(episode.playbackPosition)
-            prepare()
-            play()
-        }
-    } else {
-        LogHelper.e(TAG, "Unable to start playback. Episode is null.")
-    }
+fun MediaController.play(episode: Episode, streaming: Boolean) {
+    // set media item, prepare and play
+    setMediaItem(CollectionHelper.buildMediaItem(episode, streaming))
+    seekTo(episode.playbackPosition)
+    prepare()
+    playWhenReady = true
+    LogHelper.e(TAG, "MediaController.play -> position => ${currentPosition}") // todo remove
 }
 
 
@@ -105,7 +99,11 @@ fun MediaController.resetPlaybackSpeed(): Float {
 
 /* Returns mediaId of currently active media item */
 fun MediaController.currentMediaId(): String {
-    return currentMediaItem?.mediaId ?: String()
+    if (mediaItemCount > 0) {
+        return getMediaItemAt(0).mediaId
+    } else {
+        return String()
+    }
 }
 
 

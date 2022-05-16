@@ -250,13 +250,13 @@ class PlayerFragment: Fragment(),
                 when (selectedEpisodeMediaId) {
                     // CASE: Selected episode is currently in player
                     playerState.currentEpisodeMediaId -> {
-                        // stop playback
-                        togglePlayback(startPlayback = false, selectedEpisode)
+                        // pause playback
+                        controller?.pause()
                     }
                     // CASE: selected episode is already in the up next queue
                     playerState.upNextEpisodeMediaId -> {
                         // start playback of up next
-                        togglePlayback(startPlayback = true, selectedEpisode)
+                        startPlayback(selectedEpisode)
                         // clear up next
                         updateUpNext(String())
                     }
@@ -272,7 +272,7 @@ class PlayerFragment: Fragment(),
             // CASE: Playback is NOT active
             else -> {
                 // start playback
-                togglePlayback(startPlayback = true, selectedEpisode)
+                startPlayback(selectedEpisode)
             }
         }
     }
@@ -576,50 +576,31 @@ class PlayerFragment: Fragment(),
     }
 
 
-    /* Sets up the player with current and up next episodes */
-    private fun preparePlayer(currentEpisode: Episode?, upNextEpisode: Episode?) {
-        // set current episode media item
-        if (currentEpisode != null) {
-            // check if player is prepared with current episode
-            val currentMediaItemId: String = controller?.currentMediaItem?.mediaId ?: String()
-            if (currentMediaItemId != currentEpisode.mediaId) {
-                controller?.setMediaItem(CollectionHelper.buildMediaItem(currentEpisode))
+    /* Start playback */
+    private fun startPlayback(selectedEpisode: Episode) {
+        val selectedEpisodeMediaId: String = selectedEpisode.mediaId
+        when (selectedEpisodeMediaId) {
+            // CASE: Episode is already in player (playback is probably paused)
+            controller?.currentMediaId() -> {
+                controller?.play()
             }
-        }
-
-        // set up next episode media item
-        if (upNextEpisode != null) {
-            // check if player is prepared with up next episode
-            val nextMediaItemId: String = controller?.getMediaItemAt(1)?.mediaId ?: String()
-            if (nextMediaItemId != upNextEpisode.mediaId) {
-                controller?.addMediaItem(CollectionHelper.buildMediaItem(upNextEpisode))
-            }
-        }
-
-        // prepare player
-        controller?.prepare()
-    }
-
-
-    /* Starts / pauses playback */
-    private fun togglePlayback(startPlayback: Boolean, selectedEpisode: Episode) {
-        when (startPlayback) {
-            // CASE: Start playback was requested
-            true -> {
-                // load new episode if necessary
-                if (playerState.currentEpisodeMediaId != selectedEpisode.mediaId) {
-                    layout.updatePlayerViews(activity as Context, selectedEpisode) // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+            // CASE: New episode was selected
+            else -> {
+                // save state
+                playerState.currentEpisodeMediaId = selectedEpisode.mediaId
+                // update user interface
+                layout.updatePlayerViews(activity as Context, selectedEpisode)
+                // update buttons // todo move in own function
+                layout.playButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
+                layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
+                // get playback position and start playback
+                CoroutineScope(IO).launch {
+                    val position: Long = collectionDatabase.episodeDao().getPlaybackPosition(selectedEpisodeMediaId)
+                    LogHelper.e(TAG, "PlayerFragment.startPlayback() -> position =>  $position") // todo remove
+                    withContext(Main) { controller?.play(Episode(selectedEpisode, playbackPosition = position), playerState.streaming) }
                 }
-                controller?.play(selectedEpisode, playerState.streaming)
             }
-            // CASE: Pause playback was requested
-            false -> controller?.pause()
         }
-        // update buttons // todo move in own function
-        layout.playButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
-        layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
-        // update player state
-        playerState.currentEpisodeMediaId = selectedEpisode.mediaId
     }
 
 
@@ -825,18 +806,19 @@ class PlayerFragment: Fragment(),
      */
     private var playerListener: Player.Listener = object : Player.Listener {
 
-
         override fun onIsPlayingChanged(isPlaying: Boolean) {
-            // super.onIsPlayingChanged(isPlaying)
+            super.onIsPlayingChanged(isPlaying)
             // store state of playback
             playerState.isPlaying = isPlaying
             // animate state transition of play button(s)
             layout.animatePlaybackButtonStateTransition(activity as Context, isPlaying, controller?.playbackState)
-            // toggle
+            // toggle periodic playback position updates
             togglePeriodicProgressUpdateRequest()
 
             if (isPlaying) {
                 // playback is active
+                layout.showPlayer(activity as Context)
+                layout.showBufferingIndicator(buffering = false)
             } else {
                 // playback is not active
                 // Not playing because playback is paused, ended, suppressed, or the player
@@ -863,11 +845,6 @@ class PlayerFragment: Fragment(),
                         layout.showBufferingIndicator(buffering = false)
                     }
                 }
-
-                // store current position in Episode
-                val episodeMediaID = controller?.currentMediaId() ?: String()
-                val playbackPosition = controller?.currentPosition ?: 0L
-                CoroutineScope(IO). launch { collectionDatabase.episodeDao().updatePlaybackPosition(episodeMediaID, playbackPosition) }
             }
         }
 
@@ -894,6 +871,9 @@ class PlayerFragment: Fragment(),
             }
 
         }
+
+
+
     }
     /*
      * End of declaration

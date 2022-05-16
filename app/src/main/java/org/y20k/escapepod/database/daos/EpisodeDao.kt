@@ -44,6 +44,10 @@ interface EpisodeDao {
     fun getTitle(mediaId: String): String?
 
 
+    @Query("SELECT playback_position FROM episodes WHERE media_id IS :mediaId LIMIT 1")
+    fun getPlaybackPosition(mediaId: String): Long
+
+
     @Query("SELECT * FROM episodes WHERE media_id IS :mediaId LIMIT 1")
     fun findByMediaId(mediaId: String): Episode?
 
