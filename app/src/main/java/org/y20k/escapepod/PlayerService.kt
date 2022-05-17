@@ -19,19 +19,27 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.*
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.database.CollectionDatabase
+import org.y20k.escapepod.database.objects.Episode
+import org.y20k.escapepod.helpers.CollectionHelper
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
+import org.y20k.escapepod.ui.PlayerState
 
 
 /*
@@ -48,17 +56,21 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
     private lateinit var mediaSession: MediaSession
     private lateinit var collectionDatabase: CollectionDatabase
     private lateinit var sleepTimer: CountDownTimer
+    private var playerState: PlayerState = PlayerState()
+    private val handler: Handler = Handler(Looper.getMainLooper())
     var sleepTimerTimeRemaining: Long = 0L
 
 
     /* Overrides onCreate from Service */
     override fun onCreate() {
         super.onCreate()
+        // load player state
+        playerState = PreferencesHelper.loadPlayerState()
+        // get instance of database
+        collectionDatabase = CollectionDatabase.getInstance(application)
         // initialize player and session
         initializePlayer()
         initializeSession()
-        // get instance of database
-        collectionDatabase = CollectionDatabase.getInstance(application)
     }
 
 
@@ -116,6 +128,46 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             .setSessionCallback(CustomSessionCallback())
             .setMediaItemFiller(CustomMediaItemFiller())
             .build()
+    }
+
+
+    /* adds episodes to player */
+    private fun addEpisodesToPlayer() {
+        CoroutineScope(IO).launch {
+            val currentEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(playerState.currentEpisodeMediaId)
+            withContext(Main) {
+                setCurrentEpisode(currentEpisode, playerState)
+            }
+            val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
+            withContext(Main) {
+                setUpNextEpisode(upNextEpisode)
+            }
+        }
+    }
+
+
+    /* Puts current episode into playlist */
+    private fun setCurrentEpisode(episode: Episode?, playerState: PlayerState) {
+        if (episode != null) {
+            player.setMediaItem(CollectionHelper.buildMediaItem(episode, playerState.streaming), episode.playbackPosition)
+            player.prepare()
+        }
+    }
+
+
+    /* Puts next episode into playlist */
+    private fun setUpNextEpisode(episode: Episode?) {
+        removeUpNextEpisode()
+        if (episode != null) {
+            player.addMediaItem(CollectionHelper.buildMediaItem(episode, streaming = false))
+            player.prepare()
+        }
+    }
+
+
+    /* Removes all media items except for the first */
+    private fun removeUpNextEpisode() {
+        if (player.mediaItemCount > 1) player.removeMediaItems(/* fromIndex= */ 1, /* toIndex= */ player.mediaItemCount -1 )
     }
 
 
@@ -178,7 +230,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
     private inner class CustomSessionCallback: MediaSession.SessionCallback {
 
         override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-            // add custom commands
+            // add available custom commands to session
             val connectionResult: MediaSession.ConnectionResult  = super.onConnect(session, controller)
             val builder: SessionCommands.Builder = connectionResult.availableSessionCommands.buildUpon()
             builder.add(SessionCommand(Keys.CMD_START_SLEEP_TIMER, Bundle.EMPTY))
@@ -221,28 +273,41 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
      * End of inner class
      */
 
+
     /*
- * Player.Listener: Called when one or more player states changed.
- */
+     * Player.Listener: Called when one or more player states changed.
+     */
     private var playerListener: Player.Listener = object : Player.Listener {
+        override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+            super.onTimelineChanged(timeline, reason)
+        }
+
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            super.onMediaItemTransition(mediaItem, reason)
+            // todo handle transition to up next - remove prev mediaitem !!
+        }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
+            // store state of playback
+            val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
+            playerState.currentEpisodeMediaId = currentMediaId
+            playerState.isPlaying = isPlaying
+            PreferencesHelper.savePlayerState(playerState)
 
             if (isPlaying) {
-                // playback is active
+                // playback is active - periodically update playback position in database
+                handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
+                handler.postDelayed(periodicPlaybackPositionUpdateRunnable, 0)
             } else {
+                // playback is not active - stop periodically updating database
+                handler.removeCallbacks(periodicPlaybackPositionUpdateRunnable)
                 // save playback position
-                val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
                 val currentPosition: Long = player.currentPosition
                 CoroutineScope(IO).launch {
                     collectionDatabase.episodeDao().updatePlaybackPosition(currentMediaId, currentPosition)
                 }
-                PreferencesHelper.saveCurrentMediaId(currentMediaId)
 
-
-
-                // playback is not active
                 // Not playing because playback is paused, ended, suppressed, or the player
                 // is buffering, stopped or failed. Check player.getPlayWhenReady,
                 // player.getPlaybackState, player.getPlaybackSuppressionReason and
@@ -292,4 +357,25 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
         }
     }
+
+    /*
+     * Runnable: Periodically requests playback position (and sleep timer if running)
+     */
+    private val periodicPlaybackPositionUpdateRunnable: Runnable = object : Runnable {
+        override fun run() {
+            if (player.mediaItemCount > 0) {
+                val playbackPosition: Long = player.currentPosition
+                val mediaId: String = player.getMediaItemAt(0).mediaId
+                CoroutineScope(IO).launch {
+                    collectionDatabase.episodeDao().updatePlaybackPosition(mediaId = mediaId, playbackPosition = playbackPosition)
+                }
+            }
+            // use the handler to start runnable again after specified delay (every 20 seconds)
+            handler.postDelayed(this, 20000)
+        }
+    }
+    /*
+     * End of declaration
+     */
+
 }

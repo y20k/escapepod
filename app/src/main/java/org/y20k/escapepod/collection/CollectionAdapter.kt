@@ -317,8 +317,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
                     withContext(Main) {
                         // listener that lets player fragment start streaming playback
                         val podcastAllEpisodesAdapterListener: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener = object: PodcastAllEpisodesAdapter.PodcastAllEpisodesAdapterListener {
-                            override fun onPlayButtonTapped(episode: Episode, streaming: Boolean) {
-                                collectionAdapterListener.onPlayButtonTapped(episode, streaming)
+                            override fun onPlayButtonTapped(selectedEpisode: Episode, streaming: Boolean) {
+                                collectionAdapterListener.onPlayButtonTapped(selectedEpisode, streaming)
                             }
                         }
                         // display Show All Episodes dialog

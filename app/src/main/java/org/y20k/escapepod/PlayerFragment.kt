@@ -35,7 +35,10 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Player.TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED
+import androidx.media3.common.Timeline
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -214,26 +217,26 @@ class PlayerFragment: Fragment(),
             Keys.PREF_ACTIVE_DOWNLOADS -> {
                 layout.toggleDownloadProgressIndicator()
             }
-            Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID -> {
-                val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
-                if (playerState.currentEpisodeMediaId != mediaId) {
-                    CoroutineScope(IO).launch {
-                        playerState.currentEpisodeMediaId = mediaId
-                        // todo prepare player and update ui with new episode
-//                        currentEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-//                        withContext(Main) { layout.updatePlayerViews(activity as Context, currentEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
-                    }
-                }
-            }
-            Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
-                CoroutineScope(IO).launch {
-                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
-                    playerState.upNextEpisodeMediaId = mediaId
-                    // todo prepare player and update ui with next episode
-//                    upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-//                    withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
-                }
-            }
+//            Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID -> {
+//                val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
+//                if (playerState.currentEpisodeMediaId != mediaId) {
+//                    CoroutineScope(IO).launch {
+//                        playerState.currentEpisodeMediaId = mediaId
+//                        // todo prepare player and update ui with new episode
+////                        currentEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
+////                        withContext(Main) { layout.updatePlayerViews(activity as Context, currentEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+//                    }
+//                }
+//            }
+//            Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
+//                CoroutineScope(IO).launch {
+//                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
+//                    playerState.upNextEpisodeMediaId = mediaId
+//                    // todo prepare player and update ui with next episode
+////                    upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
+////                    withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
+//                }
+//            }
         }
     }
 
@@ -388,7 +391,7 @@ class PlayerFragment: Fragment(),
     /* Initializes the MediaController - handles connection to PlayerService under the hood */
     private fun initializeController() {
         controllerFuture = MediaController.Builder(activity as Context, SessionToken(activity as Context, ComponentName(activity as Context, PlayerService::class.java))).buildAsync()
-        controllerFuture.addListener({ setController() }, MoreExecutors.directExecutor())
+        controllerFuture.addListener({ setUpController() }, MoreExecutors.directExecutor())
     }
 
 
@@ -399,9 +402,23 @@ class PlayerFragment: Fragment(),
 
 
     /* Sets up the MediaController */
-    private fun setController() {
+    private fun setUpController() {
         val controller = this.controller ?: return
+        // add listener
         controller.addListener(playerListener)
+        // add episodes to player - if player is not yet prepared
+        if (controller.mediaItemCount == 0) {
+            CoroutineScope(IO).launch {
+                val currentEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(playerState.currentEpisodeMediaId)
+                withContext(Main) {
+                    controller.setCurrentEpisode(currentEpisode, playerState)
+                }
+                val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
+                withContext(Main) {
+                    controller.setUpNextEpisode(upNextEpisode)
+                }
+            }
+        }
     }
 
 
@@ -481,7 +498,7 @@ class PlayerFragment: Fragment(),
         // bottom sheet start button for Up Next queue
         if (upNextEpisode != null) {
             layout.sheetUpNextName.setOnClickListener {
-                onPlayButtonTapped(upNextEpisode, playerState.streaming) // todo implement as skip to next
+                controller?.startUpNextEpisode()
                 Toast.makeText(activity as Context, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
             }
         }
@@ -528,7 +545,7 @@ class PlayerFragment: Fragment(),
                 MotionEvent.ACTION_DOWN -> {
                     // show time remaining while touching the time played view
                     layout.displayTimeRemaining = true
-                    updateProgressBar()
+                    layout.updateProgressbar(activity as Context, position = controller?.currentPosition ?: 0L, controller?.contentDuration ?: 0L)
                 }
                 MotionEvent.ACTION_UP -> {
                     // show episode duration when not touching the time played view anymore
@@ -580,43 +597,55 @@ class PlayerFragment: Fragment(),
     private fun startPlayback(selectedEpisode: Episode) {
         val selectedEpisodeMediaId: String = selectedEpisode.mediaId
         when (selectedEpisodeMediaId) {
+
             // CASE: Episode is already in player (playback is probably paused)
-            controller?.currentMediaId() -> {
-                controller?.play()
-            }
+            controller?.currentMediaId() -> controller?.play()
+
             // CASE: New episode was selected
             else -> {
                 // save state
                 playerState.currentEpisodeMediaId = selectedEpisode.mediaId
                 // update user interface
-                layout.updatePlayerViews(activity as Context, selectedEpisode)
-                // update buttons // todo move in own function
-                layout.playButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
-                layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
-                // get playback position and start playback
-                CoroutineScope(IO).launch {
-                    val position: Long = collectionDatabase.episodeDao().getPlaybackPosition(selectedEpisodeMediaId)
-                    LogHelper.e(TAG, "PlayerFragment.startPlayback() -> position =>  $position") // todo remove
-                    withContext(Main) { controller?.play(Episode(selectedEpisode, playbackPosition = position), playerState.streaming) }
-                }
+                updatePlayerViews(selectedEpisode)
+                // start playback
+                controller?.play(selectedEpisode, playerState.streaming)
+//                CoroutineScope(IO).launch {
+//                    // get playback position and start playback
+//                    val position: Long = collectionDatabase.episodeDao().getPlaybackPosition(selectedEpisodeMediaId)
+//                    withContext(Main) { controller?.play(Episode(selectedEpisode, playbackPosition = position), playerState.streaming) }
+//                    // get duration if unknown
+//                    if (selectedEpisode.duration == 0L) {
+//                        val duration: Long = AudioHelper.getDuration(selectedEpisode.remoteAudioFileLocation)
+//                        collectionDatabase.episodeDao().update(Episode(selectedEpisode, duration = duration))
+//                    }
+//                }
             }
+        }
+    }
+
+
+    /* Updates user interface */
+    private fun updatePlayerViews(episode: Episode?) {
+        if (episode != null) {
+            layout.updatePlayerViews(activity as Context, episode)
+            layout.playButtonView.setOnClickListener { onPlayButtonTapped(episode, playerState.streaming) }
+            layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(episode, playerState.streaming) }
         }
     }
 
 
     /* Updates the Up Next queue */
     private fun updateUpNext(upNextEpisodeMediaId: String) {
+        playerState.upNextEpisodeMediaId = upNextEpisodeMediaId
         PreferencesHelper.saveUpNextMediaId(upNextEpisodeMediaId)
-        if (upNextEpisodeMediaId.isNotEmpty()) {
-            Toast.makeText(activity as Context, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
+        CoroutineScope(IO).launch {
+            val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(upNextEpisodeMediaId)
+            withContext(Main) {
+                controller?.setUpNextEpisode(upNextEpisode)
+                layout.updateUpNextViews(upNextEpisode)
+                Toast.makeText(activity as Context, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
+            }
         }
-    }
-
-
-    /* Updates the progress bar */
-    private fun updateProgressBar() {
-        // update progress bar
-        layout.updateProgressbar(activity as Context, controller?.currentPosition ?: 0L)
     }
 
 
@@ -789,7 +818,7 @@ class PlayerFragment: Fragment(),
     private val periodicProgressUpdateRequestRunnable: Runnable = object : Runnable {
         override fun run() {
             // update progress bar
-            updateProgressBar()
+            layout.updateProgressbar(activity as Context, position = controller?.currentPosition ?: 0L, duration = controller?.contentDuration ?: 0L)
             // update sleep timer view
             // todo implement
             // use the handler to start runnable again after specified delay
@@ -869,10 +898,27 @@ class PlayerFragment: Fragment(),
                     }
                 }
             }
-
         }
 
+        override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+            super.onTimelineChanged(timeline, reason)
+            if (reason == TIMELINE_CHANGE_REASON_PLAYLIST_CHANGED) {
+                // update UI according to the modified playlist
+                // todo updateUiForPlaylist(timeline)
+            }
+        }
 
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            super.onMediaItemTransition(mediaItem, reason)
+            CoroutineScope(IO).launch {
+                val currentEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaItem?.mediaId ?: String())
+                playerState.currentEpisodeMediaId = currentEpisode?.mediaId ?: String()
+                withContext(Main) {
+                    updatePlayerViews(currentEpisode)
+                    updateUpNext(String())
+                }
+            }
+        }
 
     }
     /*

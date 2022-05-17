@@ -20,8 +20,8 @@ import androidx.media3.session.SessionCommand
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.helpers.CollectionHelper
-import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
+import org.y20k.escapepod.ui.PlayerState
 
 
 private val TAG: String = "MediaControllerExt"
@@ -46,7 +46,6 @@ fun MediaController.play(episode: Episode, streaming: Boolean) {
     seekTo(episode.playbackPosition)
     prepare()
     playWhenReady = true
-    LogHelper.e(TAG, "MediaController.play -> position => ${currentPosition}") // todo remove
 }
 
 
@@ -63,6 +62,37 @@ fun MediaController.skipForward() {
     var position: Long = currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
     if (position > duration && duration != 0L) position = duration
     seekTo(position)
+}
+
+
+/* Puts current episode into playlist */
+fun MediaController.setCurrentEpisode(episode: Episode?, playerState: PlayerState) {
+    if (episode != null) {
+        setMediaItem(CollectionHelper.buildMediaItem(episode, playerState.streaming), episode.playbackPosition)
+        prepare()
+    }
+}
+
+
+/* Puts next episode into playlist */
+fun MediaController.setUpNextEpisode(episode: Episode?) {
+    removeUpNextEpisode()
+    if (episode != null) {
+        addMediaItem(CollectionHelper.buildMediaItem(episode, streaming = false))
+        prepare()
+    }
+}
+
+
+/* Starts playback for next episode */
+fun MediaController.startUpNextEpisode() {
+    seekToNextMediaItem()
+}
+
+
+/* Removes all media items except for the first */
+fun MediaController.removeUpNextEpisode() {
+    if (mediaItemCount > 1) removeMediaItems(/* fromIndex= */ 1, /* toIndex= */ mediaItemCount -1 )
 }
 
 
