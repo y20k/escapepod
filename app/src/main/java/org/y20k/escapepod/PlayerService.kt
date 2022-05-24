@@ -20,10 +20,12 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.media3.common.AudioAttributes
+import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.*
+import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -44,7 +46,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
 
     /* Main class variables */
-    private lateinit var player: ExoPlayer
+    private lateinit var player: Player
     private lateinit var mediaSession: MediaSession
     private lateinit var collectionDatabase: CollectionDatabase
     private lateinit var sleepTimer: CountDownTimer
@@ -105,11 +107,10 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
     /* Initializes the MediaSession */
     private fun initializeSession() {
         val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent =
-            TaskStackBuilder.create(this).run {
+        val pendingIntent = TaskStackBuilder.create(this).run {
                 addNextIntent(intent)
                 getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-            }
+        }
 
         mediaSession = MediaSession.Builder(this, player)
             .setSessionActivity(pendingIntent)
@@ -145,9 +146,45 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
     /* Cancels sleep timer */
     private fun cancelSleepTimer() {
-        if (this::sleepTimer.isInitialized) {
+        if (this::sleepTimer.isInitialized && sleepTimerTimeRemaining > 0L) {
             sleepTimerTimeRemaining = 0L
             sleepTimer.cancel()
+        }
+    }
+
+
+    /* Creates a ForwardingPlayer that overrides default exoplayer behavior */
+    private fun createForwardingPlayer(exoPlayer: ExoPlayer) : ForwardingPlayer {
+        return object : ForwardingPlayer(exoPlayer) {
+            // emulate headphone buttons
+            // start/pause: adb shell input keyevent 85
+            // next: adb shell input keyevent 87
+            // prev: adb shell input keyevent 88
+//            override fun stop(reset: Boolean) {
+//                stop()
+//            }
+//            override fun stop() {
+//                player.pause()
+//                notificationHelper.hideNotification()
+//            }
+//            override fun seekForward() {
+//                val episodeDuration: Long = episode.duration
+//                var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
+//                if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
+//                player.seekTo(position)
+//            }
+//            override fun seekBack() {
+//                var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
+//                if (position < 0L) position = 0L
+//                player.seekTo(position)
+//            }
+//            override fun seekToNext() {
+//                /* Note: seekToNext() is only called from MediaController if Player.hasNextMediaItem() ist true */
+//                seekForward()
+//            }
+//            override fun seekToPrevious() {
+//                seekBack()
+//            }
         }
     }
 
@@ -183,18 +220,23 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             val builder: SessionCommands.Builder = connectionResult.availableSessionCommands.buildUpon()
             builder.add(SessionCommand(Keys.CMD_START_SLEEP_TIMER, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_CANCEL_SLEEP_TIMER, Bundle.EMPTY))
+            builder.add(SessionCommand(Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING, Bundle.EMPTY))
             return MediaSession.ConnectionResult.accept(builder.build(), connectionResult.availablePlayerCommands);
         }
 
         override fun onCustomCommand(session: MediaSession, controller: MediaSession.ControllerInfo, customCommand: SessionCommand, args: Bundle): ListenableFuture<SessionResult> {
             when (customCommand.customAction) {
                 Keys.CMD_START_SLEEP_TIMER -> {
-                    LogHelper.e(TAG, "CMD START SLEEP TIMER") // todo remove
                     startSleepTimer()
                 }
                 Keys.CMD_CANCEL_SLEEP_TIMER -> {
-                    LogHelper.e(TAG, "CMD START CANCEL TIMER") // todo remove
                     cancelSleepTimer()
+                }
+                Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING -> {
+                    val resultBundle = Bundle()
+                    resultBundle.putLong(Keys.EXTRA_SLEEP_TIMER_REMAINING, sleepTimerTimeRemaining)
+                    LogHelper.e(TAG, "CMD_REQUEST_SLEEP_TIMER_REMAINING => $sleepTimerTimeRemaining") // todo remove
+                    return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS, resultBundle))
                 }
             }
             return super.onCustomCommand(session, controller, customCommand, args)
@@ -222,25 +264,28 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
      */
 
     /*
- * Player.Listener: Called when one or more player states changed.
- */
+     * Player.Listener: Called when one or more player states changed.
+     */
     private var playerListener: Player.Listener = object : Player.Listener {
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
+            // store state of playback
+            val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
+            PreferencesHelper.saveIsPlaying(isPlaying)
+            PreferencesHelper.saveCurrentMediaId(currentMediaId)
 
             if (isPlaying) {
                 // playback is active
             } else {
                 // save playback position
-                val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
                 val currentPosition: Long = player.currentPosition
                 CoroutineScope(IO).launch {
                     collectionDatabase.episodeDao().updatePlaybackPosition(currentMediaId, currentPosition)
                 }
-                PreferencesHelper.saveCurrentMediaId(currentMediaId)
 
-
+                // cancel sleep timer
+                cancelSleepTimer()
 
                 // playback is not active
                 // Not playing because playback is paused, ended, suppressed, or the player

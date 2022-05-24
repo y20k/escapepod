@@ -104,7 +104,7 @@ object PreferencesHelper {
 
 
     /* Saves state of playback for player to shared preferences */
-    fun savePlayerPlaybackState(isPlaying: Boolean) {
+    fun saveIsPlaying(isPlaying: Boolean) {
         sharedPreferences.edit {
             putBoolean(Keys.PREF_PLAYER_STATE_IS_PLAYING, isPlaying)
         }

@@ -37,9 +37,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
+import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.common.util.concurrent.FutureCallback
+import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.*
@@ -179,6 +182,8 @@ class PlayerFragment: Fragment(),
                 setupList()
             }
         }
+        // begin looking for changes in collection
+        observeCollectionViewModel()
         // handle navigation arguments
         handleNavigationArguments()
         // handle start intent - if started via tap on rss link
@@ -388,7 +393,7 @@ class PlayerFragment: Fragment(),
     /* Initializes the MediaController - handles connection to PlayerService under the hood */
     private fun initializeController() {
         controllerFuture = MediaController.Builder(activity as Context, SessionToken(activity as Context, ComponentName(activity as Context, PlayerService::class.java))).buildAsync()
-        controllerFuture.addListener({ setController() }, MoreExecutors.directExecutor())
+        controllerFuture.addListener({ setupController() }, MoreExecutors.directExecutor())
     }
 
 
@@ -398,9 +403,13 @@ class PlayerFragment: Fragment(),
     }
 
 
-    /* Sets up the MediaController */
-    private fun setController() {
-        val controller = this.controller ?: return
+    /* Sets up the MediaController  */
+    private fun setupController() {
+        val controller: MediaController = this.controller ?: return
+
+        // update playback progress state
+        togglePeriodicProgressUpdateRequest()
+
         controller.addListener(playerListener)
     }
 
@@ -444,6 +453,7 @@ class PlayerFragment: Fragment(),
         // set up sleep timer cancel button
         layout.sheetSleepTimerCancelButtonView.setOnClickListener {
             controller?.cancelSleepTimer()
+            layout.updateSleepTimer(activity as Context, 0L)
         }
 
         // set up the debug log toggle switch
@@ -596,7 +606,6 @@ class PlayerFragment: Fragment(),
                 // get playback position and start playback
                 CoroutineScope(IO).launch {
                     val position: Long = collectionDatabase.episodeDao().getPlaybackPosition(selectedEpisodeMediaId)
-                    LogHelper.e(TAG, "PlayerFragment.startPlayback() -> position =>  $position") // todo remove
                     withContext(Main) { controller?.play(Episode(selectedEpisode, playbackPosition = position), playerState.streaming) }
                 }
             }
@@ -754,8 +763,6 @@ class PlayerFragment: Fragment(),
             }
             else -> {
                 handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
-                // request current playback position and sleep timer state once
-//                MediaControllerCompat.getMediaController(activity as Activity).sendCommand(Keys.CMD_REQUEST_PROGRESS_UPDATE, null, resultReceiver) // TODO
             }
         }
     }
@@ -781,8 +788,6 @@ class PlayerFragment: Fragment(),
         }
     }
 
-
-
     /*
      * Runnable: Periodically requests playback position (and sleep timer if running)
      */
@@ -791,7 +796,22 @@ class PlayerFragment: Fragment(),
             // update progress bar
             updateProgressBar()
             // update sleep timer view
-            // todo implement
+            // todo: only if sleep timer is running
+            // todo: save sleep timer running boolean in player state 
+            val resultFuture: ListenableFuture<SessionResult>? = controller?.requestSleepTimerRemaining()
+            if (resultFuture != null) {
+                Futures.addCallback(
+                    resultFuture,
+                    object : FutureCallback<SessionResult?> {
+                        override fun onSuccess(sessionResult: SessionResult?) {
+                            val timeRemaining: Long = sessionResult?.extras?.getLong(Keys.EXTRA_SLEEP_TIMER_REMAINING) ?: 0L
+                            layout.updateSleepTimer(activity as Context, timeRemaining)
+                        }
+                        override fun onFailure(t: Throwable) {
+                            TODO("Not yet implemented")
+                        }
+                    } , MoreExecutors.directExecutor())
+            }
             // use the handler to start runnable again after specified delay
             handler.postDelayed(this, 500)
         }
@@ -812,7 +832,7 @@ class PlayerFragment: Fragment(),
             playerState.isPlaying = isPlaying
             // animate state transition of play button(s)
             layout.animatePlaybackButtonStateTransition(activity as Context, isPlaying, controller?.playbackState)
-            // toggle periodic playback position updates
+            // turn on/off periodic playback position updates
             togglePeriodicProgressUpdateRequest()
 
             if (isPlaying) {
@@ -821,6 +841,7 @@ class PlayerFragment: Fragment(),
                 layout.showBufferingIndicator(buffering = false)
             } else {
                 // playback is not active
+                layout.updateSleepTimer(activity as Context)
                 // Not playing because playback is paused, ended, suppressed, or the player
                 // is buffering, stopped or failed. Check player.getPlayWhenReady,
                 // player.getPlaybackState, player.getPlaybackSuppressionReason and
@@ -847,7 +868,6 @@ class PlayerFragment: Fragment(),
                 }
             }
         }
-
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
             super.onPlayWhenReadyChanged(playWhenReady, reason)
             if (!playWhenReady) {
