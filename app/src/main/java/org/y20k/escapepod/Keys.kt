@@ -51,11 +51,14 @@ object Keys {
     // intent actions
     const val ACTION_SHOW_PLAYER: String = "org.y20k.escapepod.action.SHOW_PLAYER"
     const val ACTION_COLLECTION_CHANGED: String = "org.y20k.escapepod.action.COLLECTION_CHANGED"
+    const val ACTION_PROGRESS_UPDATE: String = "org.y20k.escapepod.action.PROGRESS_UPDATE"
     const val ACTION_STOP: String = "org.y20k.escapepod.action.STOP"
     const val ACTION_DISMISS: String = "org.y20k.escapepod.action.DISMISS"
 
     // intent extras
     const val EXTRA_COLLECTION_MODIFICATION_DATE: String = "COLLECTION_MODIFICATION_DATE"
+    const val EXTRA_PLAYBACK_POSITION: String = "PLAYBACK_POSITION"
+    const val EXTRA_SLEEP_TIMER_REMAINING: String = "SLEEP_TIMER_REMAINING"
 
     // keys
     const val KEY_DOWNLOAD_WORK_REQUEST: String = "DOWNLOAD_WORK_REQUEST"
@@ -65,7 +68,7 @@ object Keys {
     const val CMD_RELOAD_PLAYER_STATE: String = "RELOAD_PLAYER_STATE"
     const val CMD_REQUEST_PROGRESS_UPDATE: String = "REQUEST_PROGRESS_UPDATE"
     const val CMD_REQUEST_EPISODE_DURATION: String = "REQUEST_EPISODE_DURATION"
-    const val CMD_START_SLEEP_TIMER1: Int = 100
+    const val CMD_REQUEST_SLEEP_TIMER_REMAINING: String = "REQUEST_SLEEP_TIMER_REMAINING"
     const val CMD_START_SLEEP_TIMER: String = "START_SLEEP_TIMER"
     const val CMD_CANCEL_SLEEP_TIMER: String = "CANCEL_SLEEP_TIMER"
     const val CMD_CHANGE_PLAYBACK_SPEED: String = "CHANGE_PLAYBACK_SPEED"

@@ -17,6 +17,8 @@ package org.y20k.escapepod.extensions
 import android.os.Bundle
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
+import androidx.media3.session.SessionResult
+import com.google.common.util.concurrent.ListenableFuture
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.database.objects.Episode
 import org.y20k.escapepod.helpers.CollectionHelper
@@ -38,12 +40,16 @@ fun MediaController.cancelSleepTimer() {
     sendCustomCommand(SessionCommand(Keys.CMD_CANCEL_SLEEP_TIMER, Bundle.EMPTY), Bundle.EMPTY)
 }
 
+/* Request sleep timer remaining */
+fun MediaController.requestSleepTimerRemaining(): ListenableFuture<SessionResult> {
+    return sendCustomCommand(SessionCommand(Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING, Bundle.EMPTY), Bundle.EMPTY)
+}
+
 
 /* Starts playback with a new media item */
 fun MediaController.play(episode: Episode, streaming: Boolean) {
     // set media item, prepare and play
-    setMediaItem(CollectionHelper.buildMediaItem(episode, streaming))
-    seekTo(episode.playbackPosition)
+    setMediaItem(CollectionHelper.buildMediaItem(episode, streaming), episode.playbackPosition)
     prepare()
     playWhenReady = true
 }
