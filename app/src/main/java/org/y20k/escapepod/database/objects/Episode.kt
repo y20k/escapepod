@@ -17,7 +17,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.y20k.escapepod.Keys
 import org.y20k.escapepod.helpers.FileHelper
 import org.y20k.escapepod.xml.RssHelper
 import java.util.*
@@ -31,23 +30,24 @@ data class Episode (
 
         // unique media id - currently just the remoteAudioFileLocation
         @PrimaryKey
-        @ColumnInfo (name = "media_id") val mediaId: String,
+        @ColumnInfo (name = "media_id") val mediaId: String,                                        /* database version 1 | app version 31 => added   */
 
-        @ColumnInfo (name = "guid") val guid: String,
-        @ColumnInfo (name = "title") val title: String,
-        @ColumnInfo (name = "audio") val audio: String,
-        @ColumnInfo (name = "cover") val cover: String,
-        @ColumnInfo (name = "small_cover") val smallCover: String,
-        @ColumnInfo (name = "publication_date") val publicationDate: Date,
-        @ColumnInfo (name = "playback_state") val playbackState: Int,
-        @ColumnInfo (name = "playback_position") val playbackPosition: Long,
-        @ColumnInfo (name = "duration") val duration: Long,
-        @ColumnInfo (name = "manually_deleted") val manuallyDeleted: Boolean,
-        @ColumnInfo (name = "manually_downloaded") val manuallyDownloaded: Boolean,
-        @ColumnInfo (name = "podcast_name") val podcastName: String,
-        @ColumnInfo (name = "remote_audio_file_location") val remoteAudioFileLocation: String,
-        @ColumnInfo (name = "remote_audio_file_name") val remoteAudioFileName: String,
-        @ColumnInfo (name = "remote_cover_file_location") val remoteCoverFileLocation: String,
+        @ColumnInfo (name = "guid") val guid: String,                                               /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "title") val title: String,                                             /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "audio") val audio: String,                                             /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "cover") val cover: String,                                             /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "small_cover") val smallCover: String,                                  /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "publication_date") val publicationDate: Date,                          /* database version 1 | app version 31 => added   */
+        /* @ColumnInfo (name = "playback_state") val playbackState: Int, */                         /* database version 2 | app version 40 => removed */
+        @ColumnInfo (name = "is_playing") val isPlaying: Boolean,                                   /* database version 2 | app version 40 => added   */
+        @ColumnInfo (name = "playback_position") val playbackPosition: Long,                        /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "duration") val duration: Long,                                         /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "manually_deleted") val manuallyDeleted: Boolean,                       /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "manually_downloaded") val manuallyDownloaded: Boolean,                 /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "podcast_name") val podcastName: String,                                /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "remote_audio_file_location") val remoteAudioFileLocation: String,      /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "remote_audio_file_name") val remoteAudioFileName: String,              /* database version 1 | app version 31 => added   */
+        @ColumnInfo (name = "remote_cover_file_location") val remoteCoverFileLocation: String,      /* database version 1 | app version 31 => added   */
 
         // defines the relation between episode and podcast
         @ColumnInfo (name = "episode_remote_podcast_feed_location") val episodeRemotePodcastFeedLocation: String
@@ -64,7 +64,7 @@ data class Episode (
                 cover: String  = episode.cover,
                 smallCover: String  = episode.smallCover,
                 publicationDate: Date = episode.publicationDate,
-                playbackState: Int = episode.playbackState,
+                isPlaying: Boolean = episode.isPlaying,
                 playbackPosition: Long = episode.playbackPosition,
                 duration: Long = episode.duration,
                 manuallyDeleted: Boolean = episode.manuallyDeleted,
@@ -81,7 +81,7 @@ data class Episode (
             cover = cover,
             smallCover = smallCover,
             publicationDate = publicationDate,
-            playbackState = playbackState,
+            isPlaying = isPlaying,
             playbackPosition = playbackPosition,
             duration = duration,
             manuallyDeleted = manuallyDeleted,
@@ -106,7 +106,7 @@ data class Episode (
             cover = rssEpisode.cover,
             smallCover = rssEpisode.smallCover,
             publicationDate = rssEpisode.publicationDate,
-            playbackState = rssEpisode.playbackState,
+            isPlaying = rssEpisode.isPlaying,
             playbackPosition = rssEpisode.playbackPosition,
             duration = rssEpisode.duration,
             manuallyDownloaded = rssEpisode.manuallyDownloaded,
@@ -125,10 +125,6 @@ data class Episode (
 
     /* Return if an episode has been started listening to */
     fun hasBeenStarted(): Boolean = playbackPosition > 0L
-
-
-    /* Return if an episode is currently playing */
-    fun isPlaying(): Boolean = playbackState == Keys.EPISODE_IS_PLAYING
 
 
 //    /* Creates MediaItem for a single episode - used by collection provider */

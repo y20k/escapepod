@@ -33,6 +33,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import org.y20k.escapepod.database.CollectionDatabase
 import org.y20k.escapepod.helpers.LogHelper
+import org.y20k.escapepod.helpers.NotificationHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
 
 
@@ -59,6 +60,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         // initialize player and session
         initializePlayer()
         initializeSession()
+        setMediaNotificationProvider(CustomNotificationProvider())
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
     }
@@ -70,6 +72,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         mediaSession.release()
         super.onDestroy()
     }
+
 
     /* Overrides onGetSession from MediaSessionService */
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
@@ -130,9 +133,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         sleepTimer = object: CountDownTimer(Keys.SLEEP_TIMER_DURATION + sleepTimerTimeRemaining, Keys.SLEEP_TIMER_INTERVAL) {
             override fun onFinish() {
                 LogHelper.v(TAG, "Sleep timer finished. Sweet dreams.")
-                // reset time remaining
                 sleepTimerTimeRemaining = 0L
-                // pause playback
                 player.pause()
             }
             override fun onTick(millisUntilFinished: Long) {
@@ -263,6 +264,24 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
      * End of inner class
      */
 
+
+    /*
+     * Custom NotificationProvider that sets tailored Notification
+     */
+    private inner class CustomNotificationProvider: MediaNotification.Provider {
+
+        override fun createNotification(mediaController: MediaController, actionFactory: MediaNotification.ActionFactory, onNotificationChangedCallback: MediaNotification.Provider.Callback): MediaNotification {
+            return MediaNotification(Keys.NOW_PLAYING_NOTIFICATION_ID, NotificationHelper(this@PlayerService).getNotification(mediaSession, mediaController, actionFactory))
+        }
+
+        override fun handleCustomAction(mediaController: MediaController,  action: String,  extras: Bundle) {
+            TODO("Not yet implemented")
+        }
+    }
+    /*
+     * End of inner class
+     */
+
     /*
      * Player.Listener: Called when one or more player states changed.
      */
@@ -274,16 +293,15 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
             PreferencesHelper.saveIsPlaying(isPlaying)
             PreferencesHelper.saveCurrentMediaId(currentMediaId)
+            // save playback position
+            val currentPosition: Long = player.currentPosition
+            CoroutineScope(IO).launch {
+                collectionDatabase.episodeDao().updatePlaybackPosition(currentMediaId, currentPosition, isPlaying)
+            }
 
             if (isPlaying) {
                 // playback is active
             } else {
-                // save playback position
-                val currentPosition: Long = player.currentPosition
-                CoroutineScope(IO).launch {
-                    collectionDatabase.episodeDao().updatePlaybackPosition(currentMediaId, currentPosition)
-                }
-
                 // cancel sleep timer
                 cancelSleepTimer()
 

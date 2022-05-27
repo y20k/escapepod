@@ -218,7 +218,8 @@ class CollectionAdapter(private val context: Context, private val collectionData
 
     /* Sets up an episode's play, download and delete button views */
     private fun setEpisodeButtons(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        val episodeIsPlaying: Boolean = episode.isPlaying()
+        val episodeIsPlaying: Boolean = episode.isPlaying
+        LogHelper.e(TAG, "setEpisodeButtons => ${episode.isPlaying }${episode.title}")
         when (episodeIsPlaying) {
             true -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
             false -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
@@ -430,6 +431,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
             collection = newCollection
             notifyDataSetChanged()
         } else {
+            LogHelper.e(TAG, "updateRecyclerView") // todo remove
             // store old collection temporarily
             val oldCollection: List<PodcastWithRecentEpisodesWrapper> = collection.map { it.copy() }
             // set new collection
@@ -538,7 +540,7 @@ class CollectionAdapter(private val context: Context, private val collectionData
             oldPodcast.episodes.forEachIndexed { index, oldEpisode ->
                 val newEpisode: EpisodeMostRecentView = newPodcast.episodes[index]
                 // check most likely changes fist
-                if (oldEpisode.data.playbackState != newEpisode.data.playbackState) return false
+                if (oldEpisode.data.isPlaying != newEpisode.data.isPlaying) return false
                 if (oldEpisode.data.playbackPosition != newEpisode.data.playbackPosition) return false
                 if (oldEpisode.data.manuallyDownloaded != newEpisode.data.manuallyDownloaded) return false
                 if (oldEpisode.data.audio != newEpisode.data.audio) return false

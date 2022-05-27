@@ -33,7 +33,7 @@ data class LegacyEpisode (@Expose var guid: String = String(),
                           @Expose var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
                           @Expose var chapters: MutableList<Pair<Long, String>> = mutableListOf<Pair<Long, String>>(),
                           @Expose var publicationDate: Date = Keys.DEFAULT_DATE,
-                          @Expose var playbackState: Int = Keys.EPISODE_IS_STOPPED,
+                          @Expose var isPlaying: Boolean = false,
                           @Expose var playbackPosition: Long = 0L,
                           @Expose var duration: Long = 0L,
                           @Expose var manuallyDownloaded: Boolean = false,
@@ -52,7 +52,7 @@ data class LegacyEpisode (@Expose var guid: String = String(),
         val episodeShortDescriptionLength: Int = if (description.length <= descriptionMaxLength) description.length -1 else descriptionMaxLength
 //        val episodeShortDescription: String = description.trim().substring(0, episodeShortDescriptionLength)
         val episodeShortDescription: String = description
-        stringBuilder.append("\nGUID: $guid (playback = $playbackState)\n")
+        stringBuilder.append("\nGUID: $guid (isPlaying = $isPlaying)\n")
         stringBuilder.append("Title: $title\n")
         //stringBuilder.append("$episodeShortDescription ...\n")
         stringBuilder.append("$publicationDate\n")
@@ -94,7 +94,7 @@ data class LegacyEpisode (@Expose var guid: String = String(),
                                       smallCover = smallCover,
                                       chapters = chapters,
                                       publicationDate = publicationDate,
-                                      playbackState = playbackState,
+                                      isPlaying = isPlaying,
                                       playbackPosition = playbackPosition,
                                       duration = duration,
                                       manuallyDownloaded = manuallyDownloaded,

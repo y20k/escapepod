@@ -369,7 +369,7 @@ class RssHelper {
             var cover: String = Keys.LOCATION_DEFAULT_COVER,
             var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
             var publicationDate: Date = Keys.DEFAULT_DATE,
-            var playbackState: Int = Keys.EPISODE_IS_STOPPED,
+            var isPlaying: Boolean = false,
             var playbackPosition: Long = 0L,
             var duration: Long = 0L,
             var manuallyDownloaded: Boolean = false,

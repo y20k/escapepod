@@ -82,7 +82,7 @@ object CollectionHelper {
                             audio = oldEpisode.audio,
                             cover = podcast.cover,
                             smallCover = podcast.smallCover,
-                            playbackState = oldEpisode.playbackState,
+                            isPlaying = oldEpisode.isPlaying,
                             playbackPosition = oldEpisode.playbackPosition,
                             duration = oldEpisode.duration,
                             manuallyDeleted = oldEpisode.manuallyDeleted,
@@ -216,7 +216,7 @@ object CollectionHelper {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }
                     // remove audio reference
-                    val updatedEpisode: Episode = Episode(episode, audio = String(), playbackState = Keys.EPISODE_IS_STOPPED, playbackPosition = 0L, duration = 0L)
+                    val updatedEpisode: Episode = Episode(episode, audio = String(), isPlaying = false, playbackPosition = 0L, duration = 0L)
                     // add to updated list
                     updatedEpisodes.add(updatedEpisode)
                 }
@@ -283,7 +283,7 @@ object CollectionHelper {
         } else if (episode.hasBeenStarted() && !episode.isFinished()) {
             // episode has been started but not finished
             return false
-        } else if (episode.playbackState != Keys.EPISODE_IS_STOPPED && !episode.isFinished()) { // todo test where playbackState is set top stopped!!!!!!!!
+        } else if (episode.isPlaying && !episode.isFinished()) { // todo test where playbackState is set top stopped
             // episode is paused or playing
             return false
         } else if (episode.manuallyDownloaded) {

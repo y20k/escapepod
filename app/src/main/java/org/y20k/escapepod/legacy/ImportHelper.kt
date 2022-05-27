@@ -74,7 +74,7 @@ object ImportHelper {
                         cover = legacyEpisode.cover,
                         smallCover = legacyEpisode.smallCover,
                         publicationDate = legacyEpisode.publicationDate,
-                        playbackState = legacyEpisode.playbackState,
+                        isPlaying = legacyEpisode.isPlaying,
                         playbackPosition = legacyEpisode.playbackPosition,
                         duration = legacyEpisode.duration,
                         manuallyDeleted = legacyEpisode.manuallyDeleted,

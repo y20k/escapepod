@@ -78,7 +78,7 @@ class PodcastAllEpisodesAdapter (private val context: Context, private  val epis
 
     /* Sets up an episode's play button view */
     private fun setEpisodeButtons (episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        when (episode.isPlaying()) {
+        when (episode.isPlaying) {
             true -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_pause_36dp)
             false -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_play_36dp)
         }
