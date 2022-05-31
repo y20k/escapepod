@@ -30,8 +30,12 @@ import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.y20k.escapepod.database.CollectionDatabase
+import org.y20k.escapepod.database.objects.Episode
+import org.y20k.escapepod.helpers.CollectionHelper
 import org.y20k.escapepod.helpers.LogHelper
 import org.y20k.escapepod.helpers.NotificationHelper
 import org.y20k.escapepod.helpers.PreferencesHelper
@@ -52,6 +56,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
     private lateinit var collectionDatabase: CollectionDatabase
     private lateinit var sleepTimer: CountDownTimer
     var sleepTimerTimeRemaining: Long = 0L
+    var upNextEpisodeMediaId: String = String()
 
 
     /* Overrides onCreate from Service */
@@ -63,6 +68,8 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         setMediaNotificationProvider(CustomNotificationProvider())
         // get instance of database
         collectionDatabase = CollectionDatabase.getInstance(application)
+        // get media id of the episode in Up Next queue
+        upNextEpisodeMediaId = PreferencesHelper.loadUpNextMediaId()
     }
 
 
@@ -85,7 +92,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         when (key) {
             Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
                 CoroutineScope(Dispatchers.IO).launch {
-                    // update up next episode
+                    // update Up Next episode
                     val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
                     // upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId) // todo
                 }
@@ -96,13 +103,15 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
     /* Initializes the ExoPlayer */
     private fun initializePlayer() {
-        player = ExoPlayer.Builder(this)
-            .setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
-            .setHandleAudioBecomingNoisy(true)
-            .setSeekBackIncrementMs(Keys.SKIP_BACK_TIME_SPAN)
-            .setSeekForwardIncrementMs(Keys.SKIP_FORWARD_TIME_SPAN)
-            .build()
+        player = ExoPlayer.Builder(this).apply {
+            setAudioAttributes(AudioAttributes.DEFAULT, /* handleAudioFocus= */ true)
+            setHandleAudioBecomingNoisy(true)
+            setSeekBackIncrementMs(Keys.SKIP_BACK_TIME_SPAN)
+            setSeekForwardIncrementMs(Keys.SKIP_FORWARD_TIME_SPAN)
+            setPauseAtEndOfMediaItems(true) /* prevents the auto-repeat that is set below */
+        }.build()
         player.addListener(playerListener)
+        player.repeatMode = Player.REPEAT_MODE_ALL /* enables the "skip to next" command for a single item playlist */
 //        player.addAnalyticsListener(analyticsListener)
     }
 
@@ -115,11 +124,11 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
                 getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        mediaSession = MediaSession.Builder(this, player)
-            .setSessionActivity(pendingIntent)
-            .setSessionCallback(CustomSessionCallback())
-            .setMediaItemFiller(CustomMediaItemFiller())
-            .build()
+        mediaSession = MediaSession.Builder(this, player).apply {
+            setSessionActivity(pendingIntent)
+            setSessionCallback(CustomSessionCallback())
+            setMediaItemFiller(CustomMediaItemFiller())
+        }.build()
     }
 
 
@@ -142,6 +151,8 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         }
         // start timer
         sleepTimer.start()
+        // store timer state
+        PreferencesHelper.saveSleepTimerRunning(isRunning = true)
     }
 
 
@@ -151,16 +162,41 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             sleepTimerTimeRemaining = 0L
             sleepTimer.cancel()
         }
+        // store timer state
+        PreferencesHelper.saveSleepTimerRunning(isRunning = false)
+    }
+
+
+    /* Try to start episode from Up Next queue */
+    private fun tryToStartUpNextEpisode() {
+        LogHelper.e(TAG, "tryToStartUpNextEpisode => $upNextEpisodeMediaId") // todo remove
+        if (upNextEpisodeMediaId.isNotEmpty()) {
+            CoroutineScope(IO).launch {
+                // get Up Next episode
+                val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(upNextEpisodeMediaId)
+                if (upNextEpisode != null) {
+                    // start playback
+                    withContext(Main) {
+                        val position: Long = if (upNextEpisode.isFinished()) 0L else upNextEpisode.playbackPosition
+                        player.pause()
+                        player.setMediaItem(CollectionHelper.buildMediaItem(upNextEpisode, streaming = false), position)
+                        player.prepare()
+                        player.play()
+                    }
+                }
+                // clear Up Next queue
+//                upNextEpisodeMediaId = String()
+//                PreferencesHelper.saveUpNextMediaId()
+            }
+        } else {
+            // todo stop playback & hide notification
+        }
     }
 
 
     /* Creates a ForwardingPlayer that overrides default exoplayer behavior */
     private fun createForwardingPlayer(exoPlayer: ExoPlayer) : ForwardingPlayer {
         return object : ForwardingPlayer(exoPlayer) {
-            // emulate headphone buttons
-            // start/pause: adb shell input keyevent 85
-            // next: adb shell input keyevent 87
-            // prev: adb shell input keyevent 88
 //            override fun stop(reset: Boolean) {
 //                stop()
 //            }
@@ -197,12 +233,12 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
     private inner class CustomMediaItemFiller: MediaSession.MediaItemFiller {
         override fun fillInLocalConfiguration(session: MediaSession, controller: MediaSession.ControllerInfo, mediaItem: MediaItem): MediaItem {
             // return the media item that it will be played
-            return MediaItem.Builder()
+            return MediaItem.Builder().apply {
                 // use the metadata values to fill our media item
-                .setMediaId(mediaItem.mediaId)
-                .setUri(mediaItem.mediaMetadata.mediaUri)
-                .setMediaMetadata(mediaItem.mediaMetadata)
-                .build()
+                setMediaId(mediaItem.mediaId)
+                setUri(mediaItem.mediaMetadata.mediaUri)
+                setMediaMetadata(mediaItem.mediaMetadata)
+            }.build()
         }
     }
     /*
@@ -222,6 +258,8 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             builder.add(SessionCommand(Keys.CMD_START_SLEEP_TIMER, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_CANCEL_SLEEP_TIMER, Bundle.EMPTY))
             builder.add(SessionCommand(Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING, Bundle.EMPTY))
+            builder.add(SessionCommand(Keys.CMD_UPDATE_UP_NEXT_EPISODE, Bundle.EMPTY))
+            builder.add(SessionCommand(Keys.CMD_START_UP_NEXT_EPISODE, Bundle.EMPTY))
             return MediaSession.ConnectionResult.accept(builder.build(), connectionResult.availablePlayerCommands);
         }
 
@@ -236,8 +274,14 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
                 Keys.CMD_REQUEST_SLEEP_TIMER_REMAINING -> {
                     val resultBundle = Bundle()
                     resultBundle.putLong(Keys.EXTRA_SLEEP_TIMER_REMAINING, sleepTimerTimeRemaining)
-                    LogHelper.e(TAG, "CMD_REQUEST_SLEEP_TIMER_REMAINING => $sleepTimerTimeRemaining") // todo remove
                     return Futures.immediateFuture(SessionResult(SessionResult.RESULT_SUCCESS, resultBundle))
+                }
+                Keys.CMD_START_UP_NEXT_EPISODE -> {
+                    tryToStartUpNextEpisode()
+                }
+                Keys.CMD_UPDATE_UP_NEXT_EPISODE -> {
+                    upNextEpisodeMediaId = args.getString(Keys.EXTRA_UP_NEXT_EPISODE_MEDIA_ID) ?: String()
+                    PreferencesHelper.saveUpNextMediaId(upNextEpisodeMediaId)
                 }
             }
             return super.onCustomCommand(session, controller, customCommand, args)
@@ -245,14 +289,20 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
         override fun onPlayerCommandRequest(session: MediaSession, controller: MediaSession.ControllerInfo, playerCommand: Int): Int {
             // playerCommand = one of COMMAND_PLAY_PAUSE, COMMAND_PREPARE, COMMAND_STOP, COMMAND_SEEK_TO_DEFAULT_POSITION, COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM, COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM, COMMAND_SEEK_TO_PREVIOUS, COMMAND_SEEK_TO_NEXT_MEDIA_ITEM, COMMAND_SEEK_TO_NEXT, COMMAND_SEEK_TO_MEDIA_ITEM, COMMAND_SEEK_BACK, COMMAND_SEEK_FORWARD, COMMAND_SET_SPEED_AND_PITCH, COMMAND_SET_SHUFFLE_MODE, COMMAND_SET_REPEAT_MODE, COMMAND_GET_CURRENT_MEDIA_ITEM, COMMAND_GET_TIMELINE, COMMAND_GET_MEDIA_ITEMS_METADATA, COMMAND_SET_MEDIA_ITEMS_METADATA, COMMAND_CHANGE_MEDIA_ITEMS, COMMAND_GET_AUDIO_ATTRIBUTES, COMMAND_GET_VOLUME, COMMAND_GET_DEVICE_VOLUME, COMMAND_SET_VOLUME, COMMAND_SET_DEVICE_VOLUME, COMMAND_ADJUST_DEVICE_VOLUME, COMMAND_SET_VIDEO_SURFACE, COMMAND_GET_TEXT, COMMAND_SET_TRACK_SELECTION_PARAMETERS or COMMAND_GET_TRACK_INFOS. */
+            // emulate headphone buttons
+            // start/pause: adb shell input keyevent 85
+            // next: adb shell input keyevent 87
+            // prev: adb shell input keyevent 88
             when (playerCommand) {
-                Player.COMMAND_SEEK_FORWARD -> {
-                    // todo implement
-                    return SessionResult.RESULT_SUCCESS
+                Player.COMMAND_SEEK_TO_NEXT ->  {
+                    // override "skip to next" command - just skip forward instead
+                    player.seekForward()
+                    return SessionResult.RESULT_INFO_SKIPPED
                 }
-                Player.COMMAND_SEEK_BACK ->  {
-                    // todo implement
-                    return SessionResult.RESULT_SUCCESS
+                Player.COMMAND_SEEK_TO_PREVIOUS ->  {
+                    // override "skip to previous" command - just skip back instead
+                    player.seekBack()
+                    return SessionResult.RESULT_INFO_SKIPPED
                 }
                 else -> {
                     return super.onPlayerCommandRequest(session, controller, playerCommand)
@@ -293,6 +343,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
             PreferencesHelper.saveIsPlaying(isPlaying)
             PreferencesHelper.saveCurrentMediaId(currentMediaId)
+            if (currentMediaId == upNextEpisodeMediaId) PreferencesHelper.saveUpNextMediaId(String())
             // save playback position
             val currentPosition: Long = player.currentPosition
             CoroutineScope(IO).launch {
@@ -340,7 +391,8 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
-                        // tryToStartUpNextEpisode()
+                        LogHelper.e(TAG, "Ding: playback reached end.") // todo remove
+                        tryToStartUpNextEpisode()
                     }
                     else -> {
                         // playback has been paused by user or OS: update media session and save state
@@ -355,4 +407,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
         }
     }
+    /*
+     * End of declaration
+     */
 }

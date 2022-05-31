@@ -35,14 +35,13 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionResult
 import androidx.media3.session.SessionToken
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.common.util.concurrent.FutureCallback
-import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.*
@@ -172,16 +171,10 @@ class PlayerFragment: Fragment(),
         // load player state
         playerState = PreferencesHelper.loadPlayerState()
         // recreate player ui
-        CoroutineScope(IO).launch {
-            // get current and up-next episode
-            val currentEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.currentEpisodeMediaId)
-            val upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
-            // setup player and user interface
-            withContext(Main) {
-                setupPlaybackSheet(currentEpisode, upNextEpisode)
-                setupList()
-            }
-        }
+        layout.togglePlayButtons(playerState.isPlaying)
+        setupPlaybackControls()
+        updatePlayerViews()
+        updatePodcastListState()
         // begin looking for changes in collection
         observeCollectionViewModel()
         // handle navigation arguments
@@ -193,11 +186,12 @@ class PlayerFragment: Fragment(),
     }
 
 
+
     /* Overrides onPause from Fragment */
     override fun onPause() {
         super.onPause()
         // save player state
-        PreferencesHelper.savePlayerState(playerState)
+//        PreferencesHelper.savePlayerState(playerState)
         // stop receiving playback progress updates
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
         // stop watching for changes in shared preferences
@@ -219,26 +213,6 @@ class PlayerFragment: Fragment(),
             Keys.PREF_ACTIVE_DOWNLOADS -> {
                 layout.toggleDownloadProgressIndicator()
             }
-            Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID -> {
-                val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
-                if (playerState.currentEpisodeMediaId != mediaId) {
-                    CoroutineScope(IO).launch {
-                        playerState.currentEpisodeMediaId = mediaId
-                        // todo prepare player and update ui with new episode
-//                        currentEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-//                        withContext(Main) { layout.updatePlayerViews(activity as Context, currentEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
-                    }
-                }
-            }
-            Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
-                CoroutineScope(IO).launch {
-                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
-                    playerState.upNextEpisodeMediaId = mediaId
-                    // todo prepare player and update ui with next episode
-//                    upNextEpisode = collectionDatabase.episodeDao().findByMediaId(mediaId)
-//                    withContext(Main) { layout.updateUpNextViews(upNextEpisode) } // todo check if onSharedPreferenceChanged can be triggered before layout has been initialized
-                }
-            }
         }
     }
 
@@ -258,14 +232,12 @@ class PlayerFragment: Fragment(),
                         // pause playback
                         controller?.pause()
                     }
-                    // CASE: selected episode is already in the up next queue
+                    // CASE: selected episode is already in the Up Next queue
                     playerState.upNextEpisodeMediaId -> {
-                        // start playback of up next
+                        // start playback of Up Next
                         startPlayback(selectedEpisode)
-                        // clear up next
-                        updateUpNext(String())
                     }
-                    // CASE: tapped on episode that is not the current one and not the up next one
+                    // CASE: tapped on episode that is not the current one and not the Up Next one
                     else -> {
                         // ask user: playback or add to Up Next
                         val dialogMessage: String = "${getString(R.string.dialog_yes_no_message_add_up_next)}\n\n- ${selectedEpisode.title}"
@@ -373,8 +345,15 @@ class PlayerFragment: Fragment(),
             Keys.DIALOG_ADD_UP_NEXT -> {
                 when (dialogResult) {
                     // user tapped: start playback
-                    // true -> togglePlayback(true, payloadString) // todo implement
-                    // user tapped: add to up next (only if dialog has not been cancelled)
+                    true -> {
+                        CoroutineScope(IO).launch {
+                            val episode: Episode? = collectionDatabase.episodeDao().findByMediaId(payloadString)
+                            if (episode != null) {
+                                withContext(Main) { controller?.play(episode, streaming = false)}
+                            }
+                        }
+                    }
+                    // user tapped: add to Up Next queue (only if dialog has not been cancelled)
                     false -> if (!dialogCancelled) updateUpNext(payloadString)
                 }
             }
@@ -445,7 +424,10 @@ class PlayerFragment: Fragment(),
         // set up sleep timer start button
         layout.sheetSleepTimerStartButtonView.setOnClickListener {
             when (controller?.isPlaying) {
-                true -> controller?.startSleepTimer()
+                true -> {
+                    controller?.startSleepTimer()
+                    playerState.sleepTimerRunning = true
+                }
                 else -> Toast.makeText(activity as Context, R.string.toast_message_sleep_timer_unable_to_start, Toast.LENGTH_LONG).show()
             }
         }
@@ -454,6 +436,7 @@ class PlayerFragment: Fragment(),
         layout.sheetSleepTimerCancelButtonView.setOnClickListener {
             controller?.cancelSleepTimer()
             layout.updateSleepTimer(activity as Context, 0L)
+            playerState.sleepTimerRunning = false
         }
 
         // set up the debug log toggle switch
@@ -463,42 +446,19 @@ class PlayerFragment: Fragment(),
     }
 
 
-    /* Sets up the playback views */
-    private fun setupPlaybackSheet(currentEpisode: Episode?, upNextEpisode: Episode?) {
-        if (currentEpisode != null) {
-            layout.togglePlayButtons(playerState.isPlaying)
-            layout.updatePlayerViews(activity as Context, currentEpisode)
-            layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
-            layout.updateUpNextViews(upNextEpisode)
-            setupPlaybackControls(currentEpisode, upNextEpisode)
-            layout.showPlayer(activity as Context)
-        } else {
-            layout.hidePlayer(activity as Context)
-        }
-    }
-
-
-    /* Builds playback controls */
+    /* Sets up the general playback controls - Note: episode specific controls and views are updated in updatePlayerViews() */
     @SuppressLint("ClickableViewAccessibility") // it is probably okay to suppress this warning - the OnTouchListener on the time played view does only toggle the time duration / remaining display
-    private fun setupPlaybackControls(currentEpisode: Episode?, upNextEpisode: Episode?) {
-
-        // main play/pause button and bottom sheet play/pause button
-        if (currentEpisode != null) {
-            layout.playButtonView.setOnClickListener { onPlayButtonTapped(currentEpisode, playerState.streaming) }
-            layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(currentEpisode, playerState.streaming) }
-        }
+    private fun setupPlaybackControls() {
 
         // bottom sheet start button for Up Next queue
-        if (upNextEpisode != null) {
-            layout.sheetUpNextName.setOnClickListener {
-                onPlayButtonTapped(upNextEpisode, playerState.streaming) // todo implement as skip to next
+        layout.sheetUpNextName.setOnClickListener {
+                controller?.startUpNextEpisode()
                 Toast.makeText(activity as Context, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
-            }
         }
 
         // bottom sheet clear button for Up Next queue
         layout.sheetUpNextClearButton.setOnClickListener {
-            // clear up next
+            // clear Up Next
             updateUpNext(String())
             Toast.makeText(activity as Context, R.string.toast_message_up_next_removed_episode, Toast.LENGTH_LONG).show()
         }
@@ -506,7 +466,7 @@ class PlayerFragment: Fragment(),
         // bottom sheet skip back button
         layout.sheetSkipBackButtonView.setOnClickListener {
             when (playerState.isPlaying) {
-                true -> controller?.skipBack()
+                true -> controller?.seekBack() /* seeks back in the current MediaItem by getSeekBackIncrement() milliseconds. */
                 false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
             }
         }
@@ -514,7 +474,7 @@ class PlayerFragment: Fragment(),
         // bottom sheet skip forward button
         layout.sheetSkipForwardButtonView.setOnClickListener {
             when (playerState.isPlaying) {
-                true -> controller?.skipForward()
+                true -> controller?.seekForward() /* seeks forward in the current MediaItem by getSeekForwardIncrement() milliseconds. */
                 false -> Toast.makeText(activity as Context, R.string.toast_message_skipping_disabled, Toast.LENGTH_LONG).show()
             }
         }
@@ -543,7 +503,7 @@ class PlayerFragment: Fragment(),
                 MotionEvent.ACTION_UP -> {
                     // show episode duration when not touching the time played view anymore
                     layout.displayTimeRemaining = false
-                    val duration = DateTimeHelper.convertToMinutesAndSeconds(currentEpisode?.duration ?: 0L)
+                    val duration = DateTimeHelper.convertToMinutesAndSeconds(controller?.duration ?: 0L)
                     layout.sheetDurationView.text = duration
                     layout.sheetDurationView.contentDescription = "${getString(R.string.descr_expanded_episode_length)}: $duration"
                 }
@@ -577,8 +537,34 @@ class PlayerFragment: Fragment(),
     }
 
 
+    /* Updates episode specific controls and views. Note: general playback controls are set up in setupPlaybackControls() */
+    private fun updatePlayerViews() {
+        CoroutineScope(IO).launch {
+            // get current and Up Next episode
+            val currentEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.currentEpisodeMediaId)
+            //val upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId) // todo remove?
+            LogHelper.e(TAG, "updatePlayerViews => ${currentEpisode?.title}") // todo remove
+            // setup player and
+            withContext(Main) {
+                // update player views
+                if (currentEpisode != null) {
+                    layout.showPlayer(activity as Context)
+                    // update episode title, cover, etc.
+                    layout.updatePlayerViews(activity as Context, currentEpisode)
+                    layout.updatePlaybackSpeedView(activity as Context, playerState.playbackSpeed)
+                    // main play/pause button and bottom sheet play/pause button
+                    layout.playButtonView.setOnClickListener { onPlayButtonTapped(currentEpisode, playerState.streaming) }
+                    layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(currentEpisode, playerState.streaming) }
+                } else {
+                    layout.hidePlayer(activity as Context)
+                }
+            }
+        }
+    }
+
+
     /* Sets up state of list podcast list */
-    private fun setupList() {
+    private fun updatePodcastListState() {
         layout.toggleDownloadProgressIndicator()
         if (listLayoutState != null) {
             layout.layoutManager.onRestoreInstanceState(listLayoutState)
@@ -591,21 +577,17 @@ class PlayerFragment: Fragment(),
         val selectedEpisodeMediaId: String = selectedEpisode.mediaId
         when (selectedEpisodeMediaId) {
             // CASE: Episode is already in player (playback is probably paused)
-            controller?.currentMediaId() -> {
-                controller?.play()
+            controller?.getCurrentMediaId() -> {
+                controller?.continuePlayback()
             }
             // CASE: New episode was selected
             else -> {
                 // save state
                 playerState.currentEpisodeMediaId = selectedEpisode.mediaId
-                // update user interface
-                layout.updatePlayerViews(activity as Context, selectedEpisode)
-                // update buttons // todo move in own function
-                layout.playButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
-                layout.sheetPlayButtonView.setOnClickListener { onPlayButtonTapped(selectedEpisode, playerState.streaming) }
-                // get playback position and start playback
+                // start playback
                 CoroutineScope(IO).launch {
-                    val position: Long = collectionDatabase.episodeDao().getPlaybackPosition(selectedEpisodeMediaId)
+                    var position: Long = collectionDatabase.episodeDao().getPlaybackPosition(selectedEpisodeMediaId)
+                    if (position >= selectedEpisode.duration) position = 0L // reset position, if episode is finished
                     withContext(Main) { controller?.play(Episode(selectedEpisode, playbackPosition = position), playerState.streaming) }
                 }
             }
@@ -615,17 +597,36 @@ class PlayerFragment: Fragment(),
 
     /* Updates the Up Next queue */
     private fun updateUpNext(upNextEpisodeMediaId: String) {
-        PreferencesHelper.saveUpNextMediaId(upNextEpisodeMediaId)
+        controller?.updateUpNextEpisode(upNextEpisodeMediaId)
+        playerState.upNextEpisodeMediaId = upNextEpisodeMediaId
+        CoroutineScope(IO).launch {
+            val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(upNextEpisodeMediaId)
+            withContext(Main) {
+                layout.updateUpNextViews(upNextEpisode)
+            }
+        }
         if (upNextEpisodeMediaId.isNotEmpty()) {
             Toast.makeText(activity as Context, R.string.toast_message_up_next_added_episode, Toast.LENGTH_LONG).show()
         }
     }
 
 
-    /* Updates the progress bar */
+    /* Updates the progress bar */ // todo tap on time remaining does not work yet
     private fun updateProgressBar() {
         // update progress bar
         layout.updateProgressbar(activity as Context, controller?.currentPosition ?: 0L)
+    }
+
+
+    /* Requests an update of the sleep timer from the player service */
+    private fun updateSleepTimer() {
+        if (playerState.sleepTimerRunning) {
+            val resultFuture: ListenableFuture<SessionResult>? = controller?.requestSleepTimerRemaining()
+            resultFuture?.addListener(Runnable {
+                val timeRemaining: Long = resultFuture.get().extras.getLong(Keys.EXTRA_SLEEP_TIMER_REMAINING)
+                layout.updateSleepTimer(activity as Context, timeRemaining)
+            } , MoreExecutors.directExecutor())
+        }
     }
 
 
@@ -788,6 +789,7 @@ class PlayerFragment: Fragment(),
         }
     }
 
+
     /*
      * Runnable: Periodically requests playback position (and sleep timer if running)
      */
@@ -796,22 +798,7 @@ class PlayerFragment: Fragment(),
             // update progress bar
             updateProgressBar()
             // update sleep timer view
-            // todo: only if sleep timer is running
-            // todo: save sleep timer running boolean in player state 
-            val resultFuture: ListenableFuture<SessionResult>? = controller?.requestSleepTimerRemaining()
-            if (resultFuture != null) {
-                Futures.addCallback(
-                    resultFuture,
-                    object : FutureCallback<SessionResult?> {
-                        override fun onSuccess(sessionResult: SessionResult?) {
-                            val timeRemaining: Long = sessionResult?.extras?.getLong(Keys.EXTRA_SLEEP_TIMER_REMAINING) ?: 0L
-                            layout.updateSleepTimer(activity as Context, timeRemaining)
-                        }
-                        override fun onFailure(t: Throwable) {
-                            TODO("Not yet implemented")
-                        }
-                    } , MoreExecutors.directExecutor())
-            }
+            updateSleepTimer()
             // use the handler to start runnable again after specified delay
             handler.postDelayed(this, 500)
         }
@@ -826,22 +813,34 @@ class PlayerFragment: Fragment(),
      */
     private var playerListener: Player.Listener = object : Player.Listener {
 
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            super.onMediaItemTransition(mediaItem, reason)
+            // store new episode
+            playerState.currentEpisodeMediaId = mediaItem?.mediaId ?: String()
+            // update episode specific views
+            updatePlayerViews()
+            // clear up next, if necessary
+            if (playerState.upNextEpisodeMediaId == mediaItem?.mediaId) {
+                updateUpNext(String())
+            }
+        }
+
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             super.onIsPlayingChanged(isPlaying)
             // store state of playback
             playerState.isPlaying = isPlaying
             // animate state transition of play button(s)
-            layout.animatePlaybackButtonStateTransition(activity as Context, isPlaying, controller?.playbackState)
+            layout.animatePlaybackButtonStateTransition(activity as Context, isPlaying)
             // turn on/off periodic playback position updates
             togglePeriodicProgressUpdateRequest()
 
             if (isPlaying) {
                 // playback is active
-                layout.showPlayer(activity as Context)
                 layout.showBufferingIndicator(buffering = false)
             } else {
                 // playback is not active
                 layout.updateSleepTimer(activity as Context)
+                playerState.sleepTimerRunning = false
                 // Not playing because playback is paused, ended, suppressed, or the player
                 // is buffering, stopped or failed. Check player.getPlayWhenReady,
                 // player.getPlaybackState, player.getPlaybackSuppressionReason and
@@ -877,7 +876,6 @@ class PlayerFragment: Fragment(),
                 when (reason) {
                     Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
                         // playback reached end: stop / end playback
-                        // tryToStartUpNextEpisode()
                     }
                     else -> {
                         // playback has been paused by user or OS: update media session and save state

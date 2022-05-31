@@ -224,15 +224,15 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     fun updateUpNextViews(upNextEpisode: Episode?) {
         when (upNextEpisode != null) {
             true -> {
-                // show the up next queue if queue is not empty
+                // show the Up Next queue if queue is not empty
                 upNextViews.isGone = true // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
                 upNextViews.isVisible = true
-                // update up next view
+                // update Up Next view
                 val upNextName = "${upNextEpisode.podcastName} - ${upNextEpisode.title}"
                 sheetUpNextName.text = upNextName
             }
             false -> {
-                // hide the up next queue if queue is empty
+                // hide the Up Next queue if queue is empty
                 upNextViews.isGone = true // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
                 upNextViews.isVisible = false
 
@@ -326,9 +326,8 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     }
 
 
-
     /* Initiates the rotation animation of the play button  */
-    fun animatePlaybackButtonStateTransition(context: Context, isPlaying: Boolean, playbackState: Int?) {
+    fun animatePlaybackButtonStateTransition(context: Context, isPlaying: Boolean) {
         when (isPlaying) {
             true -> {
                 val rotateClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_clockwise_slow)

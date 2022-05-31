@@ -219,7 +219,6 @@ class CollectionAdapter(private val context: Context, private val collectionData
     /* Sets up an episode's play, download and delete button views */
     private fun setEpisodeButtons(episodeViewHolder: EpisodeViewHolder, episode: Episode) {
         val episodeIsPlaying: Boolean = episode.isPlaying
-        LogHelper.e(TAG, "setEpisodeButtons => ${episode.isPlaying }${episode.title}")
         when (episodeIsPlaying) {
             true -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_pause_symbol_24dp)
             false -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_play_symbol_24dp)
@@ -431,7 +430,6 @@ class CollectionAdapter(private val context: Context, private val collectionData
             collection = newCollection
             notifyDataSetChanged()
         } else {
-            LogHelper.e(TAG, "updateRecyclerView") // todo remove
             // store old collection temporarily
             val oldCollection: List<PodcastWithRecentEpisodesWrapper> = collection.map { it.copy() }
             // set new collection

@@ -196,7 +196,7 @@
 //        playerState = PreferencesHelper.loadPlayerState()
 //        // recreate player ui
 //        CoroutineScope(IO).launch {
-//            // get current and up-next episode
+//            // get current and Up Next episode
 //            episode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
 //            upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
 //            // setup ui
@@ -276,11 +276,11 @@
 //                        // stop playback
 //                        togglePlayback(false, mediaId, playbackState)
 //                    }
-//                    // tapped on episode already in the up next queue
+//                    // tapped on episode already in the Up Next queue
 //                    playerState.upNextEpisodeMediaId -> {
 //                        // start playback
 //                        togglePlayback(true, mediaId, playbackState)
-//                        // clear up next
+//                        // clear Up Next
 //                        updateUpNext(String())
 //                    }
 //                    else -> {
@@ -401,7 +401,7 @@
 //                when (dialogResult) {
 //                    // user tapped: start playback
 //                    true -> togglePlayback(true, payloadString)
-//                    // user tapped: add to up next (only if dialog has not been cancelled)
+//                    // user tapped: add to Up Next (only if dialog has not been cancelled)
 //                    false -> if (!dialogCancelled) updateUpNext(payloadString)
 //                }
 //            }
@@ -473,7 +473,7 @@
 //            // get player state
 //            playerState = PreferencesHelper.loadPlayerState()
 //
-//            // get current and up-next episode
+//            // get current and Up Next episode
 //            episode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
 //            upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
 //
@@ -539,7 +539,7 @@
 //
 //                // bottom sheet start button for Up Next queue
 //                layout.sheetUpNextName.setOnClickListener {
-//                    // start episode in up next queue
+//                    // start episode in Up Next queue
 //                    val upNextEpisodeMediaId: String = upNextEpisode?.mediaId ?: String()
 //                    this@PlayerFragmentOld.playerController.play(upNextEpisodeMediaId)
 //                    Toast.makeText(activity as Context, R.string.toast_message_up_next_start_playback, Toast.LENGTH_LONG).show()
@@ -547,7 +547,7 @@
 //
 //                // bottom sheet clear button for Up Next queue
 //                layout.sheetUpNextClearButton.setOnClickListener {
-//                    // clear up next
+//                    // clear Up Next
 //                    updateUpNext(String())
 //                    Toast.makeText(activity as Context, R.string.toast_message_up_next_removed_episode, Toast.LENGTH_LONG).show()
 //                }

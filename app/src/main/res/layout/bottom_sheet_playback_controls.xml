@@ -414,8 +414,7 @@
         android:id="@+id/up_next_views"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:constraint_referenced_ids="sheet_up_next_background,sheet_up_next_headline,sheet_up_next_name,sheet_up_next_clear_button" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,12 +50,12 @@ class NotificationHelper(private val context: Context) {
         ensureNotificationChannel()
         val builder = NotificationCompat.Builder(context, Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID)
 
-        // Skip to previous action. // todo rework to "skip 10s back"
+        // Skip to previous action - duration is set via setSeekBackIncrementMs
         builder.addAction(
             actionFactory.createMediaAction(
                 IconCompat.createWithResource(context, R.drawable.ic_notification_skip_back_36dp),
                 context.getString(R.string.notification_skip_back),
-                MediaNotification.ActionFactory.COMMAND_SKIP_TO_PREVIOUS
+                MediaNotification.ActionFactory.COMMAND_REWIND
             )
         )
         if (mediaController.playbackState == Player.STATE_ENDED || !mediaController.playWhenReady) {
@@ -78,12 +78,12 @@ class NotificationHelper(private val context: Context) {
                 )
             )
         }
-        // Skip to next action.  // todo rework to "skip 30s forward"
+        // Skip to next action - duration is set via setSeekForwardIncrementMs
         builder.addAction(
             actionFactory.createMediaAction(
                 IconCompat.createWithResource(context,  R.drawable.ic_notification_skip_forward_36dp),
                 context.getString(R.string.notification_skip_forward),
-                MediaNotification.ActionFactory.COMMAND_SKIP_TO_NEXT
+                MediaNotification.ActionFactory.COMMAND_FAST_FORWARD
             )
         )
 

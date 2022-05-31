@@ -14,7 +14,6 @@
 
 package org.y20k.escapepod.helpers
 
-//import org.y20k.escapepod.legacy.LegacyCollection
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toFile
@@ -145,22 +144,22 @@ object CollectionHelper {
         // get the correct source for streaming / local playback
         val source: String = if (streaming) episode.remoteAudioFileLocation else episode.audio
         // build MediaMetadata
-        val metadata:MediaMetadata = MediaMetadata.Builder()
-            .setAlbumTitle(episode.podcastName)
-            .setTitle(episode.title)
-//            .setArtist(artist)
-//            .setGenre(genre)
-//            .setFolderType(folderType)
-//            .setIsPlayable(isPlayable)
-            .setArtworkUri(episode.cover.toUri())
-            .setMediaUri(source.toUri())
-            .build()
+        val metadata:MediaMetadata = MediaMetadata.Builder().apply {
+            setAlbumTitle(episode.podcastName)
+            setTitle(episode.title)
+//            setArtist(artist)
+//            setGenre(genre)
+//            setFolderType(folderType)
+//            setIsPlayable(isPlayable)
+            setArtworkUri(episode.cover.toUri())
+            setMediaUri(source.toUri())
+        }.build()
         // build MediaItem and return it
-        return MediaItem.Builder()
-            .setMediaId(episode.mediaId)
-            .setMediaMetadata(metadata)
-//            .setUri(source.toUri())
-            .build()
+        return MediaItem.Builder().apply {
+            setMediaId(episode.mediaId)
+            setMediaMetadata(metadata)
+            setUri(source.toUri())
+        }.build()
     }
 
 

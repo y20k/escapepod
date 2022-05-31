@@ -67,7 +67,7 @@
 //                        episodeListByDate.add(episode.toMediaMetaItem())
 //                    }
 //                }
-////                // try to get current and up next episode
+////                // try to get current and Up Next episode
 ////                currentEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.episodeMediaId)
 ////                upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
 //                // afterwards: update state and set callback

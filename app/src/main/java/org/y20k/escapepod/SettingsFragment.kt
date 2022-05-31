@@ -330,7 +330,7 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
             val collectionDatabase = CollectionDatabase.getInstance(activity as Context)
             collectionDatabase.episodeDao().resetLocalAudioReferencesForAllEpisodes()
         }
-        // reset current and up next media id
+        // reset current and Up Next media id
         PreferencesHelper.resetPlayerState(keepUpNextMediaId = false)
         // update summary
         preferenceDeleteAll.summary = "${getString(R.string.pref_delete_all_summary)} ${getAvailableSpace()}"

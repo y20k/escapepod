@@ -120,7 +120,7 @@ data class Episode (
 
 
     /* Return if an episode has been listened to end */
-    fun isFinished(): Boolean = playbackPosition >= duration
+    fun isFinished(): Boolean = playbackPosition >= duration - 500L // 1/2 second slack
 
 
     /* Return if an episode has been started listening to */

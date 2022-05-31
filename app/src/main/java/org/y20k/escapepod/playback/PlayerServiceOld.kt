@@ -132,7 +132,7 @@
 //        // get instance of database
 //        collectionDatabase = CollectionDatabase.getInstance(application)
 //
-//        // get up next episode
+//        // get Up Next episode
 //        CoroutineScope(IO).launch {
 //            upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId)
 //        }
@@ -225,7 +225,7 @@
 //        when (key) {
 //            Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID -> {
 //                CoroutineScope(IO).launch {
-//                    // update up next episode
+//                    // update Up Next episode
 //                    val mediaId: String = sharedPreferences?.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String())
 //                            ?: String()
 //                    playerState.upNextEpisodeMediaId = mediaId
@@ -266,12 +266,12 @@
 //    }
 //
 //
-//    /* Try to start episode from up-next queue */
+//    /* Try to start episode from Up Next queue */
 //    private fun tryToStartUpNextEpisode() {
 //        if (upNextEpisode != null) {
-//            // get up next episode
+//            // get Up Next episode
 //            episode = upNextEpisode as Episode
-//            // clear up-next
+//            // clear Up Next
 //            clearUpNext()
 //            // prepare player and start playback
 //            preparePlayer(true)
@@ -281,7 +281,7 @@
 //    }
 //
 //
-//    /* clears the up-next queue */
+//    /* clears the Up Next queue */
 //    private fun clearUpNext() {
 //        upNextEpisode = null
 //        playerState.upNextEpisodeMediaId = String()
@@ -346,7 +346,7 @@
 //            return
 //        }
 //
-//        // TODO check if episode is in up-next queue - reset up next - save PreferencesHelper.saveUpNextMediaId
+//        // TODO check if episode is in Up Next queue - reset Up Next - save PreferencesHelper.saveUpNextMediaId
 //
 //        // reset playback position if necessary // todo
 //        if (episode.duration != 0L && episode.isFinished()) {

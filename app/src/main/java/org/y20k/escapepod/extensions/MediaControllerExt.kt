@@ -15,6 +15,7 @@
 package org.y20k.escapepod.extensions
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionCommand
 import androidx.media3.session.SessionResult
@@ -27,6 +28,14 @@ import org.y20k.escapepod.ui.PlayerState
 
 
 private val TAG: String = "MediaControllerExt"
+
+
+/* Continue playback */
+fun MediaController.continuePlayback() {
+    // if episode is finished / almost finished (1/2 second before the end), then continue from start of episode
+    if (currentPosition >= duration - 500L) seekTo(0L)
+    playWhenReady = true
+}
 
 
 /* Starts the sleep timer */
@@ -48,26 +57,12 @@ fun MediaController.requestSleepTimerRemaining(): ListenableFuture<SessionResult
 
 /* Starts playback with a new media item */
 fun MediaController.play(episode: Episode, streaming: Boolean) {
+    if (isPlaying) pause()
     // set media item, prepare and play
-    setMediaItem(CollectionHelper.buildMediaItem(episode, streaming), episode.playbackPosition)
+    val position: Long = if (episode.isFinished()) 0L else episode.playbackPosition
+    setMediaItem(CollectionHelper.buildMediaItem(episode, streaming), position)
     prepare()
-    playWhenReady = true
-}
-
-
-/* Skip back 10 seconds */
-fun MediaController.skipBack() {
-    var position: Long = currentPosition - Keys.SKIP_BACK_TIME_SPAN
-    if (position < 0L) position = 0L
-    seekTo(position)
-}
-
-
-/* Skip forward 30 seconds */
-fun MediaController.skipForward() {
-    var position: Long = currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
-    if (position > duration && duration != 0L) position = duration
-    seekTo(position)
+    play()
 }
 
 
@@ -80,25 +75,15 @@ fun MediaController.setCurrentEpisode(episode: Episode?, playerState: PlayerStat
 }
 
 
-/* Puts next episode into playlist */
-fun MediaController.setUpNextEpisode(episode: Episode?) {
-    removeUpNextEpisode()
-    if (episode != null) {
-        addMediaItem(CollectionHelper.buildMediaItem(episode, streaming = false))
-        prepare()
-    }
+/* Updates Up Next episode media id */
+fun MediaController.updateUpNextEpisode(upNextEpisodeMediaId: String) {
+    sendCustomCommand(SessionCommand(Keys.CMD_UPDATE_UP_NEXT_EPISODE, Bundle.EMPTY), bundleOf(Pair(Keys.EXTRA_UP_NEXT_EPISODE_MEDIA_ID, upNextEpisodeMediaId)))
 }
 
 
 /* Starts playback for next episode */
 fun MediaController.startUpNextEpisode() {
-    seekToNextMediaItem()
-}
-
-
-/* Removes all media items except for the first */
-fun MediaController.removeUpNextEpisode() {
-    if (mediaItemCount > 1) removeMediaItems(/* fromIndex= */ 1, /* toIndex= */ mediaItemCount -1 )
+    sendCustomCommand(SessionCommand(Keys.CMD_START_UP_NEXT_EPISODE, Bundle.EMPTY), Bundle.EMPTY)
 }
 
 
@@ -134,16 +119,10 @@ fun MediaController.resetPlaybackSpeed(): Float {
 
 
 /* Returns mediaId of currently active media item */
-fun MediaController.currentMediaId(): String {
+fun MediaController.getCurrentMediaId(): String {
     if (mediaItemCount > 0) {
         return getMediaItemAt(0).mediaId
     } else {
         return String()
     }
-}
-
-
-/* Returns mediaId of next media item */
-fun MediaController.nextMediaId(): String {
-    return if (mediaItemCount > 1) getMediaItemAt(1).mediaId else String()
 }
