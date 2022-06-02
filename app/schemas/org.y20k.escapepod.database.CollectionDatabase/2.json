@@ -1,0 +1,343 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "ffeb9c9c78d5758a298a3d5cab798cc0",
+    "entities": [
+      {
+        "tableName": "podcasts",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`remote_podcast_feed_location` TEXT NOT NULL, `name` TEXT NOT NULL, `website` TEXT NOT NULL, `cover` TEXT NOT NULL, `small_cover` TEXT NOT NULL, `latest_episode_date` INTEGER NOT NULL, `remote_image_file_location` TEXT NOT NULL, PRIMARY KEY(`remote_podcast_feed_location`))",
+        "fields": [
+          {
+            "fieldPath": "remotePodcastFeedLocation",
+            "columnName": "remote_podcast_feed_location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "website",
+            "columnName": "website",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover",
+            "columnName": "cover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smallCover",
+            "columnName": "small_cover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latestEpisodeDate",
+            "columnName": "latest_episode_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteImageFileLocation",
+            "columnName": "remote_image_file_location",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "remote_podcast_feed_location"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_podcasts_remote_podcast_feed_location",
+            "unique": true,
+            "columnNames": [
+              "remote_podcast_feed_location"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_podcasts_remote_podcast_feed_location` ON `${TABLE_NAME}` (`remote_podcast_feed_location`)"
+          },
+          {
+            "name": "index_podcasts_remote_image_file_location",
+            "unique": false,
+            "columnNames": [
+              "remote_image_file_location"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_podcasts_remote_image_file_location` ON `${TABLE_NAME}` (`remote_image_file_location`)"
+          },
+          {
+            "name": "index_podcasts_latest_episode_date",
+            "unique": false,
+            "columnNames": [
+              "latest_episode_date"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_podcasts_latest_episode_date` ON `${TABLE_NAME}` (`latest_episode_date`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "podcast_descriptions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`remote_podcast_feed_location` TEXT NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`remote_podcast_feed_location`))",
+        "fields": [
+          {
+            "fieldPath": "remotePodcastFeedLocation",
+            "columnName": "remote_podcast_feed_location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "remote_podcast_feed_location"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_podcast_descriptions_remote_podcast_feed_location",
+            "unique": true,
+            "columnNames": [
+              "remote_podcast_feed_location"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_podcast_descriptions_remote_podcast_feed_location` ON `${TABLE_NAME}` (`remote_podcast_feed_location`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "episodes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`media_id` TEXT NOT NULL, `guid` TEXT NOT NULL, `title` TEXT NOT NULL, `audio` TEXT NOT NULL, `cover` TEXT NOT NULL, `small_cover` TEXT NOT NULL, `publication_date` INTEGER NOT NULL, `is_playing` INTEGER NOT NULL, `playback_position` INTEGER NOT NULL, `duration` INTEGER NOT NULL, `manually_deleted` INTEGER NOT NULL, `manually_downloaded` INTEGER NOT NULL, `podcast_name` TEXT NOT NULL, `remote_audio_file_location` TEXT NOT NULL, `remote_audio_file_name` TEXT NOT NULL, `remote_cover_file_location` TEXT NOT NULL, `episode_remote_podcast_feed_location` TEXT NOT NULL, PRIMARY KEY(`media_id`))",
+        "fields": [
+          {
+            "fieldPath": "mediaId",
+            "columnName": "media_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "guid",
+            "columnName": "guid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "audio",
+            "columnName": "audio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cover",
+            "columnName": "cover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "smallCover",
+            "columnName": "small_cover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "publicationDate",
+            "columnName": "publication_date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPlaying",
+            "columnName": "is_playing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "playbackPosition",
+            "columnName": "playback_position",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manuallyDeleted",
+            "columnName": "manually_deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manuallyDownloaded",
+            "columnName": "manually_downloaded",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "podcastName",
+            "columnName": "podcast_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteAudioFileLocation",
+            "columnName": "remote_audio_file_location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteAudioFileName",
+            "columnName": "remote_audio_file_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteCoverFileLocation",
+            "columnName": "remote_cover_file_location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "episodeRemotePodcastFeedLocation",
+            "columnName": "episode_remote_podcast_feed_location",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "media_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_episodes_media_id",
+            "unique": true,
+            "columnNames": [
+              "media_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_episodes_media_id` ON `${TABLE_NAME}` (`media_id`)"
+          },
+          {
+            "name": "index_episodes_publication_date",
+            "unique": false,
+            "columnNames": [
+              "publication_date"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_episodes_publication_date` ON `${TABLE_NAME}` (`publication_date`)"
+          },
+          {
+            "name": "index_episodes_remote_audio_file_location",
+            "unique": true,
+            "columnNames": [
+              "remote_audio_file_location"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_episodes_remote_audio_file_location` ON `${TABLE_NAME}` (`remote_audio_file_location`)"
+          },
+          {
+            "name": "index_episodes_episode_remote_podcast_feed_location",
+            "unique": false,
+            "columnNames": [
+              "episode_remote_podcast_feed_location"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_episodes_episode_remote_podcast_feed_location` ON `${TABLE_NAME}` (`episode_remote_podcast_feed_location`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "episode_descriptions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`media_id` TEXT NOT NULL, `episode_remote_podcast_feed_location` TEXT NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`media_id`))",
+        "fields": [
+          {
+            "fieldPath": "mediaId",
+            "columnName": "media_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "episodeRemotePodcastFeedLocation",
+            "columnName": "episode_remote_podcast_feed_location",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "media_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_episode_descriptions_media_id",
+            "unique": true,
+            "columnNames": [
+              "media_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_episode_descriptions_media_id` ON `${TABLE_NAME}` (`media_id`)"
+          },
+          {
+            "name": "index_episode_descriptions_episode_remote_podcast_feed_location",
+            "unique": false,
+            "columnNames": [
+              "episode_remote_podcast_feed_location"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_episode_descriptions_episode_remote_podcast_feed_location` ON `${TABLE_NAME}` (`episode_remote_podcast_feed_location`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [
+      {
+        "viewName": "EpisodeMostRecentView",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT * FROM episodes e WHERE ( SELECT count(*) from episodes e1 WHERE e1.episode_remote_podcast_feed_location = e.episode_remote_podcast_feed_location AND e1.publication_date >= e.publication_date ) <= 5"
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ffeb9c9c78d5758a298a3d5cab798cc0')"
+    ]
+  }
+}

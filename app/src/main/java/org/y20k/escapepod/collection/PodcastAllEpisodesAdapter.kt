@@ -14,7 +14,6 @@
 package org.y20k.escapepod.collection
 
 import android.content.Context
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +42,7 @@ class PodcastAllEpisodesAdapter (private val context: Context, private  val epis
 
     /* Listener Interface */
     interface PodcastAllEpisodesAdapterListener {
-        fun onPlayButtonTapped(mediaId: String, playbackState: Int)
+        fun onPlayButtonTapped(selectedEpisode: Episode, streaming: Boolean = true)
     }
 
 
@@ -79,13 +78,12 @@ class PodcastAllEpisodesAdapter (private val context: Context, private  val epis
 
     /* Sets up an episode's play button view */
     private fun setEpisodeButtons (episodeViewHolder: EpisodeViewHolder, episode: Episode) {
-        val playbackState: Int = episode.playbackState
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_pause_36dp)
-            else -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_play_36dp)
+        when (episode.isPlaying) {
+            true -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_pause_36dp)
+            false -> episodeViewHolder.episodePlayButtonView.setImageResource(R.drawable.ic_cloud_play_36dp)
         }
         episodeViewHolder.episodePlayButtonView.setOnClickListener {
-            showAllEpisodesDialogListener.onPlayButtonTapped(episode.mediaId, playbackState)
+            showAllEpisodesDialogListener.onPlayButtonTapped(episode, streaming = true)
         }
     }
 

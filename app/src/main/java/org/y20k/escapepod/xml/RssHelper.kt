@@ -16,7 +16,6 @@ package org.y20k.escapepod.xml
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Xml
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -370,7 +369,7 @@ class RssHelper {
             var cover: String = Keys.LOCATION_DEFAULT_COVER,
             var smallCover: String = Keys.LOCATION_DEFAULT_COVER,
             var publicationDate: Date = Keys.DEFAULT_DATE,
-            var playbackState: Int = PlaybackStateCompat.STATE_STOPPED,
+            var isPlaying: Boolean = false,
             var playbackPosition: Long = 0L,
             var duration: Long = 0L,
             var manuallyDownloaded: Boolean = false,

@@ -14,9 +14,6 @@
 
 package org.y20k.escapepod.database.objects
 
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
-import androidx.core.net.toUri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
@@ -67,12 +64,12 @@ data class Podcast(
     )
 
 
-    /* Creates MediaItem for a podcast - used by collection provider */
-    fun toMediaMetaItem(): MediaBrowserCompat.MediaItem {
-        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
-        mediaDescriptionBuilder.setTitle(name)
-        mediaDescriptionBuilder.setIconUri(cover.toUri())
-        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
-    }
+//    /* Creates MediaItem for a podcast - used by collection provider */
+//    fun toMediaMetaItem(): MediaBrowserCompat.MediaItem {
+//        val mediaDescriptionBuilder = MediaDescriptionCompat.Builder()
+//        mediaDescriptionBuilder.setTitle(name)
+//        mediaDescriptionBuilder.setIconUri(cover.toUri())
+//        return MediaBrowserCompat.MediaItem(mediaDescriptionBuilder.build(), MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+//    }
 
 }

@@ -44,6 +44,10 @@ interface EpisodeDao {
     fun getTitle(mediaId: String): String?
 
 
+    @Query("SELECT playback_position FROM episodes WHERE media_id IS :mediaId LIMIT 1")
+    fun getPlaybackPosition(mediaId: String): Long
+
+
     @Query("SELECT * FROM episodes WHERE media_id IS :mediaId LIMIT 1")
     fun findByMediaId(mediaId: String): Episode?
 
@@ -119,8 +123,8 @@ interface EpisodeDao {
 
 
     /* Updates episode playback position */
-    @Query("UPDATE episodes SET playback_position = :playbackPosition WHERE media_id IS :mediaId")
-    fun updatePlaybackPosition(mediaId: String, playbackPosition: Long): Int
+    @Query("UPDATE episodes SET playback_position = :playbackPosition, is_playing =:isPlaying WHERE media_id IS :mediaId")
+    fun updatePlaybackPosition(mediaId: String, playbackPosition: Long, isPlaying: Boolean): Int
 
 
     /* Updates episode audio and duration */
@@ -129,25 +133,22 @@ interface EpisodeDao {
 
 
     /* Set episode playback position to it's duration - marking it as played */
-    // https://developer.android.com/reference/kotlin/android/support/v4/media/session/PlaybackStateCompat#state_stopped
-    @Query("UPDATE episodes SET playback_position = duration, playback_state = 1 WHERE media_id IS :mediaId")
+    @Query("UPDATE episodes SET playback_position = duration, is_playing = 0 WHERE media_id IS :mediaId")
     fun markPlayed(mediaId: String): Int
 
 
     /* Resets local audio reference - used when user taps on trashcan */
-    // https://developer.android.com/reference/kotlin/android/support/v4/media/session/PlaybackStateCompat#state_stopped
-    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, playback_state = 1, manually_deleted = :manuallyDeleted WHERE media_id IS :mediaId")
+    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, is_playing = 0, manually_deleted = :manuallyDeleted WHERE media_id IS :mediaId")
     fun resetLocalAudioReference(mediaId: String, manuallyDeleted: Boolean): Int
 
 
     /* Resets local audio references of all episodes */
-    // https://developer.android.com/reference/kotlin/android/support/v4/media/session/PlaybackStateCompat#state_stopped
-    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, playback_state = 1, manually_deleted = 1")
+    @Query("UPDATE episodes SET audio = '', playback_position = 0, duration = 0, is_playing = 0, manually_deleted = 1")
     fun resetLocalAudioReferencesForAllEpisodes()
 
 
     /* set playback state for all episodes - except of the one indicated by "exclude" */
-    @Query("UPDATE episodes SET playback_state = :playbackState WHERE media_id IS NOT :exclude")
-    fun setPlaybackStateForAllEpisodes(playbackState: Int, exclude: String): Int
+    @Query("UPDATE episodes SET is_playing = :isPlaying WHERE media_id IS NOT :exclude")
+    fun setPlaybackStateForAllEpisodes(isPlaying: Boolean, exclude: String): Int
 
 }

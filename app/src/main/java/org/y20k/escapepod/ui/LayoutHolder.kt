@@ -17,7 +17,6 @@ package org.y20k.escapepod.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Vibrator
-import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -26,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.media3.common.Player
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -195,19 +195,19 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Updates the progress bar */
-    fun updateProgressbar(context: Context, position: Long, duration: Long = 0L) {
+    fun updateProgressbar(context: Context, position: Long, duration: Long) {
         val timePlayed = DateTimeHelper.convertToMinutesAndSeconds(position)
         sheetTimePlayedView.text = timePlayed
         sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: $timePlayed"
         sheetProgressBarView.progress = position.toInt()
-        if (displayTimeRemaining) {
+        if (displayTimeRemaining && duration > 0L) {
             val timeRemaining = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
             sheetDurationView.text = timeRemaining
             sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: $timeRemaining"
-        }
-        if (duration != 0L && sheetDurationView.text == "∞") {
+        } else if (duration > 0L || sheetDurationView.text == "∞") {
             sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(duration)
             sheetProgressBarView.max = duration.toInt()
+            sheetDurationView.contentDescription = context.getString(R.string.descr_expanded_episode_length)
         }
     }
 
@@ -224,15 +224,15 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     fun updateUpNextViews(upNextEpisode: Episode?) {
         when (upNextEpisode != null) {
             true -> {
-                // show the up next queue if queue is not empty
+                // show the Up Next queue if queue is not empty
                 upNextViews.isGone = true // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
                 upNextViews.isVisible = true
-                // update up next view
+                // update Up Next view
                 val upNextName = "${upNextEpisode.podcastName} - ${upNextEpisode.title}"
                 sheetUpNextName.text = upNextName
             }
             false -> {
-                // hide the up next queue if queue is empty
+                // hide the Up Next queue if queue is empty
                 upNextViews.isGone = true // stupid hack - try to remove this line ASAP (https://stackoverflow.com/a/47893965)
                 upNextViews.isVisible = false
 
@@ -263,27 +263,23 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Toggles play/pause buttons */
-    fun togglePlayButtons(playbackState: Int) {
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> {
+    fun togglePlayButtons(isPlaying: Boolean) {
+        when (isPlaying) {
+            true -> {
                 playButtonView.setImageResource(R.drawable.ic_player_pause_symbol_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_player_pause_symbol_54dp)
-                bufferingIndicator.isVisible = false
-                isBuffering = false
             }
-            PlaybackStateCompat.STATE_BUFFERING -> {
-                playButtonView.setImageResource(R.drawable.ic_player_pause_symbol_36dp)
-                sheetPlayButtonView.setImageResource(R.drawable.ic_player_pause_symbol_54dp)
-                bufferingIndicator.isVisible = true
-                isBuffering = true
-            }
-            else -> {
+            false -> {
                 playButtonView.setImageResource(R.drawable.ic_player_play_symbol_36dp)
                 sheetPlayButtonView.setImageResource(R.drawable.ic_player_play_symbol_54dp)
-                bufferingIndicator.isVisible = false
-                isBuffering = false
             }
         }
+    }
+
+    /* Toggles buffering indicator */
+    fun showBufferingIndicator(buffering: Boolean) {
+        bufferingIndicator.isVisible = buffering
+        isBuffering = buffering
     }
 
 
@@ -299,11 +295,10 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Toggles visibility of player depending on playback state - hiding it when playback is stopped (not paused or playing) */
-    fun togglePlayerVisibility(context: Context, playbackState: Int): Boolean {
+    fun togglePlayerVisibility(context: Context, playbackState: Int?): Boolean {
+        // possible states: STATE_IDLE, STATE_BUFFERING, STATE_READY, STATE_ENDED
         when (playbackState) {
-            PlaybackStateCompat.STATE_STOPPED -> return hidePlayer(context)
-            PlaybackStateCompat.STATE_NONE -> return hidePlayer(context)
-            PlaybackStateCompat.STATE_ERROR -> return hidePlayer(context)
+            Player.STATE_IDLE, Player.STATE_ENDED, null -> return hidePlayer(context)
             else -> return showPlayer(context)
         }
     }
@@ -318,6 +313,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     }
 
 
+    /* Toggle the onboarding layout */
     fun toggleOnboarding(context: Context, collectionSize: Int): Boolean {
         if (collectionSize == 0) {
             onboardingLayout.isVisible = true
@@ -330,33 +326,26 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
     }
 
 
-
     /* Initiates the rotation animation of the play button  */
-    fun animatePlaybackButtonStateTransition(context: Context, playbackState: Int) {
-        when (playbackState) {
-            PlaybackStateCompat.STATE_PLAYING -> {
+    fun animatePlaybackButtonStateTransition(context: Context, isPlaying: Boolean) {
+        when (isPlaying) {
+            true -> {
                 val rotateClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_clockwise_slow)
-                rotateClockwise.setAnimationListener(createAnimationListener(playbackState))
+                rotateClockwise.setAnimationListener(createAnimationListener(isPlaying))
                 when (bottomSheetBehavior.state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateClockwise)
-                    BottomSheetBehavior.STATE_DRAGGING -> togglePlayButtons(playbackState)
                     BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateClockwise)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  togglePlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_SETTLING -> togglePlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_HIDDEN -> togglePlayButtons(playbackState)
+                    else -> togglePlayButtons(isPlaying)
                 }
             }
 
-            else -> {
+            false -> {
                 val rotateCounterClockwise = AnimationUtils.loadAnimation(context, R.anim.rotate_counterclockwise_fast)
-                rotateCounterClockwise.setAnimationListener(createAnimationListener(playbackState))
+                rotateCounterClockwise.setAnimationListener(createAnimationListener(isPlaying))
                 when (bottomSheetBehavior.state) {
                     BottomSheetBehavior.STATE_COLLAPSED -> playButtonView.startAnimation(rotateCounterClockwise)
-                    BottomSheetBehavior.STATE_DRAGGING -> togglePlayButtons(playbackState)
                     BottomSheetBehavior.STATE_EXPANDED -> sheetPlayButtonView.startAnimation(rotateCounterClockwise)
-                    BottomSheetBehavior.STATE_HALF_EXPANDED ->  togglePlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_SETTLING -> togglePlayButtons(playbackState)
-                    BottomSheetBehavior.STATE_HIDDEN -> togglePlayButtons(playbackState)
+                    else -> togglePlayButtons(isPlaying)
                 }
             }
 
@@ -365,7 +354,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Shows player */
-    private fun showPlayer(context: Context): Boolean {
+    fun showPlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, Keys.BOTTOM_SHEET_PEEK_HEIGHT)
         if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN || bottomSheetBehavior.state == BottomSheetBehavior.STATE_SETTLING) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -375,7 +364,7 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Hides player */
-    private fun hidePlayer(context: Context): Boolean {
+    fun hidePlayer(context: Context): Boolean {
         UiHelper.setViewMargins(context, swipeRefreshLayout, 0,0,0, 0)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         return true
@@ -383,12 +372,12 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Creates AnimationListener for play button */
-    private fun createAnimationListener(playbackState: Int): Animation.AnimationListener {
+    private fun createAnimationListener(isPlaying: Boolean): Animation.AnimationListener {
         return object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {}
             override fun onAnimationEnd(animation: Animation) {
                 // set up button symbol and playback indicator afterwards
-                togglePlayButtons(playbackState)
+                togglePlayButtons(isPlaying)
             }
             override fun onAnimationRepeat(animation: Animation) {}
         }

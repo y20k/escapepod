@@ -4,16 +4,23 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     // buildToolsVersion is optional because the plugin uses a recommended version by default
 
     defaultConfig {
         applicationId 'org.y20k.escapepod'
         minSdkVersion 25
-        targetSdkVersion 31
-        versionCode 39
-        versionName '1.1.0'
+        targetSdkVersion 32
+        versionCode 40
+        versionName '1.1.1'
         resConfigs 'ca', 'de', 'en', 'es', 'eu', 'fi', 'fr', 'fr-rCA', 'he', 'hr', 'it', 'nb-rNO', 'nl', 'pl', 'pt', 'ru', 'tr', 'zh-rCN'
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+
     }
 
     kotlinOptions {
@@ -67,18 +74,23 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
-    implementation 'com.google.android.material:material:1.6.0-beta01'
+    implementation 'com.google.android.material:material:1.6.0'
 
     implementation "androidx.appcompat:appcompat:1.4.1"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.3"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "androidx.activity:activity-ktx:1.4.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.preference:preference-ktx:1.2.0"
-    implementation "androidx.media:media:1.5.0"
+    implementation "androidx.media:media:1.6.0"
 
-    def navigationVersion = "2.4.1"
+    def mediaVersion = "1.0.0-alpha03"
+    implementation "androidx.media3:media3-exoplayer:$mediaVersion"
+    implementation "androidx.media3:media3-session:mediaVersion"
+
+
+    def navigationVersion = "2.4.2"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 
@@ -88,10 +100,6 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
 
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
-
-    def exoplayerVersion = "2.17.1"
-    implementation "com.google.android.exoplayer:exoplayer:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
 
     implementation "com.google.code.gson:gson:2.9.0"
     implementation 'com.android.volley:volley:1.2.1'

@@ -15,10 +15,9 @@
 package org.y20k.escapepod.database
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.*
+import androidx.room.migration.AutoMigrationSpec
+import androidx.sqlite.db.SupportSQLiteDatabase
 import org.y20k.escapepod.database.daos.EpisodeDao
 import org.y20k.escapepod.database.daos.EpisodeDescriptionDao
 import org.y20k.escapepod.database.daos.PodcastDao
@@ -33,7 +32,7 @@ import org.y20k.escapepod.database.wrappers.EpisodeMostRecentView
 /*
  * CollectionDatabase class
  */
-@Database(entities = [Podcast::class, PodcastDescription::class, Episode::class, EpisodeDescription::class], views = [EpisodeMostRecentView::class], version = 1)
+@Database(version = 2, entities = [Podcast::class, PodcastDescription::class, Episode::class, EpisodeDescription::class], views = [EpisodeMostRecentView::class], autoMigrations = [AutoMigration (from = 1, to = 2, spec = CollectionDatabase.CustomMigrationSpec::class)], exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class CollectionDatabase : RoomDatabase() {
 
@@ -45,6 +44,14 @@ abstract class CollectionDatabase : RoomDatabase() {
 
     abstract fun episodeDescriptionDao(): EpisodeDescriptionDao
 
+    /* Specifies the database changes from version 1 to version 2 */
+    @RenameColumn(fromColumnName = "playback_state", toColumnName = "is_playing", tableName = "episodes")
+    class CustomMigrationSpec: AutoMigrationSpec {
+        override fun onPostMigrate(db: SupportSQLiteDatabase) {
+            super.onPostMigrate(db)
+            db.execSQL("UPDATE episodes SET is_playing = 0")
+        }
+    }
 
     /* Object used to create an offer an instance of the collection database */
     companion object {
@@ -56,13 +63,9 @@ abstract class CollectionDatabase : RoomDatabase() {
                 var instance: CollectionDatabase? = INSTANCE
 
                 if (instance == null) {
-                    instance = Room.databaseBuilder(
-                            context.applicationContext,
-                            CollectionDatabase::class.java,
-                            "collection_database"
-                    )
-                            .fallbackToDestructiveMigration()
-                            .build()
+                    instance = Room.databaseBuilder(context.applicationContext, CollectionDatabase::class.java, "collection_database").apply {
+                        fallbackToDestructiveMigration()
+                    }.build()
                     INSTANCE = instance
                 }
                 return instance

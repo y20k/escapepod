@@ -14,16 +14,12 @@
 
 package org.y20k.escapepod.helpers
 
-//import org.y20k.escapepod.legacy.LegacyCollection
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Bundle
-import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.net.toFile
 import androidx.core.net.toUri
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -85,7 +81,7 @@ object CollectionHelper {
                             audio = oldEpisode.audio,
                             cover = podcast.cover,
                             smallCover = podcast.smallCover,
-                            playbackState = oldEpisode.playbackState,
+                            isPlaying = oldEpisode.isPlaying,
                             playbackPosition = oldEpisode.playbackPosition,
                             duration = oldEpisode.duration,
                             manuallyDeleted = oldEpisode.manuallyDeleted,
@@ -143,37 +139,61 @@ object CollectionHelper {
     }
 
 
-    /* Creates MediaMetadata for a single episode - used in media session */
-    fun buildEpisodeMediaMetadata(context: Context, episode: Episode): MediaMetadataCompat {
-        return MediaMetadataCompat.Builder().apply {
-            putString(MediaMetadataCompat.METADATA_KEY_TITLE, episode.title)
-            putString(MediaMetadataCompat.METADATA_KEY_ARTIST, episode.podcastName)
-            putString(MediaMetadataCompat.METADATA_KEY_ALBUM, episode.podcastName)
-            putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, episode.cover)
-            putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
-            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN))
-            putLong(MediaMetadataCompat.METADATA_KEY_DURATION, episode.duration)
-        }.build()
-    }
-
-
-
-    /* Creates description for a single episode - used in MediaSessionConnector */
-    fun buildEpisodeMediaDescription(context: Context, episode: Episode): MediaDescriptionCompat {
-        val coverBitmap: Bitmap = ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN)
-        val extras: Bundle = Bundle()
-        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, coverBitmap)
-        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, coverBitmap)
-        return MediaDescriptionCompat.Builder().apply {
-            setMediaId(episode.mediaId)
-            setIconBitmap(coverBitmap)
-            setIconUri(episode.cover.toUri())
+    /* Creates a MediaItem with MediaMetadata for a single episode - used to prapare player */
+    fun buildMediaItem(episode: Episode, streaming: Boolean = false): MediaItem {
+        // get the correct source for streaming / local playback
+        val source: String = if (streaming) episode.remoteAudioFileLocation else episode.audio
+        // build MediaMetadata
+        val metadata:MediaMetadata = MediaMetadata.Builder().apply {
+            setAlbumTitle(episode.podcastName)
             setTitle(episode.title)
-            setSubtitle(episode.podcastName)
-            //setDescription(episode.podcastName)
-            setExtras(extras)
+//            setArtist(artist)
+//            setGenre(genre)
+//            setFolderType(folderType)
+//            setIsPlayable(isPlayable)
+            setArtworkUri(episode.cover.toUri())
+            setMediaUri(source.toUri())
+        }.build()
+        // build MediaItem and return it
+        return MediaItem.Builder().apply {
+            setMediaId(episode.mediaId)
+            setMediaMetadata(metadata)
+            setUri(source.toUri())
         }.build()
     }
+
+
+//    /* Creates MediaMetadata for a single episode - used in media session */
+//    fun buildEpisodeMediaMetadata(context: Context, episode: Episode): MediaMetadataCompat {
+//        return MediaMetadataCompat.Builder().apply {
+//            putString(MediaMetadataCompat.METADATA_KEY_TITLE, episode.title)
+//            putString(MediaMetadataCompat.METADATA_KEY_ARTIST, episode.podcastName)
+//            putString(MediaMetadataCompat.METADATA_KEY_ALBUM, episode.podcastName)
+//            putString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI, episode.cover)
+//            putString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI, episode.audio)
+//            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN))
+//            putLong(MediaMetadataCompat.METADATA_KEY_DURATION, episode.duration)
+//        }.build()
+//    }
+//
+//
+//
+//    /* Creates description for a single episode - used in MediaSessionConnector */
+//    fun buildEpisodeMediaDescription(context: Context, episode: Episode): MediaDescriptionCompat {
+//        val coverBitmap: Bitmap = ImageHelper.getScaledPodcastCover(context, episode.cover, Keys.SIZE_COVER_LOCK_SCREEN)
+//        val extras: Bundle = Bundle()
+//        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, coverBitmap)
+//        extras.putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, coverBitmap)
+//        return MediaDescriptionCompat.Builder().apply {
+//            setMediaId(episode.mediaId)
+//            setIconBitmap(coverBitmap)
+//            setIconUri(episode.cover.toUri())
+//            setTitle(episode.title)
+//            setSubtitle(episode.podcastName)
+//            //setDescription(episode.podcastName)
+//            setExtras(extras)
+//        }.build()
+//    }
 
 
     /* Deletes audio files that are no longer needed - but keep episodes */
@@ -195,7 +215,7 @@ object CollectionHelper {
                         LogHelper.e(TAG, "Unable to delete file. File has probably been deleted manually. Stack trace: $e")
                     }
                     // remove audio reference
-                    val updatedEpisode: Episode = Episode(episode, audio = String(), playbackState = PlaybackStateCompat.STATE_STOPPED, playbackPosition = 0L, duration = 0L)
+                    val updatedEpisode: Episode = Episode(episode, audio = String(), isPlaying = false, playbackPosition = 0L, duration = 0L)
                     // add to updated list
                     updatedEpisodes.add(updatedEpisode)
                 }
@@ -262,7 +282,7 @@ object CollectionHelper {
         } else if (episode.hasBeenStarted() && !episode.isFinished()) {
             // episode has been started but not finished
             return false
-        } else if (episode.playbackState != PlaybackStateCompat.STATE_STOPPED && !episode.isFinished()) {
+        } else if (episode.isPlaying && !episode.isFinished()) { // todo test where playbackState is set top stopped
             // episode is paused or playing
             return false
         } else if (episode.manuallyDownloaded) {

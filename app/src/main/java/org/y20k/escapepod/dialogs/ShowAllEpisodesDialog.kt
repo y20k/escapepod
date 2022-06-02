@@ -47,7 +47,7 @@ class ShowAllEpisodesDialog {
 
     /* Listener Interface */
     interface ShowAllEpisodesDialogListener {
-        fun onPlayButtonTapped(mediaId: String, playbackState: Int)
+        fun onPlayButtonTapped(selectedEpisode: Episode, streaming: Boolean)
     }
 
 
@@ -89,10 +89,10 @@ class ShowAllEpisodesDialog {
 
         // set up list of episodes
         val showAllEpisodesDialogListener: ShowAllEpisodesDialogListener = object : ShowAllEpisodesDialogListener {
-            override fun onPlayButtonTapped(mediaId: String, playbackState: Int) {
+            override fun onPlayButtonTapped(selectedEpisode: Episode, streaming: Boolean) {
                 if (NetworkHelper.isConnectedToNetwork(context)) {
                     allEpisodesDialog.dismiss()
-                    podcastAllEpisodesAdapterListener.onPlayButtonTapped(mediaId, playbackState)
+                    podcastAllEpisodesAdapterListener.onPlayButtonTapped(selectedEpisode, streaming = true)
                 } else {
                     Toast.makeText(context, R.string.toast_message_error_no_internet_connection, Toast.LENGTH_LONG).show()
                 }

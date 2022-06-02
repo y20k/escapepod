@@ -14,20 +14,19 @@
 
 package org.y20k.escapepod.helpers
 
-import android.app.PendingIntent
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
-import android.support.v4.media.session.MediaControllerCompat
-import android.support.v4.media.session.MediaSessionCompat
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.ui.PlayerNotificationManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import android.graphics.BitmapFactory
+import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.IconCompat
+import androidx.media3.common.Player
+import androidx.media3.common.util.Util
+import androidx.media3.session.MediaController
+import androidx.media3.session.MediaNotification
+import androidx.media3.session.MediaSession
+import androidx.media3.session.MediaStyleNotificationHelper
 import org.y20k.escapepod.Keys
 import org.y20k.escapepod.R
 
@@ -36,101 +35,103 @@ import org.y20k.escapepod.R
  * NotificationHelper class
  * Credit: https://github.com/android/uamp/blob/5bae9316b60ba298b6080de1fcad53f6f74eb0bf/common/src/main/java/com/example/android/uamp/media/UampNotificationManager.kt
  */
-class NotificationHelper(private val context: Context, sessionToken: MediaSessionCompat.Token, notificationListener: PlayerNotificationManager.NotificationListener) {
+class NotificationHelper(private val context: Context) {
 
     /* Define log tag */
     private val TAG: String = LogHelper.makeLogTag(NotificationHelper::class.java)
 
 
     /* Main class variables */
-    private val serviceJob = SupervisorJob()
-    private val serviceScope = CoroutineScope(Main + serviceJob)
-    private val notificationManager: PlayerNotificationManager
-    private val mediaController: MediaControllerCompat = MediaControllerCompat(context, sessionToken)
+    private val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
 
-    /* Constructor */
-    init {
-        val notificationBuilder = PlayerNotificationManager.Builder(context, Keys.NOW_PLAYING_NOTIFICATION_ID, Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID)
-        notificationBuilder.apply {
-            setChannelNameResourceId(R.string.notification_now_playing_channel_name)
-            setChannelDescriptionResourceId(R.string.notification_now_playing_channel_description)
-            setMediaDescriptionAdapter(DescriptionAdapter(mediaController))
-            setNotificationListener(notificationListener)
+    /* Builds a notification for given media session and controller */
+    fun getNotification(mediaSession: MediaSession, mediaController: MediaController, actionFactory: MediaNotification.ActionFactory): Notification {
+        ensureNotificationChannel()
+        val builder = NotificationCompat.Builder(context, Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID)
+
+        // Skip to previous action - duration is set via setSeekBackIncrementMs
+        builder.addAction(
+            actionFactory.createMediaAction(
+                IconCompat.createWithResource(context, R.drawable.ic_notification_skip_back_36dp),
+                context.getString(R.string.notification_skip_back),
+                MediaNotification.ActionFactory.COMMAND_REWIND
+            )
+        )
+        if (mediaController.playbackState == Player.STATE_ENDED || !mediaController.playWhenReady) {
+            // Play action.
+            builder.addAction(
+                actionFactory.createMediaAction(
+                    IconCompat.createWithResource(context, R.drawable.ic_notification_play_36dp),
+                    context.getString(R.string.notification_play),
+                    MediaNotification.ActionFactory.COMMAND_PLAY
+                )
+            )
+        } else {
+            // Pause action.
+            builder.addAction(
+                actionFactory.createMediaAction(
+                    IconCompat.createWithResource(context, R.drawable.ic_notification_pause_36dp
+                    ),
+                    context.getString(R.string.notification_pause),
+                    MediaNotification.ActionFactory.COMMAND_PAUSE
+                )
+            )
         }
-        // create and configure the notification manager
-        notificationManager = notificationBuilder.build()
-        notificationManager.apply {
-            // note: notification icons are customized in values.xml
-            setMediaSessionToken(sessionToken)
+        // Skip to next action - duration is set via setSeekForwardIncrementMs
+        builder.addAction(
+            actionFactory.createMediaAction(
+                IconCompat.createWithResource(context,  R.drawable.ic_notification_skip_forward_36dp),
+                context.getString(R.string.notification_skip_forward),
+                MediaNotification.ActionFactory.COMMAND_FAST_FORWARD
+            )
+        )
+//        // Dismiss action - stops playback (and dismisses notification)
+//        builder.addAction(
+//            actionFactory.createMediaAction(
+//                IconCompat.createWithResource(context,  R.drawable.ic_notification_clear_36dp),
+//                context.getString(R.string.notification_dismiss),
+//                MediaNotification.ActionFactory.COMMAND_STOP
+//            )
+//        )
+
+        // Set metadata info in the notification.
+        val metadata = mediaController.mediaMetadata
+        builder.setContentTitle(metadata.title).setContentText(metadata.artist)
+        if (metadata.artworkData != null) {
+            val artworkBitmap = BitmapFactory.decodeByteArray(
+                metadata.artworkData,
+                0,
+                metadata.artworkData!!.size
+            )
+            builder.setLargeIcon(artworkBitmap)
+        }
+
+        val mediaStyle: MediaStyleNotificationHelper.MediaStyle = MediaStyleNotificationHelper.MediaStyle(mediaSession)
+            .setShowCancelButton(true)
+            .setCancelButtonIntent(actionFactory.createMediaActionPendingIntent(MediaNotification.ActionFactory.COMMAND_STOP))
+            .setShowActionsInCompactView(1 /* Show play/pause button only in compact view */)
+
+        val notification: Notification = builder.apply {
+            setContentIntent(mediaController.sessionActivity)
+            setDeleteIntent(actionFactory.createMediaActionPendingIntent(MediaNotification.ActionFactory.COMMAND_STOP))
+            setOnlyAlertOnce(true)
             setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
-            setUsePlayPauseActions(true)
-            setUseStopAction(true) // set true to display the dismiss button
-            setUsePreviousAction(false)
-            setUsePreviousActionInCompactView(false)
-            setUseNextAction(false)
-            setUseNextActionInCompactView(false)
-        }
+            setStyle(mediaStyle)
+            setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            setOngoing(false)
+        }.build()
+
+        return notification
+
     }
 
 
-    /* Hides notification via notification manager */
-    fun hideNotification() {
-        notificationManager.setPlayer(null)
+    /* Creates a notification channel if necessary */
+    private fun ensureNotificationChannel() {
+        if (Util.SDK_INT < 26 || notificationManager.getNotificationChannel(Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID) != null) return
+        val channel = NotificationChannel(Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID, context.getString(R.string.notification_now_playing_channel_name), NotificationManager.IMPORTANCE_LOW)
+        notificationManager.createNotificationChannel(channel)
     }
 
-
-    /* Displays notification via notification manager */
-    fun showNotificationForPlayer(player: Player) {
-        notificationManager.setPlayer(player)
-    }
-
-    /* Triggers notification */
-    fun updateNotification() {
-        notificationManager.invalidate()
-    }
-
-
-    /*
-     * Inner class: Create content of notification from metaddata
-     */
-    private inner class DescriptionAdapter(private val controller: MediaControllerCompat):  PlayerNotificationManager.MediaDescriptionAdapter {
-
-        var currentIconUri: Uri? = null
-        var currentBitmap: Bitmap? = null
-
-        override fun createCurrentContentIntent(player: Player): PendingIntent? = controller.sessionActivity
-
-        override fun getCurrentContentText(player: Player) = controller.metadata.description.subtitle.toString()
-
-        override fun getCurrentContentTitle(player: Player) = controller.metadata.description.title.toString()
-
-        override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
-            val iconUri: Uri? = controller.metadata.description.iconUri
-            return if (currentIconUri != iconUri || currentBitmap == null) {
-                // Cache the bitmap for the current song so that successive calls to
-                // `getCurrentLargeIcon` don't cause the bitmap to be recreated.
-                currentIconUri = iconUri
-                serviceScope.launch {
-                    currentBitmap = iconUri?.let {
-                        resolveUriAsBitmap(it)
-                    }
-                    currentBitmap?.let { callback.onBitmap(it) }
-                }
-                null
-            } else {
-                currentBitmap
-            }
-        }
-
-        private suspend fun resolveUriAsBitmap(currentIconUri: Uri): Bitmap {
-            return withContext(IO) {
-                // Block on downloading artwork.
-                ImageHelper.getPodcastCover(context, currentIconUri.toString())
-            }
-        }
-    }
-    /*
-    * End of inner class
-    */
 }
