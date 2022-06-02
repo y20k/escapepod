@@ -190,8 +190,6 @@ class PlayerFragment: Fragment(),
     /* Overrides onPause from Fragment */
     override fun onPause() {
         super.onPause()
-        // save player state
-//        PreferencesHelper.savePlayerState(playerState)
         // stop receiving playback progress updates
         handler.removeCallbacks(periodicProgressUpdateRequestRunnable)
         // stop watching for changes in shared preferences
@@ -495,20 +493,13 @@ class PlayerFragment: Fragment(),
         layout.sheetTimePlayedView.setOnTouchListener { view, motionEvent ->
             view.performClick()
             when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    // show time remaining while touching the time played view
-                    layout.displayTimeRemaining = true
-                    updateProgressBar()
-                }
-                MotionEvent.ACTION_UP -> {
-                    // show episode duration when not touching the time played view anymore
-                    layout.displayTimeRemaining = false
-                    val duration = DateTimeHelper.convertToMinutesAndSeconds(controller?.duration ?: 0L)
-                    layout.sheetDurationView.text = duration
-                    layout.sheetDurationView.contentDescription = "${getString(R.string.descr_expanded_episode_length)}: $duration"
-                }
+                // show time remaining while touching the time played view
+                MotionEvent.ACTION_DOWN -> layout.displayTimeRemaining = true
+                // show episode duration when not touching the time played view anymore
+                MotionEvent.ACTION_UP -> layout.displayTimeRemaining = false
                 else -> return@setOnTouchListener false
             }
+            updateProgressBar()
             return@setOnTouchListener true
         }
 
@@ -542,9 +533,7 @@ class PlayerFragment: Fragment(),
         CoroutineScope(IO).launch {
             // get current and Up Next episode
             val currentEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.currentEpisodeMediaId)
-            //val upNextEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.upNextEpisodeMediaId) // todo remove?
-            LogHelper.e(TAG, "updatePlayerViews => ${currentEpisode?.title}") // todo remove
-            // setup player and
+            // setup player views and buttons
             withContext(Main) {
                 // update player views
                 if (currentEpisode != null) {
@@ -611,10 +600,12 @@ class PlayerFragment: Fragment(),
     }
 
 
-    /* Updates the progress bar */ // todo tap on time remaining does not work yet
+    /* Updates the progress bar */
     private fun updateProgressBar() {
-        // update progress bar
-        layout.updateProgressbar(activity as Context, controller?.currentPosition ?: 0L)
+        // update progress bar - only if controller is prepared with a media item
+        if (controller?.hasMediaItems() == true) {
+            layout.updateProgressbar(activity as Context, controller?.currentPosition ?: 0L, controller?.duration ?: 0L)
+        }
     }
 
 
@@ -730,13 +721,6 @@ class PlayerFragment: Fragment(),
         }
         // clear intent action to prevent double calls
         (activity as Activity).intent.action = ""
-    }
-
-
-    /* Handles ACTION_SHOW_PLAYER request from notification */
-    private fun handleShowPlayer() {
-        LogHelper.i(TAG, "Tap on notification registered.")
-        // todo implement
     }
 
 

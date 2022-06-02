@@ -228,7 +228,7 @@ object FileHelper {
     /* Checks if enough ( = more than 512mb) free space is available */
     fun enoughFreeSpaceAvailable(context: Context): Boolean {
         val usableSpace: Long = context.getExternalFilesDir(Keys.FOLDER_COLLECTION)?.usableSpace ?: 0L
-        LogHelper.e(TAG, "usableSpace: $usableSpace")
+        LogHelper.i(TAG, "usableSpace: $usableSpace")
         return usableSpace > 512000000L
     }
 

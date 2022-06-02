@@ -57,7 +57,7 @@ object PreferencesHelper {
 
     /* Loads mediaId of next episode in Up Next queue from shared preferences */
     fun loadUpNextMediaId(): String {
-        return sharedPreferences.getString(Keys.PREF_PLAYER_STATE_EPISODE_MEDIA_ID, String()) ?: String()
+        return sharedPreferences.getString(Keys.PREF_PLAYER_STATE_UP_NEXT_MEDIA_ID, String()) ?: String()
     }
 
 

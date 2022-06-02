@@ -39,11 +39,6 @@ object Keys {
     // ranges
     val PLAYBACK_SPEEDS = arrayOf(1.0f, 1.2f, 1.4f, 1.6f, 1.8f, 2.0f)
 
-    // episode playback states
-    val EPISODE_IS_PLAYING: Int = 3 // = STATE_PLAYING (https://developer.android.com/reference/android/support/v4/media/session/PlaybackStateCompat#STATE_PLAYING)
-    val EPISODE_IS_PAUSED: Int = 2 // = STATE_PAUSED (https://developer.android.com/reference/android/support/v4/media/session/PlaybackStateCompat#STATE_PAUSED)
-    val EPISODE_IS_STOPPED: Int = 1 // = STATE_STOPPED (https://developer.android.com/reference/android/support/v4/media/session/PlaybackStateCompat#STATE_STOPPED)
-
     // notification
     const val NOW_PLAYING_NOTIFICATION_ID: Int = 42
     const val NOW_PLAYING_NOTIFICATION_CHANNEL_ID: String = "notificationChannelIdPlaybackChannel"
@@ -199,15 +194,6 @@ object Keys {
 
     // arguments
     const val ARG_OPEN_OPML: String = "ArgOpenOpml"
-
-    // results
-    const val RESULT_CODE_PROGRESS_UPDATE: Int = 1
-    const val RESULT_DATA_PLAYBACK_PROGRESS: String = "DATA_PLAYBACK_PROGRESS"
-    const val RESULT_DATA_SLEEP_TIMER_REMAINING: String = "DATA_SLEEP_TIMER_REMAINING"
-    const val RESULT_CODE_PLAYBACK_SPEED: Int = 2
-    const val RESULT_DATA_PLAYBACK_SPEED: String = "DATA_PLAYBACK_SPEED"
-    const val RESULT_CODE_EPISODE_DURATION: Int = 3
-    const val RESULT_DATA_EPISODE_DURATION: String = "DATA_EPISODE_DURATION"
 
     // podcast validation states
     const val PODCAST_VALIDATION_SUCESS: Int = 0

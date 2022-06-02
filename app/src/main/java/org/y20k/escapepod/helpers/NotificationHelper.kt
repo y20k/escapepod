@@ -86,6 +86,14 @@ class NotificationHelper(private val context: Context) {
                 MediaNotification.ActionFactory.COMMAND_FAST_FORWARD
             )
         )
+//        // Dismiss action - stops playback (and dismisses notification)
+//        builder.addAction(
+//            actionFactory.createMediaAction(
+//                IconCompat.createWithResource(context,  R.drawable.ic_notification_clear_36dp),
+//                context.getString(R.string.notification_dismiss),
+//                MediaNotification.ActionFactory.COMMAND_STOP
+//            )
+//        )
 
         // Set metadata info in the notification.
         val metadata = mediaController.mediaMetadata
@@ -100,11 +108,8 @@ class NotificationHelper(private val context: Context) {
         }
 
         val mediaStyle: MediaStyleNotificationHelper.MediaStyle = MediaStyleNotificationHelper.MediaStyle(mediaSession)
-            .setCancelButtonIntent(
-                actionFactory.createMediaActionPendingIntent(
-                    MediaNotification.ActionFactory.COMMAND_STOP
-                )
-            )
+            .setShowCancelButton(true)
+            .setCancelButtonIntent(actionFactory.createMediaActionPendingIntent(MediaNotification.ActionFactory.COMMAND_STOP))
             .setShowActionsInCompactView(1 /* Show play/pause button only in compact view */)
 
         val notification: Notification = builder.apply {

@@ -195,19 +195,19 @@ data class LayoutHolder(val rootView: View, val collectionDatabase: CollectionDa
 
 
     /* Updates the progress bar */
-    fun updateProgressbar(context: Context, position: Long, duration: Long = 0L) {
+    fun updateProgressbar(context: Context, position: Long, duration: Long) {
         val timePlayed = DateTimeHelper.convertToMinutesAndSeconds(position)
         sheetTimePlayedView.text = timePlayed
         sheetTimePlayedView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_played)}: $timePlayed"
         sheetProgressBarView.progress = position.toInt()
-        if (displayTimeRemaining) {
+        if (displayTimeRemaining && duration > 0L) {
             val timeRemaining = DateTimeHelper.convertToMinutesAndSeconds((duration - position), negativeValue = true)
             sheetDurationView.text = timeRemaining
             sheetDurationView.contentDescription = "${context.getString(R.string.descr_expanded_player_time_remaining)}: $timeRemaining"
-        }
-        if (duration != 0L && sheetDurationView.text == "∞") {
+        } else if (duration > 0L || sheetDurationView.text == "∞") {
             sheetDurationView.text = DateTimeHelper.convertToMinutesAndSeconds(duration)
             sheetProgressBarView.max = duration.toInt()
+            sheetDurationView.contentDescription = context.getString(R.string.descr_expanded_episode_length)
         }
     }
 

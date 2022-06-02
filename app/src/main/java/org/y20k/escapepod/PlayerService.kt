@@ -20,7 +20,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.media3.common.AudioAttributes
-import androidx.media3.common.ForwardingPlayer
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -169,13 +168,15 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
     /* Try to start episode from Up Next queue */
     private fun tryToStartUpNextEpisode() {
-        LogHelper.e(TAG, "tryToStartUpNextEpisode => $upNextEpisodeMediaId") // todo remove
         if (upNextEpisodeMediaId.isNotEmpty()) {
+            // clear Up Next queue
+            val mediaId = upNextEpisodeMediaId
+            upNextEpisodeMediaId = String()
+            PreferencesHelper.saveUpNextMediaId()
+            // get Up Next episode and start playback
             CoroutineScope(IO).launch {
-                // get Up Next episode
-                val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(upNextEpisodeMediaId)
+                val upNextEpisode: Episode? = collectionDatabase.episodeDao().findByMediaId(mediaId)
                 if (upNextEpisode != null) {
-                    // start playback
                     withContext(Main) {
                         val position: Long = if (upNextEpisode.isFinished()) 0L else upNextEpisode.playbackPosition
                         player.pause()
@@ -184,44 +185,10 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
                         player.play()
                     }
                 }
-                // clear Up Next queue
-//                upNextEpisodeMediaId = String()
-//                PreferencesHelper.saveUpNextMediaId()
             }
         } else {
-            // todo stop playback & hide notification
-        }
-    }
-
-
-    /* Creates a ForwardingPlayer that overrides default exoplayer behavior */
-    private fun createForwardingPlayer(exoPlayer: ExoPlayer) : ForwardingPlayer {
-        return object : ForwardingPlayer(exoPlayer) {
-//            override fun stop(reset: Boolean) {
-//                stop()
-//            }
-//            override fun stop() {
-//                player.pause()
-//                notificationHelper.hideNotification()
-//            }
-//            override fun seekForward() {
-//                val episodeDuration: Long = episode.duration
-//                var position: Long = player.currentPosition + Keys.SKIP_FORWARD_TIME_SPAN
-//                if (position > episodeDuration && episodeDuration != 0L) position = episodeDuration
-//                player.seekTo(position)
-//            }
-//            override fun seekBack() {
-//                var position: Long = player.currentPosition - Keys.SKIP_BACK_TIME_SPAN
-//                if (position < 0L) position = 0L
-//                player.seekTo(position)
-//            }
-//            override fun seekToNext() {
-//                /* Note: seekToNext() is only called from MediaController if Player.hasNextMediaItem() ist true */
-//                seekForward()
-//            }
-//            override fun seekToPrevious() {
-//                seekBack()
-//            }
+            // todo hide notification in onPlayerCommandRequest
+            player.stop()
         }
     }
 
@@ -304,6 +271,16 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
                     player.seekBack()
                     return SessionResult.RESULT_INFO_SKIPPED
                 }
+                Player.COMMAND_STOP -> {
+                    // todo hide notification
+                    player.pause()
+//                    mediaSession.player.release()
+//                    mediaSession.release()
+//                    stopSelf()
+//                    player.clearMediaItems()
+//                    stopForeground(true)
+                    return SessionResult.RESULT_INFO_SKIPPED
+                }
                 else -> {
                     return super.onPlayerCommandRequest(session, controller, playerCommand)
                 }
@@ -343,7 +320,7 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
             val currentMediaId: String = player.currentMediaItem?.mediaId ?: String()
             PreferencesHelper.saveIsPlaying(isPlaying)
             PreferencesHelper.saveCurrentMediaId(currentMediaId)
-            if (currentMediaId == upNextEpisodeMediaId) PreferencesHelper.saveUpNextMediaId(String())
+            if (currentMediaId == upNextEpisodeMediaId) PreferencesHelper.saveUpNextMediaId()
             // save playback position
             val currentPosition: Long = player.currentPosition
             CoroutineScope(IO).launch {
@@ -385,22 +362,17 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
             super.onPlayWhenReadyChanged(playWhenReady, reason)
             if (!playWhenReady) {
-                if (player.mediaItemCount == 0) {
-                    // todo
-                }
                 when (reason) {
-                    Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> {
-                        // playback reached end: stop / end playback
-                        LogHelper.e(TAG, "Ding: playback reached end.") // todo remove
-                        tryToStartUpNextEpisode()
-                    }
+
+                    // CASE: Playback reached end
+                    Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM -> tryToStartUpNextEpisode() // todo why is this called twice
+
                     else -> {
                         // playback has been paused by user or OS: update media session and save state
                         // PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST or
                         // PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS or
                         // PLAY_WHEN_READY_CHANGE_REASON_AUDIO_BECOMING_NOISY or
                         // PLAY_WHEN_READY_CHANGE_REASON_REMOTE
-                        // handlePlaybackChange(PlaybackStateCompat.STATE_PAUSED)
                     }
                 }
             }

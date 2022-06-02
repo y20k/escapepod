@@ -126,3 +126,9 @@ fun MediaController.getCurrentMediaId(): String {
         return String()
     }
 }
+
+
+/* Returns if controller/player has one or more media items  */
+fun MediaController.hasMediaItems(): Boolean {
+    return mediaItemCount > 0
+}
