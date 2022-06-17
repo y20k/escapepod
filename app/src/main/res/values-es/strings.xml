@@ -81,7 +81,7 @@
     <string name="podcast_list_button_toggle_show_older_episodes">Episodios anteriores</string>
     <string name="podcast_list_button_add_new_podcast">Añadir pódcast nuevo</string>
     <string name="toast_message_updating_collection">Actualizando colección de pódcast.</string>
-    <string name="toast_message_up_next_start_playback">Iniciando el episodio siguiente.</string>
+    <string name="toast_message_up_next_start_playback">Iniciando el episodio siguiente…</string>
     <string name="toast_message_up_next_added_episode">Se añadió el episodio a la cola «A continuación».</string>
     <string name="toast_message_up_next_removed_episode">Se quitó el episodio de la cola «A continuación».</string>
     <string name="toast_message_theme_night">Se cambia al «modo nocturno» (toque prolongado detectado)</string>
