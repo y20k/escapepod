@@ -89,7 +89,7 @@
     <string name="dialog_yes_no_negative_button_default">Ei</string>
     <string name="dialog_yes_no_negative_button_add_up_next">Lisää toistojonoon</string>
     <string name="descr_expanded_player_up_next_clear_button">Tyhjennä toistojono</string>
-    <string name="toast_message_up_next_start_playback">Seuraava jakso alkaa.</string>
+    <string name="toast_message_up_next_start_playback">Seuraava jakso alkaa…</string>
     <string name="toast_message_up_next_removed_episode">Jakso poistettu toistojonosta.</string>
     <string name="toast_message_up_next_added_episode">Lisätty jakso toistojonoon.</string>
     <string name="player_up_next_headline">Seuraavaksi:</string>
