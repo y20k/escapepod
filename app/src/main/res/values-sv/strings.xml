@@ -125,7 +125,7 @@
     <string name="descr_player_playback_button">Spela/pause</string>
     <string name="descr_player_podcast_cover">Liten podcastomslagsbild</string>
     <string name="onboarding_app_get_started">Sätta igång</string>
-    <string name="dialog_error_message_no_network">Koppla till Internett</string>
+    <string name="dialog_error_message_no_network">Koppla till Internett.</string>
     <string name="dialog_add_podcast_button">Lägg till</string>
     <string name="dialog_generic_details_button">Vis detaljer</string>
     <string name="dialog_yes_no_negative_button_default">Nej</string>
