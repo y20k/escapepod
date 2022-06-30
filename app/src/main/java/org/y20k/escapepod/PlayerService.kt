@@ -24,6 +24,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.*
+import com.google.common.collect.ImmutableList
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.CoroutineScope
@@ -125,8 +126,8 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
 
         mediaSession = MediaSession.Builder(this, player).apply {
             setSessionActivity(pendingIntent)
-            setSessionCallback(CustomSessionCallback())
-            setMediaItemFiller(CustomMediaItemFiller())
+            setCallback(CustomSessionCallback())
+//            setMediaItemFiller(CustomMediaItemFiller()) // todo remove
         }.build()
     }
 
@@ -193,30 +194,39 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
     }
 
 
-    /*
-     * Custom MediaItemFiller needed to prevent a NullPointerException with MediaItems created in PlayerFragment // todo check if this is only occurs in the alpha versions of media3
-     * Credit: https://stackoverflow.com/a/70103460
-     */
-    private inner class CustomMediaItemFiller: MediaSession.MediaItemFiller {
-        override fun fillInLocalConfiguration(session: MediaSession, controller: MediaSession.ControllerInfo, mediaItem: MediaItem): MediaItem {
-            // return the media item that it will be played
-            return MediaItem.Builder().apply {
-                // use the metadata values to fill our media item
-                setMediaId(mediaItem.mediaId)
-                setUri(mediaItem.mediaMetadata.mediaUri)
-                setMediaMetadata(mediaItem.mediaMetadata)
-            }.build()
-        }
-    }
-    /*
-     * End of inner class
-     */
+//    /*
+//     * Custom MediaItemFiller needed to prevent a NullPointerException with MediaItems created in PlayerFragment // todo check if this is only occurs in the alpha versions of media3
+//     * Credit: https://stackoverflow.com/a/70103460
+//     */
+//    private inner class CustomMediaItemFiller: MediaSession.MediaItemFiller {
+//        override fun fillInLocalConfiguration(session: MediaSession, controller: MediaSession.ControllerInfo, mediaItem: MediaItem): MediaItem {
+//            // return the media item that it will be played
+//            return MediaItem.Builder().apply {
+//                // use the metadata values to fill our media item
+//                setMediaId(mediaItem.mediaId)
+//                setUri(mediaItem.mediaMetadata.mediaUri)
+//                setMediaMetadata(mediaItem.mediaMetadata)
+//            }.build()
+//        }
+//    }
+//    /*
+//     * End of inner class
+//     */
 
 
     /*
      * Custom MediaSession Callback that handles player commands
      */
-    private inner class CustomSessionCallback: MediaSession.SessionCallback {
+    private inner class CustomSessionCallback: MediaSession.Callback {
+
+        override fun onAddMediaItems(mediaSession: MediaSession, controller: MediaSession.ControllerInfo, mediaItems: MutableList<MediaItem>): ListenableFuture<List<MediaItem>> {
+            val updatedMediaItems = mediaItems.map { mediaItem ->
+                mediaItem.buildUpon().apply {
+                    setUri(mediaItem.requestMetadata.mediaUri)
+                }.build()
+            }
+            return Futures.immediateFuture(updatedMediaItems)
+        }
 
         override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
             // add custom commands
@@ -297,11 +307,11 @@ class PlayerService: MediaSessionService(), SharedPreferences.OnSharedPreference
      */
     private inner class CustomNotificationProvider: MediaNotification.Provider {
 
-        override fun createNotification(mediaController: MediaController, actionFactory: MediaNotification.ActionFactory, onNotificationChangedCallback: MediaNotification.Provider.Callback): MediaNotification {
-            return MediaNotification(Keys.NOW_PLAYING_NOTIFICATION_ID, NotificationHelper(this@PlayerService).getNotification(mediaSession, mediaController, actionFactory))
+        override fun createNotification(session: MediaSession, customLayout: ImmutableList<CommandButton>, actionFactory: MediaNotification.ActionFactory,  onNotificationChangedCallback: MediaNotification.Provider.Callback): MediaNotification {
+            return MediaNotification(Keys.NOW_PLAYING_NOTIFICATION_ID, NotificationHelper(this@PlayerService).getNotification(session, actionFactory))
         }
 
-        override fun handleCustomAction(mediaController: MediaController,  action: String,  extras: Bundle) {
+        override fun handleCustomCommand(session: MediaSession, action: String, extras: Bundle): Boolean {
             TODO("Not yet implemented")
         }
     }

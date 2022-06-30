@@ -328,18 +328,15 @@ class PlayerFragment: Fragment(),
                     false -> collectionAdapter.notifyItemChanged(payload)
                 }
             }
+            // handle delete episode dialog
             Keys.DIALOG_DELETE_EPISODE -> {
-                when (dialogResult) {
-                    // user tapped delete episode
-                    true -> collectionAdapter.deleteEpisode(activity as Context, payloadString)
-                }
+                if (dialogResult) collectionAdapter.deleteEpisode(activity as Context, payloadString)
             }
+            // handle mark episode played dialog
             Keys.DIALOG_MARK_EPISODE_PLAYED -> {
-                when (dialogResult) {
-                    // user tapped: mark episode played
-                    true -> collectionAdapter.markEpisodePlayed(activity as Context, payloadString)
-                }
+                if (dialogResult) collectionAdapter.markEpisodePlayed(activity as Context, payloadString)
             }
+            // handle add up next dialog
             Keys.DIALOG_ADD_UP_NEXT -> {
                 when (dialogResult) {
                     // user tapped: start playback
@@ -355,12 +352,11 @@ class PlayerFragment: Fragment(),
                     false -> if (!dialogCancelled) updateUpNext(payloadString)
                 }
             }
+            // handle download episode without wifi dialog
             Keys.DIALOG_DOWNLOAD_EPISODE_WITHOUT_WIFI -> {
-                when (dialogResult) {
-                    true -> {
-                        Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
-                        DownloadHelper.downloadEpisode(activity as Context, payloadString, ignoreWifiRestriction = true, manuallyDownloaded = true)
-                    }
+                if (dialogResult) {
+                    Toast.makeText(activity as Context, R.string.toast_message_downloading_episode, Toast.LENGTH_LONG).show()
+                    DownloadHelper.downloadEpisode(activity as Context, payloadString, ignoreWifiRestriction = true, manuallyDownloaded = true)
                 }
             }
         }
@@ -534,9 +530,10 @@ class PlayerFragment: Fragment(),
             // get current and Up Next episode
             val currentEpisode = collectionDatabase.episodeDao().findByMediaId(playerState.currentEpisodeMediaId)
             // setup player views and buttons
+            LogHelper.e(TAG, "DING => ${currentEpisode?.title}")
             withContext(Main) {
                 // update player views
-                if (currentEpisode != null) {
+                if (currentEpisode != null && !currentEpisode.isFinished()) {
                     layout.showPlayer(activity as Context)
                     // update episode title, cover, etc.
                     layout.updatePlayerViews(activity as Context, currentEpisode)

@@ -143,21 +143,21 @@ object CollectionHelper {
     fun buildMediaItem(episode: Episode, streaming: Boolean = false): MediaItem {
         // get the correct source for streaming / local playback
         val source: String = if (streaming) episode.remoteAudioFileLocation else episode.audio
+        // put uri in RequestMetadata - credit: https://stackoverflow.com/a/70103460
+        val requestMetadata = MediaItem.RequestMetadata.Builder().apply {
+            setMediaUri(source.toUri())
+        }.build()
         // build MediaMetadata
-        val metadata:MediaMetadata = MediaMetadata.Builder().apply {
+        val mediaMetadata = MediaMetadata.Builder().apply {
             setAlbumTitle(episode.podcastName)
             setTitle(episode.title)
-//            setArtist(artist)
-//            setGenre(genre)
-//            setFolderType(folderType)
-//            setIsPlayable(isPlayable)
             setArtworkUri(episode.cover.toUri())
-            setMediaUri(source.toUri())
         }.build()
         // build MediaItem and return it
         return MediaItem.Builder().apply {
             setMediaId(episode.mediaId)
-            setMediaMetadata(metadata)
+            setRequestMetadata(requestMetadata)
+            setMediaMetadata(mediaMetadata)
             setUri(source.toUri())
         }.build()
     }

@@ -263,22 +263,13 @@ class SettingsFragment: PreferenceFragmentCompat(), YesNoDialog.YesNoDialogListe
         super.onYesNoDialog(type, dialogResult, payload, payloadString, dialogCancelled)
 
         when (type) {
+            // handle delete downloads dialog
             Keys.DIALOG_DELETE_DOWNLOADS -> {
-                when (dialogResult) {
-                    // user tapped: delete all downloads
-                    true -> {
-                        deleteAllEpisodes()
-                    }
-                }
+                if (dialogResult) deleteAllEpisodes()
             }
-
+            // handle update covers dialog
             Keys.DIALOG_UPDATE_COVERS -> {
-                when (dialogResult) {
-                    // user tapped: refresh podcast covers
-                    true -> {
-                        DownloadHelper.updateCovers(activity as Context)
-                    }
-                }
+                if (dialogResult) DownloadHelper.updateCovers(activity as Context)
             }
 
         }

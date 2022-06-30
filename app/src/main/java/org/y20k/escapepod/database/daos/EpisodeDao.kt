@@ -52,8 +52,8 @@ interface EpisodeDao {
     fun findByMediaId(mediaId: String): Episode?
 
 
-    @Query("SELECT * FROM episodes WHERE media_id IS :mediaId LIMIT 1")
-    suspend fun findByMediaIdSuspended(mediaId: String): Episode?
+//    @Query("SELECT * FROM episodes WHERE media_id IS :mediaId LIMIT 1")
+//    suspend fun findByMediaIdSuspended(mediaId: String): Episode?
 
 
     @Query("SELECT * FROM episodes WHERE episode_remote_podcast_feed_location IS :episodeRemotePodcastFeedLocation ORDER BY publication_date DESC")

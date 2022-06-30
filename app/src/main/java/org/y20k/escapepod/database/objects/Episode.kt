@@ -120,7 +120,18 @@ data class Episode (
 
 
     /* Return if an episode has been listened to end */
-    fun isFinished(): Boolean = playbackPosition >= duration - 500L // 1/2 second slack
+    fun isFinished(): Boolean {
+        // CASE: playback not started or duration not known
+        if (playbackPosition == 0L || duration == 0L) {
+            return false
+        // CASE: playback finished - 1/2 second slack
+        } else if (playbackPosition >= duration - 500L) {
+            return true
+        // CASE: playback has not yet reached duration
+        } else {
+            return false
+        }
+    }
 
 
     /* Return if an episode has been started listening to */

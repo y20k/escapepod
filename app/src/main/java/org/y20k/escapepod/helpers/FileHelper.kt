@@ -196,9 +196,9 @@ object FileHelper {
         // get JSON from text file
         val json: String = readTextFile(context, Keys.FOLDER_COLLECTION, Keys.COLLECTION_FILE)
         var collection: LegacyCollection = LegacyCollection()
-        when (json.isNotBlank()) {
+        if (json.isNotBlank()) {
             // convert JSON and return as collection
-            true -> try {
+            try {
                 collection = getCustomGson().fromJson(json, LegacyCollection::class.java)
             } catch (e: Exception) {
                 e.printStackTrace()

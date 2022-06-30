@@ -18,12 +18,10 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.media3.common.Player
 import androidx.media3.common.util.Util
-import androidx.media3.session.MediaController
 import androidx.media3.session.MediaNotification
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaStyleNotificationHelper
@@ -46,44 +44,49 @@ class NotificationHelper(private val context: Context) {
 
 
     /* Builds a notification for given media session and controller */
-    fun getNotification(mediaSession: MediaSession, mediaController: MediaController, actionFactory: MediaNotification.ActionFactory): Notification {
+    fun getNotification(session: MediaSession, actionFactory: MediaNotification.ActionFactory): Notification {
         ensureNotificationChannel()
+        val player: Player = session.player
+        val metadata = player.mediaMetadata
         val builder = NotificationCompat.Builder(context, Keys.NOW_PLAYING_NOTIFICATION_CHANNEL_ID)
 
         // Skip to previous action - duration is set via setSeekBackIncrementMs
         builder.addAction(
             actionFactory.createMediaAction(
+                session,
                 IconCompat.createWithResource(context, R.drawable.ic_notification_skip_back_36dp),
                 context.getString(R.string.notification_skip_back),
-                MediaNotification.ActionFactory.COMMAND_REWIND
+                Player.COMMAND_SEEK_BACK
             )
         )
-        if (mediaController.playbackState == Player.STATE_ENDED || !mediaController.playWhenReady) {
+        if (player.playbackState == Player.STATE_ENDED || !player.playWhenReady) {
             // Play action.
             builder.addAction(
                 actionFactory.createMediaAction(
+                    session,
                     IconCompat.createWithResource(context, R.drawable.ic_notification_play_36dp),
                     context.getString(R.string.notification_play),
-                    MediaNotification.ActionFactory.COMMAND_PLAY
+                    Player.COMMAND_PLAY_PAUSE
                 )
             )
         } else {
             // Pause action.
             builder.addAction(
                 actionFactory.createMediaAction(
-                    IconCompat.createWithResource(context, R.drawable.ic_notification_pause_36dp
-                    ),
+                    session,
+                    IconCompat.createWithResource(context, R.drawable.ic_notification_pause_36dp),
                     context.getString(R.string.notification_pause),
-                    MediaNotification.ActionFactory.COMMAND_PAUSE
+                    Player.COMMAND_PLAY_PAUSE
                 )
             )
         }
         // Skip to next action - duration is set via setSeekForwardIncrementMs
         builder.addAction(
             actionFactory.createMediaAction(
+                session,
                 IconCompat.createWithResource(context,  R.drawable.ic_notification_skip_forward_36dp),
                 context.getString(R.string.notification_skip_forward),
-                MediaNotification.ActionFactory.COMMAND_FAST_FORWARD
+                Player.COMMAND_SEEK_FORWARD
             )
         )
 //        // Dismiss action - stops playback (and dismisses notification)
@@ -95,35 +98,37 @@ class NotificationHelper(private val context: Context) {
 //            )
 //        )
 
-        // Set metadata info in the notification.
-        val metadata = mediaController.mediaMetadata
-        builder.setContentTitle(metadata.title).setContentText(metadata.artist)
-        if (metadata.artworkData != null) {
-            val artworkBitmap = BitmapFactory.decodeByteArray(
-                metadata.artworkData,
-                0,
-                metadata.artworkData!!.size
-            )
-            builder.setLargeIcon(artworkBitmap)
-        }
 
-        val mediaStyle: MediaStyleNotificationHelper.MediaStyle = MediaStyleNotificationHelper.MediaStyle(mediaSession)
-            .setShowCancelButton(true)
-            .setCancelButtonIntent(actionFactory.createMediaActionPendingIntent(MediaNotification.ActionFactory.COMMAND_STOP))
+        // define media style properties for notification
+        val mediaStyle: MediaStyleNotificationHelper.MediaStyle = MediaStyleNotificationHelper.MediaStyle(session)
+//            .setShowCancelButton(true) // only necessary for pre-Lollipop (SDK < 21)
+//            .setCancelButtonIntent(actionFactory.createMediaActionPendingIntent(session, Player.COMMAND_STOP)) // only necessary for pre-Lollipop (SDK < 21)
             .setShowActionsInCompactView(1 /* Show play/pause button only in compact view */)
 
-        val notification: Notification = builder.apply {
-            setContentIntent(mediaController.sessionActivity)
-            setDeleteIntent(actionFactory.createMediaActionPendingIntent(MediaNotification.ActionFactory.COMMAND_STOP))
+        // configure notification content
+        builder.apply {
+            setContentTitle(metadata.title)
+            setContentText(metadata.artist)
+            setContentIntent(session.sessionActivity)
+            setDeleteIntent(actionFactory.createMediaActionPendingIntent(session, Player.COMMAND_STOP.toLong()))
             setOnlyAlertOnce(true)
             setSmallIcon(R.drawable.ic_notification_app_icon_white_24dp)
+            setLargeIcon(ImageHelper.getPodcastCover(context, metadata.artworkUri.toString()))
             setStyle(mediaStyle)
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setOngoing(false)
-        }.build()
+        }
+//        // add podcast icon if available
+//        if (metadata.artworkData != null) {
+//            val artworkBitmap = BitmapFactory.decodeByteArray(
+//                metadata.artworkData,
+//                0,
+//                metadata.artworkData!!.size
+//            )
+//            builder.setLargeIcon(artworkBitmap)
+//        }
 
-        return notification
-
+        return builder.build()
     }
 
 
