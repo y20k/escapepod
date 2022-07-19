@@ -20,7 +20,7 @@ ESCAPEPOD OPML BİÇİMİNİ DESTEKLİYOR MU?
 OPML değişim biçimini kullanarak bir podcast listesini uygulamanın Ayarlar bölümündeki ilgili seçeneği kullanarak içe aktarabilirsiniz. Geçerli podcast koleksiyonu da Ayarlar aracılığıyla dışa aktarılabilir. Ayrıca Escapepod, /Android/data/org.y20k.escapepod/files/collection/ konumunda güncel bir OPML dosyası tutar.
 
 X PODCAST'İNİ EKLEYEMİYORUM. NEDEN?
-Lütfen şu anda çalışmayan podcast akışlarını "Feed Issue" GitHub sorun şablonunu (https://github.com/y20k/escapepod/issues/) kullanarak bildirin. Not: Escapepod, video podcast'lerini desteklemez.
+Lütfen şu anda çalışmayan podcast akışlarını "Feed Issue" GitHub sorun şablonunu (https://codeberg.org/y20k/escapepod/issues) kullanarak bildirin. Not: Escapepod, video podcast'lerini desteklemez.
 
 PODCAST ARAMA SONUÇLARI NEREDEN GELİYOR?
 Escapepod, öntanımlı olarak Podcastindex.org (https://podcastindex.org/) çevrim içi veri tabanını arar - veya ilgili ayarı değiştirirseniz gpodder.net (https://gpodder.net/directory/) çevrim içi veri tabanını.

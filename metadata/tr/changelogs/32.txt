@@ -2,4 +2,4 @@
 
 **13 Mart 2021**
 
-- F-Droid uyumluluk düzeltmesi: gereksiz mülkiyetli bağımlılık kaldırıldı (bkz: https://github.com/y20k/escapepod/issues/64)
+- F-Droid uyumluluk düzeltmesi: gereksiz mülkiyetli bağımlılık kaldırıldı (bkz: https://codeberg.org/y20k/escapepod/issues64)

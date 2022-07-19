@@ -2,4 +2,4 @@
 
 **2021-03-13**
 
-- F-Droid compliance fix: unneeded proprietary dependency removed (see https://github.com/y20k/escapepod/issues/64)
+- F-Droid compliance fix: unneeded proprietary dependency removed (see https://codeberg.org/y20k/escapepod/issues64)

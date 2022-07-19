@@ -2,7 +2,7 @@ AUTHORS
 =======
 
 ### Development
-Escapepod is designed, developed and maintained by: [y20k](https://github.com/y20k)
+Escapepod is designed, developed and maintained by: [y20k](https://codeberg.org/y20k)
 
 Contributing developer: [TacoTheDank](https://github.com/TacoTheDank)
 
@@ -46,4 +46,4 @@ Turkish version [Oğuz Ersen](https://hosted.weblate.org/user/ersen/) | [weblate
 [holliebaker](https://github.com/holliebaker)
 
 ### Want to help?
-Please check out the notes in [CONTRIBUTE.md](https://github.com/y20k/escapepod/blob/master/CONTRIBUTE.md) first.
+Please check out the notes in [CONTRIBUTE.md](https://codeberg.org/y20k/escapepod/src/branch/master/CONTRIBUTE.md) first.

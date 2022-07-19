@@ -2,4 +2,4 @@
 
 **2021-03-13**
 
-- Arreglo para cumplimiento normativo de F-Droid: se eliminó una innecesaria dependencia de licencia privativa (vea https://github.com/y20k/escapepod/issues/64)
+- Arreglo para cumplimiento normativo de F-Droid: se eliminó una innecesaria dependencia de licencia privativa (vea https://codeberg.org/y20k/escapepod/issues64)

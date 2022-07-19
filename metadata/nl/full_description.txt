@@ -20,7 +20,7 @@ ONDERSTEUNT ESCAPEPOD OPML?
 Ja. Je kunt opml-bestanden importeren of de huidige podcastverzameling exporteren via de instellingen. Daarnaast kan Escapepod een bijgewerkt opml-bestand opslaan in /Android/data/org.y20k.escapepod/files/collection/.
 
 IK KAN PODCAST X NIET TOEVOEGEN; WAT NU?
-Geef dit aan mij door op GitHub middels het issuesjabloon 'Feed Issue' (https://github.com/y20k/escapepod/issues/). Let op: Escapepod heeft geen ondersteuning voor videopodcasts.
+Geef dit aan mij door op GitHub middels het issuesjabloon 'Feed Issue' (https://codeberg.org/y20k/escapepod/issues). Let op: Escapepod heeft geen ondersteuning voor videopodcasts.
 
 WAAR KOMEN DE ZOEKRESULTATEN VANDAAN?
 Escapepod doorzoekt standaard de databank van Podcastindex.org (https://gpodder.net/directory/), maar er is ook een instelling om de databank van gpodder.net (https://gpodder.net/directory/) te doorzoeken.

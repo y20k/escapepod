@@ -2,4 +2,4 @@
 
 **2021-03-13**
 
-- F-Droid Compliance Fix: nicht benötigte proprietäre Abhängigkeit entfernt (siehe https://github.com/y20k/escapepod/issues/64)
+- F-Droid Compliance Fix: nicht benötigte proprietäre Abhängigkeit entfernt (siehe https://codeberg.org/y20k/escapepod/issues64)

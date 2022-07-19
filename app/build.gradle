@@ -90,7 +90,7 @@ dependencies {
     implementation "androidx.media3:media3-session:mediaVersion"
 
 
-    def navigationVersion = "2.4.2"
+    def navigationVersion = "2.5.0"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 

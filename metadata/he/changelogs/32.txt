@@ -2,4 +2,4 @@
 
 **2021-03-13**
 
-- תוקנה התאימות ל־F-Droid: הוסרה תלות קניינית בלתי נחוצה (see https://github.com/y20k/escapepod/issues/64)
+- תוקנה התאימות ל־F-Droid: הוסרה תלות קניינית בלתי נחוצה (see https://codeberg.org/y20k/escapepod/issues64)

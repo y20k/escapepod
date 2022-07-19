@@ -20,7 +20,7 @@ JE LI ESCAPEPOD PODRŽAVA OPML?
 Popis podcasta je moguće uvesti pomoću OPML formata za razmjenu podataka pomoću odgovarajućih opcija u postavkama programa. Trenutačna zbirka podcasta može se i zizvesti u postavkama. Pored toga, Escapepod održava aktualnu OPML datoteku u mapi /Android/data/org.y20k.escapepod/files/collection/.
 
 NE MOGU DODATI PODCAST X. ZAŠTO?
-Prijavi sve feedove podcasta koji trenutačno ne rade, pomoću GitHub predloška za prijavu problema „Feed Issue“ (https://github.com/y20k/escapepod/issues/). Napomena: Escapepod ne podržava video podcaste.
+Prijavi sve feedove podcasta koji trenutačno ne rade, pomoću GitHub predloška za prijavu problema „Feed Issue“ (https://codeberg.org/y20k/escapepod/issues). Napomena: Escapepod ne podržava video podcaste.
 
 OTKUDA DOLAZE REZULTATI TRAŽENJA PODCASTA?
 Escapepod standardno pretražuje internetsku bazu podataka Podcastindex.org (https://podcastindex.org/) ili, ako promijeniš odgovarajuću postavku, internetsku bazu podataka gpodder.net (https://gpodder.net/directory/).

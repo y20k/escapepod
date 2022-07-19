@@ -22,7 +22,7 @@ Vous pouvez importer une liste de podcasts utilisant le format d'échange OPML e
 Vous pouvez importer une liste de podcasts en utilisant le format d'échange OPML en utilisant l'option correspondante dans les paramètres de l'application. La collection de podcasts actuelle peut également être exportée via les paramètres. De plus, Escapepod conserve un fichier OPML à jour dans le dossier /Android/data/org.y20k.escapepod/files/collection/.
 
 JE NE PEUX PAS AJOUTER LE PODCAST X. POURQUOI ?
-Veuillez signaler tous les flux de podcast qui ne fonctionnent pas en utilisant le modèle de ticket sur GitHub « Feed Issue » (en anglais) (https://github.com/y20k/escapepod/issues/). Remarque : Escapepod ne prend pas en charge les podcasts vidéo.
+Veuillez signaler tous les flux de podcast qui ne fonctionnent pas en utilisant le modèle de ticket sur GitHub « Feed Issue » (en anglais) (https://codeberg.org/y20k/escapepod/issues). Remarque : Escapepod ne prend pas en charge les podcasts vidéo.
 
 D'OÙ VIENNENT LES RÉSULTATS DE RECHERCHE DE PODCASTS ?
 Escapepod effectue les recherches dans la base de données en ligne Podcastindex.org (https://podcastindex.org/) ou, si vous l'activez, depuis la base de données en ligne de gpodder.net (https://gpodder.net/directory/).
